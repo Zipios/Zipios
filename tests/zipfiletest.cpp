@@ -3,6 +3,7 @@
 
 #include "zipios++/meta-iostreams.h"
 #include <memory>
+#include <vector>
 #include <stdlib.h>
 
 #include "zipios++/zipfile.h"
@@ -17,9 +18,9 @@ using std::cerr ;
 using std::cout ;
 using std::endl ;
 using std::auto_ptr ;
-using std::ofstream ;
 using std::ifstream ;
 using std::string;
+using std::vector;
 
 
 void zipios::ZipFileTest::runTests() {
@@ -37,7 +38,7 @@ void zipios::ZipFileTest::runTests() {
 
 void zipios::ZipFileTest::writeZipFile(const string &zipFileName, vector<string> entryFileNames) {
   ZipOutputStream zos(zipFileName);
-  vector<string>::const_iterator it = entryFileNames.begin();
+  std::vector<string>::const_iterator it = entryFileNames.begin();
   for ( ; it != entryFileNames.end() ; ++it ) {
     writeFileToZipOutputStream(zos, *it);
   }
@@ -50,7 +51,7 @@ void zipios::ZipFileTest::compareZipFile(const string &zipFileName, vector<strin
   vector<string>::const_iterator it = entryFileNames.begin();
   for ( ; it != entryFileNames.end() ; ++it ) {
     auto_ptr<istream> zis(zipFile.getInputStream(*it));
-    ifstream fis((*it).c_str());
+    ifstream fis((*it).c_str(), ios::in | ios::binary);
     try {
       compareStreams(*zis, fis);
     } catch(Exception &ex) {
@@ -84,8 +85,13 @@ void zipios::ZipFileTest::compareStreams(istream &is1, istream &is2) {
   OutputStringStream buf1, buf2;
   buf1 << is1.rdbuf();
   buf2 << is2.rdbuf();
-  if ( buf1.str() != buf2.str() )
-    throw Exception("contents differ"); // defined at the bottom of fcolexceptions.h
+  if ( buf1.str() != buf2.str() ) {
+	  ofstream of1("hej1.txt", ios::out | ios::binary );
+	  of1 << buf1.str() << std::endl 
+	         << "-------------------------------------------------------" << std::endl 
+	         << buf2.str() << std::endl ;;
+	  throw Exception("contents differ"); // defined at the bottom of fcolexceptions.h
+  }
 }
 
 /** \file

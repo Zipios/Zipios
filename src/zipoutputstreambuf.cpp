@@ -13,7 +13,7 @@ namespace zipios {
 using std::ios ;
 using std::cerr ;
 using std::endl ;
-using std::min ;
+//using std::min ;
 
 ZipOutputStreambuf::ZipOutputStreambuf( streambuf *outbuf, bool del_outbuf ) 
   : DeflateOutputStreambuf( outbuf, false, del_outbuf ),
@@ -154,7 +154,7 @@ void ZipOutputStreambuf::writeCentralDirectory( const vector< ZipCDirEntry > &en
 						EndOfCentralDirectory eocd, 
 						ostream &os ) {
   int cdir_start = os.tellp() ;
-  vector< ZipCDirEntry >::const_iterator it ;
+  std::vector< ZipCDirEntry >::const_iterator it ;
   int cdir_size = 0 ;
 
   for ( it = entries.begin() ; it != entries.end() ; ++it ) {

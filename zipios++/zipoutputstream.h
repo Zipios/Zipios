@@ -23,12 +23,11 @@ public:
   /** ZipOutputStream constructor.
       @param os ostream to which the compressed zip archive is written.
       @param pos position to reposition the ostream to before reading.  */
-  explicit ZipOutputStream( ostream &os, streampos pos = 0 ) ;
+  explicit ZipOutputStream( ostream &os ) ;
 
   /** ZipOutputStream constructor.
-      @filename filename to write the zip archive to.
-      @param pos position to reposition the ostream to before writing. */
-  explicit ZipOutputStream( const string &filename, streampos pos = 0 ) ;
+      @filename filename to write the zip archive to. */
+  explicit ZipOutputStream( const string &filename ) ;
   
   /** Closes the current entry updates its header with the relevant
       size information and positions the stream write pointer for the

@@ -8,6 +8,8 @@
 #include "zipios++/fcollexceptions.h"
 #include "zipios++/deflateoutputstreambuf.h"
 
+#include "outputstringstream.h"
+
 namespace zipios {
 
 using std::cerr ;

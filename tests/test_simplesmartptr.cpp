@@ -62,6 +62,7 @@ int main() {
     assert( isAlive );
   }
   assert( ! isAlive );
+  return 0;
 }
    
 

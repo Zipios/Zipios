@@ -55,6 +55,7 @@ int main( int argc, char *argv[] ) {
     cerr << "Exception caught in main() :" << endl ;
     cerr << excp.what() << endl ;
   }
+  return -1;
 }
 
 /** \file

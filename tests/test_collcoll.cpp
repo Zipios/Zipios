@@ -86,6 +86,7 @@ int main() {
     cerr << "Exception caught in main() :" << endl ;
     cerr << excp.what() << endl ;
   }
+  return -1;
 }
 
 /** \file

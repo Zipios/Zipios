@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "zipoutputstream.h"
+#include "zipios++/zipoutputstream.h"
 
 #include "testcase.h"
 
