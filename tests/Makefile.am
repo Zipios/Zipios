@@ -32,7 +32,7 @@ test_simplesmartptr_SOURCES = test_simplesmartptr.cpp
 
 test_zipoutputstream_SOURCES = test_zipoutputstream.cpp
 
-all_tests_SOURCES = all_tests.cpp zipfiletest.cpp
+all_tests_SOURCES = all_tests.cpp zipfiletest.cpp zipfiletest.h testcase.h
 
 # Notice that libzipios.a is not specified as -L. -lzipios
 # If it was, automake would not include it as a dependency.
