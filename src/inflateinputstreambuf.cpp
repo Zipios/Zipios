@@ -34,9 +34,10 @@ InflateInputStreambuf::InflateInputStreambuf( streambuf *inbuf, int s_pos, bool 
   _zs.zfree  = Z_NULL ;
   _zs.opaque = Z_NULL ;
 
-  if ( ! reset( s_pos ) )
-    ; // throw something
-
+  reset( s_pos ) ;
+  // We're not checking the return value of reset() and throwing
+  // an exception in case of an error, because we cannot catch the exception
+  // in the constructors of subclasses with all compilers.
 }
 
 InflateInputStreambuf::~InflateInputStreambuf() {

@@ -185,7 +185,7 @@ int ZipLocalEntry::getSize() const {
 }
 
 int ZipLocalEntry::getTime() const {
-  return last_mod_fdate << 16 + last_mod_ftime ; 
+  return ( last_mod_fdate << 16 ) + last_mod_ftime ; 
   // FIXME: what to do with this time date thing? (not only here?)
 }
 

@@ -37,12 +37,12 @@ void FilePath::check() const {
   struct stat buf ;
   if ( stat( _path.c_str(), &buf ) != -1 ) {
     _exists    = true ;
-    if      ( _is_reg    = S_ISREG ( buf.st_mode ) ) ;
-    else if ( _is_dir    = S_ISDIR ( buf.st_mode ) ) ;
-    else if ( _is_char   = S_ISCHR ( buf.st_mode ) ) ;
-    else if ( _is_block  = S_ISBLK ( buf.st_mode ) ) ;
-    else if ( _is_socket = S_ISSOCK( buf.st_mode ) ) ;
-    else if ( _is_fifo   = S_ISFIFO( buf.st_mode ) ) ;
+    _is_reg    = S_ISREG ( buf.st_mode ) ;
+    _is_dir    = S_ISDIR ( buf.st_mode ) ;
+    _is_char   = S_ISCHR ( buf.st_mode ) ;
+    _is_block  = S_ISBLK ( buf.st_mode ) ;
+    _is_socket = S_ISSOCK( buf.st_mode ) ;
+    _is_fifo   = S_ISFIFO( buf.st_mode ) ;
   } 
 }
 
