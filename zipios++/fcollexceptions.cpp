@@ -15,10 +15,10 @@ using std::cerr ;
 using std::endl ;
 
 IOException::IOException() throw () 
-  : _what( "I/O exception" ) {} //{ cerr << "IOException()" << endl ; }
+  : _what( "I/O exception" ) {}
 
 IOException::IOException( const string &msg ) throw () 
-  : _what( msg ) {} //{ cerr << "IOException()" << endl ; }
+  : _what( msg ) {}
 
 IOException::IOException( const IOException &src ) throw () 
   : _what( src._what ) {}
@@ -34,7 +34,7 @@ const char *IOException::what() const throw () {
   return _what.c_str() ;
 }
 
-IOException::~IOException() throw () {} //{ cerr << "~IOException()" << endl ; }
+IOException::~IOException() throw () {}
 
 
 
@@ -42,10 +42,10 @@ IOException::~IOException() throw () {} //{ cerr << "~IOException()" << endl ; }
 
 
 FCollException::FCollException() throw () 
-  : _what( "FileCollection exception" ) {} //{ cerr << "FCollException()" << endl ; }
+  : _what( "FileCollection exception" ) {}
 
 FCollException::FCollException( const string &msg ) throw () 
-  : _what( msg ) {} //{ cerr << "FCollException()" << endl ; }
+  : _what( msg ) {}
 
 FCollException::FCollException( const FCollException &src ) throw () 
   : _what( src._what ) {}
@@ -61,7 +61,7 @@ const char *FCollException::what() const throw () {
   return _what.c_str() ;
 }
 
-FCollException::~FCollException() throw () {} //{ cerr << "~FCollException()" << endl ; }
+FCollException::~FCollException() throw () {}
 
 
 
@@ -69,10 +69,10 @@ FCollException::~FCollException() throw () {} //{ cerr << "~FCollException()" <<
 
 
 InvalidStateException::InvalidStateException() throw () 
-  : _what( "InvalidState exception" ) {} //{ cerr << "InvalidStateException()" << endl ; }
+  : _what( "InvalidState exception" ) {}
 
 InvalidStateException::InvalidStateException( const string &msg ) throw () 
-  : _what( msg ) {} //{ cerr << "InvalidStateException()" << endl ; }
+  : _what( msg ) {}
 
 InvalidStateException::
 InvalidStateException( const InvalidStateException &src ) throw () 
@@ -91,7 +91,7 @@ const char *InvalidStateException::what() const throw () {
 }
 
 InvalidStateException::~InvalidStateException() throw () {} 
-//{ cerr << "~InvalidStateException()" << endl ; }
+
 
 } // namespace
 
