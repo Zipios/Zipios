@@ -308,14 +308,16 @@ namespace boost
 		class unknown_uname: public std::invalid_argument
 		{
 		public:
-			unknown_uname(string u): std::invalid_argument("unknown user name"), m_uname(u) {}
-			string uname() const { return m_uname; }
+			unknown_uname(std::string u): std::invalid_argument("unknown user name"), m_uname(u) {}
+      // TODO: Why does this destructor have to be redefined so as to avoid the "looser throw specifier" error.
+			~unknown_uname() throw() { }
+			std::string uname() const { return m_uname; }
 		private:
-			string m_uname;
+			std::string m_uname;
 		};
-		struct uname { typedef string value_type; };
-		template<> string get<uname>(dir_it const &);
-		template<> void set<uname>(dir_it const &, string );
+		struct uname { typedef std::string value_type; };
+		template<> std::string get<uname>(dir_it const &);
+		template<> void set<uname>(dir_it const &, std::string );
 
 		class unknown_gid: public std::invalid_argument
 		{
@@ -328,17 +330,19 @@ namespace boost
 		struct gid { typedef gid_t value_type; };
 		template<> gid_t get<gid>(dir_it const &);
 		template<> void set<gid>(dir_it const &, gid_t);
-		class unknown_gname: public invalid_argument
+		class unknown_gname: public std::invalid_argument
 		{
 		public:
-			unknown_gname(string g): std::invalid_argument("unknown group name"), m_gname(g) {}
-			string gname() const { return m_gname; }
+			unknown_gname(std::string g): std::invalid_argument("unknown group name"), m_gname(g) {}
+      // TODO: Why does this destructor have to be redefined so as to avoid the "looser throw specifier" error.
+			~unknown_gname() throw() { }
+			std::string gname() const { return m_gname; }
 		private:
-			string m_gname;
+			std::string m_gname;
 		};
-		struct gname { typedef string value_type; };
-		template<> string get<gname>(dir_it const &);
-		template<> void set<gname>(dir_it const &, string );
+		struct gname { typedef std::string value_type; };
+		template<> std::string get<gname>(dir_it const &);
+		template<> void set<gname>(dir_it const &, std::string );
 
 #endif
 
@@ -352,9 +356,9 @@ namespace std
 	{
 	public:
 		typedef ptrdiff_t          difference_type;
-		typedef string             value_type;
-		typedef string             *pointer;
-		typedef string             &reference;
+		typedef std::string             value_type;
+		typedef std::string             *pointer;
+		typedef std::string             &reference;
 		typedef input_iterator_tag iterator_category;
 	};
 } // namespace std
