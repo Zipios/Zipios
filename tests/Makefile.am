@@ -7,7 +7,7 @@ EXTRA_DIST = test.zip
 
 INCLUDES = -I..
 
-CXXFLAGS += @CPPUNIT_CFLAGS@
+CXXFLAGS = @CPPUNIT_CFLAGS@
 
 noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
                   test_dircoll test_collcoll test_appzip test_zipoutputstreambuf  \
