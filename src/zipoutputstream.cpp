@@ -50,7 +50,7 @@ void ZipOutputStream::putNextEntry( const ZipCDirEntry &entry ) {
 }
 
 void ZipOutputStream::putNextEntry(const std::string& entryName) {
-  putNextEntry(new ZipCDirEntry(entryName));
+  putNextEntry( ZipCDirEntry(entryName));
 }
 
 
