@@ -20,7 +20,7 @@ Only 'yes' and 'no' are accepted.])
 fi
 if test -z "$with_std_compliant_iostream" -o \
         "$with_std_compliant_iostream" = "yes" ; then
-  AC_DEFINE(USE_STD_IOSTREAM)
+  AC_DEFINE(USE_STD_IOSTREAM,1,[Define if the std compliant iostream library should be used (if present)])
 fi
 
 dnl Checks for programs.
@@ -52,7 +52,7 @@ fi
 
 dnl acconfig.h file added (with #undef for HAVE_ZERROR), which is required
 dnl for symbols defined "manually" with AC_DEFINE
-AC_CHECK_LIB(z, zError, AC_DEFINE(HAVE_ZERROR) )
+AC_CHECK_LIB(z, zError, AC_DEFINE(HAVE_ZERROR,1,[Define if zlib has zError]) )
 
 dnl Checks for header files.
 AC_HEADER_STDC
