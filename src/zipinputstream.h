@@ -1,0 +1,87 @@
+#ifndef ZipInputStream_H
+#define ZipInputStream_H
+
+#include "config.h"
+
+// This also includes the right streambuf header file
+#ifdef HAVE_STD_IOSTREAM
+#include <iostream>
+#include <fstream>
+#else
+#include <iostream.h>
+#include <fstream.h>
+#endif
+
+#include <string>
+
+#include "ziphead.h"
+#include "zipinputstreambuf.h"
+
+namespace fcol {
+
+using std::ifstream ;
+
+/** \anchor ZipInputStream_anchor
+    ZipInputStream is an istream that gets it's input from a zip file. The
+    interface approximates the interface of the Java
+    ZipInputStream. */
+class ZipInputStream : public istream {
+public:
+  /** ZipInputStream constructor.
+      @param is istream from which the compressed zip archive can be read.
+      @param pos position to reposition the istream to before reading.
+   */
+  explicit ZipInputStream( istream &is, streampos pos = 0 ) ;
+  /** ZipInputStream constructor.
+      @filename filename of a valid zip file.
+      @param pos position to reposition the istream to before reading.
+   */
+  explicit ZipInputStream( const string &filename, streampos pos = 0 ) ;
+  
+  int available() ;
+  /** Closes the current entry, and positions the stream read pointer at 
+      the beginning of the next entry (if there is one). */
+  void closeEntry() ;
+  /** Closes the istream. */
+  void close() ;
+//    ZipLocalEntry *createZipCDirEntry( const string &name ) ;
+  /** \anchor ZipInputStream_getnextentry_anchor
+      Opens the next entry in the zip archive and returns a const pointer to a 
+      FileEntry object for the entry.
+      @return a const FileEntry * containing information about the (now) current 
+      entry.
+  */
+  ConstEntryPointer getNextEntry() ;
+  /** Destructor. */
+  virtual ~ZipInputStream() ;
+private:
+  ifstream *ifs ;
+  ZipInputStreambuf *izf ;
+};
+ 
+} // namespace.
+
+#endif
+
+/** \file 
+    Header file that defines ZipInputStream.
+*/
+
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000  Thomas Søndergaard
+  
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/

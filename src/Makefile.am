@@ -1,0 +1,57 @@
+
+AUTOMAKE_OPTIONS = gnu
+
+EXTRA_DIST = test.zip
+
+# CXXFLAGS= -g
+
+noinst_LIBRARIES = libzipios.a
+
+bin_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip
+# test_flist 
+
+libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
+                      basicentry.cpp             fcol.cpp                  \
+                      fcol.h                     fcol_common.h             \
+                      fcolexceptions.cpp         fcolexceptions.h          \
+                      fileentry.cpp              fileentry.h               \
+                      flist.cpp                  flist.h                   \
+                      flistentry.cpp             flistentry.h              \
+                      flistscanner.h             filterinputstreambuf.cpp  \
+                      filterinputstreambuf.h     inflateinputstreambuf.cpp \
+                      inflateinputstreambuf.h    zipinputstreambuf.cpp     \
+                      zipinputstreambuf.h        zipinputstream.cpp        \
+                      zipinputstream.h           zipfile.cpp               \
+                      zipfile.h                  ziphead.cpp               \
+                      ziphead.h                  flistscanner.ll           \
+                      simplesmartptr.h           dircoll.h                 \
+                      dircoll.cpp                collcoll.h                \
+                      collcoll.cpp               FlexLexer.h
+
+test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
+
+test_zipinputstream_SOURCES = test_zipinputstream.cpp
+
+test_zip_SOURCES = test_zip.cpp
+
+example_zip_SOURCES = example_zip.cpp
+
+# test_flist_SOURCES = test_flist.cpp
+
+# Notice that libzipios.a is not specified as -L. -lzipios
+# If it was, automake would not include it as a dependency.
+
+test_zipinputstreambuf_LDADD = libzipios.a -lz
+
+test_zipinputstream_LDADD = libzipios.a -lz
+
+test_zip_LDADD = libzipios.a -lz
+
+example_zip_LDADD = libzipios.a -lz
+
+# test_flist_LDADD = libzipios.a
+
+
+flistscanner.cc : flistscanner.ll
+	$(LEX) -+ -PFListScanner -o$@ $^
+

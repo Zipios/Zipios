@@ -1,0 +1,51 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(src/backbuffer.h)
+
+AM_INIT_AUTOMAKE(zipios++,0.0.1)
+AM_CONFIG_HEADER(config.h)
+
+dnl to run test progs with CXX: AC_LANG_CPLUSPLUS
+
+dnl Checks for programs.
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+dnl  Apparantly it doesn't want AC_PROG_LEX, rather it wants AM_PROG_LEX
+AM_PROG_LEX
+if test "$LEX" != "flex"; then
+  AC_MSG_ERROR([flex is required, as lex can't generate a c++ scanner class.])
+fi
+
+dnl Checks for libraries.
+AC_CHECK_LIB(z, inflate, [cv_libz=yes], [cv_libz=no])
+
+if test "$cv_libz" != "yes"; then
+  AC_MSG_ERROR([zlib is required to compile $PACKAGE.])
+fi
+
+dnl acconfig.h made with #undef for HAVE_ZERROR, which is required
+dnl for symbols defined "manually" with AC_DEFINE
+AC_CHECK_LIB(z, zError, AC_DEFINE(HAVE_ZERROR) )
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(unistd.h)
+AC_CXX_HAVE_STL
+AC_CXX_HAVE_STD
+AC_CXX_HAVE_SSTREAM
+AC_CXX_HAVE_STD_IOSTREAM
+
+dnl if test "$ac_cv_cxx_have_sstream" != "yes"; then
+dnl   AC_MSG_ERROR([sstream is required to compile $PACKAGE.])
+dnl fi
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+
+dnl Checks for library functions.
+
+AC_OUTPUT(Makefile src/Makefile)
