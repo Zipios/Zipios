@@ -48,6 +48,13 @@ private:
   int _data_start ; // Don't forget entry header has a length too.
   int _remain ; // For STORED entry only. the number of bytes that
   // hasn't been put in the _outvec yet.
+
+  /** Copy-constructor is private to prevent copying. */
+  ZipInputStreambuf( const ZipInputStreambuf &src ) ;
+
+  /** Copy-assignment operator is private to prevent copying.  */
+  const ZipInputStreambuf &operator= ( const ZipInputStreambuf &src ) ;
+
 };
 
 

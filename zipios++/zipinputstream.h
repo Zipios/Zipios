@@ -57,6 +57,13 @@ public:
 private:
   ifstream *ifs ;
   ZipInputStreambuf *izf ;
+
+  /** Copy-constructor is private to prevent copying. */
+  ZipInputStream( const ZipInputStream &src ) ;
+
+  /** Copy-assignment operator is private to prevent copying.  */
+  const ZipInputStream &operator= ( const ZipInputStream &src ) ;
+
 };
  
 } // namespace.

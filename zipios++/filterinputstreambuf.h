@@ -32,6 +32,13 @@ protected:
   int _s_pos ; // Position in this streambuf - FIXME: is this used?
   streambuf *_inbuf ;
   bool _del_inbuf ;
+private:
+
+  /** Copy-constructor is private to prevent copying. */
+  FilterInputStreambuf( const FilterInputStreambuf &src ) ;
+
+  /** Copy-assignment operator is private to prevent copying.  */
+  const FilterInputStreambuf &operator= ( const FilterInputStreambuf &src ) ;
 };
 
 

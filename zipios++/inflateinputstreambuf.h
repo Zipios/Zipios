@@ -54,6 +54,13 @@ protected: // FIXME: reconsider design?
   const int _outvecsize ;
   vector< char > _outvec ;
 
+private:
+
+  /** Copy-constructor is private to prevent copying. */
+  InflateInputStreambuf( const InflateInputStreambuf &src ) ;
+
+  /** Copy-assignment operator is private to prevent copying.  */
+  const InflateInputStreambuf &operator= ( const InflateInputStreambuf &src ) ;
 
 };
 
