@@ -6,3 +6,5 @@ FreeBSD port:             Ying-Chieh Liao    (ijliao@csie.nctu.edu.tw)
 The files zipios++/directory.h and zipios++/directory.cpp originate
 from the dir_it library written by Dietmar Kuehl (it's available for
 download at http://www.boost.org)
+
+zipios++.spec contributed by Rui Miguel Silva Seabra

@@ -1,7 +1,7 @@
 
 AUTOMAKE_OPTIONS = gnu
 
-EXTRA_DIST = doxyfile doc/images win32
+EXTRA_DIST = doxyfile doc/images win32 zipios++.spec
 SUBDIRS = zipios++ src tests
 
 
@@ -44,3 +44,11 @@ webdoc : doc
 # to reference the image.
 .PHONY : web
 web : webdoc dist
+	echo
+
+
+.PHONY : rpm
+rpm : dist
+	rpm -ta zipios++*.tar.gz
+
+

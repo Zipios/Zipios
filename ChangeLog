@@ -1,3 +1,49 @@
+2001-12-29 00:58  thomas
+
+	* src/zipios.dsp, tests/tests.dsp, tests/zipfiletest.cpp:
+	
+	Fixed the zip write test. The writing was fine, the test code
+	didn't notice that one of the files it tried to put in the zip file
+	didn't exist, and that put the ZipOutputStream into a fail state
+	yada yada
+
+2001-12-29 00:20  thomas
+
+	* src/.cvsignore, src/zipios.dsp, src/zipios.dsw, tests/.cvsignore,
+	tests/file1.txt, tests/file2.txt, tests/file3.txt, tests/test.zip,
+	tests/testfile.bin, tests/tests.dsp, tests/zipfiletest.cpp,
+	tests/zipfiletest.h, zipios++/fcoll.h, zipios++/zipfile.h:
+	
+	Added new VC++ 6.0 workspace and project files. auto-test unzip
+	alone
+
+2001-08-14 20:53  thomas
+
+	* AUTHORS, zipios++/fcoll.h:
+	
+	Added mention of the FreeBSD port on the main webpage and mentioned
+	the person who did it in the AUTHORS file.
+
+2001-07-21 19:31  thomas
+
+	* tests/test_simplesmartptr.cpp:
+	
+	Include <memory> - it was missing, as pointed out by Craig Thrall.
+
+2001-07-19 18:01  thomas
+
+	* Makefile.in, aclocal.m4, configure, configure.in:
+	
+	Applied patch to configure.in which add a "--with-zlib=" option.
+	The patch was provided by Matt Hortman.
+
+2001-07-16 20:13  thomas
+
+	* tests/: Makefile.am, Makefile.in:
+	
+	A few files were not listed as sources and thus didn't make it into
+	the dist created by make dist.
+
 2001-07-15 21:55  thomas
 
 	* Makefile.in, tests/Makefile.am, tests/Makefile.in,
