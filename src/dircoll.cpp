@@ -41,7 +41,7 @@ vector< ConstEntryPointer > DirectoryCollection::entries() const {
 
   loadEntries() ;
 
-  return vector< ConstEntryPointer > ( _entries.begin(), _entries.end() ) ;
+  return FileCollection::entries() ;
 }
 
 

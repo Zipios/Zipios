@@ -17,7 +17,18 @@ using std::find_if ;
 vector< ConstEntryPointer > FileCollection::entries() const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get entries from an invalid FileCollection" ) ;
-  return vector< ConstEntryPointer > ( _entries.begin(), _entries.end() ) ;
+
+  // The constructor below is not in all vector impl. (not those
+  // without member templates)
+  // vector< ConstEntryPointer > ( _entries.begin(), _entries.end() ) ;
+  // Instead of using that we copy the vector manually
+  vector< ConstEntryPointer > cep_vec ;
+  cep_vec.reserve( _entries.size() ) ;
+  std::vector< EntryPointer >::const_iterator cit ;
+  for ( cit = _entries.begin() ; cit != _entries.end() ; ++cit )
+    cep_vec.push_back( *cit ) ;
+
+  return cep_vec ;
 }
 
 ConstEntryPointer FileCollection::getEntry( const string &name, 
