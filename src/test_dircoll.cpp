@@ -24,7 +24,7 @@ int main() {
   try {
   
     cout << "Instantiating a DirectoryCollection" << endl ;
-    DirectoryCollection collection( "./" ) ;
+    DirectoryCollection collection( "." ) ;
     
     cout << "list length : " << collection.size() << endl ;
     
@@ -36,7 +36,7 @@ int main() {
     for( it = entries.begin() ; it != entries.end() ; it++)
       cout << *(*it) << endl ;
     
-    ConstEntryPointer ent = collection.getEntry( "file2.txt", FileCollection::IGNORE ) ;
+    ConstEntryPointer ent = collection.getEntry( "file2.txt" ) ;
     if ( ent != 0 ) {
       auto_ptr< istream > is( collection.getInputStream( ent ) ) ;
       const int buflen = 20 ;
