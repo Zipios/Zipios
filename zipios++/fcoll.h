@@ -180,8 +180,7 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
    HREF="http://www.stack.nl/~dimitri/doxygen/index.html">Doxygen</A>. Use
    the links at the top of the page to browse the API
    documentation. The documentation is also available in
-   printer-friendly formats <A HREF="refman.pdf">[pdf]</A>, <A
-   HREF="refman.ps">[ps]</A>.
+   a printer-friendly format <A HREF="refman.pdf">[pdf]</A>.
    
    \subsection zipfiles Zip file access
    The two most important classes are \ref zipfile_anchor "ZipFile" and 
