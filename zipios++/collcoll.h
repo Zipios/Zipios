@@ -30,7 +30,7 @@ public:
       The instance is instantiated the first time the method is called.
       @return A pointer to a singleton CollectionCollection instance.
    */
-  static inline CollectionCollection *inst() ;
+  static inline CollectionCollection &inst() ;
 
   /** Constructor.
    */
@@ -101,18 +101,18 @@ private:
 /** Shortcut name for a CollectionCollection. If the static method
 inst is used, it is often used a lot, so it's handy with a short name for
 CollectionCollection */
-typedef CollectionCollection CCol ;
+typedef CollectionCollection CColl ;
 
 
 //
 // Inline (member) functions
 //
 
-CollectionCollection *CollectionCollection::inst() {
+CollectionCollection &CollectionCollection::inst() {
   if( _inst != 0 )
-    return _inst ;
+    return *_inst ;
   else
-    return _inst = new CollectionCollection ;
+    return *( _inst = new CollectionCollection ) ;
 }
 
 CollectionCollection::CollectionCollection( const CollectionCollection &src ) 

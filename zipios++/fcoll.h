@@ -226,15 +226,15 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
    
    \ref collcoll_inst_anchor "CollectionCollection::inst()" ;
 
-   To save typing CollectionCollection has been typedef'ed to CCol. In
+   To save typing CollectionCollection has been typedef'ed to CColl. In
    the initialization part of an application FileCollections can be
-   created, and placed under CColl::inst()'s control using
+   created, and placed under CColll::inst()'s control using
    
-   \ref collcoll_addcoll_anchor "CCol::inst()->addCollection()"
+   \ref collcoll_addcoll_anchor "CColl::inst().addCollection()"
    
    and later an istream can be obtained using
 
-   \ref fcoll_getinputstream "CCol::inst()->getInputStream()".
+   \ref fcoll_getinputstream "CColl::inst().getInputStream()".
    
    \section download Download 
    Go to Zipios++ project page on SourceForge for tar balls and ChangeLog.

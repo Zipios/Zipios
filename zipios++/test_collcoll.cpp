@@ -46,6 +46,8 @@ int main() {
     }
 
     CollectionCollection collcoll( collcoll_orig ) ; // Test copy constructor
+    CColl::inst() = collcoll ; // test copy-assignment and Singleton instance inst().
+
 //      if ( ! collcoll.addCollection( new ZipFile( "test.zip" ) ) ) {
 //        cerr << "Failed to add the zip file" << endl ;
 //        return 1 ;
@@ -65,18 +67,18 @@ int main() {
 //      for( it = entries.begin() ; it != entries.end() ; it++)
 //        cout << *(*it) << endl ;
     
-    ConstEntryPointer ent = collcoll.getEntry( "file2.txt" ) ;
+    ConstEntryPointer ent = CColl::inst().getEntry( "file2.txt" ) ;
     if ( ent != 0 ) {
-      auto_ptr< istream > is( collcoll.getInputStream( ent ) ) ;
+      auto_ptr< istream > is( CColl::inst().getInputStream( ent ) ) ;
       
       cout << "Contents of entry, " << ent->getName() << " :" << endl ;
       
       cout << is->rdbuf() ;
     }
 
-    ent = collcoll.getEntry( "flistentry.cpp" ) ;
+    ent = CColl::inst().getEntry( "flistentry.cpp" ) ;
     if ( ent != 0 ) {
-      auto_ptr< istream > is( collcoll.getInputStream( ent ) ) ;
+      auto_ptr< istream > is( CColl::inst().getInputStream( ent ) ) ;
       
       cout << "Contents of entry, " << ent->getName() << " :" << endl ;
       
