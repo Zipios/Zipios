@@ -44,19 +44,10 @@ typedef SimpleSmartPointer< const FileEntry > ConstEntryPointer ;
     is a more general abstraction, that covers other types of file
     collections than just zip files. */
 class FileEntry {
-  friend SimpleSmartPointer< FileEntry > ;
-  friend SimpleSmartPointer< const FileEntry > ;
 public:
-  /** Constructor. */
-  explicit FileEntry() : _ref_count( 0 ) {}
 
-  /** Copy constructor. New copy does _not_ have same ref
-      count as src! */
-  FileEntry( const FileEntry &src) : _ref_count( 0 ) {}
-
-  /** Assignment operator. Assignment does not change our ref
-      count. */
-  const FileEntry &operator= ( const FileEntry &src ) { return *this ; }
+  /* Default construcotr, copy constructor and copy assignment
+     operator are sufficient. */
 
   /** Returns the comment of the entry, if it has one. Otherwise it
       returns an empty string. 
@@ -169,10 +160,12 @@ public:
   class MatchName ;
   class MatchFileName ;
 protected:
-  void ref() const           { ++_ref_count ;        }
-  unsigned int unref() const { return --_ref_count ; }
+  friend SimpleSmartPointer< FileEntry > ;
+  friend SimpleSmartPointer< const FileEntry > ;
+  void           ref() const { _refcount.ref() ;          }
+  unsigned int unref() const { return _refcount.unref() ; }
 
-  mutable unsigned short _ref_count ;
+  ReferenceCount< FileEntry > _refcount ;
 };
 
 /** Function object to be used with the STL find_if algorithm to

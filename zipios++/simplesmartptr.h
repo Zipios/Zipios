@@ -7,9 +7,10 @@ namespace zipios {
 
 /** SimpleSmartPointer is a simple reference counting smart pointer
     template. The type pointed to must keep a reference count that is
-    initialized to zero and accessible through the two methods void
-    ref() const and unsigned int unref() const.
-*/
+    accessible through the two methods void ref() const and unsigned
+    int unref() const. The type must also handle the reference count
+    properly. The easiest way to do that is to use the ReferenceCount
+    template class. */
 template< class Type >
 class SimpleSmartPointer {
 public:
@@ -75,12 +76,56 @@ private:
 };
 
 
+/** ReferenceCount is useful to ensure proper handling of the
+    reference count for (objects of) classes handled through a
+    SimpleSmartPointer. Subclassing ReferenceCount is all a class
+    needs to become ready for being handled by
+    SimpleSmartPointer. Another way is to add a ReferenceCount member
+    variable to a class and write two methods 'void ref() const' and
+    'unsigned int unref() const' that invoke the same methods in the
+    ReferenceCount variable. */
+template< class Type >
+class ReferenceCount {
+  /** SimpleSmartPointer needs to be a friend to invoke the private
+      ref() and unref() methods.  */
+  friend SimpleSmartPointer< Type > ;
+  friend SimpleSmartPointer< const Type > ;
+  /** Type also needs to be a friend to invoke the private ref() and
+      unref() methods, in case Type doesn't want to inherit
+      ReferenceCount and thus needs to invoke ref() and unref()
+      through forwarding member functions. */
+  friend Type ;
+public:
+  /** Constructor intializes count to zero. */
+  ReferenceCount() : _ref_count( 0 ) {}
+
+  /** Copy-constructor intializes count to zero. It doesn't copy it
+      from src. */
+  ReferenceCount( const ReferenceCount &src ) : _ref_count( 0 ) {}
+
+  /** The assignment operator doesn't copy the reference count, it
+      leaves it unchanged.  */
+  const ReferenceCount &operator= ( const ReferenceCount &src ) {}
+private:
+
+  /** Increases the reference count. */
+  void ref() const           { ++_ref_count ;        }
+
+  /** Decreases the reference count. */
+  unsigned int unref() const { return --_ref_count ; }
+
+  /** Holds the actual reference count */
+  mutable unsigned short _ref_count ;
+};
+
+
+
 } // namespace
 
 #endif
 
 /** \file
-    Header file that defines SimpleSmartPointer.
+    Header file that defines SimpleSmartPointer and ReferenceCount.
 */
 
 /*
