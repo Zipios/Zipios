@@ -9,9 +9,9 @@ INCLUDES = -I..
 
 lib_LIBRARIES = libzipios.a
 
-pkginclude_HEADERS = FlexLexer.h             flist.h                  \
-                     backbuffer.h            flistentry.h             \
-                     basicentry.h            flistscanner.h           \
+pkginclude_HEADERS = \
+                     backbuffer.h            \
+                     basicentry.h            \
                      collcoll.h              inflateinputstreambuf.h  \
                      dircoll.h               simplesmartptr.h         \
                      fcoll.h                 zipfile.h                \
@@ -23,7 +23,6 @@ pkginclude_HEADERS = FlexLexer.h             flist.h                  \
 
 noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
                   test_dircoll test_collcoll test_appzip appendzip
-# test_flist 
 
 libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
                       basicentry.cpp             fcoll.cpp                 \
@@ -39,10 +38,10 @@ libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
                       ziphead.h                  simplesmartptr.h          \
                       dircoll.h                  dircoll.cpp               \
                       collcoll.h                 collcoll.cpp              \
-                      virtualseeker.h            FlexLexer.h               \
-                      flist.cpp                  flist.h                   \
-                      flistentry.cpp             flistentry.h              \
-                      flistscanner.h             flistscanner.ll
+                      virtualseeker.h            filepath.h                \
+                      filepath.cpp                                         \
+                      directory.h                directory.cpp             
+
 
 test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
 
@@ -59,8 +58,6 @@ test_collcoll_SOURCES = test_collcoll.cpp
 test_appzip_SOURCES = test_appzip.cpp
 
 appendzip_SOURCES = appendzip.cpp
-
-# test_flist_SOURCES = test_flist.cpp
 
 # Notice that libzipios.a is not specified as -L. -lzipios
 # If it was, automake would not include it as a dependency.
@@ -80,10 +77,4 @@ test_collcoll_LDADD = libzipios.a -lz
 test_appzip_LDADD = libzipios.a -lz
 
 appendzip_LDADD = libzipios.a
-
-# test_flist_LDADD = libzipios.a
-
-
-flistscanner.cc : flistscanner.ll
-	$(LEX) -+ -PFListScanner -o$@ $^
 

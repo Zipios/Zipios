@@ -30,12 +30,6 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-dnl  Apparantly it doesn't want AC_PROG_LEX, rather it wants AM_PROG_LEX
-AM_PROG_LEX
-if test "$LEX" != "flex"; then
-  AC_MSG_ERROR([flex is required, as lex can't generate a c++ scanner class.])
-fi
-
 dnl Checks for libraries.
 AC_CHECK_LIB(z, inflate, [cv_libz=yes], [cv_libz=no])
 
@@ -43,7 +37,7 @@ if test "$cv_libz" != "yes"; then
   AC_MSG_ERROR([zlib is required to compile $PACKAGE.])
 fi
 
-dnl acconfig.h made with #undef for HAVE_ZERROR, which is required
+dnl acconfig.h file added (with #undef for HAVE_ZERROR), which is required
 dnl for symbols defined "manually" with AC_DEFINE
 AC_CHECK_LIB(z, zError, AC_DEFINE(HAVE_ZERROR) )
 
