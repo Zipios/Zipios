@@ -38,6 +38,10 @@ namespace {
 		msg << "expected '" << expected << "' but got '" << actual << "'";
 		throw Exception(msg.str());
 	}
+
+	void fail(const string& msg) {
+		throw Exception(msg);
+	}
 }
 
 void zipios::ZipFileTest::testUnzip() {
@@ -55,7 +59,7 @@ void zipios::ZipFileTest::testUnzip() {
 void zipios::ZipFileTest::testZipUnzip() {	
   const string zipFileName = "gentest.zip";
   vector<string> entries;
-  entries.push_back("all_tests");
+  entries.push_back("testfile.bin");
   entries.push_back("Makefile.in");
   entries.push_back("zipfiletest.cpp");
   entries.push_back("zipfiletest.h");
@@ -93,9 +97,9 @@ void zipios::ZipFileTest::compareZipFile(const string &zipFileName, vector<strin
 
 void zipios::ZipFileTest::writeFileToZipOutputStream( ZipOutputStream &zos, const string &filename ) {
   zos.putNextEntry( ZipCDirEntry( filename ) ) ;
-
   ifstream ifs( filename.c_str(), ios::in | ios::binary ) ;
-
+  if (! ifs)
+	  fail("Could not open file '"+filename+"'");
   zos << ifs.rdbuf() ; 
 
 //    cerr << "ostream Stream state: "  ;
