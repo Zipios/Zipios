@@ -193,7 +193,7 @@ protected:
    <A HREF="http://www.ajk.tele.fi/~too/sw/zip08x.readme">zip08x</A>.
    A library very similar to Zipios++, but for C.
    
-   <A HREF="http://artpacks.acid.org/pub/infozip/zlib/zlib.html">zlib</A>. 
+   <A HREF="ftp://ftp.freesoftware.com/pub/infozip/zlib/zlib.html">zlib</A>. 
    The compression library that Zipios++ uses to perform the actual 
    decompression.
    
