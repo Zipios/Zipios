@@ -4,7 +4,7 @@
 #include "zipios++/meta-iostreams.h"
 #include <iterator>
 #include <string>
-#include <assert.h>
+#include <cassert>
 
 #include "zipios_common.h"
 #include "zipios++/ziphead.h"
