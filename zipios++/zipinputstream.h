@@ -48,6 +48,9 @@ public:
   */
   ConstEntryPointer getNextEntry() ;
 
+  /** @return a ConstEntryPointer containing information about the current entry. */
+  ConstEntryPointer getCurrentEntry() ;
+
   /** Destructor. */
   virtual ~ZipInputStream() ;
 

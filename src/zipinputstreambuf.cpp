@@ -77,6 +77,12 @@ ConstEntryPointer ZipInputStreambuf::getNextEntry() {
   return new ZipLocalEntry( _curr_entry ) ;
 }
 
+
+ConstEntryPointer ZipInputStreambuf::getCurrentEntry() {
+  return new ZipLocalEntry( _curr_entry  ) ;
+}
+
+
 ZipInputStreambuf::~ZipInputStreambuf() {
 }
 
