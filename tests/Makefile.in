@@ -73,7 +73,7 @@ EXTRA_DIST = test.zip
 
 INCLUDES = -I..
 
-noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll test_collcoll test_appzip
+noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll test_collcoll test_appzip test_simplesmartptr
 
 
 test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
@@ -89,6 +89,8 @@ test_dircoll_SOURCES = test_dircoll.cpp
 test_collcoll_SOURCES = test_collcoll.cpp
 
 test_appzip_SOURCES = test_appzip.cpp
+
+test_simplesmartptr_SOURCES = test_simplesmartptr.cpp
 
 # Notice that libzipios.a is not specified as -L. -lzipios
 # If it was, automake would not include it as a dependency.
@@ -137,6 +139,10 @@ test_collcoll_LDFLAGS =
 test_appzip_OBJECTS =  test_appzip.o
 test_appzip_DEPENDENCIES = 
 test_appzip_LDFLAGS = 
+test_simplesmartptr_OBJECTS =  test_simplesmartptr.o
+test_simplesmartptr_LDADD = $(LDADD)
+test_simplesmartptr_DEPENDENCIES = 
+test_simplesmartptr_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -149,10 +155,11 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/example_zip.P .deps/test_appzip.P \
-.deps/test_collcoll.P .deps/test_dircoll.P .deps/test_zip.P \
-.deps/test_zipinputstream.P .deps/test_zipinputstreambuf.P
-SOURCES = $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES) $(test_collcoll_SOURCES) $(test_appzip_SOURCES)
-OBJECTS = $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS) $(test_collcoll_OBJECTS) $(test_appzip_OBJECTS)
+.deps/test_collcoll.P .deps/test_dircoll.P .deps/test_simplesmartptr.P \
+.deps/test_zip.P .deps/test_zipinputstream.P \
+.deps/test_zipinputstreambuf.P
+SOURCES = $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES) $(test_collcoll_SOURCES) $(test_appzip_SOURCES) $(test_simplesmartptr_SOURCES)
+OBJECTS = $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS) $(test_collcoll_OBJECTS) $(test_appzip_OBJECTS) $(test_simplesmartptr_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -217,6 +224,10 @@ test_collcoll: $(test_collcoll_OBJECTS) $(test_collcoll_DEPENDENCIES)
 test_appzip: $(test_appzip_OBJECTS) $(test_appzip_DEPENDENCIES)
 	@rm -f test_appzip
 	$(CXXLINK) $(test_appzip_LDFLAGS) $(test_appzip_OBJECTS) $(test_appzip_LDADD) $(LIBS)
+
+test_simplesmartptr: $(test_simplesmartptr_OBJECTS) $(test_simplesmartptr_DEPENDENCIES)
+	@rm -f test_simplesmartptr
+	$(CXXLINK) $(test_simplesmartptr_LDFLAGS) $(test_simplesmartptr_OBJECTS) $(test_simplesmartptr_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 

@@ -9,5 +9,6 @@ test_zipinputstream
 test_dircoll
 test_collcoll
 test_appzip
+test_simplesmartptr
 .deps
 
