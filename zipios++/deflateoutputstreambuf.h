@@ -9,6 +9,8 @@
 #include <zlib.h>
 
 #include "zipios++/filteroutputstreambuf.h"
+#include "zipios++/ziphead.h"
+#include "zipios++/zipios_defs.h"
 
 namespace zipios {
 
@@ -37,6 +39,14 @@ public:
 
   bool init( int comp_level = 6 ) ;
   bool closeStream() ;
+  
+  /** Returns the CRC32 for the current stream. The returned value is
+      the CRC for the data that has been compressed already (due to a
+      call to overflow()). As DeflateOutputStreambuf may buffer an
+      arbitrary amount of bytes until closeStream() has been invoked,
+      the returned value is not very useful before closeStream() has
+      been called. */
+  uint32 getCrc32() const         { return _crc32 ; }
 
 protected:
   virtual int overflow( int c = EOF ) ;
@@ -58,12 +68,7 @@ protected: // FIXME: reconsider design?
   const int _outvecsize ;
   vector< char > _outvec ;
 
-  /** If true dtor invokes endDeflation to flush the internal zlib
-      buffers. Set to true in DeflateOutputStream ctors. A subclass
-      can choose to set the flag to false and invoke endDeflation
-      itself, if it requires it to be done at different times.  */
-  bool _end_deflate ; // if true, dtor invokes endDeflation()
-
+  uint32 _crc32 ;
 
 };
 

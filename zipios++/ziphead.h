@@ -8,13 +8,11 @@
 #include <vector>
 
 #include "zipios++/fileentry.h"
+#include "zipios++/zipios_defs.h"
 
 namespace zipios {
 
 using std::streampos ;
-
-typedef unsigned short uint16 ;
-typedef unsigned long  uint32 ;
 
 class ZipCDirEntry ;
 
@@ -48,7 +46,7 @@ public:
   inline ZipLocalEntry &operator=( const class ZipLocalEntry &src ) ;
   virtual string getComment() const ;
   virtual int getCompressedSize() const ;
-  virtual int getCrc() const ;
+  virtual uint32 getCrc() const ;
   virtual vector< unsigned char > getExtra() const ;
   virtual StorageMethod getMethod() const ;
   virtual string getName() const ;
@@ -61,7 +59,7 @@ public:
   
   virtual void setComment( const string &comment ) ;
   virtual void setCompressedSize( int size ) ;
-  virtual void setCrc( int crc ) ;
+  virtual void setCrc( uint32 crc ) ;
   virtual void setExtra( const vector< unsigned char > &extra ) ;
   virtual void setMethod( StorageMethod method ) ;
   virtual void setName( const string &name ) ;

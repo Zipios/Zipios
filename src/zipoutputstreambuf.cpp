@@ -128,14 +128,13 @@ void ZipOutputStreambuf::updateEntryHeaderInfo() {
   if ( ! _open_entry )
     return ;
 
-  sync() ; // Make sure remaining data has been written ;
-
   ostream os( _outbuf ) ;
   int curr_pos = os.tellp() ;
   
   // update fields in _entries.back()
   ZipCDirEntry &entry = _entries.back() ;
-  entry.setSize( /*FIXME!!*/ 0 ) ;
+  entry.setSize( /*FIXME!!*/ 123456 ) ;
+  entry.setCrc( getCrc32() ) ;
   entry.setCompressedSize( curr_pos - entry.getLocalHeaderOffset() 
 			   - entry.getLocalHeaderSize() ) ;
 

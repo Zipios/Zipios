@@ -11,5 +11,7 @@ pkginclude_HEADERS = basicentry.h             filepath.h               \
                      filterinputstreambuf.h   virtualseeker.h          \
                      meta-iostreams.h         zipios-config.h          \
                      filteroutputstreambuf.h  deflateoutputstreambuf.h \
-                     zipoutputstreambuf.h     zipoutputstream.h
+                     zipoutputstreambuf.h     zipoutputstream.h        \
+                     zipios_defs.h
+
 

@@ -9,6 +9,7 @@
 #include "zipios++/fcollexceptions.h"
 #include "zipios++/fileentry.h"
 #include "zipios++/filepath.h"
+#include "zipios++/zipios_defs.h"
 
 namespace zipios {
 
@@ -24,7 +25,7 @@ public:
 		       const FilePath &basepath = FilePath() ) ;
   virtual string getComment() const ;
   virtual int getCompressedSize() const ;
-  virtual int getCrc() const ;
+  virtual uint32 getCrc() const ;
   virtual vector< unsigned char > getExtra() const ;
   virtual StorageMethod getMethod() const ;
   virtual string getName() const ;
@@ -38,7 +39,7 @@ public:
   
   virtual void setComment( const string &comment ) ;
   virtual void setCompressedSize( int size ) ;
-  virtual void setCrc( int crc ) ;
+  virtual void setCrc( uint32 crc ) ;
   virtual void setExtra( const vector< unsigned char > &extra ) ;
   virtual void setMethod( StorageMethod method ) ;
   virtual void setName( const string &name ) ;

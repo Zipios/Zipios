@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "zipios++/ziphead.h"
+#include "zipios++/zipios_defs.h"
 
 namespace zipios {
 

@@ -8,6 +8,7 @@
 
 #include "zipios_common.h"
 #include "zipios++/basicentry.h"
+#include "zipios++/zipios_defs.h"
 
 #include "outputstringstream.h"
 
@@ -46,7 +47,7 @@ int BasicEntry::getCompressedSize() const {
   return getSize() ;
 }
 
-int BasicEntry::getCrc() const {
+uint32 BasicEntry::getCrc() const {
   return 0 ;
 }
 
@@ -101,7 +102,7 @@ void BasicEntry::setComment( const string &comment ) {
 void BasicEntry::setCompressedSize( int size ) {
 }
 
-void BasicEntry::setCrc( int crc ) {
+void BasicEntry::setCrc( uint32 crc ) {
 }
 
 void BasicEntry::setExtra( const vector< unsigned char > &extra ) {

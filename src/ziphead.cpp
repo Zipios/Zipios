@@ -8,6 +8,7 @@
 #include "zipios_common.h"
 #include "zipios++/ziphead.h"
 #include "zipios++/zipheadio.h"
+#include "zipios++/zipios_defs.h"
 
 #include "outputstringstream.h"
 
@@ -59,7 +60,7 @@ int ZipLocalEntry::getCompressedSize() const {
   return compress_size ;
 }
 
-int ZipLocalEntry::getCrc() const {
+uint32 ZipLocalEntry::getCrc() const {
   return crc_32 ;
 }
 
@@ -115,7 +116,7 @@ void ZipLocalEntry::setCompressedSize( int size ) {
   compress_size = size ;
 }
 
-void ZipLocalEntry::setCrc( int crc ) {
+void ZipLocalEntry::setCrc( uint32 crc ) {
   crc_32 = crc ;
 }
 

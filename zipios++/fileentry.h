@@ -8,6 +8,7 @@
 #include "zipios++/meta-iostreams.h"
 
 #include "zipios++/simplesmartptr.h"
+#include "zipios++/zipios_defs.h"
 
 namespace zipios {
 
@@ -70,7 +71,7 @@ public:
       returned if it doesn't have one?
       @return the Crc for the entry, if it has one.
   */
-  virtual int getCrc() const = 0 ;
+  virtual uint32 getCrc() const = 0 ;
   /** Returns a vector of bytes of extra data that may be stored with
       the entry.
       @return A vector< unsigned char > of extra bytes that may potentially
@@ -125,7 +126,7 @@ public:
   /** Sets the crc field.
       @param crc value to set the crc field to.
   */
-  virtual void setCrc( int crc ) = 0 ;
+  virtual void setCrc( uint32 crc ) = 0 ;
   /** Sets the extra field.
       @param extra the extra field is set to this value.
   */

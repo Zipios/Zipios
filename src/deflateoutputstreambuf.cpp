@@ -20,8 +20,7 @@ DeflateOutputStreambuf::DeflateOutputStreambuf( streambuf *outbuf, bool user_ini
     _invecsize      ( 1000             ),
     _invec          ( _invecsize       ),
     _outvecsize     ( 1000             ),
-    _outvec         ( _outvecsize      ),
-    _end_deflate    ( true             )
+    _outvec         ( _outvecsize      )
 {
   // NOTICE: It is important that this constructor and the methods it
   // calls doesn't do anything with the output streambuf _outbuf The
@@ -38,9 +37,11 @@ DeflateOutputStreambuf::DeflateOutputStreambuf( streambuf *outbuf, bool user_ini
 
 }
 
+
 DeflateOutputStreambuf::~DeflateOutputStreambuf() {
   closeStream() ;
 }
+
 
 // This method is called in the constructor, so it must not write
 // anything to the output streambuf _outbuf (see notice in
@@ -70,6 +71,8 @@ bool DeflateOutputStreambuf::init( int comp_level ) {
 
   // streambuf init:
   setp( &( _invec[ 0 ] ), &( _invec[ 0 ] ) + _invecsize ) ;
+
+  _crc32 = crc32( 0, Z_NULL, 0 ) ;
 
   if ( err == Z_OK )
     return true ;
@@ -102,6 +105,8 @@ bool DeflateOutputStreambuf::closeStream() {
 int DeflateOutputStreambuf::overflow( int c ) {
   _zs.avail_in = pptr() - pbase() ;
   _zs.next_in = reinterpret_cast< unsigned char * >( &( _invec[ 0 ] ) ) ;
+
+  _crc32 = crc32( _crc32, _zs.next_in, _zs.avail_in ) ; // update crc32
 
   _zs.next_out  = reinterpret_cast< unsigned char * >( &( _outvec[ 0 ] ) ) ;
   _zs.avail_out = _outvecsize ;

@@ -6,6 +6,7 @@
 #include "zipios++/fcoll.h"
 #include "zipios++/zipfile.h"
 #include "zipios++/zipinputstream.h"
+#include "zipios++/zipios_defs.h"
 
 #include "backbuffer.h"
 
