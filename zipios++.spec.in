@@ -1,16 +1,15 @@
-%define version @VERSION@
 %define release	1
 
-Name: zipios++
-Summary: Zipios++ is a small C++ library for reading zip files.
-Version: %{version}
+Name: @PACKAGE@
+Version: @VERSION@
+Summary: Zipios++ is a small C++ library for reading zip files
 Release: %{release}
 Source: %{name}-%{version}.tar.gz
 Group: Development/Libraries
-URL: http://zipios.sourceforge.net
+URL: http://zipios.sourceforge.net./
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 License: GNU LGPL
-Prefix: %{prefix}
+Prefix: %{_prefix}
 Packager: "Thomas Sondergaard" <thomass@deltadata.dk>
 Distribution: RedHat 7.x Contrib
 
@@ -27,31 +26,43 @@ transparently.
 %package devel
 Summary: zipios++ header files
 Group: Development/Libraries
-Requires: zipios++
+Requires: %name = %version
 
 %description devel
-Header files for zipios++ development.
+Header files and documentation for zipios++ development.
 
 %prep
 %__rm -rf $RPM_BUILD_ROOT
 %setup -q -n %{name}-%{version}
 
 %build
-./configure --prefix=$RPM_BUILD_ROOT/usr
-%__make
+%configure CXX=/usr/local/bin/g++
+%__make all doc
 
 %install
-umask 022
-%__make install
+%makeinstall
+
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files
-%defattr(-,root,root)
-/usr/lib/libzipios.*
+%defattr(-,root,root,644)
+%doc AUTHORS README
+%attr(755,root,root) %{_libdir}/libzipios.so.*
 
 %files devel
-%defattr(-,root,root)
-/usr/include/zipios++/*.h
+%defattr(-,root,root,644)
+%{_includedir}/zipios++/*.h
+%doc NEWS ChangeLog
+%doc %dir doc/html/
+%defattr(-,root,root,755)
+%{_libdir}/libzipios.a
+%{_libdir}/libzipios.so
+%{_libdir}/libzipios.la
 
 %changelog
+* Tue Jan  7 2003 Ross Burton <r.burton@180sw.com>
+- Updated spec file to use the RPM macros
+
 * Sat Mar 17 2002 Rui M. Silva Seabra <rms@1407.org>
 - Creation
