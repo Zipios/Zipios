@@ -25,6 +25,9 @@ public:
       _entries ( 0     ),
       _valid   ( false ) {}
 
+  /** Copy constructor. */
+  inline FileCollection( const FileCollection &src ) ;
+
   /** Closes the FileCollection. */
   virtual void close() = 0 ;
 
@@ -87,7 +90,22 @@ protected:
   bool _valid ;
 };
 
+
+//
+// Inline methods
+//
+
+FileCollection::FileCollection( const FileCollection &src ) 
+  : _filename( src._filename ),
+    _valid   ( src._valid    )
+{
+  _entries.reserve( src._entries.size() ) ;
+  vector< EntryPointer >::const_iterator it ;
+  for ( it = src._entries.begin() ; it != src._entries.end() ; ++it )
+    _entries.push_back( (*it)->clone() ) ;
 }
+
+} // namespace
 
 #endif
 
