@@ -1,17 +1,11 @@
 
-
 #include "zipios++/zipios-config.h"
 
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
-#include <iostream>
-#include <fstream>
-#else
-#include <iostream.h>
-#include <fstream.h>
-#endif
+#include "zipios++/meta-iostreams.h"
 #include <memory>
 
-#include "zipios++/dircoll.h"
+#include "zipios++/fcollexceptions.h"
+#include "zipios++/zipfile.h"
 
 using namespace zipios ;
 
@@ -20,43 +14,42 @@ using std::cout ;
 using std::endl ;
 using std::auto_ptr ;
 
-int main() {
+int main( int argc, char *argv[] ) {
   try {
   
-    cout << "Instantiating a DirectoryCollection" << endl ;
-    DirectoryCollection collection( "/home/thomas/src/zipios/zipios++" ) ;
-
-    ConstEntryPointer ent = collection.getEntry( "zipios-config.h" ) ;
-    if ( ent != 0 ) {
-      auto_ptr< istream > is( collection.getInputStream( ent ) ) ;
-      
-      cout << "Contents of entry, " << ent->getName() << " :" << endl ;
-      
-      cout << is->rdbuf() ;
-    }
-
+    cout << "Instantiating a ZipFile" << endl ;
+    ZipFile zf = ZipFile::openEmbeddedZipFile( argv[ 0 ] ) ;
     
-    cout << "list length : " << collection.size() << endl ;
+    cout << "list length : " << zf.size() << endl ;
     
     vector< ConstEntryPointer > entries ;
-    entries = collection.entries() ;
+    entries = zf.entries() ;
     
     
     vector< ConstEntryPointer >::iterator it ;
     for( it = entries.begin() ; it != entries.end() ; it++)
       cout << *(*it) << endl ;
     
-    ent = collection.getEntry( "zipios-config.h" ) ;
+    ConstEntryPointer ent = zf.getEntry( "file2.txt", FileCollection::IGNORE ) ;
     if ( ent != 0 ) {
-      auto_ptr< istream > is( collection.getInputStream( ent ) ) ;
+      auto_ptr< istream > is( zf.getInputStream( ent ) ) ;
       
       cout << "Contents of entry, " << ent->getName() << " :" << endl ;
-      
+
       cout << is->rdbuf() ;
     }
     cout << "end of main()" << endl ;
     
     return 0 ;
+  }
+  catch( FCollException &excp ) {
+    cerr << "Exception caught in main() :" << endl ;
+    cerr << excp.what() << endl ;
+    cerr << "\nThe invalid virtual endings exception very probably means that\n" 
+	 <<   "this program hasn't had a zip file appended to it with 'appendzip'\n" 
+	 << "\nTry the following command and re-run " << argv[ 0 ] << " :\n"
+	 << "  ./appendzip " << argv[ 0 ] << " test.zip\n" 
+	 << endl ;
   }
   catch( exception &excp ) {
     cerr << "Exception caught in main() :" << endl ;
