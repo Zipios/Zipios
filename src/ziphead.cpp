@@ -4,6 +4,7 @@
 #include "zipios++/meta-iostreams.h"
 #include <iterator>
 #include <string>
+#include <assert.h>
 
 #include "zipios_common.h"
 #include "zipios++/ziphead.h"
@@ -114,7 +115,7 @@ bool ZipLocalEntry::isDirectory() const {
 }
 
 
-void ZipLocalEntry::setComment( const string &comment ) {
+void ZipLocalEntry::setComment( const string & ) {
   // A local entry cannot hold a comment
 }
 
@@ -144,7 +145,7 @@ void ZipLocalEntry::setSize( uint32 size ) {
   uncompress_size = size ;
 }
 
-void ZipLocalEntry::setTime( int time ) {
+void ZipLocalEntry::setTime( int  ) {
   // FIXME: fix time setting here, and ind flist and elsewhere. Define the
   // date time semantics before mucking about - how surprising
 }

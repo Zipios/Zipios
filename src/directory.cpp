@@ -294,35 +294,35 @@ namespace boost
 {
 	namespace filesystem
 	{
-		template <> get<size>::operator size::value_type() const
+		get<size>::operator size::value_type() const
 		{
 			return m_it.rep->get_data().size;
 		}
-		template <> get<mtime>::operator mtime::value_type() const
+		get<mtime>::operator mtime::value_type() const
 		{
 			return &m_it.rep->get_data().time_write;
 		}
-		template <> get<is_directory>::operator is_directory::value_type() const
+		get<is_directory>::operator is_directory::value_type() const
 		{
 			return (m_it.rep->get_data().attrib & _A_SUBDIR) != 0;
 		}
-		template <> get<is_regular>::operator is_regular::value_type() const
+		get<is_regular>::operator is_regular::value_type() const
 		{
 			return (m_it.rep->get_data().attrib & _A_SUBDIR) == 0;
 		}
-		template <> get<is_hidden>::operator is_hidden::value_type() const
+		get<is_hidden>::operator is_hidden::value_type() const
 		{
 			return (m_it.rep->get_data().attrib & _A_HIDDEN) != 0;
 		}
-		template <> get<user_read>::operator user_read::value_type() const
+		get<user_read>::operator user_read::value_type() const
 		{
 			return true;
 		}
-		template <> get<user_write>::operator user_write::value_type() const
+		get<user_write>::operator user_write::value_type() const
 		{
 			return (m_it.rep->get_data().attrib & _A_RDONLY) == 0;
 		}
-		template <> get<user_execute>::operator user_execute::value_type() const
+		get<user_execute>::operator user_execute::value_type() const
 		{
 			std::string name(*m_it);
 			std::string ext(name.substr(name.find_last_of('.')));

@@ -14,7 +14,7 @@ using std::cout ;
 using std::endl ;
 using std::auto_ptr ;
 
-int main( int argc, char *argv[] ) {
+int main( int , char *argv[] ) {
   try {
   
     cout << "Instantiating a ZipFile" << endl ;

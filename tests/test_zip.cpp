@@ -82,7 +82,7 @@ int main() {
 }
 
 
-void entryToFile( const string &ent_name, istream &is, const string &outfile,
+void entryToFile( const string &, istream &is, const string &outfile,
 		  bool cerr_report ) {
   ofstream ofs( outfile.c_str(), ios::out | ios::binary ) ;
 
