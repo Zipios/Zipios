@@ -115,8 +115,18 @@ protected:
    
    Spanned archives are not supported, and support is not planned.
    
-   The library is only tested under RedHat 6.2 linux and SGI Irix 6.5. 
-   
+
+   The library has been tested and appears to be working with
+   <UL>
+   <LI>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</LI>
+   <LI>Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66</LI>
+   <LI>SGI IRIX64 6.5 / gcc 2.95.2</LI>
+   <LI>SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30</LI>
+   </UL>
+
+   If you are aware of any other platforms that Zipios++ works on,
+   please let me know (thomas@miba.auc.dk).
+
    \section documentation Documentation 
    This web page is the front page to the library documentation, that
    is generated from the source files using <A
@@ -208,8 +218,7 @@ protected:
    Logo created with <A HREF="http://www.webgfx.ch/titlepic.htm">
    <img src="webgfx.gif" >
    </A>
-   \endhtmlonly
-*/
+   \endhtmlonly */
 
 
 /** \file
