@@ -44,7 +44,7 @@ Header files and documentation for zipios++ development.
 %postun	-p /sbin/ldconfig
 
 %clean
-%__rm -rf $RPM_BUILD_ROOT $RPM_BUILD_DIR/%{name}-%{version}
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && %__rm -rf $RPM_BUILD_ROOT $RPM_BUILD_DIR/%{name}-%{version}
 
 %files
 %defattr(-,root,root,644)
