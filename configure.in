@@ -30,6 +30,19 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
+dnl allow alternate location for zlib
+AC_ARG_WITH(zlib,
+[  --with-zlib=\$dir      specify location of zlib],
+       ZLIBDIR=$withval)
+
+if test -n "$ZLIBDIR" ; then
+
+CXXFLAGS="$CXXFLAGS -I$ZLIBDIR"
+LDFLAGS="$LDFLAGS -L$ZLIBDIR"
+
+fi
+
+
 dnl Checks for libraries.
 AC_CHECK_LIB(z, inflate, [cv_libz=yes], [cv_libz=no])
 
