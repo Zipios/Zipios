@@ -166,8 +166,8 @@ public:
   class MatchName ;
   class MatchFileName ;
 protected:
-  friend SimpleSmartPointer< FileEntry > ;
-  friend SimpleSmartPointer< const FileEntry > ;
+  friend class SimpleSmartPointer< FileEntry > ;
+  friend class SimpleSmartPointer< const FileEntry > ;
   void           ref() const { _refcount.ref() ;          }
   unsigned int unref() const { return _refcount.unref() ; }
 

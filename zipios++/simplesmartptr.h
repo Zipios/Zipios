@@ -99,8 +99,8 @@ template< class Type >
 class ReferenceCount {
   /** SimpleSmartPointer needs to be a friend to invoke the private
       ref() and unref() methods.  */
-  friend SimpleSmartPointer< Type > ;
-  friend SimpleSmartPointer< const Type > ;
+  friend class SimpleSmartPointer< Type > ;
+  friend class SimpleSmartPointer< const Type > ;
   /** Type also needs to be a friend to invoke the private ref() and
       unref() methods, in case Type doesn't want to inherit
       ReferenceCount and thus needs to invoke ref() and unref()
