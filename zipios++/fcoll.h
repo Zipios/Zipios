@@ -92,7 +92,7 @@ protected:
 /**
    \mainpage Zipios++
 
-   \image html   zipios++.png
+   \image html   zipios++.jpg
    \image latex  zipios++.eps width=10cm
    
    \section intro Introduction

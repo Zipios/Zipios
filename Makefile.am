@@ -10,7 +10,7 @@ DOCCONF = doxyfile
 
 .PHONY : doc
 doc :
-	convert doc/images/zipios++.png doc/images/zipios++.eps
+	convert doc/images/zipios++.jpg doc/images/zipios++.eps
 	$(DOCTOOL) $(DOCCONF)
 
 .PHONY : devdoc
