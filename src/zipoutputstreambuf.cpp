@@ -143,6 +143,15 @@ void ZipOutputStreambuf::updateEntryHeaderInfo() {
   entry.setCompressedSize( curr_pos - entry.getLocalHeaderOffset() 
 			   - entry.getLocalHeaderSize() ) ;
 
+  // Mark Donszelmann: added current date and time
+  time_t ltime;
+  time( &ltime );
+  struct tm *now;
+  now = localtime( &ltime );
+  int dosTime = (now->tm_year - 80) << 25 | (now->tm_mon + 1) << 21 | now->tm_mday << 16 |
+              now->tm_hour << 11 | now->tm_min << 5 | now->tm_sec >> 1;
+  entry.setTime(dosTime);
+
   // write ZipLocalEntry header to header position
   os.seekp( entry.getLocalHeaderOffset() ) ;
   os << static_cast< ZipLocalEntry >( entry ) ;
