@@ -3,7 +3,18 @@
 
 #include "zipios++/zipios-config.h"
 
+#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
+#include <iostream>
+#else
+#include <iostream.h>
+#endif
+
+
 namespace zipios {
+
+using std::ios  ;
+using std::cerr ;
+using std::endl ;
 
 class VirtualSeeker {
 public:
@@ -61,7 +72,7 @@ void VirtualSeeker::vseekg( istream &is, int offset, ios::seekdir sd ) const {
 
 
 int  VirtualSeeker::vtellg( istream &is ) const {
-  return is.tellg() - _s_off ;
+  return static_cast< int >( is.tellg() ) - _s_off ;
 }
 
 
