@@ -43,7 +43,7 @@ string BasicEntry::getComment() const {
   return _comment ;
 }
 
-int BasicEntry::getCompressedSize() const {
+uint32 BasicEntry::getCompressedSize() const {
   return getSize() ;
 }
 
@@ -76,7 +76,7 @@ string BasicEntry::getFileName() const {
   }
 }
 
-int BasicEntry::getSize() const {
+uint32 BasicEntry::getSize() const {
   return _size ;
 }
 
@@ -99,7 +99,7 @@ void BasicEntry::setComment( const string &comment ) {
   _comment = comment ;
 }
 
-void BasicEntry::setCompressedSize( int size ) {
+void BasicEntry::setCompressedSize( uint32 size ) {
 }
 
 void BasicEntry::setCrc( uint32 crc ) {
@@ -115,7 +115,7 @@ void BasicEntry::setName( const string &name ) {
   _filename = name ;
 }
 
-void BasicEntry::setSize( int size ) {
+void BasicEntry::setSize( uint32 size ) {
   _size = size ;
 }
 

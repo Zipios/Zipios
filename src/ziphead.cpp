@@ -56,7 +56,7 @@ string ZipLocalEntry::getComment() const {
   return "" ; // No comment in a local entry
 }
 
-int ZipLocalEntry::getCompressedSize() const {
+uint32 ZipLocalEntry::getCompressedSize() const {
   return compress_size ;
 }
 
@@ -89,7 +89,7 @@ string ZipLocalEntry::getFileName() const {
   }
 }
 
-int ZipLocalEntry::getSize() const {
+uint32 ZipLocalEntry::getSize() const {
   return uncompress_size ;
 }
 
@@ -112,7 +112,7 @@ void ZipLocalEntry::setComment( const string &comment ) {
   // A local entry cannot hold a comment
 }
 
-void ZipLocalEntry::setCompressedSize( int size ) {
+void ZipLocalEntry::setCompressedSize( uint32 size ) {
   compress_size = size ;
 }
 
@@ -134,7 +134,7 @@ void ZipLocalEntry::setName( const string &name ) {
   filename_len = filename.size() ;
 }
 
-void ZipLocalEntry::setSize( int size ) {
+void ZipLocalEntry::setSize( uint32 size ) {
   uncompress_size = size ;
 }
 

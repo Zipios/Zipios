@@ -73,6 +73,7 @@ bool DeflateOutputStreambuf::init( int comp_level ) {
   setp( &( _invec[ 0 ] ), &( _invec[ 0 ] ) + _invecsize ) ;
 
   _crc32 = crc32( 0, Z_NULL, 0 ) ;
+  _overflown_bytes = 0 ;
 
   if ( err == Z_OK )
     return true ;
@@ -107,6 +108,7 @@ int DeflateOutputStreambuf::overflow( int c ) {
   _zs.next_in = reinterpret_cast< unsigned char * >( &( _invec[ 0 ] ) ) ;
 
   _crc32 = crc32( _crc32, _zs.next_in, _zs.avail_in ) ; // update crc32
+  _overflown_bytes += _zs.avail_in ;
 
   _zs.next_out  = reinterpret_cast< unsigned char * >( &( _outvec[ 0 ] ) ) ;
   _zs.avail_out = _outvecsize ;

@@ -24,13 +24,13 @@ public:
   explicit BasicEntry( const string &filename, const string &comment,
 		       const FilePath &basepath = FilePath() ) ;
   virtual string getComment() const ;
-  virtual int getCompressedSize() const ;
+  virtual uint32 getCompressedSize() const ;
   virtual uint32 getCrc() const ;
   virtual vector< unsigned char > getExtra() const ;
   virtual StorageMethod getMethod() const ;
   virtual string getName() const ;
   virtual string getFileName() const ;
-  virtual int getSize() const ;
+  virtual uint32 getSize() const ;
   virtual int getTime() const ;
   virtual bool isValid() const ;
   
@@ -38,12 +38,12 @@ public:
   virtual bool isDirectory() const ;
   
   virtual void setComment( const string &comment ) ;
-  virtual void setCompressedSize( int size ) ;
+  virtual void setCompressedSize( uint32 size ) ;
   virtual void setCrc( uint32 crc ) ;
   virtual void setExtra( const vector< unsigned char > &extra ) ;
   virtual void setMethod( StorageMethod method ) ;
   virtual void setName( const string &name ) ;
-  virtual void setSize( int size ) ;
+  virtual void setSize( uint32 size ) ;
   virtual void setTime( int time ) ;
   
   virtual string toString() const ;

@@ -66,7 +66,7 @@ public:
       @return the compressed size of the entry. If the entry is stored without 
       compression the uncompressed size is returned.
   */
-  virtual int getCompressedSize() const = 0 ;
+  virtual uint32 getCompressedSize() const = 0 ;
   /** Returns the Crc for the entry, if it has one. FIXME: what is
       returned if it doesn't have one?
       @return the Crc for the entry, if it has one.
@@ -96,7 +96,7 @@ public:
   /** Returns the (uncompressed) size of the entry data.  
       @return Returns the (uncompressed) size of the entry.
    */
-  virtual int getSize() const = 0 ;
+  virtual uint32 getSize() const = 0 ;
   /** Returns the date and time of FIXME: what?  
       @return the date and time of the entry.
   */
@@ -122,7 +122,7 @@ public:
   /** Set the compressed size field of the entry.
       @param size value to set the compressed size field of the entry to.
   */
-  virtual void setCompressedSize( int size ) = 0 ;
+  virtual void setCompressedSize( uint32 size ) = 0 ;
   /** Sets the crc field.
       @param crc value to set the crc field to.
   */
@@ -142,7 +142,7 @@ public:
   /**   Sets the size field for the entry.
       @param size the size field is set to this value.
   */
-  virtual void setSize( int size ) = 0 ;
+  virtual void setSize( uint32 size ) = 0 ;
   /** Sets the time field for the entry.
       @param time the time field is set to the specified value.
   */

@@ -46,7 +46,13 @@ public:
       arbitrary amount of bytes until closeStream() has been invoked,
       the returned value is not very useful before closeStream() has
       been called. */
-  uint32 getCrc32() const         { return _crc32 ; }
+  uint32 getCrc32() const         { return _crc32 ;           }
+
+  /** Returns the number of bytes written to the streambuf, that has
+      been processed from the input buffer by the compressor. After
+      closeStream() has been called this number is the total number of
+      bytes written to the stream. */
+  uint32 getCount() const         { return _overflown_bytes ; } 
 
 protected:
   virtual int overflow( int c = EOF ) ;
@@ -69,7 +75,7 @@ protected: // FIXME: reconsider design?
   vector< char > _outvec ;
 
   uint32 _crc32 ;
-
+  uint32 _overflown_bytes ;
 };
 
 

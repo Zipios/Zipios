@@ -133,7 +133,7 @@ void ZipOutputStreambuf::updateEntryHeaderInfo() {
   
   // update fields in _entries.back()
   ZipCDirEntry &entry = _entries.back() ;
-  entry.setSize( /*FIXME!!*/ 123456 ) ;
+  entry.setSize( getCount() ) ;
   entry.setCrc( getCrc32() ) ;
   entry.setCompressedSize( curr_pos - entry.getLocalHeaderOffset() 
 			   - entry.getLocalHeaderSize() ) ;

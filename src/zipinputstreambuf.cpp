@@ -33,7 +33,7 @@ void ZipInputStreambuf::closeEntry() {
   // check if we're positioned correctly, otherwise position us correctly
   int position = _inbuf->pubseekoff(0, ios::cur, 
 				    ios::in);
-  if ( position != _data_start + _curr_entry.getCompressedSize() )
+  if ( position != _data_start + static_cast< int >( _curr_entry.getCompressedSize() ) )
     _inbuf->pubseekoff(_data_start + _curr_entry.getCompressedSize(), 
 		       ios::beg, ios::in) ;
 
