@@ -33,9 +33,9 @@ using std::ends ;
 InflateInputStreambuf::InflateInputStreambuf( streambuf *inbuf, int s_pos, bool del_inbuf ) 
   : FilterInputStreambuf( inbuf, del_inbuf ),
     _zs_initialized ( false            ),
-    _invecsize      ( 100              ),
+    _invecsize      ( 1000             ),
     _invec          ( _invecsize       ),
-    _outvecsize     ( 100              ),
+    _outvecsize     ( 1000             ),
     _outvec         ( _outvecsize      )
 {
   // NOTICE: It is important that this constructor and the methods it
@@ -70,7 +70,7 @@ InflateInputStreambuf::~InflateInputStreambuf() {
 int InflateInputStreambuf::underflow() {
   // If not underflow don't fill buffer
   if ( gptr() < egptr() )
-    return *gptr() ;
+    return static_cast< unsigned char >( *gptr() ) ;
 
   // Prepare _outvec and get array pointers
   _zs.avail_out = _outvecsize ; 
@@ -91,9 +91,9 @@ int InflateInputStreambuf::underflow() {
       // loop. This means we don't have to respond to the situation
       // where we can't read more bytes here.
     }
-      err = inflate( &_zs, Z_NO_FLUSH ) ;
+
+    err = inflate( &_zs, Z_NO_FLUSH ) ;
   }
-  
   // Normally the number of inflated bytes will be the
   // full length of the output buffer, but if we can't read
   // more input from the _inbuf streambuf, we end up with
@@ -126,10 +126,9 @@ int InflateInputStreambuf::underflow() {
     // If HAVE_STD_IOSTREAM not defined we just return eof
     // if no output is produced, and that happens anyway
   }
-
   if (inflated_bytes > 0 )
-    return *gptr() ;
-  else
+    return static_cast< unsigned char >( *gptr() ) ;
+  else 
     return EOF ; // traits_type::eof() ;
 }
 
@@ -153,7 +152,7 @@ bool InflateInputStreambuf::reset( int stream_position ) {
     /* windowBits is passed < 0 to tell that there is no zlib header.
      Note that in this case inflate *requires* an extra "dummy" byte
      after the compressed stream in order to complete decompression
-     and return Z_STREAM_END.  We also have an extra "dummy" byte,
+     and return Z_STREAM_END.  We always have an extra "dummy" byte,
      because there is always some trailing data after the compressed
      data (either the next entry or the central directory.  */
     _zs_initialized = true ;

@@ -99,7 +99,7 @@ int ZipInputStreambuf::underflow() {
 	&( _outvec[ 0 ] ) + g ) ;
   _remain -= g ;
   if ( g > 0 )
-    return *gptr() ;
+    return static_cast< unsigned char >( *gptr() ) ;
   else
     return EOF ; // traits_type::eof() 
 }
