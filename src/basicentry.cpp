@@ -19,7 +19,7 @@
 #include "fcol_common.h"
 #include "basicentry.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::ifstream ;
 using std::ios ;

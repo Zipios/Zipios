@@ -8,7 +8,7 @@
   #endif
   #include <flistscanner.h>
 
-  using namespace fcol ;
+  using namespace zipios ;
 %}
 %%
 

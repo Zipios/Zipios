@@ -10,7 +10,7 @@
 #include "collcoll.h"
 #include "fcol_common.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::ifstream ;
 

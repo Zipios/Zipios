@@ -8,7 +8,7 @@
 
 #include "fcol.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::string ;
 

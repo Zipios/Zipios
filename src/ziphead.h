@@ -13,7 +13,7 @@
 
 #include "fileentry.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::streampos ;
 

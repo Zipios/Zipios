@@ -15,7 +15,7 @@
 #include "fcol.h"
 #include "ziphead.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::ifstream ;
 

@@ -11,7 +11,7 @@
 
 #include "zipinputstreambuf.h"
 
-using namespace fcol ;
+using namespace zipios ;
 
 using std::ifstream ;
 using std::cout ;

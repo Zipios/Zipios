@@ -12,7 +12,7 @@
 #include "zipinputstreambuf.h"
 #include "zipinputstream.h"
 
-namespace fcol {
+namespace zipios {
 
 ZipInputStream::ZipInputStream( istream &is, streampos pos ) 
   : istream( 0 ), 

@@ -17,7 +17,7 @@
 #include "ziphead.h"
 #include "zipinputstreambuf.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::ifstream ;
 

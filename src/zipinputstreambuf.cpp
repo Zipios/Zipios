@@ -12,7 +12,7 @@
 
 #include "zipinputstreambuf.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::ios ;
 using std::cerr ;

@@ -10,7 +10,7 @@
 #include <iostream.h>
 #endif
 
-namespace fcol {
+namespace zipios {
 
 using std::streambuf ;
 

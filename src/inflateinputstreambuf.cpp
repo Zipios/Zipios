@@ -19,7 +19,7 @@
 #include "fcolexceptions.h"
 #include "inflateinputstreambuf.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::cerr ;
 using std::endl ;

@@ -3,7 +3,7 @@
 
 #include "config.h"
 
-namespace fcol {
+namespace zipios {
 
 /** SimpleSmartPointer is a simple reference counting smart pointer
     template. The type pointed to must keep a reference count that is

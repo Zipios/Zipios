@@ -5,7 +5,7 @@
 
 #include "basicentry.h"
 
-namespace fcol {
+namespace zipios {
 
 /** A specialization of BasicEntry for use with FileList. */
 class FListEntry : public BasicEntry {

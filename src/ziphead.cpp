@@ -17,7 +17,7 @@
 #include "fcol_common.h"
 #include "ziphead.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::cerr ;
 using std::endl ;

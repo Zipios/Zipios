@@ -16,7 +16,7 @@
 
 #include "filterinputstreambuf.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::vector ;
 

@@ -9,7 +9,7 @@
 #include "fcolexceptions.h"
 #include "fileentry.h"
 
-namespace fcol {
+namespace zipios {
 
 
 /** \anchor fcol_anchor

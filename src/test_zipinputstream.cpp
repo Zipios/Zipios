@@ -12,7 +12,7 @@
 #include "fcolexceptions.h"
 #include "zipinputstream.h"
 
-using namespace fcol ;
+using namespace zipios ;
 
 using std::cerr ;
 using std::cout ;

@@ -10,7 +10,7 @@
 
 #include "zipfile.h"
 
-using namespace fcol ;
+using namespace zipios ;
 
 using std::cerr ;
 using std::cout ;

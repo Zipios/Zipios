@@ -20,7 +20,7 @@
 #include "flistscanner.h"
 #include "flist.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::ifstream ;
 #ifdef HAVE_SSTREAM

@@ -3,7 +3,7 @@
 
 #include "flistentry.h"
 
-namespace fcol {
+namespace zipios {
 
 FListEntry *FListEntry::clone() const {
   return new FListEntry( *this ) ;

@@ -10,7 +10,7 @@
 
 #include "flist.h"
 
-using namespace fcol ;
+using namespace zipios ;
 
 using std::cout ;
 using std::cerr ;

@@ -7,7 +7,7 @@
 #include "fcol.h"
 #include "basicentry.h"
 
-namespace fcol {
+namespace zipios {
 
 /** DirEntry is a BasicEntry. */
 typedef BasicEntry DirEntry ;

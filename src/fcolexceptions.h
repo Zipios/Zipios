@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace fcol {
+namespace zipios {
 
 using std::string ;
 using std::exception ;

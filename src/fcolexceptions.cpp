@@ -9,7 +9,7 @@
 
 #include "fcolexceptions.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::cerr ;
 using std::endl ;

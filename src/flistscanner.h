@@ -3,7 +3,7 @@
 
 #include "config.h"
 
-namespace fcol {
+namespace zipios {
 
 // #define straddle namespaces !!
 

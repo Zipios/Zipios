@@ -8,7 +8,7 @@
 
 #include "simplesmartptr.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::vector ;
 using std::ostream ;

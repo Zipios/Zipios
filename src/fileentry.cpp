@@ -10,7 +10,7 @@
 
 #include "fileentry.h"
 
-namespace fcol {
+namespace zipios {
 
 ostream &operator<< ( ostream &os, const FileEntry &entry ) {
   os << entry.toString() ;

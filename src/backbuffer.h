@@ -15,7 +15,7 @@
 
 #include "ziphead.h"
 
-namespace fcol {
+namespace zipios {
 
 using std::ios ;
 using std::min ;

@@ -3,7 +3,7 @@
 
 #include "filterinputstreambuf.h"
 
-namespace fcol {
+namespace zipios {
 
 FilterInputStreambuf::FilterInputStreambuf( streambuf *inbuf, bool del_inbuf ) 
   : _inbuf( inbuf),

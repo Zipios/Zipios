@@ -11,7 +11,7 @@
 #include "inflateinputstreambuf.h"
 #include "ziphead.h"
 
-namespace fcol {
+namespace zipios {
 
 /** ZipInputStreambuf is a zip input streambuf filter.
  */

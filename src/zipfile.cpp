@@ -15,7 +15,7 @@
 #include "zipinputstream.h"
 
 
-namespace fcol {
+namespace zipios {
 
 //
 // Public

@@ -13,7 +13,7 @@
 #include "fcolexceptions.h"
 #include "fileentry.h"
 
-namespace fcol {
+namespace zipios {
 
 /** BasicEntry is a FileEntry that is suitable as a base class for
     basic entries, that e.g. do not support any form of compression */
