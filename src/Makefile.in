@@ -74,7 +74,7 @@ EXTRA_DIST = test.zip
 
 lib_LIBRARIES = libzipios.a
 
-noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll
+noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll test_collcoll
 
 # test_flist 
 
@@ -91,6 +91,8 @@ example_zip_SOURCES = example_zip.cpp
 
 test_dircoll_SOURCES = test_dircoll.cpp
 
+test_collcoll_SOURCES = test_collcoll.cpp
+
 # test_flist_SOURCES = test_flist.cpp
 
 # Notice that libzipios.a is not specified as -L. -lzipios
@@ -105,6 +107,8 @@ test_zip_LDADD = libzipios.a -lz
 example_zip_LDADD = libzipios.a -lz
 
 test_dircoll_LDADD = libzipios.a -lz
+
+test_collcoll_LDADD = libzipios.a -lz
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -138,6 +142,9 @@ example_zip_LDFLAGS =
 test_dircoll_OBJECTS =  test_dircoll.o
 test_dircoll_DEPENDENCIES =  libzipios.a
 test_dircoll_LDFLAGS = 
+test_collcoll_OBJECTS =  test_collcoll.o
+test_collcoll_DEPENDENCIES =  libzipios.a
+test_collcoll_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -159,11 +166,12 @@ DEP_FILES =  .deps/basicentry.P .deps/collcoll.P .deps/dircoll.P \
 .deps/example_zip.P .deps/fcoll.P .deps/fcollexceptions.P \
 .deps/fileentry.P .deps/filterinputstreambuf.P .deps/flist.P \
 .deps/flistentry.P .deps/flistscanner.P .deps/inflateinputstreambuf.P \
-.deps/test_dircoll.P .deps/test_zip.P .deps/test_zipinputstream.P \
-.deps/test_zipinputstreambuf.P .deps/zipfile.P .deps/ziphead.P \
-.deps/zipinputstream.P .deps/zipinputstreambuf.P
-SOURCES = $(libzipios_a_SOURCES) $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES)
-OBJECTS = $(libzipios_a_OBJECTS) $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS)
+.deps/test_collcoll.P .deps/test_dircoll.P .deps/test_zip.P \
+.deps/test_zipinputstream.P .deps/test_zipinputstreambuf.P \
+.deps/zipfile.P .deps/ziphead.P .deps/zipinputstream.P \
+.deps/zipinputstreambuf.P
+SOURCES = $(libzipios_a_SOURCES) $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES) $(test_collcoll_SOURCES)
+OBJECTS = $(libzipios_a_OBJECTS) $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS) $(test_collcoll_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -257,6 +265,10 @@ example_zip: $(example_zip_OBJECTS) $(example_zip_DEPENDENCIES)
 test_dircoll: $(test_dircoll_OBJECTS) $(test_dircoll_DEPENDENCIES)
 	@rm -f test_dircoll
 	$(CXXLINK) $(test_dircoll_LDFLAGS) $(test_dircoll_OBJECTS) $(test_dircoll_LDADD) $(LIBS)
+
+test_collcoll: $(test_collcoll_OBJECTS) $(test_collcoll_DEPENDENCIES)
+	@rm -f test_collcoll
+	$(CXXLINK) $(test_collcoll_LDFLAGS) $(test_collcoll_OBJECTS) $(test_collcoll_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cpp.o:

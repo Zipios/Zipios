@@ -6,5 +6,6 @@ test_zip
 test_zipinputstreambuf
 test_zipinputstream
 test_dircoll
+test_collcoll
 .deps
 
