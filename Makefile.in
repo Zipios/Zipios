@@ -326,6 +326,10 @@ installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
+.PHONY : ChangeLog
+ChangeLog :
+	cvs2cl.pl --prune --separate-header --global-opts -z3
+
 .PHONY : doc
 doc :
 	convert doc/images/zipios++.jpg doc/images/zipios++.eps
@@ -342,9 +346,9 @@ devdoc :
 .PHONY : webdoc
 webdoc : doc
 	$(MAKE) -C doc/latex pdf
-	$(MAKE) -C doc/latex ps
+#	$(MAKE) -C doc/latex ps
 	mv doc/latex/refman.pdf doc/html/
-	mv doc/latex/refman.ps doc/html/
+#	mv doc/latex/refman.ps doc/html/
 	cp doc/images/webgfx.gif doc/html/
 	perl -p -i -e 's/content\=\"noindex\"/content\=\"index\,nofollow\"/gi' doc/html/index.html
 	perl -p -i -e 's/\<meta name\=\"robots\"/\<meta name\=\"Keywords\" content\=\"Zip\, C++\, iostream\, library\, API\, decompression, VFS\, source\"\> \<meta name\=\"robots\"/gi' doc/html/index.html
