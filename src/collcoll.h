@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "fcol.h"
+#include "fcoll.h"
 
 namespace zipios {
 

@@ -9,7 +9,7 @@
 #include <fstream.h>
 #endif
 
-#include "fcolexceptions.h"
+#include "fcollexceptions.h"
 #include "zipinputstream.h"
 
 using namespace zipios ;

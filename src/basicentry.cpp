@@ -16,7 +16,7 @@
 #endif
 #include <string>
 
-#include "fcol_common.h"
+#include "fcoll_common.h"
 #include "basicentry.h"
 
 namespace zipios {

@@ -10,7 +10,7 @@
 #endif
 
 #include "backbuffer.h"
-#include "fcol.h"
+#include "fcoll.h"
 #include "zipfile.h"
 #include "zipinputstream.h"
 

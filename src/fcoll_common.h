@@ -1,5 +1,5 @@
-#ifndef FCOL_COMMON_H
-#define FCOL_COMMON_H
+#ifndef fcoll_COMMON_H
+#define fcoll_COMMON_H
 
 #include "config.h"
 

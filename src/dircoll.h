@@ -4,7 +4,7 @@
 #include "config.h"
 
 
-#include "fcol.h"
+#include "fcoll.h"
 #include "basicentry.h"
 
 namespace zipios {

@@ -1,5 +1,5 @@
-#ifndef FCOLEXCEPTIONS_H
-#define FCOLEXCEPTIONS_H
+#ifndef fcollEXCEPTIONS_H
+#define fcollEXCEPTIONS_H
 
 #include "config.h"
 
@@ -26,17 +26,17 @@ private:
   string _what ;
 };
 
-/** An FColException is used to signal a problem with a
+/** An fcollException is used to signal a problem with a
  FileCollection. */
-class FColException : public exception {
+class fcollException : public exception {
 public:
-  explicit FColException() throw () ;
-  explicit FColException( const string &msg ) throw () ;
-  explicit FColException( const FColException &src ) throw () ;
-  FColException &operator= ( const FColException &src ) throw () ;
+  explicit fcollException() throw () ;
+  explicit fcollException( const string &msg ) throw () ;
+  explicit fcollException( const fcollException &src ) throw () ;
+  fcollException &operator= ( const fcollException &src ) throw () ;
   
   virtual const char *what() const throw () ;
-  virtual ~FColException() throw () ;
+  virtual ~fcollException() throw () ;
 private:
   string _what ;
 };

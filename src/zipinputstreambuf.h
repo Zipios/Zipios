@@ -7,7 +7,7 @@
 
 #include <zlib.h>
 
-#include "fcol.h"
+#include "fcoll.h"
 #include "inflateinputstreambuf.h"
 #include "ziphead.h"
 

@@ -10,7 +10,7 @@
 #endif
 #include <string>
 
-#include "fcolexceptions.h"
+#include "fcollexceptions.h"
 #include "fileentry.h"
 
 namespace zipios {

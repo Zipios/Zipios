@@ -16,7 +16,7 @@
 
 #include <zlib.h>
 
-#include "fcolexceptions.h"
+#include "fcollexceptions.h"
 #include "inflateinputstreambuf.h"
 
 namespace zipios {

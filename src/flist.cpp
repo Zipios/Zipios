@@ -16,7 +16,7 @@
 #include <strstream.h>
 #endif
 
-#include "fcol_common.h"
+#include "fcoll_common.h"
 #include "flistscanner.h"
 #include "flist.h"
 
@@ -129,7 +129,7 @@ bool FileList::init( istream &is ) {
 	token = fls.yylex() ;
       } else {
 	success = false ;
-	throw FColException( "Parse error. 'ROOTDIR =' not followed by path" ) ;
+	throw fcollException( "Parse error. 'ROOTDIR =' not followed by path" ) ;
       }
       break ;
 
@@ -158,7 +158,7 @@ bool FileList::init( istream &is ) {
 
     default :
       success = false ;
-      throw FColException( "Unrecognized token in input stream" ) ;
+      throw fcollException( "Unrecognized token in input stream" ) ;
       break ;
     }
   }
@@ -182,7 +182,7 @@ bool FileList::init( istream &is ) {
       err_msg << ends ; // null terminate ostrstream
       err_msg.freeze( 0 ) ; // Deallocate the string when ostrstream is destroyed.
 #endif
-      throw FColException( err_msg.str() ) ;
+      throw fcollException( err_msg.str() ) ;
     }
 
   return success ;

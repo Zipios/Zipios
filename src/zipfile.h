@@ -12,7 +12,7 @@
 #include <fstream.h>
 #endif
 
-#include "fcol.h"
+#include "fcoll.h"
 #include "ziphead.h"
 
 namespace zipios {

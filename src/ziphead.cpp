@@ -14,7 +14,7 @@
 #endif
 #include <string>
 
-#include "fcol_common.h"
+#include "fcoll_common.h"
 #include "ziphead.h"
 
 namespace zipios {

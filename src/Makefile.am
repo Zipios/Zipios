@@ -11,9 +11,9 @@ bin_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip
 # test_flist 
 
 libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
-                      basicentry.cpp             fcol.cpp                  \
-                      fcol.h                     fcol_common.h             \
-                      fcolexceptions.cpp         fcolexceptions.h          \
+                      basicentry.cpp             fcoll.cpp                 \
+                      fcoll.h                    fcoll_common.h            \
+                      fcollexceptions.cpp        fcollexceptions.h         \
                       fileentry.cpp              fileentry.h               \
                       flist.cpp                  flist.h                   \
                       flistentry.cpp             flistentry.h              \

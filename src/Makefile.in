@@ -77,7 +77,7 @@ noinst_LIBRARIES = libzipios.a
 bin_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip
 # test_flist 
 
-libzipios_a_SOURCES = backbuffer.h               basicentry.h                                    basicentry.cpp             fcol.cpp                                        fcol.h                     fcol_common.h                                   fcolexceptions.cpp         fcolexceptions.h                                fileentry.cpp              fileentry.h                                     flist.cpp                  flist.h                                         flistentry.cpp             flistentry.h                                    flistscanner.h             filterinputstreambuf.cpp                        filterinputstreambuf.h     inflateinputstreambuf.cpp                       inflateinputstreambuf.h    zipinputstreambuf.cpp                           zipinputstreambuf.h        zipinputstream.cpp                              zipinputstream.h           zipfile.cpp                                     zipfile.h                  ziphead.cpp                                     ziphead.h                  flistscanner.ll                                 simplesmartptr.h           dircoll.h                                       dircoll.cpp                collcoll.h                                      collcoll.cpp               FlexLexer.h
+libzipios_a_SOURCES = backbuffer.h               basicentry.h                                    basicentry.cpp             fcoll.cpp                                       fcoll.h                    fcoll_common.h                                  fcollexceptions.cpp        fcollexceptions.h                               fileentry.cpp              fileentry.h                                     flist.cpp                  flist.h                                         flistentry.cpp             flistentry.h                                    flistscanner.h             filterinputstreambuf.cpp                        filterinputstreambuf.h     inflateinputstreambuf.cpp                       inflateinputstreambuf.h    zipinputstreambuf.cpp                           zipinputstreambuf.h        zipinputstream.cpp                              zipinputstream.h           zipfile.cpp                                     zipfile.h                  ziphead.cpp                                     ziphead.h                  flistscanner.ll                                 simplesmartptr.h           dircoll.h                                       dircoll.cpp                collcoll.h                                      collcoll.cpp               FlexLexer.h
 
 
 test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
@@ -111,10 +111,10 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libzipios_a_LIBADD = 
-libzipios_a_OBJECTS =  basicentry.o fcol.o fcolexceptions.o fileentry.o \
-flist.o flistentry.o filterinputstreambuf.o inflateinputstreambuf.o \
-zipinputstreambuf.o zipinputstream.o zipfile.o ziphead.o flistscanner.o \
-dircoll.o collcoll.o
+libzipios_a_OBJECTS =  basicentry.o fcoll.o fcollexceptions.o \
+fileentry.o flist.o flistentry.o filterinputstreambuf.o \
+inflateinputstreambuf.o zipinputstreambuf.o zipinputstream.o zipfile.o \
+ziphead.o flistscanner.o dircoll.o collcoll.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
@@ -148,7 +148,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/basicentry.P .deps/collcoll.P .deps/dircoll.P \
-.deps/example_zip.P .deps/fcol.P .deps/fcolexceptions.P \
+.deps/example_zip.P .deps/fcoll.P .deps/fcollexceptions.P \
 .deps/fileentry.P .deps/filterinputstreambuf.P .deps/flist.P \
 .deps/flistentry.P .deps/flistscanner.P .deps/inflateinputstreambuf.P \
 .deps/test_zip.P .deps/test_zipinputstream.P \

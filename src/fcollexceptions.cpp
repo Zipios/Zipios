@@ -7,7 +7,7 @@
 #include <iostream.h>
 #endif
 
-#include "fcolexceptions.h"
+#include "fcollexceptions.h"
 
 namespace zipios {
 
@@ -41,27 +41,27 @@ IOException::~IOException() throw () { cerr << "~IOException()" << endl ; }
 
 
 
-FColException::FColException() throw () 
-  : _what( "FileCollection exception" ) { cerr << "FColException()" << endl ; }
+fcollException::fcollException() throw () 
+  : _what( "FileCollection exception" ) { cerr << "fcollException()" << endl ; }
 
-FColException::FColException( const string &msg ) throw () 
-  : _what( msg ) { cerr << "FColException()" << endl ; }
+fcollException::fcollException( const string &msg ) throw () 
+  : _what( msg ) { cerr << "fcollException()" << endl ; }
 
-FColException::FColException( const FColException &src ) throw () 
+fcollException::fcollException( const fcollException &src ) throw () 
   : _what( src._what ) {}
 
 
-FColException &FColException::operator= ( const FColException &src ) throw () {
+fcollException &fcollException::operator= ( const fcollException &src ) throw () {
   _what = src._what ;
   return *this ;
 }
 
   
-const char *FColException::what() const throw () {
+const char *fcollException::what() const throw () {
   return _what.c_str() ;
 }
 
-FColException::~FColException() throw () { cerr << "~FColException()" << endl ; }
+fcollException::~fcollException() throw () { cerr << "~fcollException()" << endl ; }
 
 
 

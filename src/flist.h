@@ -12,7 +12,7 @@
 #endif
 #include <vector>
 
-#include "fcol.h"
+#include "fcoll.h"
 #include "flistentry.h"
 
 namespace zipios {

@@ -1,18 +1,18 @@
-#ifndef FCOL_H
-#define FCOL_H
+#ifndef fcoll_H
+#define fcoll_H
 
 #include "config.h"
 
 #include <vector>
 #include <string>
 
-#include "fcolexceptions.h"
+#include "fcollexceptions.h"
 #include "fileentry.h"
 
 namespace zipios {
 
 
-/** \anchor fcol_anchor
+/** \anchor fcoll_anchor
     FileCollection is an abstract baseclass, that represents a
     collection of files. The specializations of FileCollection
     represents different origins of file collections, such as
@@ -27,7 +27,7 @@ public:
 
   /** Closes the FileCollection. */
   virtual void close() = 0 ;
-  /** \anchor fcol_entries_anchor
+  /** \anchor fcoll_entries_anchor
       Returns a vector of const pointers to the entries in the
       FileCollection.  
       @return a vector< ConstEntryPointer >
@@ -36,7 +36,7 @@ public:
 
   enum MatchPath { IGNORE, MATCH } ;
 
-  /** \anchor fcol_getentry_anchor
+  /** \anchor fcoll_getentry_anchor
       Returns a ConstEntryPointer to a FileEntry object for the entry 
       with the specified name. To ignore the path part of the filename in search of a
       match, specify FileCollection::IGNORE as the second argument.
@@ -48,7 +48,7 @@ public:
   */
   virtual ConstEntryPointer getEntry( const string &name, 
 				     MatchPath matchpath = MATCH ) const ;
-  /** \anchor fcol_getinputstream
+  /** \anchor fcoll_getinputstream
       Returns a pointer to an opened istream for the specified
       FileEntry. It is the callers responsibility to delete the stream
       when he is done with it. Returns 0, if there is no such
@@ -136,11 +136,11 @@ protected:
    
    ZipFile scans the central directory of a zipfile and provides an
    interface to access that directory. The user may search for entries
-   with a particular filename using \ref fcol_getentry_anchor "ZipFile::getEntry()", 
+   with a particular filename using \ref fcoll_getentry_anchor "ZipFile::getEntry()", 
    or simply get the complete list of entries
-   with \ref fcol_entries_anchor "ZipFile::entries()". To get an
+   with \ref fcoll_entries_anchor "ZipFile::entries()". To get an
    istream (ZipInputStream) to a particular entry simply use
-   \ref fcol_getinputstream "ZipFile::getInputStream()".
+   \ref fcoll_getinputstream "ZipFile::getInputStream()".
    
    \ref example_zip_anchor "example_zip.cpp" demonstrates the central
    elements of Zipios++.
@@ -148,7 +148,7 @@ protected:
    \subsection filecollections FileCollections
    
    A ZipFile is actually just a special kind of 
-   \ref fcol_anchor "FileCollection" that
+   \ref fcoll_anchor "FileCollection" that
    obtains its entries from a .zip Zip archive. Zipios++ also implements
    a \ref dircol_anchor "DirectoryCollection" that obtains its entries 
    from a specified directory, and a \ref collcoll_anchor "CollectionCollection" 
@@ -169,7 +169,7 @@ protected:
    
    and later an istream can be obtained using
 
-   \ref fcol_getinputstream "CCol::inst()->getInputStream()".
+   \ref fcoll_getinputstream "CCol::inst()->getInputStream()".
    
    \section download Download 
    Go to Zipios++ project page on SourceForge for tar balls and ChangeLog.
