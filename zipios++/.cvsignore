@@ -1,5 +1,8 @@
 Makefile
 flistscanner.cc
+zipios-config.h
+stamp-h
+stamp-h.in
 example_zip
 test_flist
 test_zip

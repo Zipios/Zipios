@@ -1,0 +1,44 @@
+/* zipios++/zipios-config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define as __inline if that's what the C compiler calls it.  */
+#undef inline
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if lex declares yytext as a char * by default, not a char[].  */
+#undef YYTEXT_POINTER
+
+/* Define if the std compliant iostream library should be used (if present) */
+#undef USE_STD_IOSTREAM
+
+/* Define if zlib has zError */
+#undef HAVE_ZERROR
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
+/* define if the compiler implements namespaces */
+#undef HAVE_NAMESPACES
+
+/* define if the compiler supports Standard Template Library */
+#undef HAVE_STL
+
+/* define if the compiler supports ISO C++ standard library */
+#undef HAVE_STD
+
+/* define if the compiler supports sstream */
+#undef HAVE_SSTREAM
+
+/* define if the compiler has std compliant iostream library */
+#undef HAVE_STD_IOSTREAM
+
