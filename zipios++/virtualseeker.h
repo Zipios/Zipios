@@ -16,6 +16,11 @@ using std::ios  ;
 using std::cerr ;
 using std::endl ;
 
+/** VirtualSeeker is a simple class that keeps track of a set of
+    specified 'virtual' file endings that mark a subset of a real
+    file. An example of its use (and its reason for existence) is to
+    keep track of the file endings of a Zip file embedded in another
+    file. */
 class VirtualSeeker {
 public:
   inline VirtualSeeker( int start_offset = 0, int end_offset = 0) ;
@@ -81,7 +86,7 @@ int  VirtualSeeker::vtellg( istream &is ) const {
 #endif
 
 /** \file 
-    Header file that includes the FlexLexer.h to define VirtualSeeker.
+    Header file that defines VirtualSeeker.
 */
 
 /*
