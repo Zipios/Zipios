@@ -26,8 +26,8 @@ public:
   Bogus(bool &isAlive) : _isAlive(isAlive) {}
   ~Bogus() { _isAlive = false; }
 protected:
-  friend SimpleSmartPointer< Bogus > ;
-  friend SimpleSmartPointer< const Bogus > ;
+  friend class SimpleSmartPointer< Bogus > ;
+  friend class SimpleSmartPointer< const Bogus > ;
 
   void           ref() const { _refcount.ref() ;          }
   unsigned int unref() const { return _refcount.unref() ; }
