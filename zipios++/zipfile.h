@@ -25,7 +25,8 @@ using std::ifstream ;
  in a .zip file.  */
 class ZipFile : public FileCollection {
 public:
-  /** Opens a Zip archive embedded in another file, by writing the zip
+  /** \anchor zipfile_openembeddedzipfile
+      Opens a Zip archive embedded in another file, by writing the zip
       archive to the end of the file followed by the start offset of
       the zip file. The offset must be written in zip-file byte-order
       (little endian). The program appendzip, which is part of the

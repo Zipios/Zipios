@@ -158,6 +158,10 @@ protected:
    \ref example_zip_anchor "example_zip.cpp" demonstrates the central
    elements of Zipios++.
    
+   A Zip file appended to another file, e.g. a binary program, with the program
+   \ref appendzip_anchor "appendzip", can be read with 
+   \ref zipfile_openembeddedzipfile "ZipFile::openEmbeddedZipFile()".
+
    \subsection filecollections FileCollections
    
    A ZipFile is actually just a special kind of 
