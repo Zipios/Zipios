@@ -165,8 +165,10 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
 
    The library has been tested and appears to be working with
    <UL>
-   <LI>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</LI>
+   <LI><A HREF="http://www.freebsd.org/ports/archivers.html#zipios++-0.1.5">FreeBSD stable and current / gcc 2.95.3</A></LI>
+   <LI>Red Hat Linux release 7.0  / gcc 2.96</LI>
    <LI>Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66</LI>
+   <LI>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</LI>
    <LI>SGI IRIX64 6.5 / gcc 2.95.2</LI>
    <LI>SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30</LI>
    </UL>
