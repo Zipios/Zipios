@@ -39,7 +39,6 @@ test_gzipoutputstream_SOURCES = test_gzipoutputstream.cpp
 all_tests_SOURCES = all_tests.cpp zipfiletest.cpp zipfiletest.h \
                     zipinputstreamtest.h zipinputstreamtest.cpp \
                     zipoutputstreamtest.h zipoutputstreamtest.cpp \
-                    gzipoutputstreamtest.h gzipoutputstreamtest.cpp \
                     commontest.h commontest.cpp
 
 # Notice that libzipios.a is not specified as -L. -lzipios
