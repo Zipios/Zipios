@@ -4,7 +4,7 @@
 #include "zipios++/meta-iostreams.h"
 
 #include "zipios++/collcoll.h"
-#include "zipios++/fcoll_common.h"
+#include "zipios_common.h"
 
 namespace zipios {
 

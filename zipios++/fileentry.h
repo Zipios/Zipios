@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include "zipios++/meta-iostreams.h"
 
 #include "zipios++/simplesmartptr.h"
 

@@ -5,7 +5,7 @@
 #include <iterator>
 #include <string>
 
-#include "zipios++/fcoll_common.h"
+#include "zipios_common.h"
 #include "zipios++/ziphead.h"
 
 #include "outputstringstream.h"

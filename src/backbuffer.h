@@ -11,6 +11,7 @@
 #include "zipios++/fcollexceptions.h"
 #include "zipios++/ziphead.h"
 #include "zipios++/virtualseeker.h"
+#include "zipios_common.h"
 
 namespace zipios {
 

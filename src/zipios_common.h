@@ -1,5 +1,5 @@
-#ifndef FCOLL_COMMON_H
-#define FCOLL_COMMON_H
+#ifndef ZIPIOS_COMMON_H
+#define ZIPIOS_COMMON_H
 
 #include "zipios++/zipios-config.h"
 
@@ -18,12 +18,18 @@ void operator += ( vector< Type > &v1, const vector< Type > &v2 ) {
     v1.push_back( *cit ) ;
 }
 
+template< class T >
+inline const T& min( const T& a, const T& b ) {
+  return b < a ? b : a ;
 }
+
+
+} // namespace
 
 #endif
 
 /** \file
-    Header file that doesn't really contain much!
+    Header file containing miscellaneous small functions.
 */
 
 /*

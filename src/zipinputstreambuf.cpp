@@ -7,6 +7,7 @@
 #include <zlib.h>
 
 #include "zipios++/zipinputstreambuf.h"
+#include "zipios_common.h"
 
 namespace zipios {
 

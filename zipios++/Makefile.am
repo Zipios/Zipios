@@ -5,7 +5,7 @@ pkginclude_HEADERS = basicentry.h            filepath.h               \
                      collcoll.h              inflateinputstreambuf.h  \
                      dircoll.h               simplesmartptr.h         \
                      fcoll.h                 zipfile.h                \
-                     fcoll_common.h          ziphead.h                \
+                     ziphead.h                \
                      fcollexceptions.h       zipinputstream.h         \
                      fileentry.h             zipinputstreambuf.h      \
                      filterinputstreambuf.h  virtualseeker.h          \

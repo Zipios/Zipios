@@ -22,35 +22,6 @@
 #define S_ISSOCK(mode)	0
 #define S_ISFIFO(mode)	(((mode) & _S_IFIFO) == _S_IFIFO)
 
-//
-// min and max can cause a conflict with Windows functions
-//
-
-#include <algorithm>
-
-namespace zipios {
-
-template<class T>
-inline const T& min(const T& x, const T& y) {
-  return std::_MIN(x, y);
-}
-
-template<class T, class Pred>
-inline const T& min(const T& x, const T& y, Pred pr) {
-  return std::_MIN(x, y, pr);
-}
-
-template<class T>
-inline const T& max(const T& x, const T& y) {
-  return std::_MAX(x, y);
-}
-
-template<class T, class Pred>
-inline const T& max(const T& x, const T& y, Pred pr) {
-  return std::_MAX(x, y, pr);
-}
-
-};
 
 // Convenient place to include any debugging-headers
 #include <assert.h>

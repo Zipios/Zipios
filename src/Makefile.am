@@ -25,7 +25,8 @@ libzipios_a_SOURCES = backbuffer.h                \
                       zipfile.cpp                 \
                       ziphead.cpp                 \
                       zipinputstream.cpp          \
-                      zipinputstreambuf.cpp
+                      zipinputstreambuf.cpp       \
+                      zipios_common.h
 
 
 appendzip_SOURCES = appendzip.cpp
