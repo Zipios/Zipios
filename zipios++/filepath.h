@@ -10,42 +10,66 @@ namespace zipios {
 
 using namespace std    ;
 
-class FilePathException : public exception {
-public:
-  FilePathException() throw ()                               : _what( "I/O exception" ){}
-  explicit FilePathException( const string &msg ) throw ()   : _what( msg ) {}
-  FilePathException( const FilePathException &src ) throw () : _what( src._what ) {}
-  FilePathException &operator= ( const FilePathException &src ) throw () { _what = src._what ; return *this ; }
-  virtual const char *what() const throw ()                  { return _what.c_str() ; }
-  virtual ~FilePathException() throw ()                      {}
-private:
-  string _what ;
-};
-
-
-/**  */
+/** FilePath represents a path to a file or directory name. FilePath has
+    member functions to check if the file path is a valid file system entity,
+    and to check what kind of file system entity it is, e.g. is it a file, a 
+    directory, a pipe etc.
+*/
 class FilePath {
 public:
-  FilePath( const string &path = "", bool check_exists = false, 
-	    bool must_exist = false ) throw ( FilePathException ) ;
+  /** Constructor.
+      @param path A string representation of the path.
+      @param check_exists If true is specified the constructor will
+      check the existence and type of the path immidiately, instead of
+      deferring that task until it is needed. */
+  FilePath( const string &path = "", bool check_exists = false ) ;
 
   inline FilePath &operator= ( const string &rhs ) ;
 
   inline operator string() const ;
 
+  /** Concatenates FilePath objects. A file separator is inserted
+      if appropriate. */
   inline FilePath operator+ ( const FilePath &name ) const ;
 
+  /** Returns filename of the FilePath object by pruning the path
+      off. */
   inline FilePath filename() const ;
 
+
+  /** @return true If the path is a valid file system entity. */
   inline bool exists()         const ;
+
+  /** @return true if the path is a regular file. */
   inline bool isRegular()      const ;
+
+  /** @return true if the path is a directory. */
   inline bool isDirectory()    const ;
+
+  /** @return true if the path is character special (a character
+      device file).  */
   inline bool isCharSpecial()  const ;
+
+  /** @return true if the path is block special (a block device
+      file). */
   inline bool isBlockSpecial() const ;
+
+  /** @return true if the path is a socket. */
   inline bool isSocket()       const ;
+
+  /** @return true if the path is a Fifo (a pipe). */
   inline bool isFifo()         const ;
+
 protected:
+
+  /** Prunes the trailing separator of a specified path. */
   inline void pruneTrailingSeparator() ;
+
+  /** This function sets _checked to true, stats the path, to see if
+  it exists and to determine what type of file it is. All the query
+  functions check if _checked is true, and if it isn't they call
+  check(). This means stat'ing is deferred until it becomes
+  necessary. */
   void check() const ;
 
   static const char _separator = '/' ;

@@ -13,14 +13,12 @@ namespace zipios {
 using namespace std ;
 
 
-FilePath::FilePath( const string &path, bool check_exists = false, 
-		    bool must_exist = false ) throw ( FilePathException )
+FilePath::FilePath( const string &path, bool check_exists )
   : _checked( false ),
     _path( path ) {
   pruneTrailingSeparator() ;
   if ( check_exists ) 
-    if ( ! exists() && must_exist )
-      throw FilePathException( string( path + "does not exist" ).c_str() ) ; 
+    exists() ;
 }
 
 
