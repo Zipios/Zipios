@@ -41,27 +41,27 @@ IOException::~IOException() throw () {} //{ cerr << "~IOException()" << endl ; }
 
 
 
-fcollException::fcollException() throw () 
-  : _what( "FileCollection exception" ) {} //{ cerr << "fcollException()" << endl ; }
+FCollException::FCollException() throw () 
+  : _what( "FileCollection exception" ) {} //{ cerr << "FCollException()" << endl ; }
 
-fcollException::fcollException( const string &msg ) throw () 
-  : _what( msg ) {} //{ cerr << "fcollException()" << endl ; }
+FCollException::FCollException( const string &msg ) throw () 
+  : _what( msg ) {} //{ cerr << "FCollException()" << endl ; }
 
-fcollException::fcollException( const fcollException &src ) throw () 
+FCollException::FCollException( const FCollException &src ) throw () 
   : _what( src._what ) {}
 
 
-fcollException &fcollException::operator= ( const fcollException &src ) throw () {
+FCollException &FCollException::operator= ( const FCollException &src ) throw () {
   _what = src._what ;
   return *this ;
 }
 
   
-const char *fcollException::what() const throw () {
+const char *FCollException::what() const throw () {
   return _what.c_str() ;
 }
 
-fcollException::~fcollException() throw () {} //{ cerr << "~fcollException()" << endl ; }
+FCollException::~FCollException() throw () {} //{ cerr << "~FCollException()" << endl ; }
 
 
 

@@ -73,7 +73,7 @@ BackBuffer::BackBuffer( istream &is, VirtualSeeker vs, int chunk_size )
   // in the file that lies after _vs.endOffset(), which
   // is clearly not a valid situation.
   if ( _file_pos < 0 )
-    throw fcollException( "Invalid virtual file endings" ) ;
+    throw FCollException( "Invalid virtual file endings" ) ;
 }
 
 int BackBuffer::readChunk( int &read_pointer ) {

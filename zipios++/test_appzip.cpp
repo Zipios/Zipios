@@ -52,7 +52,7 @@ int main( int argc, char *argv[] ) {
     
     return 0 ;
   }
-  catch( fcollException &excp ) {
+  catch( FCollException &excp ) {
     cerr << "Exception caught in main() :" << endl ;
     cerr << excp.what() << endl ;
     cerr << "\nThe invalid virtual endings exception very probably means that\n" 

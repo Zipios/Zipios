@@ -1,5 +1,5 @@
-#ifndef fcollEXCEPTIONS_H
-#define fcollEXCEPTIONS_H
+#ifndef FCOLLEXCEPTIONS_H
+#define FCOLLEXCEPTIONS_H
 
 #include "zipios++/zipios-config.h"
 
@@ -26,17 +26,17 @@ private:
   string _what ;
 };
 
-/** An fcollException is used to signal a problem with a
+/** An FCollException is used to signal a problem with a
  FileCollection. */
-class fcollException : public exception {
+class FCollException : public exception {
 public:
-  explicit fcollException() throw () ;
-  explicit fcollException( const string &msg ) throw () ;
-  explicit fcollException( const fcollException &src ) throw () ;
-  fcollException &operator= ( const fcollException &src ) throw () ;
+  explicit FCollException() throw () ;
+  explicit FCollException( const string &msg ) throw () ;
+  explicit FCollException( const FCollException &src ) throw () ;
+  FCollException &operator= ( const FCollException &src ) throw () ;
   
   virtual const char *what() const throw () ;
-  virtual ~fcollException() throw () ;
+  virtual ~FCollException() throw () ;
 private:
   string _what ;
 };

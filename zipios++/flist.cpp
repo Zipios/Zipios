@@ -129,7 +129,7 @@ bool FileList::init( istream &is ) {
 	token = fls.yylex() ;
       } else {
 	success = false ;
-	throw fcollException( "Parse error. 'ROOTDIR =' not followed by path" ) ;
+	throw FCollException( "Parse error. 'ROOTDIR =' not followed by path" ) ;
       }
       break ;
 
@@ -158,7 +158,7 @@ bool FileList::init( istream &is ) {
 
     default :
       success = false ;
-      throw fcollException( "Unrecognized token in input stream" ) ;
+      throw FCollException( "Unrecognized token in input stream" ) ;
       break ;
     }
   }
@@ -182,7 +182,7 @@ bool FileList::init( istream &is ) {
       err_msg << ends ; // null terminate ostrstream
       err_msg.freeze( 0 ) ; // Deallocate the string when ostrstream is destroyed.
 #endif
-      throw fcollException( err_msg.str() ) ;
+      throw FCollException( err_msg.str() ) ;
     }
 
   return success ;
