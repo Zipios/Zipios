@@ -79,7 +79,7 @@ lib_LIBRARIES = libzipios.a
 pkginclude_HEADERS = FlexLexer.h             flist.h                                       backbuffer.h            flistentry.h                                  basicentry.h            flistscanner.h                                collcoll.h              inflateinputstreambuf.h                       dircoll.h               simplesmartptr.h                              fcoll.h                 zipfile.h                                     fcoll_common.h          ziphead.h                                     fcollexceptions.h       zipinputstream.h                              fileentry.h             zipinputstreambuf.h                           filterinputstreambuf.h  virtualseeker.h                               zipios-config.h
 
 
-noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll test_collcoll
+noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll test_collcoll test_appzip appendzip
 
 # test_flist 
 
@@ -98,6 +98,10 @@ test_dircoll_SOURCES = test_dircoll.cpp
 
 test_collcoll_SOURCES = test_collcoll.cpp
 
+test_appzip_SOURCES = test_appzip.cpp
+
+appendzip_SOURCES = appendzip.cpp
+
 # test_flist_SOURCES = test_flist.cpp
 
 # Notice that libzipios.a is not specified as -L. -lzipios
@@ -114,6 +118,10 @@ example_zip_LDADD = libzipios.a -lz
 test_dircoll_LDADD = libzipios.a -lz
 
 test_collcoll_LDADD = libzipios.a -lz
+
+test_appzip_LDADD = libzipios.a -lz
+
+appendzip_LDADD = libzipios.a
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = zipios-config.h
 CONFIG_CLEAN_FILES = 
@@ -150,6 +158,12 @@ test_dircoll_LDFLAGS =
 test_collcoll_OBJECTS =  test_collcoll.o
 test_collcoll_DEPENDENCIES =  libzipios.a
 test_collcoll_LDFLAGS = 
+test_appzip_OBJECTS =  test_appzip.o
+test_appzip_DEPENDENCIES =  libzipios.a
+test_appzip_LDFLAGS = 
+appendzip_OBJECTS =  appendzip.o
+appendzip_DEPENDENCIES =  libzipios.a
+appendzip_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -170,16 +184,16 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/basicentry.P .deps/collcoll.P .deps/dircoll.P \
-.deps/example_zip.P .deps/fcoll.P .deps/fcollexceptions.P \
-.deps/fileentry.P .deps/filterinputstreambuf.P .deps/flist.P \
-.deps/flistentry.P .deps/flistscanner.P .deps/inflateinputstreambuf.P \
-.deps/test_collcoll.P .deps/test_dircoll.P .deps/test_zip.P \
-.deps/test_zipinputstream.P .deps/test_zipinputstreambuf.P \
-.deps/zipfile.P .deps/ziphead.P .deps/zipinputstream.P \
-.deps/zipinputstreambuf.P
-SOURCES = $(libzipios_a_SOURCES) $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES) $(test_collcoll_SOURCES)
-OBJECTS = $(libzipios_a_OBJECTS) $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS) $(test_collcoll_OBJECTS)
+DEP_FILES =  .deps/appendzip.P .deps/basicentry.P .deps/collcoll.P \
+.deps/dircoll.P .deps/example_zip.P .deps/fcoll.P \
+.deps/fcollexceptions.P .deps/fileentry.P .deps/filterinputstreambuf.P \
+.deps/flist.P .deps/flistentry.P .deps/flistscanner.P \
+.deps/inflateinputstreambuf.P .deps/test_appzip.P .deps/test_collcoll.P \
+.deps/test_dircoll.P .deps/test_zip.P .deps/test_zipinputstream.P \
+.deps/test_zipinputstreambuf.P .deps/zipfile.P .deps/ziphead.P \
+.deps/zipinputstream.P .deps/zipinputstreambuf.P
+SOURCES = $(libzipios_a_SOURCES) $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES) $(test_collcoll_SOURCES) $(test_appzip_SOURCES) $(appendzip_SOURCES)
+OBJECTS = $(libzipios_a_OBJECTS) $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS) $(test_collcoll_OBJECTS) $(test_appzip_OBJECTS) $(appendzip_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -305,6 +319,14 @@ test_dircoll: $(test_dircoll_OBJECTS) $(test_dircoll_DEPENDENCIES)
 test_collcoll: $(test_collcoll_OBJECTS) $(test_collcoll_DEPENDENCIES)
 	@rm -f test_collcoll
 	$(CXXLINK) $(test_collcoll_LDFLAGS) $(test_collcoll_OBJECTS) $(test_collcoll_LDADD) $(LIBS)
+
+test_appzip: $(test_appzip_OBJECTS) $(test_appzip_DEPENDENCIES)
+	@rm -f test_appzip
+	$(CXXLINK) $(test_appzip_LDFLAGS) $(test_appzip_OBJECTS) $(test_appzip_LDADD) $(LIBS)
+
+appendzip: $(appendzip_OBJECTS) $(appendzip_DEPENDENCIES)
+	@rm -f appendzip
+	$(CXXLINK) $(appendzip_LDFLAGS) $(appendzip_OBJECTS) $(appendzip_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cpp.o:

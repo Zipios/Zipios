@@ -13,6 +13,7 @@
 
 #include <vector>
 
+#include "zipios++/fcollexceptions.h"
 #include "zipios++/ziphead.h"
 #include "zipios++/virtualseeker.h"
 
@@ -68,6 +69,11 @@ BackBuffer::BackBuffer( istream &is, VirtualSeeker vs, int chunk_size )
 {
   _vs.vseekg( is, 0, ios::end ) ;
   _file_pos = _vs.vtellg( is ) ;
+  // Only happens if _vs.startOffset() is a position
+  // in the file that lies after _vs.endOffset(), which
+  // is clearly not a valid situation.
+  if ( _file_pos < 0 )
+    throw fcollException( "Invalid virtual file endings" ) ;
 }
 
 int BackBuffer::readChunk( int &read_pointer ) {

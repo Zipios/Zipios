@@ -25,6 +25,8 @@ using std::ifstream ;
  in a .zip file.  */
 class ZipFile : public FileCollection {
 public:
+  static ZipFile openEmbeddedZipFile( const string &name ) ;
+  ZipFile() {}
   explicit ZipFile( const string &name, int s_off = 0, int e_off = 0
 		    /* , ios::open_mode mode  = ios::in | ios::binary */ ) ;
   virtual ~ZipFile() ;

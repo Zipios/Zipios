@@ -22,7 +22,7 @@ pkginclude_HEADERS = FlexLexer.h             flist.h                  \
                      zipios-config.h
 
 noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
-                  test_dircoll test_collcoll
+                  test_dircoll test_collcoll test_appzip appendzip
 # test_flist 
 
 libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
@@ -56,6 +56,10 @@ test_dircoll_SOURCES = test_dircoll.cpp
 
 test_collcoll_SOURCES = test_collcoll.cpp
 
+test_appzip_SOURCES = test_appzip.cpp
+
+appendzip_SOURCES = appendzip.cpp
+
 # test_flist_SOURCES = test_flist.cpp
 
 # Notice that libzipios.a is not specified as -L. -lzipios
@@ -72,6 +76,10 @@ example_zip_LDADD = libzipios.a -lz
 test_dircoll_LDADD = libzipios.a -lz
 
 test_collcoll_LDADD = libzipios.a -lz
+
+test_appzip_LDADD = libzipios.a -lz
+
+appendzip_LDADD = libzipios.a
 
 # test_flist_LDADD = libzipios.a
 

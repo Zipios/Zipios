@@ -10,5 +10,7 @@ test_zipinputstreambuf
 test_zipinputstream
 test_dircoll
 test_collcoll
+test_appzip
+appendzip
 .deps
 

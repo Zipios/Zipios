@@ -152,6 +152,7 @@ private:
 // byte order conversion functions. 
 // ztohs (zip-to-host-short)
 #ifdef MY_BIG_ENDIAN
+
 inline uint16 ztohs ( unsigned char *buf ) {
   uint16 out ;
 //    *( reinterpret_cast<unsigned char *>( &out )     ) = *( buf  + 1 );
@@ -171,6 +172,18 @@ inline uint32 ztohl ( unsigned char *buf ) {
         ( static_cast< uint32 >( buf[ 3 ] )       )  ; 
   
   return out;
+}
+
+// htozl (host-to-zip-long)
+inline uint32 htozl ( unsigned char *buf ) {
+  // Reversing is reversing!
+  return ztohl( buf ) ;
+}
+
+// htozs (host-to-zip-short)
+inline uint16 htozs ( unsigned char *buf ) {
+  // Reversing is reversing!
+  return ztohs( buf ) ;
 }
 
 #else
@@ -196,6 +209,19 @@ inline uint32 ztohl ( unsigned char *buf ) {
 //    cerr << "uint32 " << out << endl ;
   return out;
 }
+
+// htozl (host-to-zip-long)
+inline uint32 htozl ( unsigned char *buf ) {
+  // Doing nothing is doing nothing
+  return ztohl( buf ) ;
+}
+
+// htozs (host-to-zip-short)
+inline uint16 htozs ( unsigned char *buf ) {
+  // Doing nothing is doing nothing
+  return ztohs( buf ) ;
+}
+
 #endif
 
 inline uint32 readUint32 ( istream &is ) {
@@ -207,6 +233,11 @@ inline uint32 readUint32 ( istream &is ) {
     rsf += is.gcount () ;
   }
   return  ztohl ( buf ) ;
+}
+
+inline void writeUint32 ( uint32 host_val, ostream &os ) {
+  uint32 val = htozl( reinterpret_cast< unsigned char * >( &host_val ) ) ;
+  os.write( reinterpret_cast< char * >( &val ), sizeof( uint32 ) ) ;
 }
 
 inline uint16 readUint16 ( istream &is ) {

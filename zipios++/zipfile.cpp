@@ -21,6 +21,15 @@ namespace zipios {
 // Public
 //
 
+ZipFile ZipFile::openEmbeddedZipFile( const string &name ) {
+  // open zipfile, read 4 last bytes close file
+  // create ZipFile object.
+  ifstream ifs( name.c_str() ) ;
+  ifs.seekg( -4, ios::end ) ;
+  uint32 start_offset = readUint32( ifs ) ;
+  ifs.close() ;
+  return ZipFile( name, start_offset, 4 ) ; 
+}
 
 ZipFile::ZipFile( const string &name , int s_off, int e_off
 		  /* , ios::open_mode mode */ ) 
