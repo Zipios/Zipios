@@ -75,7 +75,7 @@ lib_LIBRARIES = libzipios.a
 
 noinst_PROGRAMS = appendzip
 
-libzipios_a_SOURCES = backbuffer.h                                      basicentry.cpp                                    collcoll.cpp                                      dircoll.cpp                                       directory.cpp                                     directory.h                                       fcoll.cpp                                         fcollexceptions.cpp                               fileentry.cpp                                     filepath.cpp                                      filterinputstreambuf.cpp                          inflateinputstreambuf.cpp                         outputstringstream.h                              zipfile.cpp                                       ziphead.cpp                                       zipinputstream.cpp                                zipinputstreambuf.cpp                             zipios_common.h
+libzipios_a_SOURCES = backbuffer.h                                      basicentry.cpp                                    collcoll.cpp                                      dircoll.cpp                                       directory.cpp                                     directory.h                                       fcoll.cpp                                         fcollexceptions.cpp                               fileentry.cpp                                     filepath.cpp                                      filterinputstreambuf.cpp                          inflateinputstreambuf.cpp                         outputstringstream.h                              zipfile.cpp                                       ziphead.cpp                                       zipheadio.cpp                                     zipinputstream.cpp                                zipinputstreambuf.cpp                             zipios_common.h                                   filteroutputstreambuf.cpp                         deflateoutputstreambuf.cpp                        zipoutputstreambuf.cpp                            zipoutputstream.cpp
 
 
 appendzip_SOURCES = appendzip.cpp
@@ -92,8 +92,9 @@ LIBS = @LIBS@
 libzipios_a_LIBADD = 
 libzipios_a_OBJECTS =  basicentry.o collcoll.o dircoll.o directory.o \
 fcoll.o fcollexceptions.o fileentry.o filepath.o filterinputstreambuf.o \
-inflateinputstreambuf.o zipfile.o ziphead.o zipinputstream.o \
-zipinputstreambuf.o
+inflateinputstreambuf.o zipfile.o ziphead.o zipheadio.o \
+zipinputstream.o zipinputstreambuf.o filteroutputstreambuf.o \
+deflateoutputstreambuf.o zipoutputstreambuf.o zipoutputstream.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -117,10 +118,13 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/appendzip.P .deps/basicentry.P .deps/collcoll.P \
-.deps/dircoll.P .deps/directory.P .deps/fcoll.P .deps/fcollexceptions.P \
-.deps/fileentry.P .deps/filepath.P .deps/filterinputstreambuf.P \
-.deps/inflateinputstreambuf.P .deps/zipfile.P .deps/ziphead.P \
-.deps/zipinputstream.P .deps/zipinputstreambuf.P
+.deps/deflateoutputstreambuf.P .deps/dircoll.P .deps/directory.P \
+.deps/fcoll.P .deps/fcollexceptions.P .deps/fileentry.P \
+.deps/filepath.P .deps/filterinputstreambuf.P \
+.deps/filteroutputstreambuf.P .deps/inflateinputstreambuf.P \
+.deps/zipfile.P .deps/ziphead.P .deps/zipheadio.P \
+.deps/zipinputstream.P .deps/zipinputstreambuf.P \
+.deps/zipoutputstream.P .deps/zipoutputstreambuf.P
 SOURCES = $(libzipios_a_SOURCES) $(appendzip_SOURCES)
 OBJECTS = $(libzipios_a_OBJECTS) $(appendzip_OBJECTS)
 

@@ -19,24 +19,27 @@ using std::ifstream ;
     ZipInputStream. */
 class ZipInputStream : public istream {
 public:
+
   /** ZipInputStream constructor.
       @param is istream from which the compressed zip archive can be read.
-      @param pos position to reposition the istream to before reading.
-   */
+      @param pos position to reposition the istream to before reading.  */
   explicit ZipInputStream( istream &is, streampos pos = 0 ) ;
+
   /** ZipInputStream constructor.
       @filename filename of a valid zip file.
-      @param pos position to reposition the istream to before reading.
-   */
+      @param pos position to reposition the istream to before reading.   */
   explicit ZipInputStream( const string &filename, streampos pos = 0 ) ;
   
   int available() ;
   /** Closes the current entry, and positions the stream read pointer at 
       the beginning of the next entry (if there is one). */
   void closeEntry() ;
+
   /** Closes the istream. */
   void close() ;
+
 //    ZipLocalEntry *createZipCDirEntry( const string &name ) ;
+
   /** \anchor ZipInputStream_getnextentry_anchor
       Opens the next entry in the zip archive and returns a const pointer to a 
       FileEntry object for the entry.
@@ -44,8 +47,10 @@ public:
       entry.
   */
   ConstEntryPointer getNextEntry() ;
+
   /** Destructor. */
   virtual ~ZipInputStream() ;
+
 private:
   ifstream *ifs ;
   ZipInputStreambuf *izf ;

@@ -22,11 +22,29 @@ class ZipCDirEntry ;
  ZipFile entries, specifically for representing the information
  present in the local headers of file entries in a zip file. */
 class ZipLocalEntry : public FileEntry {
-  friend istream& operator>> ( istream &is, ZipLocalEntry &zcdh ) ;
+  friend istream &operator>> ( istream &is, ZipLocalEntry &zcdh ) ;
   friend ostream &operator<< ( ostream &os, const ZipLocalEntry &zlh ) ;
   friend bool operator== ( const ZipLocalEntry &zlh, const ZipCDirEntry &ze ) ;
 public:
-  inline ZipLocalEntry() : signature( 0x04034b50 ), _valid( false ) {}
+  inline ZipLocalEntry( const string &_filename = "",
+			const vector< unsigned char > &_extra_field = 
+			vector< unsigned char >() ) 
+    : gp_bitfield( 0 ),
+      _valid( false ) { 
+    setDefaultExtract() ;
+    setName( _filename ) ;
+    setExtra( _extra_field ) ; 
+  }
+
+  void setDefaultExtract() {
+    extract_version = 0 ;
+#ifdef WIN32
+    extract_version |= static_cast< uint16 >( 0 ) << 8 ; // Windows, DOS
+#else
+    extract_version |= static_cast< uint16 >( 3 ) << 8 ; // Unix
+#endif
+    extract_version |= 20 ; // version number
+  }
   inline ZipLocalEntry &operator=( const class ZipLocalEntry &src ) ;
   virtual string getComment() const ;
   virtual int getCompressedSize() const ;
@@ -52,13 +70,15 @@ public:
   
   virtual string toString() const ;
 
+  int getLocalHeaderSize() const ;
+
   bool trailingDataDescriptor() const ;
 
   virtual FileEntry *clone() const ;
 
   virtual ~ZipLocalEntry() {}
 protected:
-  uint32 signature ;
+  static const uint32 signature ;
   uint16 extract_version ;
   uint16 gp_bitfield     ;
   uint16 compress_method ;
@@ -90,10 +110,19 @@ struct DataDescriptor {
     extra information, that is only present in the entries in the zip
     central directory and not in the local entry headers. */
 class ZipCDirEntry : public ZipLocalEntry {
-friend istream& operator>> ( istream &is, ZipCDirEntry &zcdh ) ;
+friend istream &operator>> ( istream &is, ZipCDirEntry &zcdh ) ;
+friend ostream &operator<< ( ostream &os, const ZipCDirEntry &zcdh ) ;
 friend bool operator== ( const ZipLocalEntry &zlh, const ZipCDirEntry &ze ) ;
 public:
-  inline ZipCDirEntry() { signature = 0x02014b50 ; } 
+
+  inline ZipCDirEntry(  const string &_filename = "",
+			const string &_file_comment = "",
+			const vector< unsigned char > &_extra_field = 
+			                vector< unsigned char >() ) 
+    : ZipLocalEntry( _filename, _extra_field )
+  { setComment( _file_comment ) ; } 
+
+
   inline ZipCDirEntry &operator=( const class ZipCDirEntry &src ) ;
   virtual string toString() const ;
 
@@ -102,11 +131,15 @@ public:
   virtual void setComment( const string &comment ) ;
 
   virtual uint32 getLocalHeaderOffset() const ;
+  virtual void   setLocalHeaderOffset( uint32 offset ) ;
+
+  int getCDirHeaderSize() const ;
 
   virtual FileEntry *clone() const ;
 
   virtual ~ZipCDirEntry() {}
 private:
+  static const uint32 signature ;
   uint16 writer_version      ;
 
   uint16 file_comment_len    ; 
@@ -126,8 +159,24 @@ private:
 class EndOfCentralDirectory {
   friend ostream &operator<< ( ostream &os, const EndOfCentralDirectory &eocd ) ;
 public:
+  EndOfCentralDirectory( const string &_zip_comment = "", 
+			 uint16 _disk_num = 0, uint16 _cdir_disk_num = 0, 
+			 uint16 _cdir_entries = 0, uint16 _cdir_tot_entries = 0, 
+			 uint32 _cdir_size = 0, uint32 _cdir_offset = 0 )
+    :   disk_num         ( _disk_num           ),
+	cdir_disk_num    ( _cdir_disk_num      ),
+	cdir_entries     ( _cdir_entries       ),
+	cdir_tot_entries ( _cdir_tot_entries   ),
+	cdir_size        ( _cdir_size          ),
+	cdir_offset      ( _cdir_offset        ),
+	zip_comment_len  ( _zip_comment.size() ),
+	zip_comment      ( _zip_comment        )  {}
+
   uint32    offset() const          { return cdir_offset ;          }
   uint16    totalCount() const      { return cdir_tot_entries ;     }
+  void setCDirSize( uint32 size )   { cdir_size = size ;            }
+  void setOffset( uint32 offset )   { cdir_offset = offset ;        }
+  void setTotalCount( uint16 c )    { cdir_tot_entries = c ;        }
   int  eocdOffSetFromEnd() const { return eocd_offset_from_end ; }
   bool read( vector<unsigned char> &buf, int pos ) ;
 private:
@@ -142,153 +191,10 @@ private:
   
   streampos eocd_offset_from_end ; // Not a Zip defined field
   string zip_comment;
-  inline bool checkSignature( unsigned char *buf ) const ;
+  bool checkSignature( unsigned char *buf ) const ;
   inline bool checkSignature( uint32 sig ) const ;
 };
 
-
-// byte order conversion functions. 
-// ztohs (zip-to-host-short)
-#ifdef MY_BIG_ENDIAN
-
-inline uint16 ztohs ( unsigned char *buf ) {
-  uint16 out ;
-//    *( reinterpret_cast<unsigned char *>( &out )     ) = *( buf  + 1 );
-//    *( reinterpret_cast<unsigned char *>( &out ) + 1 ) = *( buf      );
-  out = ( static_cast< uint16 >( buf[ 0 ] ) << 8  ) + 
-        ( static_cast< uint16 >( buf[ 1 ] )       )  ; 
-
-  return out;
-}
-
-// ztohl (zip-to-host-long)
-inline uint32 ztohl ( unsigned char *buf ) {
-  uint32 out;
-  out = ( static_cast< uint32 >( buf[ 0 ] ) << 24 ) +  
-        ( static_cast< uint32 >( buf[ 1 ] ) << 16 ) + 
-        ( static_cast< uint32 >( buf[ 2 ] ) << 8  ) + 
-        ( static_cast< uint32 >( buf[ 3 ] )       )  ; 
-  
-  return out;
-}
-
-// htozl (host-to-zip-long)
-inline uint32 htozl ( unsigned char *buf ) {
-  // Reversing is reversing!
-  return ztohl( buf ) ;
-}
-
-// htozs (host-to-zip-short)
-inline uint16 htozs ( unsigned char *buf ) {
-  // Reversing is reversing!
-  return ztohs( buf ) ;
-}
-
-#else
-
-inline uint16 ztohs ( unsigned char *buf ) {
-  uint16 out ;
-  out = ( static_cast< uint16 >( buf[ 1 ] ) << 8  ) + 
-        ( static_cast< uint16 >( buf[ 0 ] )       )  ; 
-  return out;
-}
-
-// ztohl (zip-to-host-long)
-inline uint32 ztohl ( unsigned char *buf ) {
-  uint32 out;
-  out = ( static_cast< uint32 >( buf[ 3 ] ) << 24 ) +  
-        ( static_cast< uint32 >( buf[ 2 ] ) << 16 ) + 
-        ( static_cast< uint32 >( buf[ 1 ] ) << 8  ) + 
-        ( static_cast< uint32 >( buf[ 0 ] )       )  ; 
-//    cerr << "buf : " << static_cast< int >( buf[ 0 ] ) ;
-//    cerr << " "      << static_cast< int >( buf[ 1 ] ) ;
-//    cerr << " "      << static_cast< int >( buf[ 2 ] ) ;
-//    cerr << " "      << static_cast< int >( buf[ 3 ] ) << endl ;
-//    cerr << "uint32 " << out << endl ;
-  return out;
-}
-
-// htozl (host-to-zip-long)
-inline uint32 htozl ( unsigned char *buf ) {
-  // Doing nothing is doing nothing
-  return ztohl( buf ) ;
-}
-
-// htozs (host-to-zip-short)
-inline uint16 htozs ( unsigned char *buf ) {
-  // Doing nothing is doing nothing
-  return ztohs( buf ) ;
-}
-
-#endif
-
-inline uint32 readUint32 ( istream &is ) {
-  static const int buf_len = sizeof ( uint32 ) ;
-  unsigned char buf [ buf_len ] ;
-  int rsf = 0 ;
-  while ( rsf < buf_len ) {
-    is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
-    rsf += is.gcount () ;
-  }
-  return  ztohl ( buf ) ;
-}
-
-inline void writeUint32 ( uint32 host_val, ostream &os ) {
-  uint32 val = htozl( reinterpret_cast< unsigned char * >( &host_val ) ) ;
-  os.write( reinterpret_cast< char * >( &val ), sizeof( uint32 ) ) ;
-}
-
-inline uint16 readUint16 ( istream &is ) {
-  static const int buf_len = sizeof ( uint16 ) ;
-  unsigned char buf [ buf_len ] ;
-  int rsf = 0 ;
-  while ( rsf < buf_len ) {
-    is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
-    rsf += is.gcount () ;
-  }
-  return  ztohs ( buf ) ;
-}
-
-inline void readByteSeq ( istream &is, string &con, int count ) {
-  char *buf = new char [ count + 1 ] ;
-  int rsf = 0 ;
-  while ( rsf < count && is ) {
-    is.read ( buf + rsf, count - rsf ) ;
-    rsf += is.gcount() ;
-  }
-  buf [ count ] = '\0' ;
-
-  con = buf ;
-  delete [] buf ;
-}
-
-inline void readByteSeq ( istream &is, unsigned char *buf, int count ) {
-  int rsf = 0 ;
-  while ( rsf < count && is ) {
-    is.read ( reinterpret_cast< char * >( buf ) + rsf, count - rsf ) ;
-    rsf += is.gcount() ;
-  }
-}
-
-inline void readByteSeq ( istream &is, vector < unsigned char > &vec, int count ) {
-  unsigned char *buf = new unsigned char [ count ] ;
-  int rsf = 0 ;
-  while ( rsf < count && is ) {
-    is.read ( reinterpret_cast< char * >( buf ) + rsf, count - rsf ) ;
-    rsf += is.gcount() ;
-  }
-  
-  vec.insert ( vec.end (), buf, buf + count ) ;
-  delete [] buf ;
-}
-
-istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) ;
-istream& operator>> ( istream &is, DataDescriptor &dd          ) ;
-istream& operator>> ( istream &is, ZipCDirEntry &zcdh           ) ;
-//  istream& operator>> ( istream &is, EndOfCentralDirectory &eocd ) ;
-
-ostream &operator<< ( ostream &os, const ZipLocalEntry &zlh ) ;
-ostream &operator<< ( ostream &os, const EndOfCentralDirectory &eocd ) ;
 
 bool operator== ( const ZipLocalEntry &zlh, const ZipCDirEntry &ze ) ;
 inline bool operator== ( const ZipCDirEntry &ze, const ZipLocalEntry &zlh ) {
@@ -326,11 +232,6 @@ ZipCDirEntry &ZipCDirEntry::operator=( const class ZipCDirEntry &src ) {
   file_comment = src.file_comment ;
 
   return *this ;
-}
-
-bool EndOfCentralDirectory::checkSignature ( unsigned char *buf ) const {
-//    cerr << "potential header: " << ztohl( buf ) << endl ;
-  return checkSignature( ztohl( buf ) ) ;
 }
 
 bool EndOfCentralDirectory::checkSignature ( uint32 sig ) const {

@@ -3,6 +3,7 @@
 #include "zipios++/meta-iostreams.h"
 
 #include "zipios++/ziphead.h"
+#include "zipios++/zipheadio.h"
 
 using namespace std ;
 using namespace zipios ;

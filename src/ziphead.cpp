@@ -7,106 +7,13 @@
 
 #include "zipios_common.h"
 #include "zipios++/ziphead.h"
+#include "zipios++/zipheadio.h"
 
 #include "outputstringstream.h"
 
 namespace zipios {
 
 using std::ios ;
-
-istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) {
-  zlh._valid = false ; // set to true upon successful completion.
-  if ( ! is )
-    return is ;
-
-//    // Before reading anything we record the position in the stream
-//    // This is a field in the central directory entry, but not
-//    // in the local entry. After all, we know where we are, anyway.
-//    zlh.rel_offset_loc_head  = is.tellg() ;
-
-  if ( zlh.signature != readUint32( is ) ) {
-    // put stream in error state and return
-    is.setstate ( ios::failbit ) ;
-    return is ;
-  }
-  
-  zlh.extract_version = readUint16( is ) ;
-  zlh.gp_bitfield     = readUint16( is ) ;
-  zlh.compress_method = readUint16( is ) ;
-  zlh.last_mod_ftime  = readUint16( is ) ;
-  zlh.last_mod_fdate  = readUint16( is ) ;
-  zlh.crc_32          = readUint32( is ) ;
-  zlh.compress_size   = readUint32( is ) ;
-  zlh.uncompress_size = readUint32( is ) ;
-  zlh.filename_len    = readUint16( is ) ;
-  zlh.extra_field_len = readUint16( is ) ;
-
-  // Read filename and extra_field
-  readByteSeq( is, zlh.filename, zlh.filename_len ) ;
-  readByteSeq( is, zlh.extra_field, zlh.extra_field_len ) ; 
-
-  if ( is )
-    zlh._valid = true ;
-  return is ;
-}
-
-
-istream& operator>> ( istream &is, DataDescriptor &dd ) {
-  return is ;
-}
-
-
-istream& operator>> ( istream &is, ZipCDirEntry &zcdh ) {
-  zcdh._valid = false ; // set to true upon successful completion.
-  if ( ! is ) 
-    return is ;
-
-  if ( zcdh.signature != readUint32( is ) ) {
-    // put stream in error state and return
-    is.setstate ( ios::failbit ) ;
-    return is ;
-  }
-  
-  zcdh.writer_version       = readUint16( is ) ;
-  zcdh.extract_version      = readUint16( is ) ;
-  zcdh.gp_bitfield          = readUint16( is ) ;
-  zcdh.compress_method      = readUint16( is ) ;
-  zcdh.last_mod_ftime       = readUint16( is ) ;
-  zcdh.last_mod_fdate       = readUint16( is ) ;
-  zcdh.crc_32               = readUint32( is ) ;
-  zcdh.compress_size        = readUint32( is ) ;
-  zcdh.uncompress_size      = readUint32( is ) ;
-  zcdh.filename_len         = readUint16( is ) ;
-  zcdh.extra_field_len      = readUint16( is ) ;
-  zcdh.file_comment_len     = readUint16( is ) ; 
-  zcdh.disk_num_start       = readUint16( is ) ;
-  zcdh.intern_file_attr     = readUint16( is ) ;
-  zcdh.extern_file_attr     = readUint32( is ) ;
-  zcdh.rel_offset_loc_head  = readUint32( is ) ;
-
-  // Read filename and extra_field
-  readByteSeq( is, zcdh.filename, zcdh.filename_len ) ;
-  readByteSeq( is, zcdh.extra_field, zcdh.extra_field_len ) ; 
-  readByteSeq( is, zcdh.file_comment, zcdh.file_comment_len ) ;
-
-  if ( is )
-    zcdh._valid = true ;
-  return is ;
-}
-
-ostream &operator<< ( ostream &os, const ZipLocalEntry &zlh ) {
-  os << "ZipLocalEntry:" << endl ;
-  os << "Filename:           " << zlh.filename         << endl ;
-  os << "Compression method: " << zlh.compress_method  << endl ;
-  os << "Uncompressed size:  " << zlh.uncompress_size  << endl ;
-  os << "Compressed size:    " << zlh.compress_size    << endl ;
-  return os ;
-}
-
-ostream &operator<< ( ostream &os, const EndOfCentralDirectory &eocd ) {
-  os << "Total entries : " << eocd.cdir_tot_entries << endl ;
-  return os ;
-}
 
 bool operator== ( const ZipLocalEntry &zlh, const ZipCDirEntry &ze ) {
   // Not all fields need to be identical. Some of the information
@@ -142,6 +49,7 @@ bool operator== ( const ZipLocalEntry &zlh, const ZipCDirEntry &ze ) {
 // ZipLocalEntry methods
 //
 
+const uint32 ZipLocalEntry::signature = 0x04034b50 ;
 
 string ZipLocalEntry::getComment() const {
   return "" ; // No comment in a local entry
@@ -241,6 +149,10 @@ string ZipLocalEntry::toString() const {
   return sout.str() ;
 }
 
+int ZipLocalEntry::getLocalHeaderSize() const {
+  return 30 + filename.size() + extra_field.size() ;
+}
+
 bool ZipLocalEntry::trailingDataDescriptor() const {
   // gp_bitfield bit 3 is one, if this entry uses a trailing data
   // descriptor to keep size, compressed size and crc-32
@@ -260,12 +172,18 @@ FileEntry *ZipLocalEntry::clone() const {
 // ZipCDirEntry methods
 //
 
+const uint32 ZipCDirEntry::signature = 0x02014b50 ;
+
 string ZipCDirEntry::getComment() const {
   return file_comment ;
 }
 
 uint32 ZipCDirEntry::getLocalHeaderOffset() const {
   return rel_offset_loc_head ;
+}
+
+void ZipCDirEntry::setLocalHeaderOffset( uint32 offset ) {
+  rel_offset_loc_head = offset ;
 }
 
 
@@ -281,6 +199,12 @@ string ZipCDirEntry::toString() const {
   sout << compress_size << " bytes compressed)" ;
   return sout.str() ;
 }
+
+
+int ZipCDirEntry::getCDirHeaderSize() const {
+  return 46 + filename.size() + extra_field.size() + file_comment.size() ;
+}
+
 
 FileEntry *ZipCDirEntry::clone() const {
   return new ZipCDirEntry( *this ) ;
@@ -311,6 +235,11 @@ bool EndOfCentralDirectory::read( vector<unsigned char> &buf, int pos ) {
 //    cerr << "Length of remaining file = " << buf.size() - pos << endl ;
 
   return true ; // Dummy
+}
+
+bool EndOfCentralDirectory::checkSignature ( unsigned char *buf ) const {
+//    cerr << "potential header: " << ztohl( buf ) << endl ;
+  return checkSignature( ztohl( buf ) ) ;
 }
 
 
