@@ -38,11 +38,12 @@ void ZipOutputStreambuf::closeEntry() {
 
 void ZipOutputStreambuf::close() {
   finish() ;
-  // FIXME: should close _outbuf here too.
 }
 
 
 void ZipOutputStreambuf::finish() {
+  if( ! _open )
+    return ;
   closeEntry() ;
   ostream os( _outbuf ) ;
   writeCentralDirectory( _entries, EndOfCentralDirectory( _zip_comment), os ) ;

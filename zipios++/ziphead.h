@@ -177,7 +177,8 @@ public:
   uint16    totalCount() const      { return cdir_tot_entries ;     }
   void setCDirSize( uint32 size )   { cdir_size = size ;            }
   void setOffset( uint32 offset )   { cdir_offset = offset ;        }
-  void setTotalCount( uint16 c )    { cdir_tot_entries = c ;        }
+
+  void setTotalCount( uint16 c )    { cdir_entries = c ; cdir_tot_entries = c ; }
   int  eocdOffSetFromEnd() const { return eocd_offset_from_end ; }
   bool read( vector<unsigned char> &buf, int pos ) ;
 private:

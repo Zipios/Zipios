@@ -33,7 +33,7 @@ public:
       the beginning of the next entry (if there is one). */
   void closeEntry() ;
 
-  /** Calls finish and closes the attached output streambuf. */
+  /** Calls finish. */
   void close() ;
 
   /** Closes the current entry (if one is open), then writes the Zip

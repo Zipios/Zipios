@@ -35,6 +35,8 @@ void ZipOutputStream::closeEntry() {
 
 void ZipOutputStream::close() {
   ozf->close() ;  
+  if ( ofs )
+    ofs->close() ;
 }
 
 

@@ -36,7 +36,10 @@ public:
       putNextEntry() to clear the EOF stream state flag. */
   void closeEntry() ;
 
-  /** Closes the ZipOutputStream and the filtered ostream. */
+  /** Calls finish and if the ZipOutputStream was created with a
+      filename as a parameter that file is closed as well. If the
+      ZipOutputStream was created with an ostream as its first
+      parameter nothing but the call to finish happens. */
   void close() ;
 
   /** Closes the current entry (if one is open), then writes the Zip
