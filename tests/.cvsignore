@@ -1,7 +1,6 @@
 Makefile
 Makefile.in
-stamp-h
-stamp-h.in
+stamp-h*
 example_zip
 test_flist
 test_zip
@@ -17,8 +16,8 @@ zosb.zip
 zos.zip
 gentest.zip
 all_tests
-.deps
 tests.plg
 Debug
 Release
+.deps
 .libs

@@ -4,7 +4,6 @@ AUTOMAKE_OPTIONS = gnu
 EXTRA_DIST = doxyfile doc/images win32 zipios++.spec.in zipios++.spec
 SUBDIRS = zipios++ src tests
 
-
 DOCTOOL = doxygen
 DOCCONF = doxyfile
 
@@ -21,10 +20,11 @@ doc :
 devdoc :
 	$(DOCTOOL) $(DOCCONF)
 
-# the first perl one-liner changes the robots meta tag so
-# search engines will index the first page. The second provides
-# a list of keywords that are relevant, so the search engine
-# will list this page if someone types in these keywords.
+#  The first perl one-liner changes the robots meta tag so search
+#  engines will index the first page. The second provides a list of
+#  keywords that are relevant, so the search engine will list this
+#  page if someone types in these keywords.
+
 .PHONY : webdoc
 webdoc : doc
 	$(MAKE) -C doc/latex pdf
@@ -36,12 +36,11 @@ webdoc : doc
 	perl -p -i -e 's/\<meta name\=\"robots\"/\<meta name\=\"Keywords\" content\=\"Zip\, C++\, iostream\, library\, API\, decompression, VFS\, source\"\> \<meta name\=\"robots\"/gi' doc/html/index.html
 
 
-# a quick and dirty target to make
-# everything that goes on the web site.
-# cp doc/images/webgfx.gif must be copied manually,
-# as doxygen is too stupid to copy it from in from the
-# images directory, because it doesn't use a doxygen tag
-# to reference the image.
+#  A quick and dirty target to make everything that goes on the web
+#  site.  cp doc/images/webgfx.gif must be copied manually, as doxygen
+#  is too stupid to copy it from in from the images directory, because
+#  it doesn't use a doxygen tag to reference the image.
+
 .PHONY : web
 web : webdoc dist
 	echo

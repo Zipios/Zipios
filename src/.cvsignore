@@ -1,13 +1,12 @@
 Makefile
 Makefile.in
-stamp-h
-stamp-h.in
+stamp-h*
 appendzip
-.deps
 zipios.plg
 zipios.ncb
 Debug
 Release
 *.lo
-.libs
 libzipios.la
+.deps
+.libs
