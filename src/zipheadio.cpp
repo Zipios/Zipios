@@ -12,7 +12,7 @@
 
 namespace zipios {
 
-istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) {
+std::istream& operator>> ( std::istream &is, ZipLocalEntry &zlh         ) {
   zlh._valid = false ; // set to true upon successful completion.
   if ( ! is )
     return is ;
@@ -24,7 +24,7 @@ istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) {
 
   if ( zlh.signature != readUint32( is ) ) {
     // put stream in error state and return
-    is.setstate ( ios::failbit ) ;
+    is.setstate ( std::ios::failbit ) ;
     return is ;
   }
   
@@ -49,19 +49,19 @@ istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) {
 }
 
 
-istream& operator>> ( istream &is, DataDescriptor &dd ) {
+std::istream& operator>> ( std::istream &is, DataDescriptor &dd ) {
   return is ;
 }
 
 
-istream& operator>> ( istream &is, ZipCDirEntry &zcdh ) {
+std::istream& operator>> ( std::istream &is, ZipCDirEntry &zcdh ) {
   zcdh._valid = false ; // set to true upon successful completion.
   if ( ! is ) 
     return is ;
 
   if ( zcdh.signature != readUint32( is ) ) {
     // put stream in error state and return
-    is.setstate ( ios::failbit ) ;
+    is.setstate ( std::ios::failbit ) ;
     return is ;
   }
   
@@ -92,7 +92,7 @@ istream& operator>> ( istream &is, ZipCDirEntry &zcdh ) {
   return is ;
 }
 
-ostream &operator<< ( ostream &os, const ZipLocalEntry &zlh ) {
+std::ostream &operator<< ( std::ostream &os, const ZipLocalEntry &zlh ) {
   if ( ! os )
     return os ;
 
@@ -116,7 +116,7 @@ ostream &operator<< ( ostream &os, const ZipLocalEntry &zlh ) {
   return os ;
 }
 
-ostream &operator<< ( ostream &os, const ZipCDirEntry &zcdh ) {
+std::ostream &operator<< ( std::ostream &os, const ZipCDirEntry &zcdh ) {
   if ( ! os ) 
     return os ;
 
@@ -146,7 +146,7 @@ ostream &operator<< ( ostream &os, const ZipCDirEntry &zcdh ) {
   return os ;
 }
 
-ostream &operator<< ( ostream &os, const EndOfCentralDirectory &eocd ) {
+std::ostream &operator<< ( std::ostream &os, const EndOfCentralDirectory &eocd ) {
   if ( ! os ) 
     return os ;
 

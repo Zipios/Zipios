@@ -7,10 +7,12 @@
 
 using namespace zipios ;
 
-using std::ifstream ;
-using std::cout ;
 using std::cerr ;
+using std::cout ;
 using std::endl ;
+using std::ifstream ;
+using std::ios ;
+using std::ofstream ;
 using std::string ;
 
 void writeFileToZipOutputStreambuf( ZipOutputStreambuf &zosb, const string &filename ) ;

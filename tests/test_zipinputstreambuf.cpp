@@ -7,10 +7,11 @@
 
 using namespace zipios ;
 
-using std::ifstream ;
-using std::cout ;
 using std::cerr ;
+using std::cout ;
 using std::endl ;
+using std::ifstream ;
+using std::ios ;
 
 int main() {
   ifstream f( "test.zip", ios::in | ios::binary ) ;

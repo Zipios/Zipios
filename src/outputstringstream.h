@@ -10,7 +10,7 @@ namespace zipios {
 
 #if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
 
-typedef ostringstream OutputStringStream ;
+typedef std::ostringstream OutputStringStream ;
 
 #else
 

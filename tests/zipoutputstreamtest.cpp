@@ -8,18 +8,28 @@
 
 #include "zipoutputstreamtest.h"
 
-const std::string zipios::ZipOutputStreamTest::TEST_ZIPFILE_NAME = "testout.zip";
-const zipios::TestFiles zipios::ZipOutputStreamTest::TEST_FILES;
+using namespace zipios ;
+
+using std::cout ;
+using std::cerr ;
+using std::endl ;
+using std::istream ;
+using std::ios ;
+using std::ofstream ;
+using std::string ;
+
+const string zipios::ZipOutputStreamTest::TEST_ZIPFILE_NAME = "testout.zip";
+const TestFiles zipios::ZipOutputStreamTest::TEST_FILES;
 
 
 void zipios::ZipOutputStreamTest::testNativeUnzip() {
   if (! hasUnzip()) {
-    std::cout << "'unzip' not present, skipping ZipFileTest::testNativeUnzip" 
-	      << std::endl;
+    cout << "'unzip' not present, skipping ZipFileTest::testNativeUnzip" 
+	      << endl;
     return;
   }
 
-  zipios::ZipOutputStream zos(TEST_ZIPFILE_NAME);
+  ZipOutputStream zos(TEST_ZIPFILE_NAME);
   
   std::vector<string>::const_iterator it;
   for(it=TEST_FILES.begin(); it!=TEST_FILES.end(); ++it)
@@ -30,13 +40,13 @@ void zipios::ZipOutputStreamTest::testNativeUnzip() {
     assertEntry(TEST_ZIPFILE_NAME, *it);
 }
 
-void zipios::ZipOutputStreamTest::writeFileToZipOutputStream(zipios::ZipOutputStream& zos,
- const std::string& entryName) {
+void zipios::ZipOutputStreamTest::writeFileToZipOutputStream(ZipOutputStream& zos,
+ const string& entryName) {
   CPPUNIT_FAIL("Implement this");
 }
 
-void zipios::ZipOutputStreamTest::assertEntry(const std::string& zipFileName,
-					      const std::string& entryName) {
+void zipios::ZipOutputStreamTest::assertEntry(const string& zipFileName,
+					      const string& entryName) {
   CPPUNIT_FAIL("Implement this");
 }
 

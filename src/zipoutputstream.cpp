@@ -8,8 +8,8 @@
 
 namespace zipios {
 
-ZipOutputStream::ZipOutputStream( ostream &os ) 
-  : ostream( 0 ), 
+ZipOutputStream::ZipOutputStream( std::ostream &os ) 
+  : std::ostream( 0 ), 
 // SGIs basic_ifstream calls istream with 0, but calls basic_ios constructor first??
     ofs( 0 )
 {
@@ -19,11 +19,11 @@ ZipOutputStream::ZipOutputStream( ostream &os )
 }
 
 
-ZipOutputStream::ZipOutputStream( const string &filename )
-  : ostream( 0 ),
+ZipOutputStream::ZipOutputStream( const std::string &filename )
+  : std::ostream( 0 ),
     ofs( 0 )
 {
-  ofs = new ofstream( filename.c_str(), ios::out | ios::binary ) ;
+  ofs = new std::ofstream( filename.c_str(), std::ios::out | std::ios::binary ) ;
   ozf = new ZipOutputStreambuf( ofs->rdbuf() ) ;
   this->init( ozf ) ;
 }
@@ -54,7 +54,7 @@ void ZipOutputStream::putNextEntry(const std::string& entryName) {
 }
 
 
-void ZipOutputStream::setComment( const string &comment ) {
+void ZipOutputStream::setComment( const std::string &comment ) {
   ozf->setComment( comment ) ;
 }
 
