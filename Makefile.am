@@ -1,7 +1,7 @@
 
 AUTOMAKE_OPTIONS = gnu
 
-EXTRA_DIST = doxyfile doc/images
+EXTRA_DIST = doxyfile doc/images win32
 SUBDIRS = zipios++ src tests
 
 
