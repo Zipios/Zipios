@@ -1,4 +1,5 @@
-Zipios++ was written by Thomas Sondergaard (thomas@miba.auc.dk)
+Main author:    Thomas Sondergaard (thomas@miba.auc.dk)
+Windows support: Kevin Shea        (kevin.shea@d-cubed.co.uk)
 
 The files zipios++/directory.h and zipios++/directory.cpp originate
 from the dir_it library written by Dietmar Kuehl (it's available for
