@@ -105,6 +105,15 @@ void zipios::ZipFileTest::compareStreams(const std::string& entryName,
 			 buf1.str() == buf2.str());
 }
 
+void zipios::ZipFileTest::testClone(){
+ ZipFile zipFile("test.zip");
+ std::cout<<"Testing cloning..need some help here"<<std::endl;
+ // FileCollection newzip = clone("test.zip");
+ //newzip.clone("test.zip");
+ 
+ 
+}
+
 /** \file
     \anchor zipfiletest_anchor
     Source code to a small program that tests the functionality of Zipios++.

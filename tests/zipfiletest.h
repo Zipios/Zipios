@@ -23,11 +23,13 @@ namespace zipios {
     CPPUNIT_TEST(testUnzip);
     CPPUNIT_TEST(testZipUnzip);
     CPPUNIT_TEST(testComment);
+    CPPUNIT_TEST(testClone);
     CPPUNIT_TEST_SUITE_END();
 
     void testUnzip();
     void testZipUnzip();
     void testComment();
+    void testClone();
     
   private:
     static void writeZipFile(const string &zipFileName, 
