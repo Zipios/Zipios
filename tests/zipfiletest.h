@@ -22,10 +22,12 @@ namespace zipios {
     CPPUNIT_TEST_SUITE(ZipFileTest);
     CPPUNIT_TEST(testUnzip);
     CPPUNIT_TEST(testZipUnzip);
+    CPPUNIT_TEST(tesTComment);
     CPPUNIT_TEST_SUITE_END();
 
     void testUnzip();
     void testZipUnzip();
+    void testComment();
     
   private:
     static void writeZipFile(const string &zipFileName, 
