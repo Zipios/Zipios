@@ -18,6 +18,7 @@ ZipOutputStream::ZipOutputStream( ostream &os, streampos pos )
   init( ozf ) ;
 }
 
+
 ZipOutputStream::ZipOutputStream( const string &filename, streampos pos )
   : ostream( 0 ),
     ofs( 0 )
@@ -31,20 +32,41 @@ void ZipOutputStream::closeEntry() {
   ozf->closeEntry() ;
 }
 
+
 void ZipOutputStream::close() {
   ozf->close() ;  
 }
 
 
-//  ConstEntryPointer ZipOutputStream::getNextEntry() {
-//    clear() ; // clear eof and other flags.
-//    return izf->getNextEntry() ;
-//  }
+void ZipOutputStream::finish() {
+  ozf->finish() ;
+}
+
+
+void ZipOutputStream::putNextEntry( const ZipCDirEntry &entry ) {
+  ozf->putNextEntry( entry ) ;
+}
+
+
+void ZipOutputStream::setComment( const string &comment ) {
+  ozf->setComment( comment ) ;
+}
+
+
+void ZipOutputStream::setLevel( int level ) {
+  ozf->setLevel( level ) ;
+}
+
+
+void ZipOutputStream::setMethod( StorageMethod method ) {
+  ozf->setMethod( method ) ;
+}
+
 
 ZipOutputStream::~ZipOutputStream() {
   // It's ok to call delete with a Null pointer.
-  delete ofs ;
   delete ozf ;
+  delete ofs ;
 }
 
 } // namespace

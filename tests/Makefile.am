@@ -10,7 +10,7 @@ INCLUDES = -I..
 
 noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
                   test_dircoll test_collcoll test_appzip test_zipoutputstreambuf  \
-                  test_simplesmartptr
+                  test_simplesmartptr test_zipoutputstream
 
 test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
 
@@ -30,6 +30,8 @@ test_zipoutputstreambuf_SOURCES = test_zipoutputstreambuf.cpp
 
 test_simplesmartptr_SOURCES = test_simplesmartptr.cpp
 
+test_zipoutputstream_SOURCES = test_zipoutputstream.cpp
+
 # Notice that libzipios.a is not specified as -L. -lzipios
 # If it was, automake would not include it as a dependency.
 
@@ -48,3 +50,5 @@ test_collcoll_LDADD = -L../src -lzipios -lz
 test_appzip_LDADD = -L../src -lzipios -lz
 
 test_zipoutputstreambuf_LDADD = -L../src -lzipios -lz
+
+test_zipoutputstream_LDADD = -L../src -lzipios -lz

@@ -11,6 +11,8 @@ test_collcoll
 test_appzip
 test_simplesmartptr
 test_zipoutputstreambuf
+test_zipoutputstream
 zosb.zip
+zos.zip
 .deps
 

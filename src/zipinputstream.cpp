@@ -50,8 +50,8 @@ ConstEntryPointer ZipInputStream::getNextEntry() {
 
 ZipInputStream::~ZipInputStream() {
   // It's ok to call delete with a Null pointer.
-  delete ifs ;
   delete izf ;
+  delete ifs ;
 }
 
 } // namespace

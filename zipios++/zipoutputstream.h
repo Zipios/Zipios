@@ -45,15 +45,23 @@ public:
       closed. */
   void finish() ;
 
-//    ZipLocalEntry *createZipCDirEntry( const string &name ) ;
-
   /** \anchor ZipOutputStream_putnextentry_anchor
       Begins writing the next entry.
       Opens the next entry in the zip archive and returns a const pointer to a 
       FileEntry object for the entry.
       @return a const FileEntry * containing information about the (now) current 
       entry. */
-  void putNextEntry( ConstEntryPointer entry ) ;
+  void putNextEntry( const ZipCDirEntry &entry ) ;
+
+  /** Sets the global comment for the Zip archive. */
+  void setComment( const string &comment ) ;
+
+  /** Sets the compression level to be used for subsequent entries. */
+  void setLevel( int level ) ;
+
+  /** Sets the compression method to be used. only STORED and DEFLATED are
+      supported. */
+  void setMethod( StorageMethod method ) ;
 
   /** Destructor. */
   virtual ~ZipOutputStream() ;
