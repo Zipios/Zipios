@@ -1,4 +1,4 @@
-%define release	1
+%define release	2
 
 Name: @PACKAGE@
 Version: @VERSION@
@@ -11,17 +11,15 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 License: GNU LGPL
 Prefix: %{_prefix}
 Packager: "Thomas Sondergaard" <thomass@deltadata.dk>
-Distribution: RedHat 7.x Contrib
+Distribution: RedHat 9 Contrib
 
 %description
-Zipios++ is a small C++ library for reading zip files. The structure
-and public interface are based (somewhat loosely) on the java.util.zip
-package. The streams created to access the individual entries in a zip
-file are based on the standard iostream library.
+Zipios++ is a small C++ library for reading zip files. The structure and public interface are based
+(somewhat loosely) on the java.util.zip package. The streams created to access the individual
+entries in a zip file are based on the standard iostream library.
 
-Zipios++ also provides a way for an application to support files from
-multiple sources (e.g. from zip files or from ordinary directories)
-transparently.
+Zipios++ also provides a way for an application to support files from multiple sources (e.g. from
+zip files or from ordinary directories) transparently.
 
 %package devel
 Summary: zipios++ header files
@@ -36,7 +34,7 @@ Header files and documentation for zipios++ development.
 %setup -q -n %{name}-%{version}
 
 %build
-%configure CXX=/usr/local/bin/g++
+%configure
 %__make all doc
 
 %install
@@ -44,6 +42,9 @@ Header files and documentation for zipios++ development.
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
+
+%clean
+%__rm -rf $RPM_BUILD_ROOT $RPM_BUILD_DIR/%{name}-%{version}
 
 %files
 %defattr(-,root,root,644)
@@ -61,6 +62,10 @@ Header files and documentation for zipios++ development.
 %{_libdir}/libzipios.la
 
 %changelog
+* Tue Feb 3 2004 Russel Winder <r.winder@180sw.com>
+- Updated spec file to tidy up properly after a run.  Removed use of /usr/local/bin/g++ for
+  compilation in favour of using default.
+
 * Tue Jan  7 2003 Ross Burton <r.burton@180sw.com>
 - Updated spec file to use the RPM macros
 
