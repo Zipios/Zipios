@@ -46,14 +46,14 @@ public:
     return *this ;
   }
 
-  bool operator== ( const Type *p ) { return _p == p ; }
-  bool operator!= ( const Type *p ) { return _p != p ; }
-  bool operator== ( const SimpleSmartPointer &sp ) { return _p == sp._p ; }
-  bool operator!= ( const SimpleSmartPointer &sp ) { return _p != sp._p ; }
-  bool operator!  () { return ! _p ; }
+  bool operator== ( const Type *p )                const { return _p == p     ; }
+  bool operator!= ( const Type *p )                const { return _p != p     ; }
+  bool operator== ( const SimpleSmartPointer &sp ) const { return _p == sp._p ; }
+  bool operator!= ( const SimpleSmartPointer &sp ) const { return _p != sp._p ; }
+  bool operator!  ()                               const { return ! _p        ; }
   // This next method is inspired by iostream, and is for use with 
   // if ( some_smart_pointer ).
-  operator void*() { return _p ? (void *)0 : (void *)(-1) ; }
+  operator void*() const { return _p ? (void *)(-1) : (void *)(0) ; }
 
   Type *get() const { return _p ; }
 private:
