@@ -62,6 +62,9 @@ AC_CXX_HAVE_STD
 dnl Not necessary anymore: AC_CXX_HAVE_SSTREAM
 AC_CXX_HAVE_STD_IOSTREAM
 
+dnl Check for CppUnit
+AM_PATH_CPPUNIT(1.6.0)
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE

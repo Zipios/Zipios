@@ -12,6 +12,11 @@ transparently.
 The source code is released under the GNU Lesser General Public
 License.
 
+Dependencies
+------------
+Requires zlib (http:://www.zlib.org). To run the automatic unit test
+suite you need CppUnit (http://cppunit.sourceforge.net)
+
 
 Installation (Unix)
 -------------------

@@ -62,6 +62,9 @@ host_triplet = @host@
 AS = @AS@
 CC = @CC@
 CPP = @CPP@
+CPPUNIT_CFLAGS = @CPPUNIT_CFLAGS@
+CPPUNIT_CONFIG = @CPPUNIT_CONFIG@
+CPPUNIT_LIBS = @CPPUNIT_LIBS@
 CXX = @CXX@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
@@ -83,6 +86,8 @@ EXTRA_DIST = test.zip
 # CXXFLAGS= -g
 
 INCLUDES = -I..
+
+CXXFLAGS =  @CPPUNIT_CFLAGS@
 
 noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
                   test_dircoll test_collcoll test_appzip test_zipoutputstreambuf  \
@@ -109,7 +114,9 @@ test_simplesmartptr_SOURCES = test_simplesmartptr.cpp
 
 test_zipoutputstream_SOURCES = test_zipoutputstream.cpp
 
-all_tests_SOURCES = all_tests.cpp zipfiletest.cpp zipfiletest.h testcase.h
+all_tests_SOURCES = all_tests.cpp zipfiletest.cpp zipfiletest.h \
+                    zipoutputstreamtest.h zipoutputstreamtest.cpp
+
 
 # Notice that libzipios.a is not specified as -L. -lzipios
 # If it was, automake would not include it as a dependency.
@@ -132,7 +139,7 @@ test_zipoutputstreambuf_LDADD = -L../src -lzipios -lz
 
 test_zipoutputstream_LDADD = -L../src -lzipios -lz
 
-all_tests_LDADD = -L../src -lzipios -lz
+all_tests_LDADD = -L../src -lzipios -lz @CPPUNIT_LIBS@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../zipios++/zipios-config.h
 CONFIG_CLEAN_FILES = 
@@ -179,10 +186,10 @@ test_simplesmartptr_LDFLAGS =
 test_zipoutputstream_OBJECTS =  test_zipoutputstream.$(OBJEXT)
 test_zipoutputstream_DEPENDENCIES = 
 test_zipoutputstream_LDFLAGS = 
-all_tests_OBJECTS =  all_tests.$(OBJEXT) zipfiletest.$(OBJEXT)
+all_tests_OBJECTS =  all_tests.$(OBJEXT) zipfiletest.$(OBJEXT) \
+zipoutputstreamtest.$(OBJEXT)
 all_tests_DEPENDENCIES = 
 all_tests_LDFLAGS = 
-CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -203,7 +210,8 @@ DEP_FILES =  .deps/all_tests.P .deps/example_zip.P .deps/test_appzip.P \
 .deps/test_collcoll.P .deps/test_dircoll.P .deps/test_simplesmartptr.P \
 .deps/test_zip.P .deps/test_zipinputstream.P \
 .deps/test_zipinputstreambuf.P .deps/test_zipoutputstream.P \
-.deps/test_zipoutputstreambuf.P .deps/zipfiletest.P
+.deps/test_zipoutputstreambuf.P .deps/zipfiletest.P \
+.deps/zipoutputstreamtest.P
 SOURCES = $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES) $(test_collcoll_SOURCES) $(test_appzip_SOURCES) $(test_zipoutputstreambuf_SOURCES) $(test_simplesmartptr_SOURCES) $(test_zipoutputstream_SOURCES) $(all_tests_SOURCES)
 OBJECTS = $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS) $(test_collcoll_OBJECTS) $(test_appzip_OBJECTS) $(test_zipoutputstreambuf_OBJECTS) $(test_simplesmartptr_OBJECTS) $(test_zipoutputstream_OBJECTS) $(all_tests_OBJECTS)
 

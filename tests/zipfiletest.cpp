@@ -16,33 +16,13 @@
 
 using namespace zipios ;
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::auto_ptr ;
-using std::ifstream ;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::auto_ptr;
+using std::ifstream;
 using std::string;
 using std::vector;
-
-void zipios::ZipFileTest::runTests() {
-	testUnzip();
-	testZipUnzip();
-}
-
-namespace {
-	template<class T1, class T2>
-	void assertEquals(const T1& expected, const T2& actual) {
-		if (expected == actual)
-			return;
-		std::ostringstream msg;
-		msg << "expected '" << expected << "' but got '" << actual << "'";
-		throw Exception(msg.str());
-	}
-
-	void fail(const string& msg) {
-		throw Exception(msg);
-	}
-}
 
 void zipios::ZipFileTest::testUnzip() {
   vector<string> entries;
@@ -50,9 +30,9 @@ void zipios::ZipFileTest::testUnzip() {
   entries.push_back("file2.txt");
   entries.push_back("file3.txt");
   entries.push_back("testfile.bin");
-
+  
   ZipFile zipFile("test.zip");
-  assertEquals(4, zipFile.size());
+  CPPUNIT_ASSERT_EQUAL(4, zipFile.size());
   compareZipFile("test.zip", entries);
 }
 
@@ -63,11 +43,10 @@ void zipios::ZipFileTest::testZipUnzip() {
   entries.push_back("Makefile.in");
   entries.push_back("zipfiletest.cpp");
   entries.push_back("zipfiletest.h");
-  entries.push_back("testcase.h");
+  entries.push_back("all_tests");
   writeZipFile(zipFileName, entries);
   compareZipFile(zipFileName, entries);
 }
-
 
 void zipios::ZipFileTest::writeZipFile(const string &zipFileName, vector<string> entryFileNames) {
   ZipOutputStream zos(zipFileName);
@@ -85,13 +64,9 @@ void zipios::ZipFileTest::compareZipFile(const string &zipFileName, vector<strin
   for ( ; it != entryFileNames.end() ; ++it ) {
     auto_ptr<istream> zis(zipFile.getInputStream(*it));
 	if (zis.get() == 0)
-		throw Exception("Entry '"+*it+"' not found in zip file");
+		CPPUNIT_FAIL("Entry '"+*it+"' not found in zip file");
     ifstream fis((*it).c_str(), ios::in | ios::binary);
-    try {
-      compareStreams(*zis, fis);
-    } catch(Exception &ex) {
-      throw Exception("For zip entry '"+*it+"': "+ex.what());
-    }
+    compareStreams(*it, *zis, fis);
   }
 }
 
@@ -99,7 +74,7 @@ void zipios::ZipFileTest::writeFileToZipOutputStream( ZipOutputStream &zos, cons
   zos.putNextEntry( ZipCDirEntry( filename ) ) ;
   ifstream ifs( filename.c_str(), ios::in | ios::binary ) ;
   if (! ifs)
-	  fail("Could not open file '"+filename+"'");
+	  CPPUNIT_FAIL("Could not open file '"+filename+"'");
   zos << ifs.rdbuf() ; 
 
 //    cerr << "ostream Stream state: "  ;
@@ -116,17 +91,13 @@ void zipios::ZipFileTest::writeFileToZipOutputStream( ZipOutputStream &zos, cons
 
 }
 
-void zipios::ZipFileTest::compareStreams(istream &is1, istream &is2) {
+void zipios::ZipFileTest::compareStreams(const std::string& entryName,
+					 istream &is1, istream &is2) {
   OutputStringStream buf1, buf2;
   buf1 << is1.rdbuf();
   buf2 << is2.rdbuf();
-  if ( buf1.str() != buf2.str() ) {
-//	  ofstream of1("hej1.txt", ios::out | ios::binary );
-//	  of1 << buf1.str() << std::endl 
-//	         << "-------------------------------------------------------" << std::endl 
-//	         << buf2.str() << std::endl ;;
-	  throw Exception("contents differ"); // defined at the bottom of fcolexceptions.h
-  }
+  CPPUNIT_ASSERT_MESSAGE("Streams differ for entry '"+entryName+"'", 
+			 buf1.str() == buf2.str());
 }
 
 /** \file

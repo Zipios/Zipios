@@ -49,11 +49,13 @@ public:
 
   /** \anchor ZipOutputStream_putnextentry_anchor
       Begins writing the next entry.
-      Opens the next entry in the zip archive and returns a const pointer to a 
-      FileEntry object for the entry.
-      @return a const FileEntry * containing information about the (now) current 
-      entry. */
+  */
   void putNextEntry( const ZipCDirEntry &entry ) ;
+
+  /** \anchor ZipOutputStream_putnextentry2_anchor
+      Begins writing the next entry.
+  */
+  void putNextEntry(const std::string& entryName);
 
   /** Sets the global comment for the Zip archive. */
   void setComment( const string &comment ) ;
