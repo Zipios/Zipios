@@ -14,6 +14,7 @@ int main(int argc, char* argv[]) {
   {
     TestSuite suite;
     suite.addTest(zipios::ZipOutputStreamTest::suite());
+    suite.addTest(zipios::ZipInputStreamTest::suite());
     suite.addTest(zipios::ZipFileTest::suite());
     
     suite.run(&result);

@@ -9,6 +9,7 @@
 #include <cppunit/TestAssert.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "commontest.h"
 #include "zipios++/zipoutputstream.h"
 
 namespace zipios {
@@ -17,17 +18,6 @@ namespace zipios {
   using std::vector;
   using std::istream;
   
-  class TestFiles : public std::vector<std::string> {
-  public:
-    TestFiles() {
-      push_back("all_tests");
-      push_back("file1.txt");
-      push_back("file2.txt");
-      push_back("file3.txt");
-    }
-  };
-
-
   class ZipOutputStreamTest : public CppUnit::TestCase {
   public:
     CPPUNIT_TEST_SUITE(ZipOutputStreamTest);

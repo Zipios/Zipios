@@ -115,7 +115,9 @@ test_simplesmartptr_SOURCES = test_simplesmartptr.cpp
 test_zipoutputstream_SOURCES = test_zipoutputstream.cpp
 
 all_tests_SOURCES = all_tests.cpp zipfiletest.cpp zipfiletest.h \
-                    zipoutputstreamtest.h zipoutputstreamtest.cpp
+                    zipinputstreamtest.h zipinputstreamtest.cpp \
+                    zipoutputstreamtest.h zipoutputstreamtest.cpp \
+                    commontest.h commontest.cpp
 
 
 # Notice that libzipios.a is not specified as -L. -lzipios
@@ -187,7 +189,8 @@ test_zipoutputstream_OBJECTS =  test_zipoutputstream.$(OBJEXT)
 test_zipoutputstream_DEPENDENCIES = 
 test_zipoutputstream_LDFLAGS = 
 all_tests_OBJECTS =  all_tests.$(OBJEXT) zipfiletest.$(OBJEXT) \
-zipoutputstreamtest.$(OBJEXT)
+zipinputstreamtest.$(OBJEXT) zipoutputstreamtest.$(OBJEXT) \
+commontest.$(OBJEXT)
 all_tests_DEPENDENCIES = 
 all_tests_LDFLAGS = 
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -206,11 +209,12 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/all_tests.P .deps/example_zip.P .deps/test_appzip.P \
-.deps/test_collcoll.P .deps/test_dircoll.P .deps/test_simplesmartptr.P \
-.deps/test_zip.P .deps/test_zipinputstream.P \
-.deps/test_zipinputstreambuf.P .deps/test_zipoutputstream.P \
-.deps/test_zipoutputstreambuf.P .deps/zipfiletest.P \
+DEP_FILES =  .deps/all_tests.P .deps/commontest.P .deps/example_zip.P \
+.deps/test_appzip.P .deps/test_collcoll.P .deps/test_dircoll.P \
+.deps/test_simplesmartptr.P .deps/test_zip.P \
+.deps/test_zipinputstream.P .deps/test_zipinputstreambuf.P \
+.deps/test_zipoutputstream.P .deps/test_zipoutputstreambuf.P \
+.deps/zipfiletest.P .deps/zipinputstreamtest.P \
 .deps/zipoutputstreamtest.P
 SOURCES = $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES) $(test_collcoll_SOURCES) $(test_appzip_SOURCES) $(test_zipoutputstreambuf_SOURCES) $(test_simplesmartptr_SOURCES) $(test_zipoutputstream_SOURCES) $(all_tests_SOURCES)
 OBJECTS = $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS) $(test_collcoll_OBJECTS) $(test_appzip_OBJECTS) $(test_zipoutputstreambuf_OBJECTS) $(test_simplesmartptr_OBJECTS) $(test_zipoutputstream_OBJECTS) $(all_tests_OBJECTS)
