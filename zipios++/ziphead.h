@@ -107,6 +107,8 @@ public:
 
   virtual uint32 getLocalHeaderOffset() const ;
 
+  virtual ZipCDirEntry *clone() const ;
+
   virtual ~ZipCDirEntry() {}
 private:
   uint16 writer_version      ;

@@ -312,6 +312,10 @@ string ZipCDirEntry::toString() const {
   return sout.str() ;
 }
 
+ZipCDirEntry *ZipCDirEntry::clone() const {
+  return new ZipCDirEntry( *this ) ;
+}
+
 
 //
 // EndOfCentralDirectory methods
