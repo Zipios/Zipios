@@ -13,7 +13,7 @@ namespace zipios {
 
 
 /** \anchor fcoll_anchor
-    FileCollection is an abstract baseclass, that represents a
+    FileCollection is an abstract baseclass that represents a
     collection of files. The specializations of FileCollection
     represents different origins of file collections, such as
     directories, simple filename lists and compressed archives. */
@@ -110,7 +110,7 @@ protected:
    transparently.
    
    The source code is released under the <A
-   HREF="http://www.gnu.org/copyleft/gpl.html>GNU General Public
+   HREF="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
    License</A>.
    
    \section status Status
@@ -131,7 +131,7 @@ protected:
    please let me know (thomas@miba.auc.dk).
 
    \section documentation Documentation 
-   This web page is the front page to the library documentation, that
+   This web page is the front page to the library documentation which
    is generated from the source files using <A
    HREF="http://www.stack.nl/~dimitri/doxygen/index.html">Doxygen</A>. Use
    the links at the top of the page to browse the API
@@ -236,17 +236,17 @@ protected:
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000  Thomas Søndergaard
   
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
   
-  This program is distributed in the hope that it will be useful,
+  This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
   
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
