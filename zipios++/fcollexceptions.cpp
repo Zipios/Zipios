@@ -15,10 +15,10 @@ using std::cerr ;
 using std::endl ;
 
 IOException::IOException() throw () 
-  : _what( "I/O exception" ) { cerr << "IOException()" << endl ; }
+  : _what( "I/O exception" ) {} //{ cerr << "IOException()" << endl ; }
 
 IOException::IOException( const string &msg ) throw () 
-  : _what( msg ) { cerr << "IOException()" << endl ; }
+  : _what( msg ) {} //{ cerr << "IOException()" << endl ; }
 
 IOException::IOException( const IOException &src ) throw () 
   : _what( src._what ) {}
@@ -34,7 +34,7 @@ const char *IOException::what() const throw () {
   return _what.c_str() ;
 }
 
-IOException::~IOException() throw () { cerr << "~IOException()" << endl ; }
+IOException::~IOException() throw () {} //{ cerr << "~IOException()" << endl ; }
 
 
 
@@ -42,10 +42,10 @@ IOException::~IOException() throw () { cerr << "~IOException()" << endl ; }
 
 
 fcollException::fcollException() throw () 
-  : _what( "FileCollection exception" ) { cerr << "fcollException()" << endl ; }
+  : _what( "FileCollection exception" ) {} //{ cerr << "fcollException()" << endl ; }
 
 fcollException::fcollException( const string &msg ) throw () 
-  : _what( msg ) { cerr << "fcollException()" << endl ; }
+  : _what( msg ) {} //{ cerr << "fcollException()" << endl ; }
 
 fcollException::fcollException( const fcollException &src ) throw () 
   : _what( src._what ) {}
@@ -61,7 +61,7 @@ const char *fcollException::what() const throw () {
   return _what.c_str() ;
 }
 
-fcollException::~fcollException() throw () { cerr << "~fcollException()" << endl ; }
+fcollException::~fcollException() throw () {} //{ cerr << "~fcollException()" << endl ; }
 
 
 
@@ -69,10 +69,10 @@ fcollException::~fcollException() throw () { cerr << "~fcollException()" << endl
 
 
 InvalidStateException::InvalidStateException() throw () 
-  : _what( "InvalidState exception" ) { cerr << "InvalidStateException()" << endl ; }
+  : _what( "InvalidState exception" ) {} //{ cerr << "InvalidStateException()" << endl ; }
 
 InvalidStateException::InvalidStateException( const string &msg ) throw () 
-  : _what( msg ) { cerr << "InvalidStateException()" << endl ; }
+  : _what( msg ) {} //{ cerr << "InvalidStateException()" << endl ; }
 
 InvalidStateException::
 InvalidStateException( const InvalidStateException &src ) throw () 
@@ -90,9 +90,10 @@ const char *InvalidStateException::what() const throw () {
   return _what.c_str() ;
 }
 
-InvalidStateException::~InvalidStateException() throw () { 
-  cerr << "~InvalidStateException()" << endl ; }
-}
+InvalidStateException::~InvalidStateException() throw () {} 
+//{ cerr << "~InvalidStateException()" << endl ; }
+
+} // namespace
 
 /** \file
     Implementation of a number of Exceptions used by FileCollection and its
