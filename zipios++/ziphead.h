@@ -78,7 +78,7 @@ protected:
 
 /** A struct containing fields for the entries in a zip file data
  descriptor, that trails the compressed data in files that were
- created by streaming, ie. where the zip compressor cannot seek back
+ created by streaming, ie where the zip compressor cannot seek back
  to the local header and store the data. */
 struct DataDescriptor {
   uint32 crc_32          ;
