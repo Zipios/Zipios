@@ -72,7 +72,7 @@ protected:
   necessary. */
   void check() const ;
 
-  static const char _separator = '/' ;
+  static const char _separator;
 
   // FIXME: Should be bitfield
   mutable bool   _checked   ;
@@ -120,7 +120,7 @@ FilePath FilePath::filename() const {
   string::size_type pos ;
   pos = _path.find_last_of( _separator ) ;
   if ( pos != string::npos )
-    return string( _path, pos + 1 ) ;
+    return _path.substr( pos + 1);
   else 
     return _path ;
 }

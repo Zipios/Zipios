@@ -25,7 +25,7 @@ ConstEntryPointer FileCollection::getEntry( const string &name,
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get an entry from an invalid FileCollection" ) ;
 
-  vector< EntryPointer >::const_iterator iter ;
+  std::vector< EntryPointer >::const_iterator iter ;
   if ( matchpath == MATCH )
     iter = find_if( _entries.begin(), _entries.end(), FileEntry::MatchName( name ) ) ;
   else

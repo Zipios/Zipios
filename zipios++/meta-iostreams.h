@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <strstream>
 
 // #if IOSTREAMS_IN_NAMESPACE_STD
 using std::cerr ;
@@ -29,7 +30,7 @@ using std::streampos ;
 #else
 #include <iostream.h>
 #include <fstream.h>
-#include <strstream.h>
+#include <strstream>
 #endif
 
 #endif

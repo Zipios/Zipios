@@ -46,6 +46,8 @@ int main() {
   catch( ... ) {
     cerr << "Unspecified exception caught in main:" << endl ;
   }
+
+  return 0;
 }
 
 /** \file

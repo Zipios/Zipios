@@ -54,7 +54,7 @@ public:
 
   bool trailingDataDescriptor() const ;
 
-  virtual ZipLocalEntry *clone() const ;
+  virtual FileEntry *clone() const ;
 
   virtual ~ZipLocalEntry() {}
 protected:
@@ -103,7 +103,7 @@ public:
 
   virtual uint32 getLocalHeaderOffset() const ;
 
-  virtual ZipCDirEntry *clone() const ;
+  virtual FileEntry *clone() const ;
 
   virtual ~ZipCDirEntry() {}
 private:
@@ -131,7 +131,7 @@ public:
   int  eocdOffSetFromEnd() const { return eocd_offset_from_end ; }
   bool read( vector<unsigned char> &buf, int pos ) ;
 private:
-  static const uint32 signature = 0x06054b50 ;
+  static const uint32 signature;
   uint16 disk_num         ;
   uint16 cdir_disk_num    ;
   uint16 cdir_entries     ;

@@ -21,11 +21,11 @@ int main() {
     
     cout << "list length : " << zf.size() << endl ;
     
-    vector< ConstEntryPointer > entries ;
+    std::vector< ConstEntryPointer > entries ;
     entries = zf.entries() ;
     
     
-    vector< ConstEntryPointer >::iterator it ;
+    std::vector< ConstEntryPointer >::iterator it ;
     for( it = entries.begin() ; it != entries.end() ; it++)
       cout << *(*it) << endl ;
     

@@ -33,14 +33,18 @@
 #include <stdexcept>
 
 // #include <boost.h>  Contents of boost.h
+
+// Allow control over DLL version being built
 #if defined(unix) || defined(__unix) || defined(__unix__)
 #  define BOOST_DECL
-#else
-#  ifdef BOOST_EXPORTS
+#elif defined(ZIPIOS_DLL)
+#  ifdef ZIPIOS_EXPORTS
 #    define BOOST_DECL __declspec(dllexport)
 #  else
 #    define BOOST_DECL __declspec(dllimport)
 #  endif
+#else
+#  define BOOST_DECL
 #endif
 // end of contents of boost.h
 
@@ -344,7 +348,7 @@ namespace boost
 namespace std
 {
 	template<>
-	class iterator_traits<boost::filesystem::dir_it>
+	struct iterator_traits<boost::filesystem::dir_it>
 	{
 	public:
 		typedef ptrdiff_t          difference_type;

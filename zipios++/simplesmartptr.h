@@ -20,16 +20,17 @@ public:
 
   SimpleSmartPointer( Type *p = 0 ) : _p( p ) { ref() ; }
 
+  template< class T2 > SimpleSmartPointer( const SimpleSmartPointer< T2 > &src ) 
+    : _p( src.get() ) { ref() ; }
+
   SimpleSmartPointer( const SimpleSmartPointer &src ) : _p( src.get() ) { 
     ref() ; 
   }
 
-  template< class T2 > SimpleSmartPointer( const SimpleSmartPointer< T2 > &src ) 
-    : _p( src.get() ) { ref() ; }
-
   ~SimpleSmartPointer () { if ( unref() == 0 ) deleteIt() ; }
 
-  SimpleSmartPointer &operator= ( const SimpleSmartPointer &src ) {
+  template< class T2 > 
+  SimpleSmartPointer &operator= ( const SimpleSmartPointer< T2 > &src ) {
     ref( src.get() ) ;
     if ( unref() == 0 )
       deleteIt() ;
@@ -37,8 +38,7 @@ public:
     return *this ;
   }
 
-  template< class T2 > 
-  SimpleSmartPointer &operator= ( const SimpleSmartPointer< T2 > &src ) {
+  SimpleSmartPointer &operator= ( const SimpleSmartPointer &src ) {
     ref( src.get() ) ;
     if ( unref() == 0 )
       deleteIt() ;

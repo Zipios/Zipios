@@ -69,7 +69,7 @@ string BasicEntry::getFileName() const {
   pos = _filename.find_last_of( separator ) ;
   if ( pos != string::npos ) { // separator found!
     // isDirectory() check means pos should not be last, so pos+1 is ok 
-    return string( _filename, pos + 1 ) ;
+    return _filename.substr(pos + 1) ;
   } else {
     return _filename ;
   }
@@ -128,7 +128,7 @@ string BasicEntry::toString() const {
   return sout.str() ;
 }
 
-BasicEntry *BasicEntry::clone() const {
+FileEntry *BasicEntry::clone() const {
   return new BasicEntry( *this ) ;
 }
 

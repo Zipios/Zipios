@@ -9,7 +9,6 @@
 
 #include "backbuffer.h"
 
-
 namespace zipios {
 
 //
@@ -26,6 +25,7 @@ ZipFile ZipFile::openEmbeddedZipFile( const string &name ) {
   return ZipFile( name, start_offset, 4 ) ; 
 }
 
+
 ZipFile::ZipFile( const string &name , int s_off, int e_off
 		  /* , ios::open_mode mode */ ) 
   : _vs( s_off, e_off ) {
@@ -37,7 +37,7 @@ ZipFile::ZipFile( const string &name , int s_off, int e_off
 }
 
 
-ZipFile *ZipFile::clone() const {
+FileCollection *ZipFile::clone() const {
   return new ZipFile( *this ) ;
 }
 
@@ -73,7 +73,6 @@ istream *ZipFile::getInputStream( const string &entry_name,
 }
 
 
-
 //
 // Private
 //
@@ -101,7 +100,8 @@ bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
   _vs.vseekg( _zipfile,  _eocd.offset(), ios::beg ) ;
 
   int entry_num = 0 ;
-  _entries.resize ( _eocd.totalCount() ) ;
+  // Giving the default argument in the next line to keep Visual C++ quiet
+  _entries.resize ( _eocd.totalCount(), 0 ) ;
   while ( ( entry_num < _eocd.totalCount() ) ) {
     ZipCDirEntry *ent = new ZipCDirEntry ; 
     _entries[ entry_num ] = ent ;
@@ -116,6 +116,7 @@ bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
     }
     ++entry_num ;
   }
+
   // Consistency check. eocd should start here
   int pos = _vs.vtellg( _zipfile ) ;
   _vs.vseekg( _zipfile, 0, ios::end ) ;
@@ -153,7 +154,7 @@ bool ZipFile::readEndOfCentralDirectory ( istream &_zipfile ) {
 }
 
 bool ZipFile::confirmLocalHeaders( istream &_zipfile ) {
-  vector< EntryPointer >::const_iterator it ;
+  std::vector< EntryPointer >::const_iterator it ;
   ZipCDirEntry *ent ;
   int inconsistencies = 0 ;
   ZipLocalEntry zlh ;

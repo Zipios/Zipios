@@ -50,7 +50,7 @@ public:
 
   virtual int size() const ;
 
-  virtual DirectoryCollection *clone() const ;
+  virtual FileCollection *clone() const ;
 
   /** Destructor. */
   virtual ~DirectoryCollection() ;
@@ -61,7 +61,7 @@ protected:
   FilePath _filepath ;
 
   void loadEntries() const ;
-  void Load( bool recursive, const FilePath &subdir = string() ) ;
+  void Load( bool recursive, const FilePath &subdir = FilePath() ) ;
  
 };
  

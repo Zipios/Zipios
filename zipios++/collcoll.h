@@ -77,7 +77,7 @@ public:
       the CollectionCollection object */
   virtual int size() const ;
   
-  virtual CollectionCollection *clone() const ;
+  virtual FileCollection *clone() const ;
 
   virtual ~CollectionCollection() ;
 
@@ -89,7 +89,7 @@ protected:
    */
   void getEntry( const string &name,
 		 ConstEntryPointer &cep, 
-		 vector< FileCollection * >::const_iterator &it, 
+		 std::vector< FileCollection * >::const_iterator &it, 
 		 MatchPath matchpath = MATCH ) const ;
   
   vector< FileCollection * > _collections ;
@@ -116,10 +116,10 @@ CollectionCollection &CollectionCollection::inst() {
 }
 
 CollectionCollection::CollectionCollection( const CollectionCollection &src ) 
-  : FileCollection( static_cast< FileCollection >( src ) )
+  : FileCollection( src )
 {
   _collections.reserve( src._collections.size() ) ;
-  vector< FileCollection * >::const_iterator it ;
+  std::vector< FileCollection * >::const_iterator it ;
   for ( it = src._collections.begin() ; it != src._collections.end() ; ++it )
     _collections.push_back( (*it)->clone() ) ;
 }
@@ -127,12 +127,12 @@ CollectionCollection::CollectionCollection( const CollectionCollection &src )
 
 const CollectionCollection &
 CollectionCollection::operator= ( const CollectionCollection &src ) {
-  this->FileCollection::operator=( static_cast< FileCollection >( src ) ) ;
+  this->FileCollection::operator=( src ) ;
 //    FileCollection::=( static_cast< FileCollection >( src ) ) ; 
 
   if ( this != &src ) {
     // Destroy current contents.
-    vector< FileCollection * >::const_iterator it ;
+    std::vector< FileCollection * >::const_iterator it ;
     for ( it = _collections.begin() ; it != _collections.end() ; ++it )
       delete *it ;
     //  Then copy src's content.

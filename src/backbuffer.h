@@ -15,7 +15,6 @@
 namespace zipios {
 
 using std::ios ;
-using std::min ;
 using std::cerr ;
 using std::endl ;
 

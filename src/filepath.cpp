@@ -6,11 +6,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "filepath.h"
+#include "zipios++/filepath.h"
 
 namespace zipios {
 
 using namespace std ;
+
+const char FilePath::_separator = '/' ;
 
 
 FilePath::FilePath( const string &path, bool check_exists )

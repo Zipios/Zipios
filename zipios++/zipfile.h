@@ -55,7 +55,7 @@ public:
   explicit ZipFile( const string &name, int s_off = 0, int e_off = 0
 		    /* , ios::open_mode mode  = ios::in | ios::binary */ ) ;
 
-  virtual ZipFile *clone() const ;
+  virtual FileCollection *clone() const ;
 
   /** Destructor. */
   virtual ~ZipFile() ;

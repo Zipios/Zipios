@@ -13,8 +13,8 @@ The source code is released under the GNU Lesser General Public
 License.
 
 
-Installation
-------------
+Installation (Unix)
+-------------------
 This software package uses autoconf/automake, so the fast installation
 procedure is
 
@@ -35,6 +35,28 @@ and the corresponding source code have names that start with test_ and
 example_. These test programs demonstrate the most important features
 in Zipios++.
 
+Installation (Windows)
+----------------------
+Currently, makefiles are only provided for Visual C++, along with a
+Developer Studio project. It is also planned to support Inprise and Gnu
+compilers in the near future.
+
+Before building, if zlib is not in a standard compiler path, the location of
+its headers and .lib file must be defined at the top of win32\Makefile.com
+
+To install, using the appropriate make program and one of the following
+makefiles:
+	Makefile.vc5	- Visual C++ 5, 6
+
+the procedure (for Visual C++) is
+cd win32
+nmake -f Makefile.vc5
+
+To use the Developer Studio project, run configure.bat from win32 before
+compiling. Again, a non-standard location for zlib must be defined in the
+project settings before building.
+
+No install options have been defined yet.
 
 Status
 ------

@@ -32,6 +32,8 @@ int main() {
   cout << is2.rdbuf() ;
 
   cerr << "End of main" << endl ;
+
+  return 0;
 }
 
 /** \file

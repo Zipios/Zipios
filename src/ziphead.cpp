@@ -174,7 +174,7 @@ string ZipLocalEntry::getFileName() const {
   pos = filename.find_last_of( separator ) ;
   if ( pos != string::npos ) { // separator found!
     // isDirectory() check means pos should not be last, so pos+1 is ok 
-    return string( filename, pos + 1 ) ;
+    return filename.substr( pos + 1 ) ;
   } else {
     return filename ;
   }
@@ -251,7 +251,7 @@ bool ZipLocalEntry::trailingDataDescriptor() const {
     return false ;
 }
 
-ZipLocalEntry *ZipLocalEntry::clone() const {
+FileEntry *ZipLocalEntry::clone() const {
   return new ZipLocalEntry( *this ) ;
 }
 
@@ -282,7 +282,7 @@ string ZipCDirEntry::toString() const {
   return sout.str() ;
 }
 
-ZipCDirEntry *ZipCDirEntry::clone() const {
+FileEntry *ZipCDirEntry::clone() const {
   return new ZipCDirEntry( *this ) ;
 }
 
@@ -290,6 +290,8 @@ ZipCDirEntry *ZipCDirEntry::clone() const {
 //
 // EndOfCentralDirectory methods
 //
+
+const uint32 EndOfCentralDirectory::signature = 0x06054b50 ;
 
 bool EndOfCentralDirectory::read( vector<unsigned char> &buf, int pos ) {
   if ( ( buf.size() - pos < sizeof( uint32 ) )   || 

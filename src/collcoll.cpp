@@ -48,7 +48,7 @@ vector< ConstEntryPointer > CollectionCollection::entries() const {
     throw InvalidStateException( "Attempt to get entries from an invalid CollectionCollection" ) ;
 
   vector< ConstEntryPointer > all_entries ;
-  vector< FileCollection * >::const_iterator it ;
+  std::vector< FileCollection * >::const_iterator it ;
   for ( it = _collections.begin() ; it != _collections.end() ; it++ )
     all_entries += (*it)->entries() ;
   return all_entries ;
@@ -60,7 +60,7 @@ ConstEntryPointer CollectionCollection::getEntry( const string &name,
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get an entry from an invalid CollectionCollection" ) ;
   // Returns the first matching entry.
-  vector< FileCollection * >::const_iterator it ;
+  std::vector< FileCollection * >::const_iterator it ;
   ConstEntryPointer cep ;
 
   getEntry( name, cep, it, matchpath ) ; 
@@ -82,7 +82,7 @@ istream *CollectionCollection::getInputStream( const string &entry_name,
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get an input stream from an invalid CollectionCollection" ) ;
 
-  vector< FileCollection * >::const_iterator it ;
+  std::vector< FileCollection * >::const_iterator it ;
   ConstEntryPointer cep ;
 
   getEntry( entry_name, cep, it, matchpath ) ; 
@@ -99,18 +99,18 @@ int CollectionCollection::size() const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get the size of an invalid CollectionCollection" ) ;
   int sz = 0 ;
-  vector< FileCollection * >::const_iterator it ;
+  std::vector< FileCollection * >::const_iterator it ;
   for ( it = _collections.begin() ; it != _collections.end() ; it++ )
     sz += (*it)->size() ;
   return sz ;
 }
 
-CollectionCollection *CollectionCollection::clone() const {
+FileCollection *CollectionCollection::clone() const {
   return new CollectionCollection( *this ) ;
 }
 
 CollectionCollection::~CollectionCollection() {
-  vector< FileCollection * >::iterator it ;
+  std::vector< FileCollection * >::iterator it ;
   for ( it = _collections.begin() ; it != _collections.end() ; ++it )
     delete *it ;
 }
@@ -122,7 +122,7 @@ CollectionCollection::~CollectionCollection() {
 
 void CollectionCollection::getEntry( const string &name,
 				     ConstEntryPointer &cep, 
-				     vector< FileCollection * >::const_iterator &it, 
+				     std::vector< FileCollection * >::const_iterator &it, 
 				     MatchPath matchpath ) const {
   
   // Returns the first matching entry.

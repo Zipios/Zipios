@@ -21,7 +21,7 @@ public:
       @param comment a comment for the entry.
    */
   explicit BasicEntry( const string &filename, const string &comment,
-		       const FilePath &basepath = string() ) ;
+		       const FilePath &basepath = FilePath() ) ;
   virtual string getComment() const ;
   virtual int getCompressedSize() const ;
   virtual int getCrc() const ;
@@ -47,7 +47,7 @@ public:
   
   virtual string toString() const ;
   
-  virtual BasicEntry *clone() const ;
+  virtual FileEntry *clone() const ;
 
   virtual ~BasicEntry() ;
 protected:

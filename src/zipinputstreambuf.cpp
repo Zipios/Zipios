@@ -13,7 +13,6 @@ namespace zipios {
 using std::ios ;
 using std::cerr ;
 using std::endl ;
-using std::min ;
 
 ZipInputStreambuf::ZipInputStreambuf( streambuf *inbuf, int s_pos, bool del_inbuf ) 
   : InflateInputStreambuf( inbuf, s_pos, del_inbuf ),

@@ -11,6 +11,7 @@
 
 namespace zipios {
 
+using std::vector;
 
 /** \anchor fcoll_anchor
     FileCollection is an abstract baseclass that represents a
@@ -116,7 +117,7 @@ FileCollection::FileCollection( const FileCollection &src )
     _valid   ( src._valid    )
 {
   _entries.reserve( src._entries.size() ) ;
-  vector< EntryPointer >::const_iterator it ;
+  std::vector< EntryPointer >::const_iterator it ;
   for ( it = src._entries.begin() ; it != src._entries.end() ; ++it )
     _entries.push_back( (*it)->clone() ) ;
 }
@@ -128,7 +129,7 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
     _entries.clear() ;
     _entries.reserve( src._entries.size() ) ;
     
-    vector< EntryPointer >::const_iterator it ;
+    std::vector< EntryPointer >::const_iterator it ;
     for ( it = src._entries.begin() ; it != src._entries.end() ; ++it )
       _entries.push_back( (*it)->clone() ) ;
   }
