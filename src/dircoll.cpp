@@ -26,6 +26,14 @@ DirectoryCollection::DirectoryCollection( const string &path ) {
   } else {
     _valid = false ;
   }
+  
+  // In order to be able to simply prepend _filename
+  // we need to transform it slightly. If it ends in a
+  // slash thats fine.
+  // if not we have to append a slash, unless the specified path is the
+  // empty string.
+  if ( _filename.size() > 0 && _filename[ _filename.size() -1 ] != '/' )
+    _filename.append( 1, '/' ) ;
 }
 
 void DirectoryCollection::close() {
@@ -56,8 +64,11 @@ DirectoryCollection::getEntry( const string &name,
 	 << endl ;
     return 0 ;
   }
-
-  return new DirEntry( name, "", _filename ) ;
+  ConstEntryPointer ent ( new DirEntry( name, "", _filename ) ) ;
+  if ( ent->isValid() )
+    return ent ;
+  else
+    return 0 ;
 }
 
 
