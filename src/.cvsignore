@@ -7,3 +7,6 @@ zipios.plg
 zipios.ncb
 Debug
 Release
+*.lo
+.libs
+libzipios.la

@@ -4,3 +4,7 @@ config.log
 doc
 config.cache
 
+config.guess
+config.sub
+libtool
+ltmain.sh

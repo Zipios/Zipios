@@ -20,3 +20,4 @@ all_tests
 tests.plg
 Debug
 Release
+.libs
