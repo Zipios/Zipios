@@ -9,6 +9,10 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+//
+//  TODO: The following is deprecated in GCC 3.2.1 need to remove all
+//  the ostrstream code.
+//
 #include <strstream>
 
 // #if IOSTREAMS_IN_NAMESPACE_STD
