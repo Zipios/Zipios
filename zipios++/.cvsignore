@@ -1,16 +1,6 @@
 Makefile
-flistscanner.cc
 zipios-config.h
 stamp-h
 stamp-h.in
-example_zip
-test_flist
-test_zip
-test_zipinputstreambuf
-test_zipinputstream
-test_dircoll
-test_collcoll
-test_appzip
-appendzip
 .deps
 

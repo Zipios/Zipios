@@ -3,10 +3,11 @@
 
 #include "zipios++/meta-iostreams.h"
 
-#include "zipios++/backbuffer.h"
 #include "zipios++/fcoll.h"
 #include "zipios++/zipfile.h"
 #include "zipios++/zipinputstream.h"
+
+#include "backbuffer.h"
 
 
 namespace zipios {

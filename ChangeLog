@@ -1,3 +1,114 @@
+2000-06-27 19:29  thomas
+
+	* zipios++/: collcoll.h, fcoll.h, test_collcoll.cpp: Changed the
+	CollectionCollection::inst() static member function to return a
+	reference rather than a pointer. Changed the typedef name for
+	CollectionCollection from CCol to CColl. Updated the \mainpage doc
+	to reflect these two changes. Changed test_collcoll.cpp to use
+	CColl::inst().
+
+2000-06-27 19:17  thomas
+
+	* zipios++/: collcoll.cpp, collcoll.h, test_collcoll.cpp:
+	CollectionCollection now (resource-)manages the collections that
+	are added to it. Collections can be added by pointer, in which case
+	CollectionCollection assumes that the added collection is allocated
+	with new and assumes the responsibility of deleting it, when the
+	CollectionCollection is destroyed. Collections can also be added by
+	reference in which case CollectionCollection will clone the added
+	collection to get its own private copy.
+
+2000-06-27 19:10  thomas
+
+	* zipios++/: dircoll.cpp, dircoll.h, fcoll.h, zipfile.cpp,
+	zipfile.h: Added a copy-assignment operator to FileCollection.
+	
+	Added an isValid() member function and a pure virtual clone()
+	member function to FileCollection.
+	
+	Added implementations of clone() to DirectoryCollection and
+	ZipFile.
+
+2000-06-27 19:05  thomas
+
+	* zipios++/fileentry.h: FileEntry needed a copy-constructor and a
+	copy-assignment operator, because the reference count should not be
+	copied. Instead the copy-constructor initializes the reference
+	count to zero, and the copy-assignment operator leaves the existing
+	value unchanged.
+
+2000-06-27 19:02  thomas
+
+	* zipios++/test_zip.cpp: [no log message]
+
+2000-06-27 19:00  thomas
+
+	* zipios++/: ziphead.cpp, ziphead.h: ZipCDirEntry missed a clone()
+	method, so it was inheriting the clone() method from its immediate
+	ancestor ZipLocalEntry. This meant the ZipCDir specific part was
+	not being cloned.
+
+2000-06-25 14:37  thomas
+
+	* NEWS: Put some stuff in the NEWS file.
+
+2000-06-25 00:12  thomas
+
+	* zipios++/fcoll.h: Added a copy constructor to FileCollection such
+	that copies of FileCollections are proper copies that do not share
+	anything.
+
+2000-06-24 20:38  thomas
+
+	* zipios++/: filepath.cpp, filepath.h: Changed the FilePath
+	constructor. It no longer has the
+	throw-exception-if-path-is-invalid feature. If necessary it is easy
+	to readd later, in which case the must_exist bool should be
+	replaced with some other input variable, where it is possible to
+	specify whether it needs to exist and what types are acceptable,
+	ie. regular file, directory etc.
+	
+	Added Doxygen comments.
+
+2000-06-24 20:06  thomas
+
+	* aclocal.m4, zipios++/Makefile.am, zipios++/Makefile.in,
+	zipios++/basicentry.cpp, zipios++/basicentry.h,
+	zipios++/dircoll.cpp, zipios++/dircoll.h, zipios++/directory.cpp,
+	zipios++/directory.h, zipios++/filepath.cpp, zipios++/filepath.h,
+	zipios++/filterinputstreambuf.h, zipios++/test_dircoll.cpp,
+	zipios++/zipios-config.h.in: 
+	Finished the implementation of DirectoryCollection.
+
+2000-06-24 19:32  thomas
+
+	* zipios++/: inflateinputstreambuf.h, zipinputstream.h,
+	zipinputstreambuf.h: [no log message]
+
+2000-06-24 01:21  thomas
+
+	* AUTHORS: Added my e-mail address to the authors file next to my
+	name. And added a note about the origin of zipios++/directory.h and
+	zipios++/directory.cpp.
+
+2000-06-23 23:59  thomas
+
+	* Makefile.in, aclocal.m4, configure, configure.in,
+	zipios++/FlexLexer.h, zipios++/Makefile.am, zipios++/Makefile.in,
+	zipios++/flist.cpp, zipios++/flist.h, zipios++/flistentry.cpp,
+	zipios++/flistentry.h, zipios++/flistscanner.h,
+	zipios++/flistscanner.ll, zipios++/test_flist.cpp: 
+	Removed FileList. This means the library no longer needs flex so we
+	don't check for it in configure anymore.
+
+2000-06-20 20:01  thomas
+
+	* zipios++/fcoll.h: [no log message]
+
+2000-06-18 17:43  thomas
+
+	* ChangeLog, Makefile.in: [no log message]
+
 2000-06-18 17:38  thomas
 
 	* README, aclocal.m4, configure, configure.in: Updated the version
@@ -21,9 +132,9 @@
 	* zipios++/: example_zip.cpp, test_appzip.cpp, test_collcoll.cpp,
 	test_dircoll.cpp, test_flist.cpp, test_zip.cpp,
 	test_zipinputstream.cpp, test_zipinputstreambuf.cpp: The code
-	fragment used to copy data from an istream to an ostream in all the
-	test programs was verbose and wrong. It has been replaced with
-	ostreamm << istream.rdbuf() everywhere.
+	ufragment sed to copy data from an istream to an ostream in all the
+	test programs was verbose and wrong. I, ands been replaced with
+	ostreamm << istream.rdbuf(. everywhere.
 
 2000-06-17 13:42  thomas
 

@@ -2,6 +2,6 @@
 
 aclocal
 autoconf
-touch NEWS README AUTHORS ChangeLog
+#touch NEWS README AUTHORS ChangeLog
 autoheader
 automake --add-missing

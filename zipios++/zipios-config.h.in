@@ -33,9 +33,6 @@
 /* define if the compiler supports ISO C++ standard library */
 #undef HAVE_STD
 
-/* define if the compiler supports sstream */
-#undef HAVE_SSTREAM
-
 /* define if the compiler has std compliant iostream library */
 #undef HAVE_STD_IOSTREAM
 

@@ -5,9 +5,10 @@
 #include <vector>
 #include <sys/stat.h>
 
-#include "zipios++/directory.h"
-
 #include "zipios++/dircoll.h"
+
+#include "directory.h"
+
 
 namespace zipios {
 

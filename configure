@@ -454,7 +454,7 @@ echo > confdefs.h
 
 # A filename unique to this package, relative to the directory that
 # configure is in, which we can look for to find out if srcdir is correct.
-ac_unique_file=zipios++/backbuffer.h
+ac_unique_file=src/backbuffer.h
 
 # Find the source files, if location was not specified.
 if test -z "$srcdir"; then
@@ -1737,9 +1737,9 @@ EOF
 
 fi
 
-echo $ac_n "checking for sstream""... $ac_c" 1>&6
-echo "configure:1742: checking for sstream" >&5
-if eval "test \"`echo '$''{'ac_cv_cxx_have_sstream'+set}'`\" = set"; then
+echo $ac_n "checking for std iostream""... $ac_c" 1>&6
+echo "configure:1742: checking for std iostream" >&5
+if eval "test \"`echo '$''{'ac_cv_cxx_have_std_iostream'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   
@@ -1754,59 +1754,6 @@ cross_compiling=$ac_cv_prog_cxx_cross
  cat > conftest.$ac_ext <<EOF
 #line 1756 "configure"
 #include "confdefs.h"
-#include <sstream>
-#ifdef HAVE_NAMESPACES
-using namespace std;
-#endif
-int main() {
-return 0;
-; return 0; }
-EOF
-if { (eval echo configure:1766: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  ac_cv_cxx_have_sstream=yes
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  ac_cv_cxx_have_sstream=no
-fi
-rm -f conftest*
- ac_ext=c
-# CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='${CC-cc} -c $CFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
-ac_link='${CC-cc} -o conftest${ac_exeext} $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
-cross_compiling=$ac_cv_prog_cc_cross
-
-
-fi
-
-echo "$ac_t""$ac_cv_cxx_have_sstream" 1>&6
-if test "$ac_cv_cxx_have_sstream" = yes; then
-  cat >> confdefs.h <<\EOF
-#define HAVE_SSTREAM 1
-EOF
-
-fi
-
-echo $ac_n "checking for std iostream""... $ac_c" 1>&6
-echo "configure:1795: checking for std iostream" >&5
-if eval "test \"`echo '$''{'ac_cv_cxx_have_std_iostream'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  
- 
- ac_ext=C
-# CXXFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
-ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
-cross_compiling=$ac_cv_prog_cxx_cross
-
- cat > conftest.$ac_ext <<EOF
-#line 1809 "configure"
-#include "confdefs.h"
 
 #include <sstream>
 #include <streambuf>
@@ -1819,7 +1766,7 @@ int main() {
 return 0;
 ; return 0; }
 EOF
-if { (eval echo configure:1823: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1770: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_cxx_have_std_iostream=yes
 else
@@ -1849,12 +1796,12 @@ fi
 
 
 echo $ac_n "checking for working const""... $ac_c" 1>&6
-echo "configure:1853: checking for working const" >&5
+echo "configure:1800: checking for working const" >&5
 if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1858 "configure"
+#line 1805 "configure"
 #include "confdefs.h"
 
 int main() {
@@ -1903,7 +1850,7 @@ ccp = (char const *const *) p;
 
 ; return 0; }
 EOF
-if { (eval echo configure:1907: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1854: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_const=yes
 else
@@ -1924,21 +1871,21 @@ EOF
 fi
 
 echo $ac_n "checking for inline""... $ac_c" 1>&6
-echo "configure:1928: checking for inline" >&5
+echo "configure:1875: checking for inline" >&5
 if eval "test \"`echo '$''{'ac_cv_c_inline'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_cv_c_inline=no
 for ac_kw in inline __inline__ __inline; do
   cat > conftest.$ac_ext <<EOF
-#line 1935 "configure"
+#line 1882 "configure"
 #include "confdefs.h"
 
 int main() {
 } $ac_kw foo() {
 ; return 0; }
 EOF
-if { (eval echo configure:1942: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1889: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_inline=$ac_kw; break
 else
@@ -2066,7 +2013,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "Makefile zipios++/Makefile zipios++/zipios-config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile zipios++/Makefile src/Makefile tests/Makefile zipios++/zipios-config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -2154,7 +2101,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile zipios++/Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile zipios++/Makefile src/Makefile tests/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

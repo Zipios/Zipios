@@ -18,7 +18,7 @@ int main() {
   try {
   
     cout << "Instantiating a DirectoryCollection" << endl ;
-    DirectoryCollection collection( "/home/thomas/src/zipios/zipios++" ) ;
+    DirectoryCollection collection( "../zipios++" ) ;
 
     ConstEntryPointer ent = collection.getEntry( "zipios-config.h" ) ;
     if ( ent != 0 ) {
