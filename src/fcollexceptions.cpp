@@ -89,6 +89,34 @@ const char *InvalidStateException::what() const throw () {
 InvalidStateException::~InvalidStateException() throw () {} 
 
 
+
+
+
+Exception::Exception() throw () 
+  : _what( "Exception" ) {}
+
+Exception::Exception( const string &msg ) throw () 
+  : _what( msg ) {}
+
+Exception::
+Exception( const Exception &src ) throw () 
+  : _what( src._what ) {}
+
+
+Exception &Exception::
+operator= ( const Exception &src ) throw () {
+  _what = src._what ;
+  return *this ;
+}
+
+  
+const char *Exception::what() const throw () {
+  return _what.c_str() ;
+}
+
+Exception::~Exception() throw () {} 
+
+
 } // namespace
 
 /** \file

@@ -57,6 +57,21 @@ private:
   string _what ;
 };
 
+/** Basic exception */
+class Exception : public exception {
+public:
+  Exception() throw () ;
+  explicit Exception( const string &msg ) throw () ;
+  Exception( const Exception &src ) throw () ;
+  Exception &operator= ( const Exception &src ) throw () ;
+  
+  virtual const char *what() const throw () ;
+  virtual ~Exception() throw () ;
+private:
+  string _what ;
+};
+
+
 } // namespace
 #endif
 
