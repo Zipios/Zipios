@@ -116,6 +116,9 @@ int DirectoryCollection::size() const {
   return _entries.size() ;
 }
 
+DirectoryCollection *DirectoryCollection::clone() const {
+  return new DirectoryCollection( *this ) ;
+}
 
 DirectoryCollection::~DirectoryCollection() {}
 

@@ -42,6 +42,8 @@ public:
    */
   ZipFile() {}
 
+  /* Default Copy constructor and copy assignment operator are sufficient. */
+
   /** Constructor. Opens the zip file name. If the zip "file" is
       embedded in a file that contains other data, e.g. a binary
       program, the offset of the zip file start and end must be
@@ -58,6 +60,8 @@ public:
       of the specified zip archive is being read. */
   explicit ZipFile( const string &name, int s_off = 0, int e_off = 0
 		    /* , ios::open_mode mode  = ios::in | ios::binary */ ) ;
+
+  virtual ZipFile *clone() const ;
 
   /** Destructor. */
   virtual ~ZipFile() ;

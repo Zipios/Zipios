@@ -34,6 +34,8 @@ public:
 				bool recursive = true,
 				bool load_now = false ) ;
 
+  /* Default Copy constructor and copy assignment operator are sufficient. */
+
   virtual void close() ;
 
   virtual vector< ConstEntryPointer > entries() const ;
@@ -47,6 +49,8 @@ public:
 				     MatchPath matchpath = MATCH ) ;
 
   virtual int size() const ;
+
+  virtual DirectoryCollection *clone() const ;
 
   /** Destructor. */
   virtual ~DirectoryCollection() ;

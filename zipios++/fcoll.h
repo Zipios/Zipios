@@ -28,6 +28,9 @@ public:
   /** Copy constructor. */
   inline FileCollection( const FileCollection &src ) ;
 
+  /** Copy assignment operator. */
+  inline const FileCollection &operator= ( const FileCollection &src ) ;
+  
   /** Closes the FileCollection. */
   virtual void close() = 0 ;
 
@@ -82,6 +85,19 @@ public:
       @return the number of entries in the FileCollection. 
       @throw InvalidStateException Thrown if the collection is invalid. */
   virtual int size() const ;
+
+  /** The member function returns true if the collection is valid.
+      @return true if the collection is valid.
+   */ 
+  bool isValid() const { return _valid ; }
+
+  /** Create a heap allocated clone of the object this method is called for. The 
+      caller is responsible for deallocating the clone when he is done with it.
+      @return A heap allocated copy of the object this method is called for.
+  */
+  virtual FileCollection *clone() const = 0 ;
+
+
   /** FileCollection destructor. */
   virtual ~FileCollection () ;
 protected:
@@ -103,6 +119,20 @@ FileCollection::FileCollection( const FileCollection &src )
   vector< EntryPointer >::const_iterator it ;
   for ( it = src._entries.begin() ; it != src._entries.end() ; ++it )
     _entries.push_back( (*it)->clone() ) ;
+}
+
+const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
+  if ( this != &src ) {
+    _filename = src._filename ;
+    _valid    = src._valid    ;
+    _entries.clear() ;
+    _entries.reserve( src._entries.size() ) ;
+    
+    vector< EntryPointer >::const_iterator it ;
+    for ( it = src._entries.begin() ; it != src._entries.end() ; ++it )
+      _entries.push_back( (*it)->clone() ) ;
+  }
+  return *this ;
 }
 
 } // namespace

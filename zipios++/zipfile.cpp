@@ -41,6 +41,12 @@ ZipFile::ZipFile( const string &name , int s_off, int e_off
   init( _zipfile ) ;
 }
 
+
+ZipFile *ZipFile::clone() const {
+  return new ZipFile( *this ) ;
+}
+
+
 ZipFile::~ZipFile() {
   close() ;
 }
