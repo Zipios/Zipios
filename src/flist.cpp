@@ -74,7 +74,7 @@ istream *FileList::getInputStream( const ConstEntryPointer &entry ) {
 }
 
 istream *FileList::getInputStream( const string &entry_name, 
-				   MatchPath matchpath = MATCH ) {
+				   MatchPath matchpath ) {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid FileList" ) ;
   return new ifstream( entry_name.c_str() ) ;

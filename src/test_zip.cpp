@@ -92,11 +92,12 @@ int main() {
 }
 
 
-void copyStream( istream &is, ostream &os, int buflen = 10, bool cerr_report = true ) {
-  char buf[ buflen ] ;
+void copyStream( istream &is, ostream &os, int buflen, bool cerr_report ) {
+  char *buf = new char[ buflen ] ;
+//    char buf[ buflen ] ;
 
   while ( is && ! is.eof() ) {
-    is.read( buf, buflen - 1 ) ;
+    is.read( &( buf[ 0 ] ), buflen - 1 ) ;
     buf[ is.gcount() ] = '\0' ;
     os << buf ;
   }
@@ -106,11 +107,12 @@ void copyStream( istream &is, ostream &os, int buflen = 10, bool cerr_report = t
   cerr << "fail() = " << is.fail() << ",\t" ;
   cerr << "bad()  = " << is.bad()  << ",\t" ;
   cerr << "eof()  = " << is.eof()  << endl << endl;
+  delete [] buf ; 
 }
 
 
 void entryToFile( const string &ent_name, istream &is, const string &outfile,
-		  int buflen = 10, bool cerr_report = true ) {
+		  int buflen, bool cerr_report ) {
   ofstream ofs( outfile.c_str() ) ;
 
   cout << "writing " << ent_name << " to " << outfile << endl ;

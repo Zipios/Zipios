@@ -1,4 +1,6 @@
 
+#include "config.h"
+
 #ifdef HAVE_STD_IOSTREAM
 #include <iostream>
 #include <fstream>
@@ -17,6 +19,7 @@ namespace zipios {
 using std::cerr ;
 using std::endl ;
 using std::vector ;
+using std::ifstream ;
 
 DirectoryCollection::DirectoryCollection( const string &path ) {
   // Check path is actually a directory
@@ -54,7 +57,7 @@ vector< ConstEntryPointer > DirectoryCollection::entries() const {
 
 ConstEntryPointer
 DirectoryCollection::getEntry( const string &name, 
-			       MatchPath matchpath = MATCH ) const {
+			       MatchPath matchpath ) const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
 
@@ -81,7 +84,7 @@ istream *DirectoryCollection::getInputStream( const ConstEntryPointer &entry ) {
 
 
 istream *DirectoryCollection::getInputStream( const string &entry_name, 
-					      MatchPath matchpath = MATCH ) {
+					      MatchPath matchpath ) {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
 

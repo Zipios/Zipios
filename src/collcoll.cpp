@@ -50,7 +50,7 @@ vector< ConstEntryPointer > CollectionCollection::entries() const {
 
 
 ConstEntryPointer CollectionCollection::getEntry( const string &name, 
-						  MatchPath matchpath = MATCH ) const {
+						  MatchPath matchpath ) const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get an entry from an invalid CollectionCollection" ) ;
   // Returns the first matching entry.
@@ -74,7 +74,7 @@ istream *CollectionCollection::getInputStream( const ConstEntryPointer &entry ) 
 
 
 istream *CollectionCollection::getInputStream( const string &entry_name, 
-					       MatchPath matchpath = MATCH ) {
+					       MatchPath matchpath ) {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get an input stream from an invalid CollectionCollection" ) ;
 

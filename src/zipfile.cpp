@@ -51,7 +51,7 @@ istream *ZipFile::getInputStream( const ConstEntryPointer &entry ) {
 }
 
 istream *ZipFile::getInputStream( const string &entry_name, 
-				  MatchPath matchpath = MATCH ) {
+				  MatchPath matchpath ) {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid ZipFile" ) ;
 

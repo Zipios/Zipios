@@ -16,18 +16,21 @@ libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
                       fcoll.h                    fcoll_common.h            \
                       fcollexceptions.cpp        fcollexceptions.h         \
                       fileentry.cpp              fileentry.h               \
-                      flist.cpp                  flist.h                   \
-                      flistentry.cpp             flistentry.h              \
-                      flistscanner.h             filterinputstreambuf.cpp  \
+                      filterinputstreambuf.cpp                             \
                       filterinputstreambuf.h     inflateinputstreambuf.cpp \
                       inflateinputstreambuf.h    zipinputstreambuf.cpp     \
                       zipinputstreambuf.h        zipinputstream.cpp        \
                       zipinputstream.h           zipfile.cpp               \
                       zipfile.h                  ziphead.cpp               \
-                      ziphead.h                  flistscanner.ll           \
+                      ziphead.h                                            \
                       simplesmartptr.h           dircoll.h                 \
                       dircoll.cpp                collcoll.h                \
-                      collcoll.cpp               FlexLexer.h
+                      collcoll.cpp
+
+#               FlexLexer.h               \
+#                      flist.cpp                  flist.h                   \
+#                      flistentry.cpp             flistentry.h              \
+#                      flistscanner.h             flistscanner.ll
 
 test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
 

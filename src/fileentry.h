@@ -40,8 +40,8 @@ typedef SimpleSmartPointer< const FileEntry > ConstEntryPointer ;
     is a more general abstraction, that covers other types of file
     collections than just zip files. */
 class FileEntry {
-  friend class EntryPointer ;
-  friend class ConstEntryPointer ;
+  friend SimpleSmartPointer< FileEntry > ;
+  friend SimpleSmartPointer< const FileEntry > ;
 public:
   /** Constructor. */
   explicit FileEntry() : _ref_count( 0 ) {}
