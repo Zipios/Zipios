@@ -16,6 +16,9 @@ using std::auto_ptr ;
 using std::ofstream ;
 using std::vector ;
 
+/* We don't want Bogus in the doxygen generated class index :-) */
+#ifndef DOXYGEN
+
 class Bogus {
 protected:
   friend SimpleSmartPointer< Bogus > ;
@@ -27,6 +30,8 @@ protected:
 };
 
 typedef SimpleSmartPointer< Bogus > SPBogus ;
+
+#endif
 
 int main() {
   Bogus *p = new Bogus ;
