@@ -1,4 +1,4 @@
-%define version 0.1.5
+%define version 0.1.5.9
 %define release	1
 
 Name: zipios++
@@ -47,7 +47,6 @@ umask 022
 %files
 %defattr(-,root,root)
 /usr/lib/libzipios.*
-
 
 %files devel
 %defattr(-,root,root)

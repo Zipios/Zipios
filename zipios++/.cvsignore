@@ -1,6 +1,8 @@
 Makefile
+Makefile.in
 zipios-config.h
 stamp-h
 stamp-h.in
 .deps
-
+stamp-h1
+zipios-config.h.in

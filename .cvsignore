@@ -1,6 +1,12 @@
 Makefile
+Makefile.in
 config.status
 config.log
 doc
 config.cache
-
+aclocal.m4
+config.guess
+config.sub
+configure
+libtool
+ltmain.sh
