@@ -7,6 +7,8 @@
 
 #include "zipios++/simplesmartptr.h"
 
+#include <cassert>
+
 using namespace zipios ;
 
 using std::cerr ;
@@ -20,13 +22,18 @@ using std::vector ;
 #ifndef DOXYGEN
 
 class Bogus {
+public:
+  Bogus(bool &isAlive) : _isAlive(isAlive) {}
+  ~Bogus() { _isAlive = false; }
 protected:
   friend SimpleSmartPointer< Bogus > ;
   friend SimpleSmartPointer< const Bogus > ;
 
   void           ref() const { _refcount.ref() ;          }
   unsigned int unref() const { return _refcount.unref() ; }
+  unsigned int getReferenceCount() const { return _refcount.getReferenceCount() ; }
   ReferenceCount< Bogus > _refcount ;
+  bool &_isAlive;
 };
 
 typedef SimpleSmartPointer< Bogus > SPBogus ;
@@ -34,19 +41,27 @@ typedef SimpleSmartPointer< Bogus > SPBogus ;
 #endif
 
 int main() {
-  Bogus *p = new Bogus ;
-  SPBogus sp1( p ) ;
-  SPBogus sp2 ;
-  sp2 = sp1 ;
-
-  SPBogus sp3 ;
-  sp3 = p ;
-
-  cerr << " p         = " << p         << endl ;
-  cerr << " sp1.get() = " << sp1.get() << endl ;
-  cerr << " sp2.get() = " << sp2.get() << endl ;
-  cerr << " sp3.get() = " << sp3.get() << endl ;
-
+  bool isAlive = true;
+  {
+    Bogus *p = new Bogus(isAlive);
+    SPBogus sp1( p ) ;
+    assert( sp1.getReferenceCount() == 1 );
+    {
+      SPBogus sp2 ;
+      sp2 = sp1 ;
+      assert( sp1.getReferenceCount() == 2 );
+      { 
+	SPBogus sp3 ;
+	sp3 = p ;
+	assert( sp1.getReferenceCount() == 3 );
+      }
+      assert( sp1.getReferenceCount() == 2 );
+      assert( isAlive );
+    }
+    assert( sp1.getReferenceCount() == 1 );
+    assert( isAlive );
+  }
+  assert( ! isAlive );
 }
    
 

@@ -17,7 +17,7 @@ using std::auto_ptr ;
 using std::ofstream ;
 
 void entryToFile( const string &ent_name, istream &is, const string &outfile,
-		  bool cerr_report = true ) ;
+		  bool cerr_report = false ) ;
 
 int main() {
   try {
@@ -29,19 +29,19 @@ int main() {
     const string name_uz1    ( name_entry1 + unzip_ext ) ;
     const string name_uz2    ( name_entry2 + unzip_ext ) ;
     const string name_uz3    ( name_entry3 + unzip_ext ) ;
-    const string diffcmd     ( "diff -sq "             ) ;
-    const string unzipcmd    ( "unzip -oq "             ) ;
+    const string diffcmd     ( "diff -q "              ) ;
+    const string unzipcmd    ( "unzip -oq "            ) ;
 
     ZipFile rzf( name_zipfile ) ;
     ZipFile zf( rzf ) ; // Test copy constructor
 //      ZipFile zf( name_zipfile ) ;
 
     ConstEntries entries = zf.entries() ;
-    cout << "\nEntries (" << zf.size() <<  "):\n" ;
-    ConstEntries::iterator it ;
-    for( it = entries.begin() ; it != entries.end() ; it++)
-      cout << *(*it) << endl ;
-    cout << "\n" ;
+//      cout << "\nEntries (" << zf.size() <<  "):\n" ;
+//      ConstEntries::iterator it ;
+//      for( it = entries.begin() ; it != entries.end() ; it++)
+//        cout << *(*it) << endl ;
+//      cout << "\n" ;
     
     
     // Unzip second entry
@@ -64,20 +64,15 @@ int main() {
     zf2.getNextEntry() ;
     entryToFile( name_entry3, zf2, name_uz3 ) ;
     
-    cerr << "Unzipping entries using 'unzip' to get references to 'diff' against :\n" ;
+//      cerr << "Unzipping entries using 'unzip' to get references to 'diff' against :\n" ;
     system( string( unzipcmd + name_zipfile + " " + name_entry1 + " " + 
 		    name_entry2 + " " + name_entry3 ).c_str() ) ;
-    cerr << "\nOutput from " << diffcmd << " :\n" ;
-    system( string( diffcmd + name_uz1 + " " + name_entry1 ).c_str() ) ;
-    system( string( diffcmd + name_uz2 + " " + name_entry2 ).c_str() ) ;
-    system( string( diffcmd + name_uz3 + " " + name_entry3 ).c_str() ) ;
+//      cerr << "\nOutput from " << diffcmd << " :\n" ;
 
-    // Do things that are supposed to fail here
-    // FIXME: well... do it.
-
-    cout << "end of main()" << endl ;
-    
-    return 0 ;
+    // Fail if any one of the fails
+    return system( string( diffcmd + name_uz1 + " " + name_entry1 ).c_str() ) +
+           system( string( diffcmd + name_uz2 + " " + name_entry2 ).c_str() ) +
+           system( string( diffcmd + name_uz3 + " " + name_entry3 ).c_str() ) ;
   }
   catch( exception &excp ) {
     cerr << "Exception caught in main() :" << endl ;
@@ -90,7 +85,7 @@ void entryToFile( const string &ent_name, istream &is, const string &outfile,
 		  bool cerr_report ) {
   ofstream ofs( outfile.c_str(), ios::out | ios::binary ) ;
 
-  cout << "writing " << ent_name << " to " << outfile << endl ;
+//    cout << "writing " << ent_name << " to " << outfile << endl ;
 
   ofs << is.rdbuf() ;
   if ( cerr_report ) {

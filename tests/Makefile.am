@@ -59,3 +59,5 @@ all_tests_LDADD = -L../src -lzipios -lz
 
 check:
 	./all_tests
+	./test_zip
+	./test_simplesmartptr

@@ -62,6 +62,11 @@ public:
   operator void*() const { return _p ? (void *)(-1) : (void *)(0) ; }
 
   Type *get() const { return _p ; }
+
+  /** Returns the reference count - For debugging purposes. */
+  unsigned int getReferenceCount() const { return _p->getReferenceCount(); }
+
+
 private:
   template< class T2 >
   void ref( const T2 *ptr ) { if ( ptr ) ptr->ref() ; }
@@ -119,6 +124,9 @@ private:
 
   /** Decreases the reference count. */
   unsigned int unref() const { return --_ref_count ; }
+
+  /** Returns the reference count - For debugging purposes. */
+  unsigned int getReferenceCount() const { return _ref_count; }
 
   /** Holds the actual reference count */
   mutable unsigned short _ref_count ;
