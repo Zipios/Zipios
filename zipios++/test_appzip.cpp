@@ -37,16 +37,10 @@ int main( int argc, char *argv[] ) {
     ConstEntryPointer ent = zf.getEntry( "file2.txt", FileCollection::IGNORE ) ;
     if ( ent != 0 ) {
       auto_ptr< istream > is( zf.getInputStream( ent ) ) ;
-      const int buflen = 20 ;
-      char buf[ buflen ] ;
       
       cout << "Contents of entry, " << ent->getName() << " :" << endl ;
-      
-      while ( *is && ! is->eof() ) {
-	is->read( buf, buflen - 1 ) ;
-	buf[ is->gcount() ] = '\0' ;
-	cout << buf ;
-      }
+
+      cout << is->rdbuf() ;
     }
     cout << "end of main()" << endl ;
     

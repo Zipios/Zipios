@@ -29,24 +29,13 @@ int main() {
 //      cout << str ;
 //    }
   
-  const int buflen = 2 ;
-  char buf[ buflen ] ;
   
-  
-  while ( is && ! is.eof() ) {
-    is.read( buf, buflen - 1 ) ;
-    buf[ is.gcount() ] = '\0' ;
-    cout << buf ;
-  }
+  cout << is.rdbuf() ;
 
   izf.getNextEntry() ;
   istream is2( &izf ) ;
 
-  while ( is2 && ! is2.eof() ) {
-    is2.read( buf, buflen - 1 ) ;
-    buf[ is2.gcount() ] = '\0' ;
-    cout << buf ;
-  }
+  cout << is2.rdbuf() ;
 
   cerr << "End of main" << endl ;
 }

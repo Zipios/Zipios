@@ -23,9 +23,7 @@ using std::auto_ptr ;
 using std::ofstream ;
 
 void entryToFile( const string &ent_name, istream &is, const string &outfile,
-		  int buflen = 10, bool cerr_report = true ) ;
-
-void copyStream( istream &is, ostream &os, int bufsize = 10, bool cerr_report = true ) ;
+		  bool cerr_report = true ) ;
 
 int main() {
   try {
@@ -50,21 +48,21 @@ int main() {
     cout << "\n" ;
     
     
-    // Unzip second entry using a large buffer
+    // Unzip second entry
     ConstEntryPointer ent = zf.getEntry( name_entry2, FileCollection::IGNORE ) ;
     if ( ent != 0 ) {
       auto_ptr< istream > is( zf.getInputStream( ent ) ) ;
-      entryToFile( name_entry2, *is, name_uz2, 200 ) ;
+      entryToFile( name_entry2, *is, name_uz2 ) ;
     }
     
-    // Unzip first entry using a large buffer
+    // Unzip first entry
     ent = zf.getEntry( name_entry1, FileCollection::IGNORE ) ;
     if ( ent != 0 ) {
       auto_ptr< istream > is( zf.getInputStream( ent ) ) ;
-      entryToFile( name_entry2, *is, name_uz1, 200 ) ;
+      entryToFile( name_entry1, *is, name_uz1 ) ;
     }
-    
-    // Unzip third entry, by use of zipfile alone
+
+    // Unzip third entry, by use of ZipInputStream alone
     ZipInputStream zf2( name_zipfile ) ;
     zf2.getNextEntry() ;
     zf2.getNextEntry() ;
@@ -92,31 +90,20 @@ int main() {
 }
 
 
-void copyStream( istream &is, ostream &os, int buflen, bool cerr_report ) {
-  char *buf = new char[ buflen ] ;
-//    char buf[ buflen ] ;
-
-  while ( is && ! is.eof() ) {
-    is.read( &( buf[ 0 ] ), buflen - 1 ) ;
-    buf[ is.gcount() ] = '\0' ;
-    os << buf ;
-  }
-  
-  cerr << "Stream state: "  ;
-  cerr << "good() = " << is.good() << ",\t" ;
-  cerr << "fail() = " << is.fail() << ",\t" ;
-  cerr << "bad()  = " << is.bad()  << ",\t" ;
-  cerr << "eof()  = " << is.eof()  << endl << endl;
-  delete [] buf ; 
-}
-
-
 void entryToFile( const string &ent_name, istream &is, const string &outfile,
-		  int buflen, bool cerr_report ) {
+		  bool cerr_report ) {
   ofstream ofs( outfile.c_str() ) ;
 
   cout << "writing " << ent_name << " to " << outfile << endl ;
-  copyStream( is, ofs, 200 ) ;
+
+  ofs << is.rdbuf() ;
+  if ( cerr_report ) {
+    cerr << "Stream state: "  ;
+    cerr << "good() = " << is.good() << ",\t" ;
+    cerr << "fail() = " << is.fail() << ",\t" ;
+    cerr << "bad()  = " << is.bad()  << ",\t" ;
+    cerr << "eof()  = " << is.eof()  << endl << endl;
+  }
   ofs.close() ;
 }
    

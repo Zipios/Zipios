@@ -35,17 +35,10 @@ int main() {
     const FileEntry  *ent = fl.getEntry( "fil2.txt", FileCollection::IGNORE ) ;
     if ( ent != 0 ) {
       istream *is = fl.getInputStream( ent ) ;
-      const int buflen = 2 ;
-      char buf[ buflen ] ;
       
       cout << "Contents of first entry, " << ent->getName() << " :" << endl ;
       
-      is->read( buf, buflen - 1 ) ;
-      while ( is && ! is->eof() ) {
-	buf[ is->gcount() ] = '\0' ;
-	cout << buf ;
-	is->read( buf, buflen - 1 ) ;
-      }
+      cout << is->rdbuf() ;
       delete is ;
     }
     cout << "end of main()" << endl ;

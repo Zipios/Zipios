@@ -28,30 +28,15 @@ int main() {
     //      cout << str ;
     //    }
     
-    const int buflen = 2 ;
-    char buf[ buflen ] ;
-    
-    
-    while ( is && ! is.eof() ) {
-      is.read( buf, buflen - 1 ) ;
-      buf[ is.gcount() ] = '\0' ;
-      cout << buf ;
-    }
+    cout << is.rdbuf() ;
     
     is.getNextEntry() ;
     
-    while ( is && ! is.eof() ) {
-      is.read( buf, buflen - 1 ) ;
-      buf[ is.gcount() ] = '\0' ;
-      cout << buf ;
-    }
+    cout << is.rdbuf() ;
     
     is.getNextEntry() ;
-    while ( is && ! is.eof() ) {
-      is.read( buf, buflen - 1 ) ;
-      buf[ is.gcount() ] = '\0' ;
-      cout << buf ;
-    }
+
+    cout << is.rdbuf() ;
 
     cerr << "Stream.state:" << endl ;
     cerr << "is.good() = " << is.good() << endl ;
