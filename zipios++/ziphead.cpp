@@ -1,31 +1,18 @@
 
 #include "zipios++/zipios-config.h"
 
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
-#include <iostream>
-#else
-#include <iostream.h>
-#endif
+#include "zipios++/meta-iostreams.h"
 #include <iterator>
-#ifdef HAVE_SSTREAM
-#include <sstream>
-#else
-#include <strstream.h>
-#endif
 #include <string>
 
 #include "zipios++/fcoll_common.h"
 #include "zipios++/ziphead.h"
 
+#include "outputstringstream.h"
+
 namespace zipios {
 
 using std::ios ;
-#ifdef HAVE_SSTREAM
-using std::ostringstream ;
-#else
-using std::ostrstream ;
-using std::ends ;
-#endif
 
 istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) {
   zlh._valid = false ; // set to true upon successful completion.
@@ -248,17 +235,9 @@ void ZipLocalEntry::setTime( int time ) {
 }
 
 string ZipLocalEntry::toString() const {
-#ifdef HAVE_SSTREAM
-  ostringstream sout ;
-#else
-  ostrstream sout ;
-#endif
+  OutputStringStream sout ;
   sout << filename << " (" << uncompress_size << " bytes, " ;
   sout << compress_size << " bytes compressed)" ;
-#ifndef HAVE_SSTREAM
-  sout << ends ; // null terminate ostrstream
-  sout.freeze( 0 ) ; // Deallocate the string when ostrstream is destroyed.
-#endif
   return sout.str() ;
 }
 
@@ -297,18 +276,9 @@ void ZipCDirEntry::setComment( const string &comment ) {
 
 
 string ZipCDirEntry::toString() const {
-#ifdef HAVE_SSTREAM
-  ostringstream sout ;
-#else
-  ostrstream sout ;
-#endif
+  OutputStringStream sout ;
   sout << filename << " (" << uncompress_size << " bytes, " ;
   sout << compress_size << " bytes compressed)" ;
-#ifndef HAVE_SSTREAM
-  sout << ends ; // null terminate ostrstream
-  sout.freeze( 0 ) ; // Deallocate the string when ostrstream is destroyed.
-#endif
-
   return sout.str() ;
 }
 

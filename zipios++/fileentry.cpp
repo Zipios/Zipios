@@ -1,11 +1,7 @@
 
 #include "zipios++/zipios-config.h"
 
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
-#include <iostream>
-#else
-#include <iostream.h>
-#endif
+#include "zipios++/meta-iostreams.h"
 #include <string>
 
 #include "zipios++/fileentry.h"

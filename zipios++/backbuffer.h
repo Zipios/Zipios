@@ -5,12 +5,7 @@
 
 #include <algorithm>
 
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
-#include <iostream>
-#else
-#include <iostream.h>
-#endif
-
+#include "zipios++/meta-iostreams.h"
 #include <vector>
 
 #include "zipios++/fcollexceptions.h"

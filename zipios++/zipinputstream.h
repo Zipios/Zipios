@@ -3,15 +3,7 @@
 
 #include "zipios++/zipios-config.h"
 
-// This also includes the right streambuf header file
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
-#include <iostream>
-#include <fstream>
-#else
-#include <iostream.h>
-#include <fstream.h>
-#endif
-
+#include "zipios++/meta-iostreams.h"
 #include <string>
 
 #include "zipios++/ziphead.h"

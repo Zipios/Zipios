@@ -1,34 +1,19 @@
 
 #include "zipios++/zipios-config.h"
 
-#ifdef HAVE_SSTREAM
-#include <sstream>
-#else
-#include <strstream.h>
-#endif
-
-// This includes the right streambuf header file
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
-#include <iostream>
-#else
-#include <iostream.h>
-#endif
+#include "zipios++/meta-iostreams.h"
 
 #include <zlib.h>
 
 #include "zipios++/fcollexceptions.h"
 #include "zipios++/inflateinputstreambuf.h"
 
+#include "outputstringstream.h"
+
 namespace zipios {
 
 using std::cerr ;
 using std::endl ;
-#ifdef HAVE_SSTREAM
-using std::ostringstream ;
-#else
-using std::ostrstream ;
-using std::ends ;
-#endif
 
 InflateInputStreambuf::InflateInputStreambuf( streambuf *inbuf, int s_pos, bool del_inbuf ) 
   : FilterInputStreambuf( inbuf, del_inbuf ),
@@ -108,18 +93,10 @@ int InflateInputStreambuf::underflow() {
   if( err != Z_OK && err != Z_STREAM_END ) {
 #if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
     // Throw an exception to make istream set badbit
-#ifdef HAVE_SSTREAM
-  ostringstream msgs ;
-#else
-  ostrstream msgs ;
-#endif
+    OutputStringStream msgs ;
     msgs << "InflateInputStreambuf: inflate failed" ;
 #ifdef HAVE_ZERROR
     msgs << ": " << zError( err ) ;
-#endif
-#ifndef HAVE_SSTREAM
-  msgs << ends ; // null terminate ostrstream
-  msgs.freeze( 0 ) ; // Deallocate the string when ostrstream is destroyed.
 #endif
     throw IOException( msgs.str() ) ;
 #endif
@@ -131,6 +108,8 @@ int InflateInputStreambuf::underflow() {
   else 
     return EOF ; // traits_type::eof() ;
 }
+
+
 
 // This method is called in the constructor, so it must not
 // read anything from the input streambuf _inbuf (see notice in constructor)

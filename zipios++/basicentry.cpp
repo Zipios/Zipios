@@ -2,33 +2,19 @@
 #include "zipios++/zipios-config.h"
 
 #include <assert.h>
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
-#include <iostream>
-#include <fstream>
-#else
-#include <iostream.h>
-#include <fstream.h>
-#endif
-#ifdef HAVE_SSTREAM
-#include <sstream>
-#else
-#include <strstream.h>
-#endif
+
+#include "zipios++/meta-iostreams.h"
 #include <string>
 
 #include "zipios++/fcoll_common.h"
 #include "zipios++/basicentry.h"
 
+#include "outputstringstream.h"
+
 namespace zipios {
 
 using std::ifstream ;
 using std::ios ;
-#ifdef HAVE_SSTREAM
-using std::ostringstream ;
-#else
-using std::ostrstream ;
-using std::ends ;
-#endif
 
 //
 // Public definitions
@@ -137,17 +123,8 @@ void BasicEntry::setTime( int time ) {
 
 
 string BasicEntry::toString() const {
-#ifdef HAVE_SSTREAM
-  ostringstream sout ;
-#else
-  ostrstream sout ;
-#endif
+  OutputStringStream sout ;
   sout << _filename << " (" << _size << " bytes)" ;
-#ifndef HAVE_SSTREAM
-  sout << ends ; // null terminate ostrstream
-  sout.freeze( 0 ) ; // Deallocate the string when ostrstream is destroyed.
-#endif
-
   return sout.str() ;
 }
 
