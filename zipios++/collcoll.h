@@ -17,7 +17,11 @@ using std::string ;
     arbitrary number of FileCollections. With a CollectionCollection
     the user can use multiple FileCollections transparently, making it
     easy for a program to keep some of its files in a zip archive and
-    others stored in ordinary files.
+    others stored in ordinary files. CollectionCollection can be used
+    to create a simple virtual filesystem, where all collections are
+    mounted in /. If more than one collection contain a file with
+    the same path only the one in the first added collection will
+    be accessible.
 */
 class CollectionCollection : public FileCollection {
 public:
@@ -32,11 +36,30 @@ public:
    */
   explicit CollectionCollection() ;
 
+  /** Copy constructor. */
+  inline CollectionCollection( const CollectionCollection &src ) ;
+
+  /** Copy assignment operator. */
+  inline const CollectionCollection &operator= ( const CollectionCollection &src ) ;
+
   /** \anchor collcoll_addcoll_anchor
       Adds a collection.
       @param collection The collection to add.
+      @return true if the collection was added succesfully and
+      the added collection is valid.
    */
-  bool addCollection( FileCollection &collection ) ;
+  bool addCollection( const FileCollection &collection ) ;
+
+  /** Adds the collection pointed to by collection. The CollectionCollection
+      will call delete on the pointer when it is destructed, so the caller
+      should make absolutely sure to only pass in a collection created with new
+      and be sure to leave it alone after adding it. If the collection is not
+      added false is returned and the caller remains responsible for the
+      collection pointed to by collection.
+      @param collection A pointer to the collection to add.
+      @return true if the collection was added succesfully and
+      the added collection is valid. */
+  bool addCollection( FileCollection *collection ) ;
 
   virtual void close() ;
 
@@ -53,6 +76,10 @@ public:
   /** Returns the number in entries in all collections kept by
       the CollectionCollection object */
   virtual int size() const ;
+  
+  virtual CollectionCollection *clone() const ;
+
+  virtual ~CollectionCollection() ;
 
 protected:
   /** A protected getEntry member function, that not only
@@ -77,13 +104,44 @@ CollectionCollection */
 typedef CollectionCollection CCol ;
 
 
-// Inline methods
+//
+// Inline (member) functions
+//
 
 CollectionCollection *CollectionCollection::inst() {
   if( _inst != 0 )
     return _inst ;
   else
     return _inst = new CollectionCollection ;
+}
+
+CollectionCollection::CollectionCollection( const CollectionCollection &src ) 
+  : FileCollection( static_cast< FileCollection >( src ) )
+{
+  _collections.reserve( src._collections.size() ) ;
+  vector< FileCollection * >::const_iterator it ;
+  for ( it = src._collections.begin() ; it != src._collections.end() ; ++it )
+    _collections.push_back( (*it)->clone() ) ;
+}
+
+
+const CollectionCollection &
+CollectionCollection::operator= ( const CollectionCollection &src ) {
+  this->FileCollection::operator=( static_cast< FileCollection >( src ) ) ;
+//    FileCollection::=( static_cast< FileCollection >( src ) ) ; 
+
+  if ( this != &src ) {
+    // Destroy current contents.
+    vector< FileCollection * >::const_iterator it ;
+    for ( it = _collections.begin() ; it != _collections.end() ; ++it )
+      delete *it ;
+    //  Then copy src's content.
+    _collections.clear() ;
+    _collections.reserve( src._collections.size() ) ;
+    for ( it = src._collections.begin() ; it != src._collections.end() ; ++it )
+      _collections.push_back( (*it)->clone() ) ;
+  }
+  return *this ;
 }
 
 } // namespace

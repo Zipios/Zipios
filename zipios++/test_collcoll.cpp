@@ -32,12 +32,28 @@ int main() {
     ZipFile zipfile( "test.zip" ) ;
     
     cout << "Instantiating a CollectionCollection" << endl ;
-    CollectionCollection collcoll ;
+    CollectionCollection collcoll_orig ;
 
     cout << "Adding the zip file and directory collection to the collection collection" 
 	 << endl ;
-    collcoll.addCollection( zipfile ) ;
-    collcoll.addCollection( dircoll ) ;
+    if ( ! collcoll_orig.addCollection( zipfile ) ) {
+      cerr << "Failed to add the zip file" << endl ;
+      return 1 ;
+    }
+    if ( ! collcoll_orig.addCollection( dircoll ) ) {
+      cerr << "Failed to add the zip file" << endl ;
+      return 1 ;
+    }
+
+    CollectionCollection collcoll( collcoll_orig ) ; // Test copy constructor
+//      if ( ! collcoll.addCollection( new ZipFile( "test.zip" ) ) ) {
+//        cerr << "Failed to add the zip file" << endl ;
+//        return 1 ;
+//      }
+//      if ( ! collcoll.addCollection( new DirectoryCollection( "." ) ) ) {
+//        cerr << "Failed to add the zip file" << endl ;
+//        return 1 ;
+//      }
 
 //      cout << "list length : " << collcoll.size() << endl ;
     

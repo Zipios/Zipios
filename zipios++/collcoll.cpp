@@ -22,12 +22,22 @@ CollectionCollection::CollectionCollection() {
 }
 
 
-bool CollectionCollection::addCollection( FileCollection &collection ) {
+bool CollectionCollection::addCollection( const FileCollection &collection ) {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to add a FileCollection to an invalid CollectionCollection" ) ;
-  if ( this == &collection )
+  if ( this == &collection || ! collection.isValid()  )
     return false ;
-  _collections.push_back( &collection ) ;
+  _collections.push_back( collection.clone() ) ;
+  return true ;
+  
+}
+
+bool CollectionCollection::addCollection( FileCollection *collection ) {
+  if ( ! _valid )
+    throw InvalidStateException( "Attempt to add a FileCollection to an invalid CollectionCollection" ) ;
+  if ( collection == 0 || this == collection || ! collection->isValid() )
+    return false ;
+  _collections.push_back( collection ) ;
   return true ;
 }
 
@@ -98,6 +108,17 @@ int CollectionCollection::size() const {
     sz += (*it)->size() ;
   return sz ;
 }
+
+CollectionCollection *CollectionCollection::clone() const {
+  return new CollectionCollection( *this ) ;
+}
+
+CollectionCollection::~CollectionCollection() {
+  vector< FileCollection * >::iterator it ;
+  for ( it = _collections.begin() ; it != _collections.end() ; ++it )
+    delete *it ;
+}
+
 
 //
 // Protected member functions
