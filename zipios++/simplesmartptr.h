@@ -46,6 +46,12 @@ public:
     return *this ;
   }
 
+  SimpleSmartPointer &operator=( Type *src ) {
+    _p = src ;
+    ref() ; 
+    return *this ;
+  }
+
   bool operator== ( const Type *p )                const { return _p == p     ; }
   bool operator!= ( const Type *p )                const { return _p != p     ; }
   bool operator== ( const SimpleSmartPointer &sp ) const { return _p == sp.get() ; }
