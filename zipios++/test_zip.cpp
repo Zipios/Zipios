@@ -37,8 +37,10 @@ int main() {
     const string name_uz3    ( name_entry3 + unzip_ext ) ;
     const string diffcmd     ( "diff -sq "             ) ;
     const string unzipcmd    ( "unzip -oq "             ) ;
-    
-    ZipFile zf( name_zipfile ) ;
+
+    ZipFile rzf( name_zipfile ) ;
+    ZipFile zf( rzf ) ; // Test copy constructor
+//      ZipFile zf( name_zipfile ) ;
 
     vector< ConstEntryPointer > entries = zf.entries() ;
     cout << "\nEntries (" << zf.size() <<  "):\n" ;
