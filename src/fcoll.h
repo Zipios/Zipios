@@ -177,9 +177,6 @@ protected:
    http://sourceforge.net/project/?group_id=5418</A>
    
    \section links Links
-   <A HREF="http://www.miba.auc.dk/~thomas/streambuf">Deriving
-   the C++ iostreams and streambuf</A>
-   
    <A HREF="http://www.fensende.com/zpp/">Zpp</A>. A library very similar 
    to Zipios++.
    
