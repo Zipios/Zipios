@@ -37,7 +37,7 @@ int main() {
 void writeFileToZipOutputStreambuf( ZipOutputStreambuf &zosb, const string &filename ) {
   zosb.putNextEntry( ZipCDirEntry( filename ) ) ;
 
-  ifstream ifs( filename.c_str() ) ;
+  ifstream ifs( filename.c_str(), ios::in | ios::binary ) ;
   ostream ozs( &zosb ) ;
   ozs << ifs.rdbuf() ; 
   cerr << ifs.rdbuf() ;

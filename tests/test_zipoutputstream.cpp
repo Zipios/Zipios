@@ -22,6 +22,9 @@ int main() {
     
     writeFileToZipOutputStream( ozs, "test_zip" ) ;
     writeFileToZipOutputStream( ozs, "test_dircoll" ) ;
+    writeFileToZipOutputStream( ozs, "test.zip" ) ;
+    writeFileToZipOutputStream( ozs, "test_simplesmartptr" ) ;
+    writeFileToZipOutputStream( ozs, "test_appzip" ) ;
     
     cerr << "End of main" << endl ;
     
@@ -36,7 +39,7 @@ int main() {
 void writeFileToZipOutputStream( ZipOutputStream &zos, const string &filename ) {
   zos.putNextEntry( ZipCDirEntry( filename ) ) ;
 
-  ifstream ifs( filename.c_str() ) ;
+  ifstream ifs( filename.c_str(), ios::in | ios::binary ) ;
 
   zos << ifs.rdbuf() ; 
 

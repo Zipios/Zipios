@@ -13,7 +13,7 @@ using std::cerr ;
 using std::endl ;
 
 int main() {
-  ifstream f( "test.zip" ) ;
+  ifstream f( "test.zip", ios::in | ios::binary ) ;
   ZipInputStreambuf izf( f.rdbuf() ) ;
   istream is( &izf ) ;
 
