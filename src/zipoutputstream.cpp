@@ -6,10 +6,12 @@
 #include "zipios++/zipoutputstreambuf.h"
 #include "zipios++/zipoutputstream.h"
 
+using std::ostream;
+
 namespace zipios {
 
 ZipOutputStream::ZipOutputStream( std::ostream &os ) 
-  : std::ostream( 0 ), 
+  : ostream( 0 ), 
 // SGIs basic_ifstream calls istream with 0, but calls basic_ios constructor first??
     ofs( 0 )
 {
@@ -20,7 +22,7 @@ ZipOutputStream::ZipOutputStream( std::ostream &os )
 
 
 ZipOutputStream::ZipOutputStream( const std::string &filename )
-  : std::ostream( 0 ),
+  : ostream( 0 ),
     ofs( 0 )
 {
   ofs = new std::ofstream( filename.c_str(), std::ios::out | std::ios::binary ) ;

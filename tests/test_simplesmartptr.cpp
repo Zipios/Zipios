@@ -21,11 +21,14 @@ using std::vector ;
 /* We don't want Bogus in the doxygen generated class index :-) */
 #ifndef DOXYGEN
 
+namespace zipios {
+
 class Bogus {
 public:
   Bogus(bool &isAlive) : _isAlive(isAlive) {}
   ~Bogus() { _isAlive = false; }
 protected:
+// http://support.microsoft.com/default.aspx?scid=kb;EN-US;168384
   friend class SimpleSmartPointer< Bogus > ;
   friend class SimpleSmartPointer< const Bogus > ;
 
@@ -35,6 +38,8 @@ protected:
   ReferenceCount< Bogus > _refcount ;
   bool &_isAlive;
 };
+
+} // namespace 
 
 typedef SimpleSmartPointer< Bogus > SPBogus ;
 

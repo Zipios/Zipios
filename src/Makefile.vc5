@@ -1,5 +1,5 @@
 #
-# Will build static and dynamic versions of zipios.lib with Visual C++ 5 & 6
+# Will build static and dynamic versions of zipios.lib with Visual C++ 5 & 6 & 7
 #
 
 ################## DO NOT EDIT BELOW THIS LINE ###############################
@@ -18,10 +18,12 @@ all: static dynamic
 #
 # Static library
 #
-OBJECTS = basicentry.obj chk.obj collcoll.obj dircoll.obj directory.obj \
+OBJECTS = basicentry.obj collcoll.obj dircoll.obj directory.obj \
 	fcoll.obj fcollexceptions.obj fileentry.obj filepath.obj \
 	filterinputstreambuf.obj inflateinputstreambuf.obj zipfile.obj \
-	ziphead.obj zipinputstream.obj zipinputstreambuf.obj
+	ziphead.obj zipheadio.obj zipinputstream.obj zipinputstreambuf.obj \
+	filteroutputstreambuf.obj deflateoutputstreambuf.obj \
+	zipoutputstreambuf.obj zipoutputstream.obj
 
 CPPFLAGS = /nologo /O2 /GX /I.. /D"_WINDOWS" /D"WIN32" /D"NDEBUG" \
 	/I"$(ZLIB_INC)"
@@ -32,10 +34,12 @@ CPPFLAGS = /nologo /O2 /GX /I.. /D"_WINDOWS" /D"WIN32" /D"NDEBUG" \
 # DLL
 #
 
-OBJECTS_DLL = basicentry.obl chk.obl collcoll.obl dircoll.obl directory.obl \
+OBJECTS_DLL = basicentry.obl collcoll.obl dircoll.obl directory.obl \
 	fcoll.obl fcollexceptions.obl fileentry.obl filepath.obl \
 	filterinputstreambuf.obl inflateinputstreambuf.obl zipfile.obl \
-	ziphead.obl zipinputstream.obl zipinputstreambuf.obl
+	ziphead.obl zipheadio.obl zipinputstream.obl zipinputstreambuf.obl \
+	filteroutputstreambuf.obl deflateoutputstreambif.obl \
+	zipoutputstreambuf.obl zipoutputstream.obl	
 
 ###########################################################################
 
@@ -58,7 +62,7 @@ clean: tidy
 	@echo Cleaned src
 	@echo ***********
 	@if exist *.obj del *.obj
-	@if exist *.obj del *.obl
+	@if exist *.obl del *.obl
 	@if exist $(ZIPIOS_LIB) del $(ZIPIOS_LIB)
 	@if exist $(ZIPIOS_DLL) del $(ZIPIOS_DLL)
 	@if exist $(CONFIG_HDR) del $(CONFIG_HDR)

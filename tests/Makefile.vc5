@@ -1,5 +1,5 @@
 #
-# Will build and run test executables with Visual C++ 5 & 6
+# Will build and run test executables with Visual C++ 5 & 6 & 7
 #
 
 ################## DO NOT EDIT BELOW THIS LINE ###############################
@@ -21,18 +21,22 @@ CURRENT = $(TST_DIR)
 # Test programs
 #
 
-OBJECTS = example_zip.obj test_appzip.obj test_collcoll.obj \
-	test_dircoll.obj test_zip.obj test_zipinputstream.obj \
-	test_zipinputstreambuf.obj
+OBJECTS = all_tests.obj commontest.obj \
+    example_zip.obj test_appzip.obj test_collcoll.obj \
+	test_dircoll.obj test_simplesmartptr.obj test_zip.obj \
+	test_zipinputstream.obj test_zipinputstreambuf.obj \
+	test_zipoutputstream.obj test_zipoutputstreambuf.obj
 
-TESTS = example_zip.exe test_appzip.exe test_collcoll.exe \
-	test_dircoll.exe test_zip.exe test_zipinputstream.exe \
-	test_zipinputstreambuf.exe
+TESTS = all_test.exe \
+    example_zip.exe test_appzip.exe test_collcoll.exe \
+	test_dircoll.exe test_simplesmartptr.exe test_zip.exe \
+	test_zipinputstream.exe test_zipinputstreambuf.exe \
+	test_zipoutputstream.exe test_zipoutputstreambuf.exe
 
 CPPFLAGS = /nologo /O2 /GX /I.. /D"_WINDOWS" /D"WIN32" /D"NDEBUG" \
-	/I"$(ZLIB_INC)"
+	/I"$(ZLIB_INC)" /I"$(CPPUNIT_INC)"
 
-LINKFLAGS = /LIBPATH:$(ZLIB_LIB)
+LINKFLAGS = /LIBPATH:$(ZLIB_LIB) /LIBPATH:$(CPPUNIT_LIB)
 
 ##########################################################################
 

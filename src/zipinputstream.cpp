@@ -6,10 +6,12 @@
 #include "zipios++/zipinputstreambuf.h"
 #include "zipios++/zipinputstream.h"
 
+using std::istream;
+
 namespace zipios {
 
 ZipInputStream::ZipInputStream( std::istream &is, std::streampos pos ) 
-  : std::istream( 0 ), 
+  : istream( 0 ), 
 // SGIs basic_ifstream calls istream with 0, but calls basic_ios constructor first??
     ifs( 0 )
 {
@@ -19,7 +21,7 @@ ZipInputStream::ZipInputStream( std::istream &is, std::streampos pos )
 }
 
 ZipInputStream::ZipInputStream( const std::string &filename, std::streampos pos )
-  : std::istream( 0 ),
+  : istream( 0 ),
     ifs( 0 )
 {
   ifs = new std::ifstream( filename.c_str(), std::ios::in |std:: ios::binary ) ;

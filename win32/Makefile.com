@@ -8,8 +8,17 @@
 
 #ZLIB_INC = ..
 #ZLIB_LIB = ..
-ZLIB_INC=d:\home\kev\include
-ZLIB_LIB=d:\home\kev\lib
+ZLIB_INC=d:\zlib-1.1.4
+ZLIB_LIB=d:\zlib-1.1.4\WIN32-VC
+
+#
+# If cppunit is not in standard compiler paths, define it here
+# 
+#CPPUNIT_INC = ..
+#CPPUNIT_LIB = ..
+CPPUNIT_INC=d:\cppunit-1.9.11\include
+CPPUNIT_LIB=d:\cppunit-1.9.11\WIN32-VC
+
 ################## DO NOT EDIT BELOW THIS LINE #############################
 
 #
