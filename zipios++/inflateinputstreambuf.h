@@ -1,5 +1,5 @@
-#ifndef InflateInputStreambuf_H
-#define InflateInputStreambuf_H
+#ifndef INFLATEINPUTSTREAMBUF_H
+#define INFLATEINPUTSTREAMBUF_H
 
 #include "zipios++/zipios-config.h"
 

@@ -1,5 +1,5 @@
-#ifndef ZipInputStream_H
-#define ZipInputStream_H
+#ifndef ZIPINPUTSTREAM_H
+#define ZIPINPUTSTREAM_H
 
 #include "zipios++/zipios-config.h"
 
