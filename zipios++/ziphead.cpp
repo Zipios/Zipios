@@ -19,8 +19,6 @@
 
 namespace zipios {
 
-using std::cerr ;
-using std::endl ;
 using std::ios ;
 #ifdef HAVE_SSTREAM
 using std::ostringstream ;
@@ -31,10 +29,8 @@ using std::ends ;
 
 istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) {
   zlh._valid = false ; // set to true upon successful completion.
-  if ( ! is ) {
-    cerr << "istream in error state prior to reading ZipLocalEntry" << endl ;
+  if ( ! is )
     return is ;
-  }
 
 //    // Before reading anything we record the position in the stream
 //    // This is a field in the central directory entry, but not
@@ -75,10 +71,8 @@ istream& operator>> ( istream &is, DataDescriptor &dd ) {
 
 istream& operator>> ( istream &is, ZipCDirEntry &zcdh ) {
   zcdh._valid = false ; // set to true upon successful completion.
-  if ( ! is ) {
-    cerr << "istream in error state prior to reading ZipLocalEntry" << endl ;
+  if ( ! is ) 
     return is ;
-  }
 
   if ( zcdh.signature != readUint32( is ) ) {
     // put stream in error state and return
