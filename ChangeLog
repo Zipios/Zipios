@@ -1,3 +1,71 @@
+2000-06-18 17:38  thomas
+
+	* README, aclocal.m4, configure, configure.in: Updated the version
+	number to 0.1.4
+
+2000-06-18 17:18  thomas
+
+	* zipios++/: inflateinputstreambuf.cpp, zipinputstreambuf.cpp:
+	Fixed a very bad bug, where ZipInputStreambuf::underflow() and
+	InflateInputStreambuf::underflow() would return eof prematurely.
+	
+	The problem was that if the character 255 unsigned (-1 unsigned)
+	was returned by underflow() it would be converted to the int -1,
+	which is the same as EOF. The fix is to return static_cast<
+	unsigned char >( *gptr ). This way EOF can never occur as a normal
+	data byte and this is exactly why underflow() returns an int and
+	not just a char.
+
+2000-06-18 17:06  thomas
+
+	* zipios++/: example_zip.cpp, test_appzip.cpp, test_collcoll.cpp,
+	test_dircoll.cpp, test_flist.cpp, test_zip.cpp,
+	test_zipinputstream.cpp, test_zipinputstreambuf.cpp: The code
+	fragment used to copy data from an istream to an ostream in all the
+	test programs was verbose and wrong. It has been replaced with
+	ostreamm << istream.rdbuf() everywhere.
+
+2000-06-17 13:42  thomas
+
+	* README: Small modification to the Installation section.
+
+2000-06-17 13:40  thomas
+
+	* README: The README file no contains useful information.
+
+2000-06-17 13:31  thomas
+
+	* INSTALL: The install file was empty.
+
+2000-06-12 12:13  thomas
+
+	* COPYING, Makefile.am, Makefile.in, aclocal.m4, configure,
+	configure.in, zipios++/appendzip.cpp, zipios++/backbuffer.h,
+	zipios++/basicentry.cpp, zipios++/basicentry.h,
+	zipios++/collcoll.cpp, zipios++/collcoll.h, zipios++/dircoll.cpp,
+	zipios++/dircoll.h, zipios++/example_zip.cpp, zipios++/fcoll.cpp,
+	zipios++/fcoll.h, zipios++/fcoll_common.h,
+	zipios++/fcollexceptions.cpp, zipios++/fcollexceptions.h,
+	zipios++/fileentry.cpp, zipios++/fileentry.h,
+	zipios++/filterinputstreambuf.cpp, zipios++/filterinputstreambuf.h,
+	zipios++/flist.cpp, zipios++/flist.h, zipios++/flistentry.cpp,
+	zipios++/flistentry.h, zipios++/flistscanner.h,
+	zipios++/flistscanner.ll, zipios++/inflateinputstreambuf.cpp,
+	zipios++/inflateinputstreambuf.h, zipios++/simplesmartptr.h,
+	zipios++/test_appzip.cpp, zipios++/test_collcoll.cpp,
+	zipios++/test_dircoll.cpp, zipios++/test_flist.cpp,
+	zipios++/test_zip.cpp, zipios++/test_zipinputstream.cpp,
+	zipios++/test_zipinputstreambuf.cpp, zipios++/virtualseeker.h,
+	zipios++/zipfile.cpp, zipios++/zipfile.h, zipios++/ziphead.cpp,
+	zipios++/ziphead.h, zipios++/zipinputstream.cpp,
+	zipios++/zipinputstream.h, zipios++/zipinputstreambuf.cpp,
+	zipios++/zipinputstreambuf.h: Changed the license from GPL to LGPL.
+	Updated the version number to 0.1.3.
+
+2000-06-04 12:42  thomas
+
+	* ChangeLog: Updated Changelog
+
 2000-06-04 12:41  thomas
 
 	* aclocal.m4, configure, configure.in: Updated the version number
@@ -220,4 +288,40 @@
 
 	* aclocal.m4: Added a test_dircoll.cpp file to test
 	DirectoryCollection. It runs, but not correctly.
+
+2000-05-08 22:51  thomas
+
+	* Makefile.am, Makefile.in, aclocal.m4: ChangeLog is not on the
+	zipios.sourceforge.net web site anymore. Instead the \mainpage
+	refers to the project page on SourceForge.
+
+2000-05-08 22:27  thomas
+
+	* Makefile.am, Makefile.in, aclocal.m4, doc/images/.cvsignore:
+	Fixed it so the conversion of zipios++.png to zipios++.eps in the
+	'doc' target in the toplevel Makefile works.
+	
+	Added a doc/images/.cvsignore file containing the string
+	"zipios++.eps".
+
+2000-05-08 22:18  thomas
+
+	* doc/: .cvsignore, images/webgfx.gif, images/zipios++.png:
+	Imported doc/ and src/test.zip separately because the images and
+	the zip files had to be added with "cvs add -kb" to avoid line
+	ending conversion and keyword substitution.
+
+2000-05-08 22:10  thomas
+
+	* .cvsignore, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am,
+	Makefile.in, NEWS, README, acconfig.h, acinclude.m4, aclocal.m4,
+	autogen.sh, configure, configure.in, doxyfile, install-sh, missing,
+	mkinstalldirs: Imported sources.
+
+2000-05-08 22:10  thomas
+
+	* .cvsignore, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am,
+	Makefile.in, NEWS, README, acconfig.h, acinclude.m4, aclocal.m4,
+	autogen.sh, configure, configure.in, doxyfile, install-sh, missing,
+	mkinstalldirs: Initial revision
 
