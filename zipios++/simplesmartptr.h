@@ -105,7 +105,18 @@ class ReferenceCount {
       unref() methods, in case Type doesn't want to inherit
       ReferenceCount and thus needs to invoke ref() and unref()
       through forwarding member functions. */
-  friend Type ;
+  //
+  //  Originally the following template parameter was made a friend.
+  //  This is not allowed by the standard so comment it out:
+  //
+  // friend Type ;
+  //
+  //  Initially hack things by making the necessary classes friends
+  //  even though we don't know really which they are.  This is an
+  //  Hideous Hack.
+  friend class FileEntry ;
+  friend class Bogus ;
+  
 public:
   /** Constructor intializes count to zero. */
   ReferenceCount() : _ref_count( 0 ) {}
