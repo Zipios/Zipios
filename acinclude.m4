@@ -80,7 +80,7 @@ dnl If sstream (part of Standard C++ Library) exists
 dnl define HAVE_SSTREAM.
 dnl
 dnl @version ac_cxx_have_std.m4 Tue Mar 28 18:20:26 CEST 2000
-dnl @author Thomas Sondergaard thomas@miba.auc.dk
+dnl @author Thomas Sondergaard thomass@deltadata.dk
 dnl
 AC_DEFUN(AC_CXX_HAVE_SSTREAM,
 [AC_CACHE_CHECK(for sstream,
@@ -105,7 +105,7 @@ dnl If std iostream (part of Standard C++ Library) exists
 dnl define HAVE_STD_IOSTREAM.
 dnl
 dnl @version ac_cxx_have_std.m4 Tue Mar 28 18:20:26 CEST 2000
-dnl @author Thomas Sondergaard thomas@miba.auc.dk
+dnl @author Thomas Sondergaard thomass@deltadata.dk
 dnl
 AC_DEFUN(AC_CXX_HAVE_STD_IOSTREAM,
 [AC_CACHE_CHECK(for std iostream,

@@ -173,7 +173,7 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
    </UL>
 
    If you are aware of any other platforms that Zipios++ works on,
-   please let me know (thomas@miba.auc.dk).
+   please let me know (thomass@deltadata.dk).
 
    \section documentation Documentation 
    This web page is the front page to the library documentation which
@@ -252,7 +252,7 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
    </A>. A description of the zip file format.
    
    \section bugs Bugs 
-   Submit bug reports and patches to thomas@miba.auc.dk 
+   Submit bug reports and patches to thomass@deltadata.dk 
    
    
    
