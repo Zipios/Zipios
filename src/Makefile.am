@@ -25,12 +25,10 @@ libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
                       ziphead.h                                            \
                       simplesmartptr.h           dircoll.h                 \
                       dircoll.cpp                collcoll.h                \
-                      collcoll.cpp
-
-#               FlexLexer.h               \
-#                      flist.cpp                  flist.h                   \
-#                      flistentry.cpp             flistentry.h              \
-#                      flistscanner.h             flistscanner.ll
+                      collcoll.cpp               FlexLexer.h               \
+                      flist.cpp                  flist.h                   \
+                      flistentry.cpp             flistentry.h              \
+                      flistscanner.h             flistscanner.ll
 
 test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
 
