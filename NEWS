@@ -2,11 +2,11 @@ Release notes for Zipios++ 0.1.6
 --------------------------------
 
 (NOT DONE YET) API CHANGE: ZipInputStream::getNextEntry must be called
-before accessing first entry.  (NOT DONE YET) Test suite converted to
-CppUnit. Many more unit tests.  RPMs building (donated by Rui Miguel
-Silva Seabra). Shared library support (donated by Arkadiusz
-Miskiewicz). (NOT DONE YET) Better Windows support. (NOT DONE YET)
-Windows installer.
+before accessing first entry.  (PARTIALLY DONE) Test suite converted
+to CppUnit. (NOT DONE YET) Many more unit tests.  RPMs building
+(donated by Rui Miguel Silva Seabra). Shared library support (donated
+by Arkadiusz Miskiewicz). (NOT DONE YET) Better Windows support. (NOT
+DONE YET) Windows installer.
 
 
 
