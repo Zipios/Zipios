@@ -27,11 +27,13 @@ public:
 
   /** Closes the FileCollection. */
   virtual void close() = 0 ;
+
   /** \anchor fcoll_entries_anchor
       Returns a vector of const pointers to the entries in the
       FileCollection.  
       @return a vector< ConstEntryPointer >
-      containing the entries of the FileCollection. */
+      containing the entries of the FileCollection. 
+      @throw InvalidStateException Thrown if the collection is invalid. */
   virtual vector< ConstEntryPointer > entries() const ;
 
   enum MatchPath { IGNORE, MATCH } ;
@@ -45,7 +47,7 @@ public:
       specify IGNORE, if the path should be ignored.
       @return A ConstEntryPointer to the found entry. The returned pointer
       equals zero if no entry is found.
-  */
+      @throw InvalidStateException Thrown if the collection is invalid. */
   virtual ConstEntryPointer getEntry( const string &name, 
 				     MatchPath matchpath = MATCH ) const ;
   /** \anchor fcoll_getinputstream
@@ -56,7 +58,7 @@ public:
       @param entry A ConstEntryPointer to the FileEntry to get an istream to.
       @return an open istream for the specified entry. The istream is allocated on
       heap and it is the users responsibility to delete it when he is done with it.
-  */
+      @throw InvalidStateException Thrown if the collection is invalid. */
   virtual istream *getInputStream( const ConstEntryPointer &entry ) = 0 ;
   /** Returns a pointer to an opened istream for the specified
       entry name. It is the callers responsibility to delete the stream
@@ -66,15 +68,16 @@ public:
       specify IGNORE, if the path should be ignored.
       @return an open istream for the specified entry. The istream is allocated on
       heap and it is the users responsibility to delete it when he is done with it.
-  */
+      @throw InvalidStateException Thrown if the collection is invalid. */
   virtual istream *getInputStream( const string &entry_name, 
 				     MatchPath matchpath = MATCH ) = 0 ;
   /** Returns the name of the FileCollection.
-      @return the name of the FileCollection. */
+      @return the name of the FileCollection. 
+      @throw InvalidStateException Thrown if the collection is invalid. */
   virtual string getName() const ;
   /** Returns the number of entries in the FileCollection.
       @return the number of entries in the FileCollection. 
-  */
+      @throw InvalidStateException Thrown if the collection is invalid. */
   virtual int size() const ;
   /** FileCollection destructor. */
   virtual ~FileCollection () ;

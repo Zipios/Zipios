@@ -25,10 +25,40 @@ using std::ifstream ;
  in a .zip file.  */
 class ZipFile : public FileCollection {
 public:
+  /** Opens a Zip archive embedded in another file, by writing the zip
+      archive to the end of the file followed by the start offset of
+      the zip file. The offset must be written in zip-file byte-order
+      (little endian). The program appendzip, which is part of the
+      Zipios++ distribution can be used to append a Zip archive to a
+      file, e.g. a binary program. 
+      @throw FColException Thrown if the specified file name is not a valid zip 
+      archive.
+      @throw IOException Thrown if an I/O problem is encountered, while the directory
+      of the specified zip archive is being read. */
   static ZipFile openEmbeddedZipFile( const string &name ) ;
+
+  /** Default constructor.
+   */
   ZipFile() {}
+
+  /** Constructor. Opens the zip file name. If the zip "file" is
+      embedded in a file that contains other data, e.g. a binary
+      program, the offset of the zip file start and end must be
+      specified. 
+      @param name The filename of the zip file to open.
+      @param s_off Offset relative to the start of the file, that 
+      indicates the beginning of the zip file.
+      @param e_off Offset relative to the end of the file, that
+      indicates the end of the zip file. The offset is a positive number,
+      even though the offset is towards the beginning of the file.
+      @throw FColException Thrown if the specified file name is not a valid zip 
+      archive.
+      @throw IOException Thrown if an I/O problem is encountered, while the directory
+      of the specified zip archive is being read. */
   explicit ZipFile( const string &name, int s_off = 0, int e_off = 0
 		    /* , ios::open_mode mode  = ios::in | ios::binary */ ) ;
+
+  /** Destructor. */
   virtual ~ZipFile() ;
 
   virtual void close() ;

@@ -41,7 +41,8 @@ public:
       of the file.
       @param chunk_size specifies the size of the chunks to read the file into 
       the BackBuffer in.
-  */
+      @throw FCollException Thrown if the VirtualSeeker vs that has been specified is 
+      invalid for the istream is.  */
   inline explicit BackBuffer( istream &is, VirtualSeeker vs = VirtualSeeker(), 
 			      int chunk_size = 1024 ) ;
   /** Reads another chunk and returns the size of the chunk that has
