@@ -48,6 +48,11 @@ void zipios::ZipFileTest::testZipUnzip() {
   compareZipFile(zipFileName, entries);
 }
 
+void zipios::ZipFileTest::testComment(){
+  // ZipFile zipFile("test.zip");
+  //CPPUNIT_ASSERT_EQUAL("something", zipFile.getComment());
+} 
+
 void zipios::ZipFileTest::writeZipFile(const string &zipFileName, vector<string> entryFileNames) {
   ZipOutputStream zos(zipFileName);
   std::vector<string>::const_iterator it = entryFileNames.begin();

@@ -22,7 +22,7 @@ namespace zipios {
     CPPUNIT_TEST_SUITE(ZipFileTest);
     CPPUNIT_TEST(testUnzip);
     CPPUNIT_TEST(testZipUnzip);
-    CPPUNIT_TEST(tesTComment);
+    CPPUNIT_TEST(testComment);
     CPPUNIT_TEST_SUITE_END();
 
     void testUnzip();
