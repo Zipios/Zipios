@@ -145,7 +145,7 @@ void ZipLocalEntry::setSize( uint32 size ) {
   uncompress_size = size ;
 }
 
-void ZipLocalEntry::setTime( int  ) {
+void ZipLocalEntry::setTime( int time ) {
   // FIXME: fix time setting here, and ind flist and elsewhere. Define the
   // date time semantics before mucking about - how surprising
 
