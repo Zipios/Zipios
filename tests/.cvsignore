@@ -17,4 +17,6 @@ zos.zip
 gentest.zip
 all_tests
 .deps
-
+tests.plg
+Debug
+Release

@@ -18,6 +18,8 @@ class ZipFileTest : public TestCase {
 public:
   void runTests();
 private:
+  static void testUnzip();
+  static void testZipUnzip();
   static void writeZipFile(const string &zipFileName, vector<string> entryFileNames);
   static void compareZipFile(const string &zipFileName, vector<string> entryFileNames);
   static void writeFileToZipOutputStream( ZipOutputStream &zos, const string &filename );

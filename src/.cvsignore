@@ -3,4 +3,7 @@ stamp-h
 stamp-h.in
 appendzip
 .deps
-
+zipios.plg
+zipios.ncb
+Debug
+Release

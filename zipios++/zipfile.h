@@ -76,6 +76,7 @@ private:
   void setError( string error_str ) ;
 };
 
+
 }
 
 #endif

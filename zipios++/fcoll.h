@@ -136,6 +136,22 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
   return *this ;
 }
 
+inline ostream & operator<< (ostream &os, const FileCollection& collection) {
+	os << "collection '" << collection.getName() << "' {" ;
+	ConstEntries entries = collection.entries();
+	ConstEntries::const_iterator it;
+	bool isFirst=true;
+	for (it=entries.begin(); it != entries.end(); ++it) {
+		if(! isFirst)
+			os << ", ";
+		isFirst = false;
+		os << (*it)->getName();
+	}
+	os << "}";
+	return os;
+}
+
+
 } // namespace
 
 #endif

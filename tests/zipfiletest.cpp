@@ -4,7 +4,9 @@
 #include "zipios++/meta-iostreams.h"
 #include <memory>
 #include <vector>
+#include <sstream>
 #include <stdlib.h>
+#include <fstream>
 
 #include "zipios++/zipfile.h"
 #include "zipios++/zipinputstream.h"
@@ -22,8 +24,35 @@ using std::ifstream ;
 using std::string;
 using std::vector;
 
-
 void zipios::ZipFileTest::runTests() {
+	testUnzip();
+	testZipUnzip();
+}
+
+namespace {
+	template<class T1, class T2>
+	void assertEquals(const T1& expected, const T2& actual) {
+		if (expected == actual)
+			return;
+		std::ostringstream msg;
+		msg << "expected '" << expected << "' but got '" << actual << "'";
+		throw Exception(msg.str());
+	}
+}
+
+void zipios::ZipFileTest::testUnzip() {
+  vector<string> entries;
+  entries.push_back("file1.txt");
+  entries.push_back("file2.txt");
+  entries.push_back("file3.txt");
+  entries.push_back("testfile.bin");
+
+  ZipFile zipFile("test.zip");
+  assertEquals(4, zipFile.size());
+  compareZipFile("test.zip", entries);
+}
+
+void zipios::ZipFileTest::testZipUnzip() {	
   const string zipFileName = "gentest.zip";
   vector<string> entries;
   entries.push_back("all_tests");
@@ -51,6 +80,8 @@ void zipios::ZipFileTest::compareZipFile(const string &zipFileName, vector<strin
   vector<string>::const_iterator it = entryFileNames.begin();
   for ( ; it != entryFileNames.end() ; ++it ) {
     auto_ptr<istream> zis(zipFile.getInputStream(*it));
+	if (zis.get() == 0)
+		throw Exception("Entry '"+*it+"' not found in zip file");
     ifstream fis((*it).c_str(), ios::in | ios::binary);
     try {
       compareStreams(*zis, fis);
@@ -86,10 +117,10 @@ void zipios::ZipFileTest::compareStreams(istream &is1, istream &is2) {
   buf1 << is1.rdbuf();
   buf2 << is2.rdbuf();
   if ( buf1.str() != buf2.str() ) {
-	  ofstream of1("hej1.txt", ios::out | ios::binary );
-	  of1 << buf1.str() << std::endl 
-	         << "-------------------------------------------------------" << std::endl 
-	         << buf2.str() << std::endl ;;
+//	  ofstream of1("hej1.txt", ios::out | ios::binary );
+//	  of1 << buf1.str() << std::endl 
+//	         << "-------------------------------------------------------" << std::endl 
+//	         << buf2.str() << std::endl ;;
 	  throw Exception("contents differ"); // defined at the bottom of fcolexceptions.h
   }
 }
