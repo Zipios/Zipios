@@ -21,17 +21,17 @@ all: build test
 
 build:
 	@cd $(SRC_DIR)
-	@nmake -f Makefile.vc5
+	@nmake -f Makefile.vc
 
 test: build
 	@cd $(TST_DIR)
-	@nmake -f Makefile.vc5
+	@nmake -f Makefile.vc
 
 clean: tidy
 	@cd $(SRC_DIR)
-	@nmake -f Makefile.vc5 clean
+	@nmake -f Makefile.vc clean
 	@cd $(TST_DIR)
-	@nmake -f Makefile.vc5 clean
+	@nmake -f Makefile.vc clean
 
 ############################################################################
 

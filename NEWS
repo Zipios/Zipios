@@ -17,6 +17,7 @@ New features:
   - Makefiles up to date for Visual C++ 6
   - Correction added for Visual C++ 7.1
   - Further support for CppUnit.
+  - Makefile.vc5 renamed to Makefile.vc
 
 Release notes for Zipios++ 0.1.5
 --------------------------------

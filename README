@@ -51,11 +51,11 @@ its headers and .lib file must be defined at the top of win32\Makefile.com
 
 To install, using the appropriate make program and one of the following
 makefiles:
-	Makefile.vc5	- Visual C++ 5, 6
+	Makefile.vc	- Visual C++ 5, 6 and 7
 
 the procedure (for Visual C++) is
 cd win32
-nmake -f Makefile.vc5
+nmake -f Makefile.vc
 
 To use the Developer Studio project, run configure.bat from win32 before
 compiling. Again, a non-standard location for zlib must be defined in the

@@ -1,3 +1,3 @@
 @echo off
-nmake -f Makefile.vc5 configure
+nmake -f Makefile.vc configure
 @echo on
