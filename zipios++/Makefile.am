@@ -10,8 +10,8 @@ INCLUDES = -I..
 lib_LIBRARIES = libzipios.a
 
 pkginclude_HEADERS = \
-                     backbuffer.h            \
-                     basicentry.h            \
+                     backbuffer.h                                     \
+                     basicentry.h            filepath.h               \
                      collcoll.h              inflateinputstreambuf.h  \
                      dircoll.h               simplesmartptr.h         \
                      fcoll.h                 zipfile.h                \

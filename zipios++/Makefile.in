@@ -75,7 +75,7 @@ INCLUDES = -I..
 
 lib_LIBRARIES = libzipios.a
 
-pkginclude_HEADERS =                       backbuffer.h                                 basicentry.h                                 collcoll.h              inflateinputstreambuf.h                       dircoll.h               simplesmartptr.h                              fcoll.h                 zipfile.h                                     fcoll_common.h          ziphead.h                                     fcollexceptions.h       zipinputstream.h                              fileentry.h             zipinputstreambuf.h                           filterinputstreambuf.h  virtualseeker.h                               zipios-config.h
+pkginclude_HEADERS =                       backbuffer.h                                                          basicentry.h            filepath.h                                    collcoll.h              inflateinputstreambuf.h                       dircoll.h               simplesmartptr.h                              fcoll.h                 zipfile.h                                     fcoll_common.h          ziphead.h                                     fcollexceptions.h       zipinputstream.h                              fileentry.h             zipinputstreambuf.h                           filterinputstreambuf.h  virtualseeker.h                               zipios-config.h
 
 
 noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll test_collcoll test_appzip appendzip

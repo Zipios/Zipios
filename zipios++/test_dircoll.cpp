@@ -24,7 +24,17 @@ int main() {
   try {
   
     cout << "Instantiating a DirectoryCollection" << endl ;
-    DirectoryCollection collection( "." ) ;
+    DirectoryCollection collection( "/home/thomas/src/zipios/zipios++" ) ;
+
+    ConstEntryPointer ent = collection.getEntry( "zipios-config.h" ) ;
+    if ( ent != 0 ) {
+      auto_ptr< istream > is( collection.getInputStream( ent ) ) ;
+      
+      cout << "Contents of entry, " << ent->getName() << " :" << endl ;
+      
+      cout << is->rdbuf() ;
+    }
+
     
     cout << "list length : " << collection.size() << endl ;
     
@@ -36,7 +46,7 @@ int main() {
     for( it = entries.begin() ; it != entries.end() ; it++)
       cout << *(*it) << endl ;
     
-    ConstEntryPointer ent = collection.getEntry( "file2.txt" ) ;
+    ent = collection.getEntry( "zipios-config.h" ) ;
     if ( ent != 0 ) {
       auto_ptr< istream > is( collection.getInputStream( ent ) ) ;
       

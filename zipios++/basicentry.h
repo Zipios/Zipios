@@ -12,6 +12,7 @@
 
 #include "zipios++/fcollexceptions.h"
 #include "zipios++/fileentry.h"
+#include "zipios++/filepath.h"
 
 namespace zipios {
 
@@ -24,7 +25,7 @@ public:
       @param comment a comment for the entry.
    */
   explicit BasicEntry( const string &filename, const string &comment,
-		       const string &basepath = "" ) ;
+		       const FilePath &basepath = string() ) ;
   virtual string getComment() const ;
   virtual int getCompressedSize() const ;
   virtual int getCrc() const ;
@@ -54,14 +55,12 @@ public:
 
   virtual ~BasicEntry() ;
 protected:
-  inline string fullPath() const ;
   string _filename ;
   string _comment ;
   int _size ;
   bool _valid ;
-  string _basepath ;
+  FilePath _basepath ;
 
-  void setError( const string &msg ) ;
 };
 
 }

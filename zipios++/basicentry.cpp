@@ -35,12 +35,13 @@ using std::ends ;
 //
 
 BasicEntry::BasicEntry( const string &filename, const string &comment,
-		       const string &basepath ) 
+		       const FilePath &basepath ) 
   : _filename ( filename ),
     _comment  ( comment  ),
     _basepath ( basepath )
 {
-  ifstream is( fullPath().c_str() ) ;
+  string full_path = _basepath + _filename ;
+  ifstream is( full_path.c_str() ) ;
   if ( ! is ) {
     _valid = false ;
   } else {
@@ -157,26 +158,6 @@ BasicEntry *BasicEntry::clone() const {
 BasicEntry::~BasicEntry() {
 }
 
-
-//
-// Protected definitions
-//
-string BasicEntry::fullPath() const { 
-  return _basepath + _filename ; 
-}
-
-//
-// Private definitions
-//
-
-void BasicEntry::setError( const string &msg ) {
-  _valid = false ;
-  // Throw exception here
-}
-
-//
-// Non-member functions
-//
 
 } // namespace
 

@@ -9,8 +9,9 @@
 #include <fstream.h>
 #endif
 #include <vector>
-
 #include <sys/stat.h>
+
+#include "zipios++/directory.h"
 
 #include "zipios++/dircoll.h"
 
@@ -21,22 +22,17 @@ using std::endl ;
 using std::vector ;
 using std::ifstream ;
 
-DirectoryCollection::DirectoryCollection( const string &path ) {
-  // Check path is actually a directory
-  if ( isDir( path ) ) {
-    _filename = path ;
-    _valid = true ;
-  } else {
-    _valid = false ;
-  }
-  
-  // In order to be able to simply prepend _filename
-  // we need to transform it slightly. If it ends in a
-  // slash thats fine.
-  // if not we have to append a slash, unless the specified path is the
-  // empty string.
-  if ( _filename.size() > 0 && _filename[ _filename.size() -1 ] != '/' )
-    _filename.append( 1, '/' ) ;
+DirectoryCollection::DirectoryCollection( const string &path, bool recursive, 
+					  bool load_now ) 
+  : _entries_loaded( false ),
+    _recursive     ( recursive ),
+    _filepath      ( path      )
+{
+  _filename = _filepath ;
+  _valid = _filepath.isDirectory() ;
+
+  if( _valid && load_now )
+    loadEntries() ;
 }
 
 void DirectoryCollection::close() {
@@ -48,10 +44,9 @@ vector< ConstEntryPointer > DirectoryCollection::entries() const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
 
-  cerr << "DirectoryCollection::entries not implemented yet" << endl ;
+  loadEntries() ;
 
-  // FIXME: Return the real thing.
-  return vector< ConstEntryPointer >() ; 
+  return vector< ConstEntryPointer > ( _entries.begin(), _entries.end() ) ;
 }
 
 
@@ -61,17 +56,17 @@ DirectoryCollection::getEntry( const string &name,
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
 
-  if ( matchpath != MATCH ) {
-    cerr << 
-      "DirectoryCollection::getEntry not implemented for matchpath = IGNORE" 
-	 << endl ;
-    return 0 ;
+  if ( matchpath != MATCH || _entries_loaded ) {
+    loadEntries() ;
+    return FileCollection::getEntry( name, matchpath ) ;
+  } else {
+    // avoid loading entries if possible.
+    ConstEntryPointer ent ( new DirEntry( name, "", _filepath ) ) ;
+    if ( ent->isValid() )
+      return ent ;
+    else
+      return 0 ;
   }
-  ConstEntryPointer ent ( new DirEntry( name, "", _filename ) ) ;
-  if ( ent->isValid() )
-    return ent ;
-  else
-    return 0 ;
 }
 
 
@@ -88,45 +83,70 @@ istream *DirectoryCollection::getInputStream( const string &entry_name,
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
 
-  if ( matchpath != MATCH ) {
-    cerr << 
-      "DirectoryCollection::getInputStream not implemented for matchpath = IGNORE" 
-	 << endl ;
-    return 0 ;
-  }
+  if ( matchpath != MATCH || _entries_loaded ) {
+    loadEntries() ;
 
-  string real_path( _filename + entry_name ) ;
-  ifstream *ifs = new ifstream( real_path.c_str() ) ;
-  if( ! *ifs ) {
-    delete ifs ;
-    return 0 ;
-  } else 
-    return ifs ;  
+    ConstEntryPointer ent = getEntry( entry_name, matchpath ) ;
+    
+    if ( ent == 0 )
+      return 0 ;
+    else {
+      string real_path( _filepath + entry_name ) ;
+      return new ifstream( real_path.c_str() ) ;
+    }
+
+  } else {
+    // avoid loading entries if possible.
+    string real_path( _filepath + entry_name ) ;
+    ifstream *ifs = new ifstream( real_path.c_str() ) ;
+    if( ! *ifs ) {
+      delete ifs ;
+      return 0 ;
+    } else 
+      return ifs ;
+  }  
 }
 
 
 int DirectoryCollection::size() const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
-  // FIXME: implement this method.
-  cerr << "DirectoryCollection::size() not supported yet" << endl ; 
-  return 0 ;
+  loadEntries() ;
+
+  return _entries.size() ;
 }
 
 
 DirectoryCollection::~DirectoryCollection() {}
 
 
-bool DirectoryCollection::isDir( const string &path ) const {
-  struct stat buf ;
-  // If stat fails something is wrong, and we
-  // may as well return false.
-  if( stat( path.c_str(), &buf ) != 0 ) 
-    return false ;
-  else
-    return S_ISDIR( buf.st_mode ) ;
+void DirectoryCollection::loadEntries() const {
+  if( _entries_loaded )
+    return ;
+
+  const_cast< DirectoryCollection * >( this )->Load( _recursive ) ;
+
+  _entries_loaded = true ;
 }
 
+
+void DirectoryCollection::Load( bool recursive, const FilePath &subdir ) {
+  using namespace boost::filesystem ;
+  BasicEntry *ent ;
+  for ( dir_it it( _filepath + subdir ) ; it != dir_it() ; ++it ) {
+
+    if ( *it == "." || *it == ".." || *it == "..." )
+      continue ;
+
+    if ( get< is_directory >( it ) && recursive ) {
+      Load( recursive, subdir + *it ) ;
+    } else {
+      _entries.push_back( ent = new BasicEntry( subdir + *it, "", _filepath ) ) ;
+      ent->setSize( get< boost::filesystem::size >( it ) ) ;
+    }
+
+  }
+}
 
 } // namespace
 

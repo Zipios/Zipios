@@ -9,9 +9,6 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
-/* Define if lex declares yytext as a char * by default, not a char[].  */
-#undef YYTEXT_POINTER
-
 /* Define if the std compliant iostream library should be used (if present) */
 #undef USE_STD_IOSTREAM
 

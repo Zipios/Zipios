@@ -6,6 +6,7 @@
 
 #include "zipios++/fcoll.h"
 #include "zipios++/basicentry.h"
+#include "zipios++/filepath.h"
 
 namespace zipios {
 
@@ -17,26 +18,46 @@ typedef BasicEntry DirEntry ;
     from a directory. */
 class DirectoryCollection : public FileCollection {
 public:
+
   /** Default Constructor. */
-  explicit DirectoryCollection() {}
+  explicit DirectoryCollection() 
+    : _entries_loaded( false ), _recursive( true ) {}
+
+
   /** Constructor.
       @param path A directory path name. If the name is not a valid
       directory the created DirectoryCollection will be invalid.
+      @param load_now Load directory into memory now. Otherwise it will
+      be done when it is first needed.
   */
-  explicit DirectoryCollection( const string &path ) ;
+  explicit DirectoryCollection( const string &path, 
+				bool recursive = true,
+				bool load_now = false ) ;
+
   virtual void close() ;
+
   virtual vector< ConstEntryPointer > entries() const ;
+
   virtual ConstEntryPointer getEntry( const string &name, 
 				     MatchPath matchpath = MATCH ) const ;
+
   virtual istream *getInputStream( const ConstEntryPointer &entry ) ;
+
   virtual istream *getInputStream( const string &entry_name, 
 				     MatchPath matchpath = MATCH ) ;
+
   virtual int size() const ;
 
   /** Destructor. */
   virtual ~DirectoryCollection() ;
+
 protected:
-  bool isDir( const string &path ) const ;
+  mutable bool _entries_loaded ;
+  bool _recursive ; // recurse into subdirs.
+  FilePath _filepath ;
+
+  void loadEntries() const ;
+  void Load( bool recursive, const FilePath &subdir = string() ) ;
  
 };
  

@@ -1,5 +1,5 @@
-#ifndef IFILTSTREAMBUF_H
-#define IFILTSTREAMBUF_H
+#ifndef FILTERINPUTSTREAMBUF_H
+#define FILTERINPUTSTREAMBUF_H
 
 #include "zipios++/zipios-config.h"
 
