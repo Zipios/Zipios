@@ -52,7 +52,6 @@ public:
       BackBuffer, and is updated to point to the same position in the file
       as it pointed to before the new chunk was read. */
   inline int readChunk( int &read_pointer ) ;
-  inline bool readFrom( int n, ios::seekdir sd, int &read_pointer ) ;
 
 private:
   VirtualSeeker _vs ;
@@ -91,11 +90,6 @@ int BackBuffer::readChunk( int &read_pointer ) {
     return _chunk_size ;
   else
     return 0 ;
-}
-
-bool BackBuffer::readFrom( int n, ios::seekdir sd, int &read_pointer ) {
-  cerr << "BackBuffer::readFrom not implemented yet!" << endl ;
-  return true ;
 }
 
 }
