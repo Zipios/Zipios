@@ -4,7 +4,7 @@
 #include "config.h"
 
 // This includes the right streambuf header file
-#ifdef HAVE_STD_IOSTREAM
+#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
 #include <iostream>
 #else
 #include <iostream.h>

@@ -12,7 +12,10 @@
 /* Define if lex declares yytext as a char * by default, not a char[].  */
 #undef YYTEXT_POINTER
 
-/* define if zlib has zError */
+/* Define if the std compliant iostream library should be used (if present) */
+#undef USE_STD_IOSTREAM
+
+/* Define if zlib has zError */
 #undef HAVE_ZERROR
 
 /* Define if you have the <unistd.h> header file.  */

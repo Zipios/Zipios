@@ -8,7 +8,7 @@
 #endif
 
 // This includes the right streambuf header file
-#ifdef HAVE_STD_IOSTREAM
+#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
 #include <iostream>
 #else
 #include <iostream.h>
@@ -106,7 +106,7 @@ int InflateInputStreambuf::underflow() {
   // some way to report it to the InflateInputStreambuf user.
   // Until I find out I'll just print a warning to stdout.
   if( err != Z_OK && err != Z_STREAM_END ) {
-#ifdef HAVE_STD_IOSTREAM
+#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
     // Throw an exception to make istream set badbit
 #ifdef HAVE_SSTREAM
   ostringstream msgs ;

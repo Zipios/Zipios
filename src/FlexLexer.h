@@ -48,7 +48,7 @@
 #include "config.h"
 
 
-#ifdef HAVE_STD_IOSTREAM
+#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
 #include <iostream>
 using std::istream ;
 using std::ostream ;

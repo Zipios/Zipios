@@ -6,6 +6,23 @@ AM_CONFIG_HEADER(config.h)
 
 dnl to run test progs with CXX: AC_LANG_CPLUSPLUS
 
+dnl Use std compliant iostream library if present?
+AC_ARG_WITH(std-compliant-iostream, 
+[  --with-std-compliant-iostream 
+         Include iostream (if present) instead of iostream.h. (Default is yes) ] )
+
+if test -n "$with_std_compliant_iostream" -a \
+        "$with_std_compliant_iostream" != "no" -a \
+        "$with_std_compliant_iostream" != "yes" ; then
+  AC_MSG_ERROR(
+[illegal argument specified for --with-std-compliant-iostream. 
+Only 'yes' and 'no' are accepted.])
+fi
+if test -z "$with_std_compliant_iostream" -o \
+        "$with_std_compliant_iostream" = "yes" ; then
+  AC_DEFINE(USE_STD_IOSTREAM)
+fi
+
 dnl Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -37,10 +54,6 @@ AC_CXX_HAVE_STL
 AC_CXX_HAVE_STD
 AC_CXX_HAVE_SSTREAM
 AC_CXX_HAVE_STD_IOSTREAM
-
-dnl if test "$ac_cv_cxx_have_sstream" != "yes"; then
-dnl   AC_MSG_ERROR([sstream is required to compile $PACKAGE.])
-dnl fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
