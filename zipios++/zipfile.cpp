@@ -22,7 +22,10 @@ namespace zipios {
 //
 
 
-ZipFile::ZipFile( const string &name /* , ios::open_mode mode */ ) {
+ZipFile::ZipFile( const string &name , int s_off, int e_off
+		  /* , ios::open_mode mode */ ) 
+  : _vs( s_off, e_off ) {
+
   _filename = name ;
   
   ifstream _zipfile( name.c_str() ) ;
@@ -56,7 +59,7 @@ istream *ZipFile::getInputStream( const string &entry_name,
   else
     return new ZipInputStream( _filename,	
 			   static_cast< const ZipCDirEntry * >( ent.get() )->
-			   getLocalHeaderOffset() ) ;
+			   getLocalHeaderOffset() + _vs.startOffset() ) ;
 }
 
 
@@ -86,7 +89,7 @@ bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
   }
 //    cerr << "FOUND HEADER" << endl ;
   // Position read pointer to start of first entry in central dir.
-  _zipfile.seekg( _eocd.offset(), ios::beg ) ;
+  _vs.vseekg( _zipfile,  _eocd.offset(), ios::beg ) ;
 
   int entry_num = 0 ;
   _entries.resize ( _eocd.totalCount() ) ;
@@ -103,9 +106,9 @@ bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
     ++entry_num ;
   }
   // Consistency check. eocd should start here
-  int pos = _zipfile.tellg() ;
-  _zipfile.seekg( 0, ios::end ) ;
-  int remaining = static_cast< int >( _zipfile.tellg() ) - pos ;
+  int pos = _vs.vtellg( _zipfile ) ;
+  _vs.vseekg( _zipfile, 0, ios::end ) ;
+  int remaining = static_cast< int >( _vs.vtellg( _zipfile ) ) - pos ;
   if ( remaining != _eocd.eocdOffSetFromEnd() ) {
     cerr << "Zip file consistency error." << endl ;
     cerr << "  End-of-central-directory record starts at -" ;
@@ -126,7 +129,7 @@ bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
 
 
 bool ZipFile::readEndOfCentralDirectory ( istream &_zipfile ) {
-  BackBuffer bb( _zipfile ) ;
+  BackBuffer bb( _zipfile, _vs ) ;
   int read_p = -1 ;
   bool found = false ;
   while ( ! found ) {
@@ -154,7 +157,7 @@ bool ZipFile::confirmLocalHeaders( istream &_zipfile ) {
   ZipLocalEntry zlh ;
   for ( it = _entries.begin() ; it != _entries.end() ; it++ ) {
     ent = static_cast< ZipCDirEntry * >( (*it).get()  ) ;
-    _zipfile.seekg( ent->getLocalHeaderOffset(), ios::beg ) ;
+    _vs.vseekg( _zipfile, ent->getLocalHeaderOffset(), ios::beg ) ;
     _zipfile >> zlh ;
 //      cerr << zlh ;
     if ( ! _zipfile || zlh != *ent ) {

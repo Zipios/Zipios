@@ -56,8 +56,6 @@ public:
   
   virtual string toString() const ;
 
-  virtual uint32 getLocalHeaderOffset() const ;
-
   bool trailingDataDescriptor() const ;
 
   virtual ZipLocalEntry *clone() const ;
@@ -78,12 +76,6 @@ protected:
 
   string filename ;
   vector< unsigned char > extra_field ; 
-
-  // This field is an element in a ZipCDirEntry
-  // in a zipfile, but not in a local entry. But
-  // we can set it in the local entry, anyway, because
-  // we know where we are, when we read the entry.
-  uint32 rel_offset_loc_head ;
 
   bool _valid ;
 };
@@ -112,6 +104,9 @@ public:
   virtual string getComment() const ;
 
   virtual void setComment( const string &comment ) ;
+
+  virtual uint32 getLocalHeaderOffset() const ;
+
   virtual ~ZipCDirEntry() {}
 private:
   uint16 writer_version      ;
@@ -120,6 +115,8 @@ private:
   uint16 disk_num_start      ;
   uint16 intern_file_attr    ;
   uint32 extern_file_attr    ;
+
+  uint32 rel_offset_loc_head ;
 
   string file_comment ;
 };

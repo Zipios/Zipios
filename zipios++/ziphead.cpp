@@ -36,10 +36,10 @@ istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) {
     return is ;
   }
 
-  // Before reading anything we record the position in the stream
-  // This is a field in the central directory entry, but not
-  // in the local entry. After all, we know where we are, anyway.
-  zlh.rel_offset_loc_head  = is.tellg() ;
+//    // Before reading anything we record the position in the stream
+//    // This is a field in the central directory entry, but not
+//    // in the local entry. After all, we know where we are, anyway.
+//    zlh.rel_offset_loc_head  = is.tellg() ;
 
   if ( zlh.signature != readUint32( is ) ) {
     // put stream in error state and return
@@ -268,10 +268,6 @@ string ZipLocalEntry::toString() const {
   return sout.str() ;
 }
 
-uint32 ZipLocalEntry::getLocalHeaderOffset() const {
-  return rel_offset_loc_head ;
-}
-
 bool ZipLocalEntry::trailingDataDescriptor() const {
   // gp_bitfield bit 3 is one, if this entry uses a trailing data
   // descriptor to keep size, compressed size and crc-32
@@ -293,6 +289,10 @@ ZipLocalEntry *ZipLocalEntry::clone() const {
 
 string ZipCDirEntry::getComment() const {
   return file_comment ;
+}
+
+uint32 ZipCDirEntry::getLocalHeaderOffset() const {
+  return rel_offset_loc_head ;
 }
 
 

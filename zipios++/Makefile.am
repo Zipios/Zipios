@@ -18,7 +18,8 @@ pkginclude_HEADERS = FlexLexer.h             flist.h                  \
                      fcoll_common.h          ziphead.h                \
                      fcollexceptions.h       zipinputstream.h         \
                      fileentry.h             zipinputstreambuf.h      \
-                     filterinputstreambuf.h  zipios-config.h
+                     filterinputstreambuf.h  virtualseeker.h          \
+                     zipios-config.h
 
 noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
                   test_dircoll test_collcoll
@@ -35,10 +36,10 @@ libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
                       zipinputstreambuf.h        zipinputstream.cpp        \
                       zipinputstream.h           zipfile.cpp               \
                       zipfile.h                  ziphead.cpp               \
-                      ziphead.h                                            \
-                      simplesmartptr.h           dircoll.h                 \
-                      dircoll.cpp                collcoll.h                \
-                      collcoll.cpp               FlexLexer.h               \
+                      ziphead.h                  simplesmartptr.h          \
+                      dircoll.h                  dircoll.cpp               \
+                      collcoll.h                 collcoll.cpp              \
+                      virtualseeker.h            FlexLexer.h               \
                       flist.cpp                  flist.h                   \
                       flistentry.cpp             flistentry.h              \
                       flistscanner.h             flistscanner.ll

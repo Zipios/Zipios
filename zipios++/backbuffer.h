@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "zipios++/ziphead.h"
+#include "zipios++/virtualseeker.h"
 
 namespace zipios {
 
@@ -40,7 +41,8 @@ public:
       @param chunk_size specifies the size of the chunks to read the file into 
       the BackBuffer in.
   */
-  inline explicit BackBuffer( istream &is, int chunk_size = 1024 ) ;
+  inline explicit BackBuffer( istream &is, VirtualSeeker vs = VirtualSeeker(), 
+			      int chunk_size = 1024 ) ;
   /** Reads another chunk and returns the size of the chunk that has
       been read. Returns 0 on I/O failure.
       @param read_pointer When a new chunk is read in the already
@@ -52,24 +54,27 @@ public:
   inline bool readFrom( int n, ios::seekdir sd, int &read_pointer ) ;
 
 private:
+  VirtualSeeker _vs ;
   int _chunk_size ;
   istream &_is ;
   streampos _file_pos ;
   
 };
 
-BackBuffer::BackBuffer( istream &is, int chunk_size ) 
-  : _chunk_size( chunk_size ),
-    _is( is ) {
-  is.seekg( 0, ios::end ) ;
-  _file_pos = is.tellg() ;
+BackBuffer::BackBuffer( istream &is, VirtualSeeker vs, int chunk_size ) 
+  : _vs        ( vs         ),
+    _chunk_size( chunk_size ),
+    _is        ( is         ) 
+{
+  _vs.vseekg( is, 0, ios::end ) ;
+  _file_pos = _vs.vtellg( is ) ;
 }
 
 int BackBuffer::readChunk( int &read_pointer ) {
   // Update chunk_size and file position
   _chunk_size = min<int> ( static_cast< int >( _file_pos ), _chunk_size ) ;
   _file_pos -= _chunk_size ;
-  _is.seekg ( _file_pos, ios::beg ) ;
+  _vs.vseekg( _is, _file_pos, ios::beg ) ;
   // Make space for _chunk_size new bytes first in buffer
   insert ( begin(), _chunk_size, static_cast< char > ( 0 ) ) ; 
   // Read in the next _chunk_size of bytes

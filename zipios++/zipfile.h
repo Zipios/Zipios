@@ -14,6 +14,7 @@
 
 #include "zipios++/fcoll.h"
 #include "zipios++/ziphead.h"
+#include "zipios++/virtualseeker.h"
 
 namespace zipios {
 
@@ -24,7 +25,8 @@ using std::ifstream ;
  in a .zip file.  */
 class ZipFile : public FileCollection {
 public:
-  explicit ZipFile( const string &name/* , ios::open_mode mode  = ios::in | ios::binary */ ) ;
+  explicit ZipFile( const string &name, int s_off = 0, int e_off = 0
+		    /* , ios::open_mode mode  = ios::in | ios::binary */ ) ;
   virtual ~ZipFile() ;
 
   virtual void close() ;
@@ -33,6 +35,7 @@ public:
   virtual istream *getInputStream( const string &entry_name, 
 				     MatchPath matchpath = MATCH ) ;
 private:
+  VirtualSeeker _vs ;
   EndOfCentralDirectory  _eocd ;
 
   bool init( istream &_zipfile ) ;
