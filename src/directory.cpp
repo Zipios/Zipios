@@ -68,7 +68,7 @@ struct boost::filesystem::dir_it::representation
 		operator++ ();
 	}
 
-	~representation() { closedir(m_handle); }
+	~representation() { if ( m_handle )  closedir(m_handle); }
 
 	representation *reference()
 	{
