@@ -15,9 +15,9 @@ using std::exception ;
  */
 class IOException : public exception {
 public:
-  explicit IOException() throw () ;
+  IOException() throw () ;
   explicit IOException( const string &msg ) throw () ;
-  explicit IOException( const IOException &src ) throw () ;
+  IOException( const IOException &src ) throw () ;
   IOException &operator= ( const IOException &src ) throw () ;
   
   virtual const char *what() const throw () ;
@@ -30,9 +30,9 @@ private:
  FileCollection. */
 class FCollException : public exception {
 public:
-  explicit FCollException() throw () ;
+  FCollException() throw () ;
   explicit FCollException( const string &msg ) throw () ;
-  explicit FCollException( const FCollException &src ) throw () ;
+  FCollException( const FCollException &src ) throw () ;
   FCollException &operator= ( const FCollException &src ) throw () ;
   
   virtual const char *what() const throw () ;
@@ -46,9 +46,9 @@ private:
     perform because of the current state of the object. */
 class InvalidStateException : public exception {
 public:
-  explicit InvalidStateException() throw () ;
+  InvalidStateException() throw () ;
   explicit InvalidStateException( const string &msg ) throw () ;
-  explicit InvalidStateException( const InvalidStateException &src ) throw () ;
+  InvalidStateException( const InvalidStateException &src ) throw () ;
   InvalidStateException &operator= ( const InvalidStateException &src ) throw () ;
   
   virtual const char *what() const throw () ;
