@@ -38,10 +38,10 @@ public:
   /** \anchor fcoll_entries_anchor
       Returns a vector of const pointers to the entries in the
       FileCollection.  
-      @return a vector< ConstEntryPointer >
+      @return a ConstEntries
       containing the entries of the FileCollection. 
       @throw InvalidStateException Thrown if the collection is invalid. */
-  virtual vector< ConstEntryPointer > entries() const ;
+  virtual ConstEntries entries() const ;
 
   enum MatchPath { IGNORE, MATCH } ;
 
@@ -103,7 +103,7 @@ public:
   virtual ~FileCollection () ;
 protected:
   string _filename ;
-  vector< EntryPointer > _entries ;
+  Entries _entries ;
   bool _valid ;
 };
 
@@ -117,7 +117,7 @@ FileCollection::FileCollection( const FileCollection &src )
     _valid   ( src._valid    )
 {
   _entries.reserve( src._entries.size() ) ;
-  std::vector< EntryPointer >::const_iterator it ;
+  Entries::const_iterator it ;
   for ( it = src._entries.begin() ; it != src._entries.end() ; ++it )
     _entries.push_back( (*it)->clone() ) ;
 }
@@ -129,7 +129,7 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
     _entries.clear() ;
     _entries.reserve( src._entries.size() ) ;
     
-    std::vector< EntryPointer >::const_iterator it ;
+    Entries::const_iterator it ;
     for ( it = src._entries.begin() ; it != src._entries.end() ; ++it )
       _entries.push_back( (*it)->clone() ) ;
   }

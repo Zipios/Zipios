@@ -22,11 +22,11 @@ int main( int argc, char *argv[] ) {
     
     cout << "list length : " << zf.size() << endl ;
     
-    std::vector< ConstEntryPointer > entries ;
+    ConstEntries entries ;
     entries = zf.entries() ;
     
     
-    std::vector< ConstEntryPointer >::iterator it ;
+    ConstEntries::iterator it ;
     for( it = entries.begin() ; it != entries.end() ; it++)
       cout << *(*it) << endl ;
     

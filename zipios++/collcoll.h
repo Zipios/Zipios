@@ -63,7 +63,7 @@ public:
 
   virtual void close() ;
 
-  virtual vector< ConstEntryPointer > entries() const ;
+  virtual ConstEntries entries() const ;
 
   virtual ConstEntryPointer getEntry( const string &name, 
 				      MatchPath matchpath = MATCH ) const ;

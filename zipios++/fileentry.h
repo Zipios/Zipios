@@ -27,15 +27,19 @@ enum StorageMethod { STORED = 0, SHRUNK, REDUCED1, REDUCED2,
 
 class FileEntry ;
 
-/** \typedef typedef SimpleSmartPointer< FileEntry > EntryPointer 
-    EntryPointer is a SimpleSmartPointer for FileEntry's.
- */
+/** \typedef typedef SimpleSmartPointer< FileEntry > EntryPointer
+    EntryPointer is a SimpleSmartPointer for FileEntry's.  */
 typedef SimpleSmartPointer< FileEntry > EntryPointer ;
 
 
-/** Const EntryPointer is a SimpleSmartPointer for const FileEntry's.
- */
+/** ConstEntryPointer is a SimpleSmartPointer for const FileEntry's.  */
 typedef SimpleSmartPointer< const FileEntry > ConstEntryPointer ;
+
+/** Entries is a vector of EntryPointer's */
+typedef vector< EntryPointer >      Entries ;
+
+/** ConstEntries is a vector of ConstEntryPointer's */
+typedef vector< EntryPointer > ConstEntries ;
 
 
 

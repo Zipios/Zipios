@@ -53,11 +53,11 @@ int main() {
 
 //      cout << "list length : " << collcoll.size() << endl ;
     
-//      vector< ConstEntryPointer > entries ;
+//      ConstEntries entries ;
 //      entries = collcoll.entries() ;
     
     
-//      vector< ConstEntryPointer >::iterator it ;
+//      ConstEntries::iterator it ;
 //      for( it = entries.begin() ; it != entries.end() ; it++)
 //        cout << *(*it) << endl ;
     

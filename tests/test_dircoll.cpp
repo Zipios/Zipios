@@ -32,11 +32,11 @@ int main() {
     
     cout << "list length : " << collection.size() << endl ;
     
-    vector< ConstEntryPointer > entries ;
+    ConstEntries entries ;
     entries = collection.entries() ;
     
     
-    vector< ConstEntryPointer >::iterator it ;
+    ConstEntries::iterator it ;
     for( it = entries.begin() ; it != entries.end() ; it++)
       cout << *(*it) << endl ;
     

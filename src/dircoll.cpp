@@ -35,7 +35,7 @@ void DirectoryCollection::close() {
 }
 
 
-vector< ConstEntryPointer > DirectoryCollection::entries() const {
+ConstEntries DirectoryCollection::entries() const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
 
@@ -122,13 +122,13 @@ void DirectoryCollection::loadEntries() const {
   if( _entries_loaded )
     return ;
 
-  const_cast< DirectoryCollection * >( this )->Load( _recursive ) ;
+  const_cast< DirectoryCollection * >( this )->load( _recursive ) ;
 
   _entries_loaded = true ;
 }
 
 
-void DirectoryCollection::Load( bool recursive, const FilePath &subdir ) {
+void DirectoryCollection::load( bool recursive, const FilePath &subdir ) {
   using namespace boost::filesystem ;
   BasicEntry *ent ;
   for ( dir_it it( _filepath + subdir ) ; it != dir_it() ; ++it ) {
@@ -137,7 +137,7 @@ void DirectoryCollection::Load( bool recursive, const FilePath &subdir ) {
       continue ;
 
     if ( get< is_directory >( it ) && recursive ) {
-      Load( recursive, subdir + *it ) ;
+      load( recursive, subdir + *it ) ;
     } else {
       _entries.push_back( ent = new BasicEntry( subdir + *it, "", _filepath ) ) ;
       ent->setSize( get< boost::filesystem::size >( it ) ) ;

@@ -36,9 +36,9 @@ int main() {
     ZipFile zf( rzf ) ; // Test copy constructor
 //      ZipFile zf( name_zipfile ) ;
 
-    std::vector< ConstEntryPointer > entries = zf.entries() ;
+    ConstEntries entries = zf.entries() ;
     cout << "\nEntries (" << zf.size() <<  "):\n" ;
-    std::vector< ConstEntryPointer >::iterator it ;
+    ConstEntries::iterator it ;
     for( it = entries.begin() ; it != entries.end() ; it++)
       cout << *(*it) << endl ;
     cout << "\n" ;

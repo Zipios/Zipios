@@ -14,17 +14,17 @@ using std::find_if ;
 // FIXME: make InvalidStateException message customized for
 // subclasses. maybe make an InvalidStateException factory ;-)
 
-vector< ConstEntryPointer > FileCollection::entries() const {
+ConstEntries FileCollection::entries() const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get entries from an invalid FileCollection" ) ;
 
   // The constructor below is not in all vector impl. (not those
   // without member templates)
-  // vector< ConstEntryPointer > ( _entries.begin(), _entries.end() ) ;
+  // ConstEntries ( _entries.begin(), _entries.end() ) ;
   // Instead of using that we copy the vector manually
-  vector< ConstEntryPointer > cep_vec ;
+  ConstEntries cep_vec ;
   cep_vec.reserve( _entries.size() ) ;
-  std::vector< EntryPointer >::const_iterator cit ;
+  Entries::const_iterator cit ;
   for ( cit = _entries.begin() ; cit != _entries.end() ; ++cit )
     cep_vec.push_back( *cit ) ;
 
@@ -36,7 +36,7 @@ ConstEntryPointer FileCollection::getEntry( const string &name,
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get an entry from an invalid FileCollection" ) ;
 
-  std::vector< EntryPointer >::const_iterator iter ;
+  Entries::const_iterator iter ;
   if ( matchpath == MATCH )
     iter = find_if( _entries.begin(), _entries.end(), FileEntry::MatchName( name ) ) ;
   else

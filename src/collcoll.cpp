@@ -43,11 +43,11 @@ void CollectionCollection::close() {
 }
 
 
-vector< ConstEntryPointer > CollectionCollection::entries() const {
+ConstEntries CollectionCollection::entries() const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get entries from an invalid CollectionCollection" ) ;
 
-  vector< ConstEntryPointer > all_entries ;
+  ConstEntries all_entries ;
   std::vector< FileCollection * >::const_iterator it ;
   for ( it = _collections.begin() ; it != _collections.end() ; it++ )
     all_entries += (*it)->entries() ;

@@ -154,7 +154,7 @@ bool ZipFile::readEndOfCentralDirectory ( istream &_zipfile ) {
 }
 
 bool ZipFile::confirmLocalHeaders( istream &_zipfile ) {
-  std::vector< EntryPointer >::const_iterator it ;
+  Entries::const_iterator it ;
   ZipCDirEntry *ent ;
   int inconsistencies = 0 ;
   ZipLocalEntry zlh ;
