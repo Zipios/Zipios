@@ -3,7 +3,7 @@
 
 #include "zipios++/meta-iostreams.h"
 #include <vector>
-
+#include <memory>
 
 #include "zipios++/simplesmartptr.h"
 
