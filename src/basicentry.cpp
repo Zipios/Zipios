@@ -27,7 +27,7 @@ BasicEntry::BasicEntry( const string &filename, const string &comment,
     _basepath ( basepath )
 {
   string full_path = _basepath + _filename ;
-  ifstream is( full_path.c_str() ) ;
+  ifstream is( full_path.c_str(), ios::in | ios::binary ) ;
   if ( ! is ) {
     _valid = false ;
   } else {

@@ -22,7 +22,7 @@ ZipInputStream::ZipInputStream( const string &filename, streampos pos )
   : istream( 0 ),
     ifs( 0 )
 {
-  ifs = new ifstream( filename.c_str() ) ;
+  ifs = new ifstream( filename.c_str(), ios::in | ios::binary ) ;
   izf = new ZipInputStreambuf( ifs->rdbuf(), pos ) ;
 //  this->rdbuf( izf ) ; is replaced by:
   this->init( izf ) ;

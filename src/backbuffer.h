@@ -79,6 +79,7 @@ int BackBuffer::readChunk( int &read_pointer ) {
   // Make space for _chunk_size new bytes first in buffer
   insert ( begin(), _chunk_size, static_cast< char > ( 0 ) ) ; 
   // Read in the next _chunk_size of bytes
+
   readByteSeq ( _is, &( (*this)[ 0 ] ), _chunk_size ) ;
   read_pointer += _chunk_size ;
 

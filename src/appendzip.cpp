@@ -23,7 +23,7 @@ int main( int argc, char *argv[] ) {
     exitUsage( 1 ) ;
   }
 
-  ifstream  zipf( argv[ 2 ] ) ;
+  ifstream  zipf( argv[ 2 ], ios::in | ios::binary ) ;
   if( ! zipf ) {
     cout << "Error: Unable to open " << argv[ 2 ] << " for reading." << endl ;
     exitUsage( 1 ) ;

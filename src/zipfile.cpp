@@ -18,7 +18,7 @@ namespace zipios {
 ZipFile ZipFile::openEmbeddedZipFile( const string &name ) {
   // open zipfile, read 4 last bytes close file
   // create ZipFile object.
-  ifstream ifs( name.c_str() ) ;
+  ifstream ifs( name.c_str(), ios::in | ios::binary ) ;
   ifs.seekg( -4, ios::end ) ;
   uint32 start_offset = readUint32( ifs ) ;
   ifs.close() ;
@@ -32,7 +32,7 @@ ZipFile::ZipFile( const string &name , int s_off, int e_off
 
   _filename = name ;
   
-  ifstream _zipfile( name.c_str() ) ;
+  ifstream _zipfile( name.c_str(), ios::in | ios::binary ) ;
   init( _zipfile ) ;
 }
 
@@ -118,6 +118,7 @@ bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
   }
 
   // Consistency check. eocd should start here
+  
   int pos = _vs.vtellg( _zipfile ) ;
   _vs.vseekg( _zipfile, 0, ios::end ) ;
   int remaining = static_cast< int >( _vs.vtellg( _zipfile ) ) - pos ;

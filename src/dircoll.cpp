@@ -87,13 +87,13 @@ istream *DirectoryCollection::getInputStream( const string &entry_name,
       return 0 ;
     else {
       string real_path( _filepath + entry_name ) ;
-      return new ifstream( real_path.c_str() ) ;
+      return new ifstream( real_path.c_str(), ios::in | ios::binary ) ;
     }
 
   } else {
     // avoid loading entries if possible.
     string real_path( _filepath + entry_name ) ;
-    ifstream *ifs = new ifstream( real_path.c_str() ) ;
+    ifstream *ifs = new ifstream( real_path.c_str(), ios::in | ios::binary ) ;
     if( ! *ifs ) {
       delete ifs ;
       return 0 ;
