@@ -4,5 +4,3 @@ config.log
 doc
 config.cache
 
-libtool
-ltmain.sh
