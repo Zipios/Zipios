@@ -93,10 +93,9 @@ bool ZipFile::init( istream &_zipfile ) {
 
 bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
   // Find and read eocd. 
-  if ( ! readEndOfCentralDirectory( _zipfile ) ) {
-    cerr << "Could not find eocd" << endl ;
-  }
-//    cerr << "FOUND HEADER" << endl ;
+  if ( ! readEndOfCentralDirectory( _zipfile ) )
+    throw FCollException( "Unable to find zip structure: End-of-central-directory" ) ;
+
   // Position read pointer to start of first entry in central dir.
   _vs.vseekg( _zipfile,  _eocd.offset(), ios::beg ) ;
 
@@ -107,10 +106,12 @@ bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
     _entries[ entry_num ] = ent ;
     _zipfile >>  *ent ;
     if ( ! _zipfile ) {
-      cerr << "BAD STREAM STATE" << endl ;
-      if ( _zipfile.eof()  ) { return false ; } else
-      if ( _zipfile.bad()  ) { return false ; } else
-      if ( _zipfile.fail() ) { return false ; }
+      if ( _zipfile.bad()  ) 
+	throw IOException( "Error reading zip file while reading zip file central directory" ) ;
+      else if ( _zipfile.fail() )
+	throw FCollException( "Zip file consistency problem. Failure while reading zip file central directory" ) ;
+      else if ( _zipfile.eof()  )
+	throw IOException( "Premature end of file while reading zip file central directory" ) ;
     }
     ++entry_num ;
   }
@@ -118,20 +119,13 @@ bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
   int pos = _vs.vtellg( _zipfile ) ;
   _vs.vseekg( _zipfile, 0, ios::end ) ;
   int remaining = static_cast< int >( _vs.vtellg( _zipfile ) ) - pos ;
-  if ( remaining != _eocd.eocdOffSetFromEnd() ) {
-    cerr << "Zip file consistency error." << endl ;
-    cerr << "  End-of-central-directory record starts at -" ;
-    cerr << _eocd.eocdOffSetFromEnd() << " from eof" << endl ;
-    cerr << "  It's expected to follow last file header at -" ;
-    cerr << remaining << endl ;
-    return false ;
-  }
+  if ( remaining != _eocd.eocdOffSetFromEnd() )
+    throw FCollException( "Zip file consistency problem. Zip file data fields are inconsistent with zip file layout" ) ;
+
   // Consistency check 2, are local headers consistent with
   // cd headers
-  if ( ! confirmLocalHeaders( _zipfile ) ) {
-    cerr << "Local headers are inconsistent with central directory entries" << endl ;
-    return false ;
-  }
+  if ( ! confirmLocalHeaders( _zipfile ) )
+    throw FCollException( "Zip file consistency problem. Zip file data fields are inconsistent with zip file layout" ) ;
   
   return true ;
 }
@@ -151,9 +145,7 @@ bool ZipFile::readEndOfCentralDirectory ( istream &_zipfile ) {
       found = true ;
       break ;
     }
-//      cerr << "bb : " << static_cast< int >( bb[ read_p ] ) << endl ;
     --read_p ;
-//      cerr << read_p << endl ;
   }
 
   return found ;
@@ -168,7 +160,6 @@ bool ZipFile::confirmLocalHeaders( istream &_zipfile ) {
     ent = static_cast< ZipCDirEntry * >( (*it).get()  ) ;
     _vs.vseekg( _zipfile, ent->getLocalHeaderOffset(), ios::beg ) ;
     _zipfile >> zlh ;
-//      cerr << zlh ;
     if ( ! _zipfile || zlh != *ent ) {
       inconsistencies++ ;
       _zipfile.clear() ;
