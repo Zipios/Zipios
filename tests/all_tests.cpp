@@ -3,7 +3,7 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/TextTestResult.h>
 #include <cppunit/TestCaller.h>
-
+#include "zipinputstreamtest.h"
 #include "zipoutputstreamtest.h"
 #include "zipfiletest.h"
 
