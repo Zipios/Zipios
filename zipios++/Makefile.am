@@ -25,4 +25,5 @@ pkginclude_HEADERS = \
 	zipinputstream.h \
 	zipios_defs.h \
 	zipoutputstreambuf.h \
-	zipoutputstream.h
+	zipoutputstream.h \
+	zipios-config.h
