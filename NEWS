@@ -8,7 +8,15 @@ to CppUnit. (NOT DONE YET) Many more unit tests.  RPMs building
 by Arkadiusz Miskiewicz). (NOT DONE YET) Better Windows support. (NOT
 DONE YET) Windows installer.
 
-
+HEAD of CVS
+-----------
+New features:
+  - Added gzipoutputstream to write .gz files.
+  - Current time and date written in ZipEntry, so winzip 8.0 does not 
+    complain about the written zip files.
+  - Makefiles up to date for Visual C++ 6
+  - Correction added for Visual C++ 7.1
+  - Further support for CppUnit.
 
 Release notes for Zipios++ 0.1.5
 --------------------------------

@@ -14,3 +14,6 @@ so as to work with GCC 3.2.1.
 
 Ross Burton (r.burton@180sw.com) transformed zipios++.spec into
 zipios++.spec.in and made it more RedHat tradition conformant.
+
+Mark Donszelmann (Mark.Donszelmann@slac.stanford.edu) added gzipoutputstream
+and made several fixes for Visual C++ 6.0 and 7.0.

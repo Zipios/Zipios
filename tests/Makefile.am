@@ -11,7 +11,8 @@ CXXFLAGS = @CPPUNIT_CFLAGS@
 
 noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
                   test_dircoll test_collcoll test_appzip test_zipoutputstreambuf  \
-                  test_simplesmartptr test_zipoutputstream all_tests
+                  test_simplesmartptr test_zipoutputstream test_gzipoutputstream \
+                  all_tests
 
 test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
 
@@ -33,9 +34,12 @@ test_simplesmartptr_SOURCES = test_simplesmartptr.cpp
 
 test_zipoutputstream_SOURCES = test_zipoutputstream.cpp
 
+test_gzipoutputstream_SOURCES = test_gzipoutputstream.cpp
+
 all_tests_SOURCES = all_tests.cpp zipfiletest.cpp zipfiletest.h \
                     zipinputstreamtest.h zipinputstreamtest.cpp \
                     zipoutputstreamtest.h zipoutputstreamtest.cpp \
+                    gzipoutputstreamtest.h gzipoutputstreamtest.cpp \
                     commontest.h commontest.cpp
 
 # Notice that libzipios.a is not specified as -L. -lzipios
@@ -58,6 +62,8 @@ test_appzip_LDADD = -L../src -lzipios -lz
 test_zipoutputstreambuf_LDADD = -L../src -lzipios -lz
 
 test_zipoutputstream_LDADD = -L../src -lzipios -lz
+
+test_gzipoutputstream_LDADD = -L../src -lzipios -lz
 
 all_tests_LDADD = -L../src -lzipios -lz @CPPUNIT_LIBS@
 

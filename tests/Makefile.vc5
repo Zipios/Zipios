@@ -23,13 +23,15 @@ CURRENT = $(TST_DIR)
 
 OBJECTS = all_tests.obj commontest.obj \
     example_zip.obj test_appzip.obj test_collcoll.obj \
-	test_dircoll.obj test_simplesmartptr.obj test_zip.obj \
+	test_dircoll.obj test_simplesmartptr.obj \
+	test_zip.obj test_gzipoutputstream.obj \
 	test_zipinputstream.obj test_zipinputstreambuf.obj \
 	test_zipoutputstream.obj test_zipoutputstreambuf.obj
 
 TESTS = all_test.exe \
     example_zip.exe test_appzip.exe test_collcoll.exe \
-	test_dircoll.exe test_simplesmartptr.exe test_zip.exe \
+	test_dircoll.exe test_simplesmartptr.exe \
+	test_zip.exe test_gzipoutputstream.exe \
 	test_zipinputstream.exe test_zipinputstreambuf.exe \
 	test_zipoutputstream.exe test_zipoutputstreambuf.exe
 

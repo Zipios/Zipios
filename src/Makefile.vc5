@@ -18,12 +18,27 @@ all: static dynamic
 #
 # Static library
 #
-OBJECTS = basicentry.obj collcoll.obj dircoll.obj directory.obj \
-	fcoll.obj fcollexceptions.obj fileentry.obj filepath.obj \
-	filterinputstreambuf.obj inflateinputstreambuf.obj zipfile.obj \
-	ziphead.obj zipheadio.obj zipinputstream.obj zipinputstreambuf.obj \
-	filteroutputstreambuf.obj deflateoutputstreambuf.obj \
-	zipoutputstreambuf.obj zipoutputstream.obj
+OBJECTS =   basicentry.obj \
+            collcoll.obj \
+            dircoll.obj \
+            directory.obj \
+	        fcoll.obj \
+	        fcollexceptions.obj \
+	        fileentry.obj \
+	        filepath.obj \
+	        filterinputstreambuf.obj \
+	        inflateinputstreambuf.obj \
+	        gzipoutputstream.obj \
+	        gzipoutputstreambuf.obj \
+	        zipfile.obj \
+	        ziphead.obj \
+	        zipheadio.obj \
+	        zipinputstream.obj \
+	        zipinputstreambuf.obj \
+	        filteroutputstreambuf.obj \
+	        deflateoutputstreambuf.obj \
+	        zipoutputstreambuf.obj \
+	        zipoutputstream.obj
 
 CPPFLAGS = /nologo /O2 /GX /I.. /D"_WINDOWS" /D"WIN32" /D"NDEBUG" \
 	/I"$(ZLIB_INC)"

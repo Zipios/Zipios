@@ -22,6 +22,8 @@ libzipios_la_SOURCES = backbuffer.h                \
                       filterinputstreambuf.cpp    \
                       inflateinputstreambuf.cpp   \
                       outputstringstream.h        \
+                      gzipoutputstream.cpp        \
+                      gzipoutputstreambuf.cpp     \
                       zipfile.cpp                 \
                       ziphead.cpp                 \
                       zipheadio.cpp               \
