@@ -1,5 +1,5 @@
-#ifndef fcoll_COMMON_H
-#define fcoll_COMMON_H
+#ifndef FCOLL_COMMON_H
+#define FCOLL_COMMON_H
 
 #include "zipios++/zipios-config.h"
 
