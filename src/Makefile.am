@@ -5,10 +5,10 @@ EXTRA_DIST = test.zip
 
 # CXXFLAGS= -g
 
-noinst_LIBRARIES = libzipios.a
+lib_LIBRARIES = libzipios.a
 
-bin_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
-               test_dircoll
+noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
+                  test_dircoll
 # test_flist 
 
 libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
