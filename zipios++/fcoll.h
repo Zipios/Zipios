@@ -194,12 +194,6 @@ protected:
    http://sourceforge.net/project/?group_id=5418</A>
    
    \section links Links
-   <A HREF="http://www.fensende.com/zpp/">Zpp</A>. A library very similar 
-   to Zipios++.
-   
-   <A HREF="http://www.ajk.tele.fi/~too/sw/zip08x.readme">zip08x</A>.
-   A library very similar to Zipios++, but for C.
-   
    <A HREF="ftp://ftp.freesoftware.com/pub/infozip/zlib/zlib.html">zlib</A>. 
    The compression library that Zipios++ uses to perform the actual 
    decompression.
