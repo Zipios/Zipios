@@ -88,7 +88,7 @@ int main() {
 
 void entryToFile( const string &ent_name, istream &is, const string &outfile,
 		  bool cerr_report ) {
-  ofstream ofs( outfile.c_str() ) ;
+  ofstream ofs( outfile.c_str(), ios::out | ios::binary ) ;
 
   cout << "writing " << ent_name << " to " << outfile << endl ;
 

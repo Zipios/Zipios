@@ -18,7 +18,7 @@ int main( int argc, char *argv[] ) {
   if ( argc != 3 ) 
     exitUsage( 1 ) ;
   
-  ofstream  exef( argv[ 1 ], ios::app ) ;
+  ofstream  exef( argv[ 1 ], ios::app | ios::binary ) ;
   if( ! exef ) {
     cout << "Error: Unable to open " << argv[ 1 ] << " for writing" << endl ;
     exitUsage( 1 ) ;

@@ -59,10 +59,8 @@ void ZipOutputStreambuf::putNextEntry( const ZipCDirEntry &entry ) {
   if ( _open_entry )
     closeEntry() ;
 
-  if ( _method == DEFLATED ) {
-    if ( ! init( _level ) )
-      cerr << "ZipOutputStreambuf::putNextEntry(): init() failed!\n" ;
-  }
+  if ( ! init( _level ) )
+    cerr << "ZipOutputStreambuf::putNextEntry(): init() failed!\n" ;
 
   _entries.push_back( entry ) ;
   ZipCDirEntry &ent = _entries.back() ;
@@ -91,7 +89,13 @@ void ZipOutputStreambuf::setLevel( int level ) {
 
 void ZipOutputStreambuf::setMethod( StorageMethod method ) {
   _method = method ;
-
+  if( method == STORED )
+    setLevel( NO_COMPRESSION ) ;
+  else if ( method == DEFLATED ) {
+    if( _level == NO_COMPRESSION )
+      setLevel( DEFAULT_COMPRESSION ) ; 
+  } else 
+    throw FCollException( "Specified compression method not supported" ) ;
 }
 
 //

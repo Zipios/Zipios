@@ -17,6 +17,11 @@ namespace zipios {
 class ZipOutputStreambuf : public DeflateOutputStreambuf {
 public:
 
+  enum CompressionLevels { NO_COMPRESSION      = Z_NO_COMPRESSION, 
+			   BEST_SPEED          = Z_BEST_SPEED,
+			   BEST_COMPRESSION    = Z_BEST_COMPRESSION,
+                           DEFAULT_COMPRESSION = Z_DEFAULT_COMPRESSION  } ;
+
   /** ZipOutputStreambuf constructor. A newly constructed ZipOutputStreambuf
       is not ready to accept data, putNextEntry() must be invoked first.
       @param outbuf the streambuf to use for input.

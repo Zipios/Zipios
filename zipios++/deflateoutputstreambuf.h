@@ -68,9 +68,9 @@ protected:
 private:
   z_stream _zs ;
   bool _zs_initialized ;
+protected: // FIXME: reconsider design?
   const int _invecsize ;
   vector< char > _invec ;
-protected: // FIXME: reconsider design?
   const int _outvecsize ;
   vector< char > _outvec ;
 

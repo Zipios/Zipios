@@ -61,6 +61,7 @@ bool DeflateOutputStreambuf::init( int comp_level ) {
   if( _zs_initialized ) {                    // just reset it
     endDeflation() ;
     err = deflateReset( &_zs ) ;
+    // FIXME: bug, for deflateReset we do not update the compression level
   } else {                                   // init it
     err = deflateInit2( &_zs, comp_level, Z_DEFLATED, -MAX_WBITS, 
 			default_mem_level, Z_DEFAULT_STRATEGY ) ;

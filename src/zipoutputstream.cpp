@@ -23,7 +23,7 @@ ZipOutputStream::ZipOutputStream( const string &filename, streampos pos )
   : ostream( 0 ),
     ofs( 0 )
 {
-  ofs = new ofstream( filename.c_str() ) ;
+  ofs = new ofstream( filename.c_str(), ios::out | ios::binary ) ;
   ozf = new ZipOutputStreambuf( ofs->rdbuf(), pos ) ;
   this->init( ozf ) ;
 }

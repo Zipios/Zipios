@@ -17,7 +17,7 @@ void writeFileToZipOutputStreambuf( ZipOutputStreambuf &zosb, const string &file
 
 int main() {
   try {
-    ofstream of( "zosb.zip" ) ;
+    ofstream of( "zosb.zip", ios::out | ios::binary ) ;
     
     ZipOutputStreambuf ozf( of.rdbuf() ) ;
     
