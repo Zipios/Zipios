@@ -24,12 +24,14 @@ namespace zipios {
     CPPUNIT_TEST(testZipContents);
     CPPUNIT_TEST(testZipContentNames);
     CPPUNIT_TEST(testZipFileSizes);
+    CPPUNIT_TEST(testDirectory);
     CPPUNIT_TEST_SUITE_END();
 
     void testFirstMethod();
     void testZipContents();
     void testZipContentNames();
     void testZipFileSizes();
+    void testDirectory();
     
     static const TestFiles TEST_FILES;
   private:

@@ -35,7 +35,7 @@ void zipios::ZipInputStreamTest::testZipContentNames() {
   ConstEntryPointer poi = zis.getNextEntry();
   int count =1;
   while( poi->isValid() ) {
-      CPPUNIT_ASSERT_EQUAL( entries[count],poi->getName());    
+      CPPUNIT_ASSERT_EQUAL( entries[count],poi->getName());  
       poi = zis.getNextEntry();
       count++;
   }
@@ -54,5 +54,15 @@ void zipios::ZipInputStreamTest::testZipFileSizes() {
       CPPUNIT_ASSERT_EQUAL( entries[count],file_size);     
       poi = zis.getNextEntry();
       count++;
+  }
+}
+
+void zipios::ZipInputStreamTest::testDirectory() {
+  ZipInputStream zis("test.zip"); //only files in this
+  ConstEntryPointer poi = zis.getNextEntry();
+    while( poi->isValid() ) {
+      int isDirectory= poi->isDirectory();
+      CPPUNIT_ASSERT_EQUAL(0,isDirectory);   
+      poi = zis.getNextEntry();
   }
 }
