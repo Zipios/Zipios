@@ -42,18 +42,6 @@ int main() {
   cerr << " sp2.get() = " << sp2.get() << endl ;
   cerr << " sp3.get() = " << sp3.get() << endl ;
 
-
-  vector< int > vec( 3 ) ;
-  
-  vec[ 0 ] = 1 ;
-  vec[ 1 ] = 2 ;
-  vec[ 2 ] = 3 ;
-  
-  std::vector< int >::iterator it ;
-
-  for( it = vec.begin() ; it != vec.end() ; ++it ) 
-    cerr << *it << endl ;
-  
 }
    
 
