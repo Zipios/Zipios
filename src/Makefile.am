@@ -7,7 +7,8 @@ EXTRA_DIST = test.zip
 
 noinst_LIBRARIES = libzipios.a
 
-bin_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip
+bin_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
+               test_dircoll
 # test_flist 
 
 libzipios_a_SOURCES = backbuffer.h               basicentry.h              \
@@ -36,6 +37,8 @@ test_zip_SOURCES = test_zip.cpp
 
 example_zip_SOURCES = example_zip.cpp
 
+test_dircoll_SOURCES = test_dircoll.cpp
+
 # test_flist_SOURCES = test_flist.cpp
 
 # Notice that libzipios.a is not specified as -L. -lzipios
@@ -48,6 +51,8 @@ test_zipinputstream_LDADD = libzipios.a -lz
 test_zip_LDADD = libzipios.a -lz
 
 example_zip_LDADD = libzipios.a -lz
+
+test_dircoll_LDADD = libzipios.a -lz
 
 # test_flist_LDADD = libzipios.a
 
