@@ -151,6 +151,10 @@ SOURCE=..\src\zipinputstream.cpp
 
 SOURCE=..\src\zipinputstreambuf.cpp
 # End Source File
+# Begin Source File
+
+SOURCE="..\src\zipios_common.h"
+# End Source File
 # End Group
 # Begin Group "zipios++"
 
@@ -170,10 +174,6 @@ SOURCE="..\zipios++\dircoll.h"
 # Begin Source File
 
 SOURCE="..\zipios++\fcoll.h"
-# End Source File
-# Begin Source File
-
-SOURCE="..\zipios++\fcoll_common.h"
 # End Source File
 # Begin Source File
 
