@@ -70,14 +70,14 @@ ConstEntryPointer ZipInputStreambuf::getNextEntry() {
 //        cerr << "stored" << endl ;
     } else {
       _open_entry = false ; // Unsupported compression format.
-      cerr << "Unsupported compression format" << endl ;
+      throw FCollException( "Unsupported compression format" ) ;
     }
   } else {
     _open_entry = false ;
   }
 
   if ( _curr_entry.isValid() && _curr_entry.trailingDataDescriptor() )
-    ; // throw ZipException( "Trailing data descriptor in zip file not supported" ) ; 
+    throw FCollException( "Trailing data descriptor in zip file not supported" ) ; 
   return new ZipLocalEntry( _curr_entry ) ;
 }
 
