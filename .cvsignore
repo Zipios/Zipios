@@ -10,3 +10,5 @@ config.sub
 configure
 libtool
 ltmain.sh
+autom4te*.cache
+zipios++.spec
