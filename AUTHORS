@@ -1,10 +1,10 @@
 Main author:              Thomas Sondergaard (thomass@deltadata.dk)
-Windows support:          Kevin Shea         (kevin.shea@d-cubed.co.uk)
-Bug fixes and test suite: Kirk Klobe         (kirkk@visi.com)
-FreeBSD port:             Ying-Chieh Liao    (ijliao@csie.nctu.edu.tw)
+FreeBSD port maintainer:  Ying-Chieh Liao    (ijliao@csie.nctu.edu.tw)
 
 The files zipios++/directory.h and zipios++/directory.cpp originate
 from the dir_it library written by Dietmar Kuehl (it's available for
 download at http://www.boost.org)
 
 zipios++.spec contributed by Rui Miguel Silva Seabra
+
+libtool/shared library patch contributed by Arkadiusz Miskiewicz (arekm)

@@ -7,11 +7,11 @@ Version: %{version}
 Release: %{release}
 Source: %{name}-%{version}.tar.gz
 Group: Development/Libraries
-URL: http://zipios.freshmeat.net
+URL: http://zipios.sourceforge.net
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 License: GNU LGPL
 Prefix: %{prefix}
-Packager: "Rui Miguel Seabra" <rms@1407.org>
+Packager: "Thomas Sondergaard" <thomass@deltadata.dk>
 Distribution: RedHat 7.x Contrib
 
 %description
