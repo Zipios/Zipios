@@ -5,11 +5,11 @@ AUTOMAKE_OPTIONS = gnu
 
 INCLUDES = -I..
 
-lib_LIBRARIES = libzipios.a
+lib_LTLIBRARIES = libzipios.la
 
 noinst_PROGRAMS = appendzip
 
-libzipios_a_SOURCES = backbuffer.h                \
+libzipios_la_SOURCES = backbuffer.h                \
                       basicentry.cpp              \
                       collcoll.cpp                \
                       dircoll.cpp                 \
@@ -32,6 +32,7 @@ libzipios_a_SOURCES = backbuffer.h                \
                       deflateoutputstreambuf.cpp  \
                       zipoutputstreambuf.cpp      \
                       zipoutputstream.cpp
-
+libzipios_la_LIBADD = \
+		     -lz
 
 appendzip_SOURCES = appendzip.cpp

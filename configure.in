@@ -28,7 +28,7 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
-AC_PROG_RANLIB
+AC_PROG_LIBTOOL
 
 dnl allow alternate location for zlib
 AC_ARG_WITH(zlib,
