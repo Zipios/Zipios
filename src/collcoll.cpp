@@ -105,7 +105,7 @@ int CollectionCollection::size() const {
 
 void CollectionCollection::getEntry( const string &name,
 				     ConstEntryPointer &cep, 
-				     vector< FileCollection * >::const_iterator it, 
+				     vector< FileCollection * >::const_iterator &it, 
 				     MatchPath matchpath ) const {
   
   // Returns the first matching entry.
@@ -115,7 +115,6 @@ void CollectionCollection::getEntry( const string &name,
     if ( cep )
       break ;
   }
-  
 }
 
 

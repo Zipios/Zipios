@@ -62,7 +62,7 @@ protected:
    */
   void getEntry( const string &name,
 		 ConstEntryPointer &cep, 
-		 vector< FileCollection * >::const_iterator it, 
+		 vector< FileCollection * >::const_iterator &it, 
 		 MatchPath matchpath = MATCH ) const ;
   
   vector< FileCollection * > _collections ;
