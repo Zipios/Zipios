@@ -22,10 +22,12 @@ namespace zipios {
     CPPUNIT_TEST_SUITE(ZipInputStreamTest);
     CPPUNIT_TEST(testFirstMethod);
     CPPUNIT_TEST(testZipContents);
+    CPPUNIT_TEST(testZipContentNames);
     CPPUNIT_TEST_SUITE_END();
 
     void testFirstMethod();
     void testZipContents();
+    void testZipContentNames();
     
     static const TestFiles TEST_FILES;
   private:

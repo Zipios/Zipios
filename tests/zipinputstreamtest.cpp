@@ -24,3 +24,15 @@ void zipios::ZipInputStreamTest::testZipContents() {
   CPPUNIT_ASSERT_EQUAL(4, count);
 }
 
+void zipios::ZipInputStreamTest::testZipContentNames() {
+  vector<string> entries;
+  entries.push_back("file1.txt"); // got these from unzip -l test.zip
+  entries.push_back("file2.txt");
+  entries.push_back("file3.txt");
+  entries.push_back("testfile.bin");
+  ZipInputStream zis("test.zip");
+ vector<string>::const_iterator it = entries.begin();
+ for ( ; it != entries.end() ; ++it ) {
+   //std::cout<<(*it).c_str()<<endl;
+  }
+}
