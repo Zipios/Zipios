@@ -1,1 +1,223 @@
-* First Public release
+2000-06-04 12:41  thomas
+
+	* aclocal.m4, configure, configure.in: Updated the version number
+	to 0.1.2
+
+2000-05-29 19:35  thomas
+
+	* zipios++/: appendzip.cpp, fcoll.h, zipfile.h: Added documentation
+	to the \mainpage inline doc entry in fcoll.h, and added the
+	appropriate anchors and docs in appendzip.cpp and zipfile.h.
+
+2000-05-29 19:18  thomas
+
+	* zipios++/: backbuffer.h, fcoll.h, zipfile.h: Added inline
+	documentation to zipfile.h
+	
+	Added @throw statements to the inline doc in backbuffer.h, fcoll.h
+	and zipfile.h.
+
+2000-05-29 16:45  thomas
+
+	* zipios++/fcoll.h: Updated zlib web link in doc.
+
+2000-05-29 16:28  thomas
+
+	* zipios++/fcoll.h: Updated documentation concerning tested
+	platforms.
+
+2000-05-29 15:40  thomas
+
+	* zipios++/fcollexceptions.h: The copy constructors for all three
+	defined exception types were marked with explicit, which they
+	really shouldn't be, and which gcc 2.95.2 really didn't like.
+	
+	Zipios++ has now been tested and found to work on
+	
+	Mandrake linux	 / gcc 2.95.2
+	
+	and
+	
+	RedHat 6.2 linux / egcs-2.91.66
+
+2000-05-29 15:23  thomas
+
+	* zipios++/simplesmartptr.h: Changed the SimpleSmartPointer class
+	template, such that it doesn't need to be an unbound friend with
+	itself, which some compilers don't support. Now it relies on that
+	SimpleSmartPointer only has one real resource, ie. the real
+	pointer, and this resource is available directly through the
+	SimpleSmartPointer::get() method.
+
+2000-05-28 17:56  thomas
+
+	* zipios++/zipinputstreambuf.cpp: Replaced some cerr error print
+	outs with exception throwing.
+
+2000-05-28 17:42  thomas
+
+	* zipios++/fcollexceptions.cpp: Removed commented out code.
+
+2000-05-28 17:39  thomas
+
+	* zipios++/zipfile.cpp: Removed cerr print outs. Instead
+	appropriate exceptions are thrown.
+
+2000-05-25 21:25  thomas
+
+	* zipios++/ziphead.cpp: Removed unnecessary cerr print statements.
+
+2000-05-25 20:49  thomas
+
+	* zipios++/backbuffer.h: Removed unused unimplemented skeleton
+	member function.
+
+2000-05-24 23:01  thomas
+
+	* zipios++/: backbuffer.h, fcollexceptions.cpp, fcollexceptions.h,
+	flist.cpp, test_appzip.cpp: Renamed fcollException to
+	FCollException, which by accident did not start with a capital
+	letter(s).
+
+2000-05-24 22:52  thomas
+
+	* aclocal.m4, zipios++/.cvsignore, zipios++/Makefile.am,
+	zipios++/Makefile.in, zipios++/appendzip.cpp,
+	zipios++/backbuffer.h, zipios++/test_appzip.cpp,
+	zipios++/zipfile.cpp, zipios++/zipfile.h, zipios++/ziphead.h: Added
+	a static method ZipFile::openEmbeddedZipFile() that opens an
+	embedded zipfile stored in the end of another file, only followed
+	by a 4 byte integer (stored in the same byte order as the 4 byte
+	unsigned integers in the zip header fields).
+	
+	Added a program appendzip that appends a zipfile to another file
+	and writes the 4 byte integer indicating the start of the zipfile
+	in the end of the file.
+	
+	Added a test_appzip test program.
+	
+	Added an if construction in BackBuffer that tests if the
+	VirtualSeeker object it has in its possession is invalid. This test
+	cannot be made by the VirtualSeeker object, as it does not have
+	access to the file it is used for, to determine if it is invalid.
+	Btw., it is invalid if start_offset is a position after end_offset
+	in the file, which happens if start_offset+end_offset >
+	true_file_length.
+
+2000-05-24 22:44  thomas
+
+	* zipios++/fcollexceptions.cpp: Disabled the debug prints to
+	stderr.
+
+2000-05-23 22:34  thomas
+
+	* zipios++/virtualseeker.h: Added some stuff to make the MIPSpro
+	7.3 compiler happy in -LANG:std mode.
+
+2000-05-23 22:05  thomas
+
+	* zipios++/virtualseeker.h: Forgot to add virtualseeker.h, which
+	has a part in supporting 'zip files' in files sorrounded by other
+	data.
+
+2000-05-23 21:59  thomas
+
+	* aclocal.m4, zipios++/Makefile.am, zipios++/Makefile.in,
+	zipios++/backbuffer.h, zipios++/zipfile.cpp, zipios++/zipfile.h,
+	zipios++/ziphead.cpp, zipios++/ziphead.h: Made changes so ZipFile
+	now works, even if the 'zip file' is stored in a file with other
+	data both ahead and after it.
+
+2000-05-21 16:55  thomas
+
+	* Makefile.am, Makefile.in, aclocal.m4, doxyfile, zipios++/fcoll.h:
+	Changed the logo from a png to a jpg format image. Changed its
+	appearance too.
+
+2000-05-21 16:54  thomas
+
+	* doc/images/: zipios++.jpg, zipios++.png: Changed the logo.
+
+2000-05-20 20:05  thomas
+
+	* zipios++/: .cvsignore, zipios-config.h.in: Removed config.h added
+	zipios++/zipios-config.h
+
+2000-05-20 20:04  thomas
+
+	* .cvsignore, aclocal.m4, config.h.in: Removed config.h.in added
+	src/zipios-config.h
+
+2000-05-20 19:17  thomas
+
+	* Makefile.am, Makefile.in, aclocal.m4, configure, configure.in,
+	zipios++/.cvsignore, zipios++/FlexLexer.h, zipios++/Makefile.am,
+	zipios++/Makefile.in, zipios++/backbuffer.h,
+	zipios++/basicentry.cpp, zipios++/basicentry.h,
+	zipios++/collcoll.cpp, zipios++/collcoll.h, zipios++/dircoll.cpp,
+	zipios++/dircoll.h, zipios++/example_zip.cpp, zipios++/fcoll.cpp,
+	zipios++/fcoll.h, zipios++/fcoll_common.h,
+	zipios++/fcollexceptions.cpp, zipios++/fcollexceptions.h,
+	zipios++/fileentry.cpp, zipios++/fileentry.h,
+	zipios++/filterinputstreambuf.cpp, zipios++/filterinputstreambuf.h,
+	zipios++/flist.cpp, zipios++/flist.h, zipios++/flistentry.cpp,
+	zipios++/flistentry.h, zipios++/flistscanner.h,
+	zipios++/flistscanner.ll, zipios++/inflateinputstreambuf.cpp,
+	zipios++/inflateinputstreambuf.h, zipios++/simplesmartptr.h,
+	zipios++/test.zip, zipios++/test_collcoll.cpp,
+	zipios++/test_dircoll.cpp, zipios++/test_flist.cpp,
+	zipios++/test_zip.cpp, zipios++/test_zipinputstream.cpp,
+	zipios++/test_zipinputstreambuf.cpp, zipios++/zipfile.cpp,
+	zipios++/zipfile.h, zipios++/ziphead.cpp, zipios++/ziphead.h,
+	zipios++/zipinputstream.cpp, zipios++/zipinputstream.h,
+	zipios++/zipinputstreambuf.cpp, zipios++/zipinputstreambuf.h:
+	Changes to allow zipios header files to be installed under
+	(/usr/)include/zipios++.
+	
+	Moved src/ to zipios++/ changed all zipios includes to include
+	zipios++/zipios-header.h. Updated Makefile.* to reflect these
+	changes, and added stuff in zipios++/Makefile.am to install the
+	header files when 'make install' is invoked.
+
+2000-05-19 11:42  thomas
+
+	* aclocal.m4: Added src/test_collcoll.cpp, a small test program to
+	test CollectionCollection. Updated src/.cvsignore and
+	src/Makefile.am appropriately.
+
+2000-05-18 16:48  thomas
+
+	* aclocal.m4: make install now installs libzipios.a in (/usr/)lib
+	and now doesn't install the test binaries.
+
+2000-05-16 19:52  thomas
+
+	* acconfig.h, aclocal.m4, config.h.in, configure, configure.in:
+	Added a command-line switch --with-std-compliant-iostream to let
+	the user select whether the std compliant iostream library should
+	be used if it is present. The default is yes.
+
+2000-05-15 23:13  thomas
+
+	* aclocal.m4: Reverted the changes to src/Makefile.{am|in} - made
+	in the previous commit. They were not suppose to have gone into the
+	repository.
+
+2000-05-15 21:11  thomas
+
+	* .cvsignore: [no log message]
+
+2000-05-15 21:10  thomas
+
+	* config.h.in: config.h.in added.
+
+2000-05-14 21:36  thomas
+
+	* Makefile.am, Makefile.in, aclocal.m4: Small change to target
+	'webdoc' in Makefile.am, to "fix" a problem with doxygen.
+
+2000-05-09 22:35  thomas
+
+	* aclocal.m4: Added a test_dircoll.cpp file to test
+	DirectoryCollection. It runs, but not correctly.
+
