@@ -12,7 +12,6 @@ namespace zipios {
 */
 template< class Type >
 class SimpleSmartPointer {
-  template< class T > friend class SimpleSmartPointer ;
 public:
   Type *operator-> () const { return _p ;  }
 
@@ -20,36 +19,36 @@ public:
 
   SimpleSmartPointer( Type *p = 0 ) : _p( p ) { ref() ; }
 
-  SimpleSmartPointer( const SimpleSmartPointer &src ) : _p( src._p ) { 
+  SimpleSmartPointer( const SimpleSmartPointer &src ) : _p( src.get() ) { 
     ref() ; 
   }
 
   template< class T2 > SimpleSmartPointer( const SimpleSmartPointer< T2 > &src ) 
-    : _p( src._p ) { ref() ; }
+    : _p( src.get() ) { ref() ; }
 
   ~SimpleSmartPointer () { if ( unref() == 0 ) deleteIt() ; }
 
   SimpleSmartPointer &operator= ( const SimpleSmartPointer &src ) {
-    src.ref() ;
+    ref( src.get() ) ;
     if ( unref() == 0 )
       deleteIt() ;
-    _p = src._p ;
+    _p = src.get() ;
     return *this ;
   }
 
   template< class T2 > 
   SimpleSmartPointer &operator= ( const SimpleSmartPointer< T2 > &src ) {
-    src.ref() ;
+    ref( src.get() ) ;
     if ( unref() == 0 )
       deleteIt() ;
-    _p = src._p ;
+    _p = src.get() ;
     return *this ;
   }
 
   bool operator== ( const Type *p )                const { return _p == p     ; }
   bool operator!= ( const Type *p )                const { return _p != p     ; }
-  bool operator== ( const SimpleSmartPointer &sp ) const { return _p == sp._p ; }
-  bool operator!= ( const SimpleSmartPointer &sp ) const { return _p != sp._p ; }
+  bool operator== ( const SimpleSmartPointer &sp ) const { return _p == sp.get() ; }
+  bool operator!= ( const SimpleSmartPointer &sp ) const { return _p != sp.get() ; }
   bool operator!  ()                               const { return ! _p        ; }
   // This next method is inspired by iostream, and is for use with 
   // if ( some_smart_pointer ).
@@ -57,6 +56,9 @@ public:
 
   Type *get() const { return _p ; }
 private:
+  template< class T2 >
+  void ref( const T2 *ptr ) { if ( ptr ) ptr->ref() ; }
+
   void ref() const { if ( _p ) _p->ref() ; }
   unsigned int unref() const {
     if ( _p )
