@@ -25,14 +25,18 @@ enum StorageMethod { STORED = 0, SHRUNK, REDUCED1, REDUCED2,
 		     DEFLATED } ;
 
 class FileEntry ;
+
 /** \typedef typedef SimpleSmartPointer< FileEntry > EntryPointer 
     EntryPointer is a SimpleSmartPointer for FileEntry's.
  */
 typedef SimpleSmartPointer< FileEntry > EntryPointer ;
 
+
 /** Const EntryPointer is a SimpleSmartPointer for const FileEntry's.
  */
 typedef SimpleSmartPointer< const FileEntry > ConstEntryPointer ;
+
+
 
 /** A FileEntry represents an entry in a FileCollection. The interface
     is a copy of the ZipEntry interface from the java.util.zip
@@ -45,6 +49,15 @@ class FileEntry {
 public:
   /** Constructor. */
   explicit FileEntry() : _ref_count( 0 ) {}
+
+  /** Copy constructor. New copy does _not_ have same ref
+      count as src! */
+  FileEntry( const FileEntry &src) : _ref_count( 0 ) {}
+
+  /** Assignment operator. Assignment does not change our ref
+      count. */
+  const FileEntry &operator= ( const FileEntry &src ) { return *this ; }
+
   /** Returns the comment of the entry, if it has one. Otherwise it
       returns an empty string. 
       @return the comment associated with the entry, if there is one.
