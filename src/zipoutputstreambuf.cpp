@@ -45,7 +45,7 @@ void ZipOutputStreambuf::close() {
 void ZipOutputStreambuf::finish() {
   closeEntry() ;
   ostream os( _outbuf ) ;
-  writeCentralDirectory( _entries, _zip_comment, os ) ;
+  writeCentralDirectory( _entries, EndOfCentralDirectory( _zip_comment), os ) ;
   _open = false ;
 }
 

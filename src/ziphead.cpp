@@ -52,6 +52,12 @@ bool operator== ( const ZipLocalEntry &zlh, const ZipCDirEntry &ze ) {
 
 const uint32 ZipLocalEntry::signature = 0x04034b50 ;
 
+
+
+void ZipLocalEntry::setDefaultExtract() {
+  extract_version = 20 ; // version number
+}
+
 string ZipLocalEntry::getComment() const {
   return "" ; // No comment in a local entry
 }
@@ -174,6 +180,16 @@ FileEntry *ZipLocalEntry::clone() const {
 //
 
 const uint32 ZipCDirEntry::signature = 0x02014b50 ;
+
+void ZipCDirEntry::setDefaultWriter() {
+  writer_version = 0 ;
+#ifdef WIN32
+    writer_version |= static_cast< uint16 >( 0 ) << 8 ; // Windows, DOS
+#else
+    writer_version |= static_cast< uint16 >( 3 ) << 8 ; // Unix
+#endif
+    writer_version |= 20 ; // version number
+}
 
 string ZipCDirEntry::getComment() const {
   return file_comment ;

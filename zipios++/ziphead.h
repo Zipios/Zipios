@@ -34,15 +34,7 @@ public:
     setExtra( _extra_field ) ; 
   }
 
-  void setDefaultExtract() {
-    extract_version = 0 ;
-#ifdef WIN32
-    extract_version |= static_cast< uint16 >( 0 ) << 8 ; // Windows, DOS
-#else
-    extract_version |= static_cast< uint16 >( 3 ) << 8 ; // Unix
-#endif
-    extract_version |= 20 ; // version number
-  }
+  void setDefaultExtract() ;
   inline ZipLocalEntry &operator=( const class ZipLocalEntry &src ) ;
   virtual string getComment() const ;
   virtual uint32 getCompressedSize() const ;
@@ -117,9 +109,19 @@ public:
 			const string &_file_comment = "",
 			const vector< unsigned char > &_extra_field = 
 			                vector< unsigned char >() ) 
-    : ZipLocalEntry( _filename, _extra_field )
-  { setComment( _file_comment ) ; } 
+    : ZipLocalEntry   ( _filename, _extra_field ),
+      disk_num_start  ( 0x0 ),
+      intern_file_attr( 0x0 ),
+      extern_file_attr( 0x81B40000 ) 
+    // FIXME: I don't understand the external mapping, simply
+    // copied value for a file with -rw-rw-r-- permissions
+    // compressed with info-zip
+  { 
+    setComment( _file_comment ) ;
+    setDefaultWriter() ;
+  } 
 
+  void setDefaultWriter() ;
 
   inline ZipCDirEntry &operator=( const class ZipCDirEntry &src ) ;
   virtual string toString() const ;
@@ -157,10 +159,11 @@ private:
 class EndOfCentralDirectory {
   friend ostream &operator<< ( ostream &os, const EndOfCentralDirectory &eocd ) ;
 public:
-  EndOfCentralDirectory( const string &_zip_comment = "", 
-			 uint16 _disk_num = 0, uint16 _cdir_disk_num = 0, 
-			 uint16 _cdir_entries = 0, uint16 _cdir_tot_entries = 0, 
-			 uint32 _cdir_size = 0, uint32 _cdir_offset = 0 )
+  explicit EndOfCentralDirectory( const string &_zip_comment = "", 
+				  uint16 _disk_num = 0, uint16 _cdir_disk_num = 0, 
+				  uint16 _cdir_entries = 0, 
+				  uint16 _cdir_tot_entries = 0, 
+				  uint32 _cdir_size = 0, uint32 _cdir_offset = 0 )
     :   disk_num         ( _disk_num           ),
 	cdir_disk_num    ( _cdir_disk_num      ),
 	cdir_entries     ( _cdir_entries       ),
