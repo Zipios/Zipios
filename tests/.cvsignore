@@ -14,5 +14,7 @@ test_zipoutputstreambuf
 test_zipoutputstream
 zosb.zip
 zos.zip
+gentest.zip
+all_tests
 .deps
 
