@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -57,12 +57,23 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS = gnu
@@ -73,7 +84,9 @@ EXTRA_DIST = test.zip
 
 INCLUDES = -I..
 
-noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll test_collcoll test_appzip test_zipoutputstreambuf                    test_simplesmartptr test_zipoutputstream all_tests
+noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip \
+                  test_dircoll test_collcoll test_appzip test_zipoutputstreambuf  \
+                  test_simplesmartptr test_zipoutputstream all_tests
 
 
 test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
@@ -123,6 +136,11 @@ all_tests_LDADD = -L../src -lzipios -lz
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../zipios++/zipios-config.h
 CONFIG_CLEAN_FILES = 
+noinst_PROGRAMS =  test_zipinputstreambuf$(EXEEXT) \
+test_zipinputstream$(EXEEXT) test_zip$(EXEEXT) example_zip$(EXEEXT) \
+test_dircoll$(EXEEXT) test_collcoll$(EXEEXT) test_appzip$(EXEEXT) \
+test_zipoutputstreambuf$(EXEEXT) test_simplesmartptr$(EXEEXT) \
+test_zipoutputstream$(EXEEXT) all_tests$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -130,48 +148,50 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../zipios++
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-test_zipinputstreambuf_OBJECTS =  test_zipinputstreambuf.o
+test_zipinputstreambuf_OBJECTS =  test_zipinputstreambuf.$(OBJEXT)
 test_zipinputstreambuf_DEPENDENCIES = 
 test_zipinputstreambuf_LDFLAGS = 
-test_zipinputstream_OBJECTS =  test_zipinputstream.o
+test_zipinputstream_OBJECTS =  test_zipinputstream.$(OBJEXT)
 test_zipinputstream_DEPENDENCIES = 
 test_zipinputstream_LDFLAGS = 
-test_zip_OBJECTS =  test_zip.o
+test_zip_OBJECTS =  test_zip.$(OBJEXT)
 test_zip_DEPENDENCIES = 
 test_zip_LDFLAGS = 
-example_zip_OBJECTS =  example_zip.o
+example_zip_OBJECTS =  example_zip.$(OBJEXT)
 example_zip_DEPENDENCIES = 
 example_zip_LDFLAGS = 
-test_dircoll_OBJECTS =  test_dircoll.o
+test_dircoll_OBJECTS =  test_dircoll.$(OBJEXT)
 test_dircoll_DEPENDENCIES = 
 test_dircoll_LDFLAGS = 
-test_collcoll_OBJECTS =  test_collcoll.o
+test_collcoll_OBJECTS =  test_collcoll.$(OBJEXT)
 test_collcoll_DEPENDENCIES = 
 test_collcoll_LDFLAGS = 
-test_appzip_OBJECTS =  test_appzip.o
+test_appzip_OBJECTS =  test_appzip.$(OBJEXT)
 test_appzip_DEPENDENCIES = 
 test_appzip_LDFLAGS = 
-test_zipoutputstreambuf_OBJECTS =  test_zipoutputstreambuf.o
+test_zipoutputstreambuf_OBJECTS =  test_zipoutputstreambuf.$(OBJEXT)
 test_zipoutputstreambuf_DEPENDENCIES = 
 test_zipoutputstreambuf_LDFLAGS = 
-test_simplesmartptr_OBJECTS =  test_simplesmartptr.o
+test_simplesmartptr_OBJECTS =  test_simplesmartptr.$(OBJEXT)
 test_simplesmartptr_LDADD = $(LDADD)
 test_simplesmartptr_DEPENDENCIES = 
 test_simplesmartptr_LDFLAGS = 
-test_zipoutputstream_OBJECTS =  test_zipoutputstream.o
+test_zipoutputstream_OBJECTS =  test_zipoutputstream.$(OBJEXT)
 test_zipoutputstream_DEPENDENCIES = 
 test_zipoutputstream_LDFLAGS = 
-all_tests_OBJECTS =  all_tests.o zipfiletest.o
+all_tests_OBJECTS =  all_tests.$(OBJEXT) zipfiletest.$(OBJEXT)
 all_tests_DEPENDENCIES = 
 all_tests_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -189,7 +209,7 @@ OBJECTS = $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(tes
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .cpp .o .s
+.SUFFIXES: .S .c .cpp .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu tests/Makefile
 
@@ -207,6 +227,11 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -215,6 +240,7 @@ maintainer-clean-noinstPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -223,51 +249,71 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-test_zipinputstreambuf: $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstreambuf_DEPENDENCIES)
-	@rm -f test_zipinputstreambuf
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+test_zipinputstreambuf$(EXEEXT): $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstreambuf_DEPENDENCIES)
+	@rm -f test_zipinputstreambuf$(EXEEXT)
 	$(CXXLINK) $(test_zipinputstreambuf_LDFLAGS) $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstreambuf_LDADD) $(LIBS)
 
-test_zipinputstream: $(test_zipinputstream_OBJECTS) $(test_zipinputstream_DEPENDENCIES)
-	@rm -f test_zipinputstream
+test_zipinputstream$(EXEEXT): $(test_zipinputstream_OBJECTS) $(test_zipinputstream_DEPENDENCIES)
+	@rm -f test_zipinputstream$(EXEEXT)
 	$(CXXLINK) $(test_zipinputstream_LDFLAGS) $(test_zipinputstream_OBJECTS) $(test_zipinputstream_LDADD) $(LIBS)
 
-test_zip: $(test_zip_OBJECTS) $(test_zip_DEPENDENCIES)
-	@rm -f test_zip
+test_zip$(EXEEXT): $(test_zip_OBJECTS) $(test_zip_DEPENDENCIES)
+	@rm -f test_zip$(EXEEXT)
 	$(CXXLINK) $(test_zip_LDFLAGS) $(test_zip_OBJECTS) $(test_zip_LDADD) $(LIBS)
 
-example_zip: $(example_zip_OBJECTS) $(example_zip_DEPENDENCIES)
-	@rm -f example_zip
+example_zip$(EXEEXT): $(example_zip_OBJECTS) $(example_zip_DEPENDENCIES)
+	@rm -f example_zip$(EXEEXT)
 	$(CXXLINK) $(example_zip_LDFLAGS) $(example_zip_OBJECTS) $(example_zip_LDADD) $(LIBS)
 
-test_dircoll: $(test_dircoll_OBJECTS) $(test_dircoll_DEPENDENCIES)
-	@rm -f test_dircoll
+test_dircoll$(EXEEXT): $(test_dircoll_OBJECTS) $(test_dircoll_DEPENDENCIES)
+	@rm -f test_dircoll$(EXEEXT)
 	$(CXXLINK) $(test_dircoll_LDFLAGS) $(test_dircoll_OBJECTS) $(test_dircoll_LDADD) $(LIBS)
 
-test_collcoll: $(test_collcoll_OBJECTS) $(test_collcoll_DEPENDENCIES)
-	@rm -f test_collcoll
+test_collcoll$(EXEEXT): $(test_collcoll_OBJECTS) $(test_collcoll_DEPENDENCIES)
+	@rm -f test_collcoll$(EXEEXT)
 	$(CXXLINK) $(test_collcoll_LDFLAGS) $(test_collcoll_OBJECTS) $(test_collcoll_LDADD) $(LIBS)
 
-test_appzip: $(test_appzip_OBJECTS) $(test_appzip_DEPENDENCIES)
-	@rm -f test_appzip
+test_appzip$(EXEEXT): $(test_appzip_OBJECTS) $(test_appzip_DEPENDENCIES)
+	@rm -f test_appzip$(EXEEXT)
 	$(CXXLINK) $(test_appzip_LDFLAGS) $(test_appzip_OBJECTS) $(test_appzip_LDADD) $(LIBS)
 
-test_zipoutputstreambuf: $(test_zipoutputstreambuf_OBJECTS) $(test_zipoutputstreambuf_DEPENDENCIES)
-	@rm -f test_zipoutputstreambuf
+test_zipoutputstreambuf$(EXEEXT): $(test_zipoutputstreambuf_OBJECTS) $(test_zipoutputstreambuf_DEPENDENCIES)
+	@rm -f test_zipoutputstreambuf$(EXEEXT)
 	$(CXXLINK) $(test_zipoutputstreambuf_LDFLAGS) $(test_zipoutputstreambuf_OBJECTS) $(test_zipoutputstreambuf_LDADD) $(LIBS)
 
-test_simplesmartptr: $(test_simplesmartptr_OBJECTS) $(test_simplesmartptr_DEPENDENCIES)
-	@rm -f test_simplesmartptr
+test_simplesmartptr$(EXEEXT): $(test_simplesmartptr_OBJECTS) $(test_simplesmartptr_DEPENDENCIES)
+	@rm -f test_simplesmartptr$(EXEEXT)
 	$(CXXLINK) $(test_simplesmartptr_LDFLAGS) $(test_simplesmartptr_OBJECTS) $(test_simplesmartptr_LDADD) $(LIBS)
 
-test_zipoutputstream: $(test_zipoutputstream_OBJECTS) $(test_zipoutputstream_DEPENDENCIES)
-	@rm -f test_zipoutputstream
+test_zipoutputstream$(EXEEXT): $(test_zipoutputstream_OBJECTS) $(test_zipoutputstream_DEPENDENCIES)
+	@rm -f test_zipoutputstream$(EXEEXT)
 	$(CXXLINK) $(test_zipoutputstream_LDFLAGS) $(test_zipoutputstream_OBJECTS) $(test_zipoutputstream_LDADD) $(LIBS)
 
-all_tests: $(all_tests_OBJECTS) $(all_tests_DEPENDENCIES)
-	@rm -f all_tests
+all_tests$(EXEEXT): $(all_tests_OBJECTS) $(all_tests_DEPENDENCIES)
+	@rm -f all_tests$(EXEEXT)
 	$(CXXLINK) $(all_tests_LDFLAGS) $(all_tests_OBJECTS) $(all_tests_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
+.cpp.obj:
+	$(CXXCOMPILE) -c `cygpath -w $<`
+.cpp.lo:
+	$(LTCXXCOMPILE) -c $<
 
 tags: TAGS
 
@@ -405,24 +451,27 @@ distclean-generic:
 
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-noinstPROGRAMS mostlyclean-compile \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-noinstPROGRAMS clean-compile clean-tags clean-depend \
-		clean-generic mostlyclean-am
+clean-am:  clean-noinstPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-depend clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-noinstPROGRAMS distclean-compile distclean-tags \
-		distclean-depend distclean-generic clean-am
+distclean-am:  distclean-noinstPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
+	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-noinstPROGRAMS \
-		maintainer-clean-compile maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean-am
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -431,14 +480,16 @@ maintainer-clean: maintainer-clean-am
 .PHONY: mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
 clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir mostlyclean-depend \
-distclean-depend clean-depend maintainer-clean-depend info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 check:

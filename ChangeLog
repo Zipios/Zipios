@@ -1,3 +1,24 @@
+2002-04-20 16:57  thomas
+
+	* zipios++.spec:
+	
+	Converted zipios++.spec to unix format. That is why it didn't work
+
+2002-04-20 16:38  thomas
+
+	* autogen.sh, configure.in, src/Makefile.am:
+	
+	Merged patch from Arkadiusz Miskiewicz (arekm) that change
+	Configure.in and Makefile.am to use libtool. This means lipzipios
+	is now built as a shared library too
+
+2002-03-18 09:20  thomas
+
+	* AUTHORS, ChangeLog, Makefile.am, Makefile.in, aclocal.m4,
+	configure, zipios++.spec, zipios++/zipios-config.h.in:
+	
+	Added zipios++.spec donated by Rui Miguel Silva Seabra
+
 2001-12-29 00:58  thomas
 
 	* src/zipios.dsp, tests/tests.dsp, tests/zipfiletest.cpp:

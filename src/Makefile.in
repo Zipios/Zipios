@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -57,12 +57,23 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS = gnu
@@ -71,45 +82,74 @@ AUTOMAKE_OPTIONS = gnu
 
 INCLUDES = -I..
 
-lib_LIBRARIES = libzipios.a
+lib_LTLIBRARIES = libzipios.la
 
 noinst_PROGRAMS = appendzip
 
-libzipios_a_SOURCES = backbuffer.h                                      basicentry.cpp                                    collcoll.cpp                                      dircoll.cpp                                       directory.cpp                                     directory.h                                       fcoll.cpp                                         fcollexceptions.cpp                               fileentry.cpp                                     filepath.cpp                                      filterinputstreambuf.cpp                          inflateinputstreambuf.cpp                         outputstringstream.h                              zipfile.cpp                                       ziphead.cpp                                       zipheadio.cpp                                     zipinputstream.cpp                                zipinputstreambuf.cpp                             zipios_common.h                                   filteroutputstreambuf.cpp                         deflateoutputstreambuf.cpp                        zipoutputstreambuf.cpp                            zipoutputstream.cpp
+libzipios_la_SOURCES = backbuffer.h                \
+                      basicentry.cpp              \
+                      collcoll.cpp                \
+                      dircoll.cpp                 \
+                      directory.cpp               \
+                      directory.h                 \
+                      fcoll.cpp                   \
+                      fcollexceptions.cpp         \
+                      fileentry.cpp               \
+                      filepath.cpp                \
+                      filterinputstreambuf.cpp    \
+                      inflateinputstreambuf.cpp   \
+                      outputstringstream.h        \
+                      zipfile.cpp                 \
+                      ziphead.cpp                 \
+                      zipheadio.cpp               \
+                      zipinputstream.cpp          \
+                      zipinputstreambuf.cpp       \
+                      zipios_common.h             \
+                      filteroutputstreambuf.cpp   \
+                      deflateoutputstreambuf.cpp  \
+                      zipoutputstreambuf.cpp      \
+                      zipoutputstream.cpp
+
+libzipios_la_LIBADD = \
+		     -lz
 
 
 appendzip_SOURCES = appendzip.cpp
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../zipios++/zipios-config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(lib_LIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../zipios++
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libzipios_a_LIBADD = 
-libzipios_a_OBJECTS =  basicentry.o collcoll.o dircoll.o directory.o \
-fcoll.o fcollexceptions.o fileentry.o filepath.o filterinputstreambuf.o \
-inflateinputstreambuf.o zipfile.o ziphead.o zipheadio.o \
-zipinputstream.o zipinputstreambuf.o filteroutputstreambuf.o \
-deflateoutputstreambuf.o zipoutputstreambuf.o zipoutputstream.o
-AR = ar
+libzipios_la_LDFLAGS = 
+libzipios_la_DEPENDENCIES = 
+libzipios_la_OBJECTS =  basicentry.lo collcoll.lo dircoll.lo \
+directory.lo fcoll.lo fcollexceptions.lo fileentry.lo filepath.lo \
+filterinputstreambuf.lo inflateinputstreambuf.lo zipfile.lo ziphead.lo \
+zipheadio.lo zipinputstream.lo zipinputstreambuf.lo \
+filteroutputstreambuf.lo deflateoutputstreambuf.lo \
+zipoutputstreambuf.lo zipoutputstream.lo
+noinst_PROGRAMS =  appendzip$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
-appendzip_OBJECTS =  appendzip.o
+appendzip_OBJECTS =  appendzip.$(OBJEXT)
 appendzip_LDADD = $(LDADD)
 appendzip_DEPENDENCIES = 
 appendzip_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -125,12 +165,12 @@ DEP_FILES =  .deps/appendzip.P .deps/basicentry.P .deps/collcoll.P \
 .deps/zipfile.P .deps/ziphead.P .deps/zipheadio.P \
 .deps/zipinputstream.P .deps/zipinputstreambuf.P \
 .deps/zipoutputstream.P .deps/zipoutputstreambuf.P
-SOURCES = $(libzipios_a_SOURCES) $(appendzip_SOURCES)
-OBJECTS = $(libzipios_a_OBJECTS) $(appendzip_OBJECTS)
+SOURCES = $(libzipios_la_SOURCES) $(appendzip_SOURCES)
+OBJECTS = $(libzipios_la_OBJECTS) $(appendzip_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .cpp .o .s
+.SUFFIXES: .S .c .cpp .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile
 
@@ -139,37 +179,35 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLIBRARIES:
+mostlyclean-libLTLIBRARIES:
 
-clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
 
-distclean-libLIBRARIES:
+distclean-libLTLIBRARIES:
 
-maintainer-clean-libLIBRARIES:
+maintainer-clean-libLTLIBRARIES:
 
-install-libLIBRARIES: $(lib_LIBRARIES)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
-	  else :; fi; \
-	done
-	@$(POST_INSTALL)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
-	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLIBRARIES:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
 
 .s.o:
 	$(COMPILE) -c $<
@@ -179,6 +217,7 @@ uninstall-libLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -187,10 +226,24 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libzipios.a: $(libzipios_a_OBJECTS) $(libzipios_a_DEPENDENCIES)
-	-rm -f libzipios.a
-	$(AR) cru libzipios.a $(libzipios_a_OBJECTS) $(libzipios_a_LIBADD)
-	$(RANLIB) libzipios.a
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libzipios.la: $(libzipios_la_OBJECTS) $(libzipios_la_DEPENDENCIES)
+	$(CXXLINK) -rpath $(libdir) $(libzipios_la_LDFLAGS) $(libzipios_la_OBJECTS) $(libzipios_la_LIBADD) $(LIBS)
 
 mostlyclean-noinstPROGRAMS:
 
@@ -201,11 +254,15 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-appendzip: $(appendzip_OBJECTS) $(appendzip_DEPENDENCIES)
-	@rm -f appendzip
+appendzip$(EXEEXT): $(appendzip_OBJECTS) $(appendzip_DEPENDENCIES)
+	@rm -f appendzip$(EXEEXT)
 	$(CXXLINK) $(appendzip_LDFLAGS) $(appendzip_OBJECTS) $(appendzip_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
+.cpp.obj:
+	$(CXXCOMPILE) -c `cygpath -w $<`
+.cpp.lo:
+	$(LTCXXCOMPILE) -c $<
 
 tags: TAGS
 
@@ -315,7 +372,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-libLIBRARIES
+install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
 install-data-am:
@@ -324,9 +381,9 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLIBRARIES
+uninstall-am: uninstall-libLTLIBRARIES
 uninstall: uninstall-am
-all-am: Makefile $(LIBRARIES) $(PROGRAMS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -343,25 +400,28 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-noinstPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS \
-		clean-tags clean-depend clean-generic mostlyclean-am
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-noinstPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLIBRARIES distclean-compile \
-		distclean-noinstPROGRAMS distclean-tags \
-		distclean-depend distclean-generic clean-am
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-noinstPROGRAMS \
+		distclean-tags distclean-depend distclean-generic \
+		clean-am
+	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile \
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-depend maintainer-clean-generic \
 		distclean-am
@@ -370,10 +430,12 @@ maintainer-clean-am:  maintainer-clean-libLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
-clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
-install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
 distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS tags mostlyclean-tags distclean-tags \
 clean-tags maintainer-clean-tags distdir mostlyclean-depend \

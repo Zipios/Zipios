@@ -48,7 +48,7 @@ web : webdoc dist
 
 
 .PHONY : rpm
-rpm : dist
+rpm : 
 	rpm -ta zipios++*.tar.gz
 
 

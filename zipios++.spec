@@ -46,7 +46,7 @@ umask 022
 
 %files
 %defattr(-,root,root)
-/usr/lib/libzipios.a
+/usr/lib/libzipios.*
 
 
 %files devel
