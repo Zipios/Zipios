@@ -31,8 +31,28 @@ void zipios::ZipInputStreamTest::testZipContentNames() {
   entries.push_back("file3.txt");
   entries.push_back("testfile.bin");
   ZipInputStream zis("test.zip");
- vector<string>::const_iterator it = entries.begin();
- for ( ; it != entries.end() ; ++it ) {
-   //std::cout<<(*it).c_str()<<endl;
+  vector<string>::const_iterator it = entries.begin();
+  ConstEntryPointer poi = zis.getNextEntry();
+  int count =1;
+  while( poi->isValid() ) {
+      CPPUNIT_ASSERT_EQUAL( entries[count],poi->getName());    
+      poi = zis.getNextEntry();
+      count++;
+  }
+}
+void zipios::ZipInputStreamTest::testZipFileSizes() {
+  vector<int> entries;
+  entries.push_back(1327); // got these from unzip -l test.zip
+  entries.push_back(17992);
+  entries.push_back(8);
+  entries.push_back(76468);
+  ZipInputStream zis("test.zip");
+  ConstEntryPointer poi = zis.getNextEntry();
+  int count = 1;
+  while( poi->isValid() ) {
+      int file_size = poi->getSize();
+      CPPUNIT_ASSERT_EQUAL( entries[count],file_size);     
+      poi = zis.getNextEntry();
+      count++;
   }
 }
