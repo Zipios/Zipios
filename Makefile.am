@@ -26,7 +26,6 @@ webdoc : doc
 	mv doc/latex/refman.pdf doc/html/
 	mv doc/latex/refman.ps doc/html/
 	cp doc/images/webgfx.gif doc/html/
-	cp ChangeLog doc/html/
 	cat doc/html/index.html | sed "s/content=\"noindex\"/content=\"index,nofollow\"/g" > doc/html/idx.html
 	mv doc/html/idx.html doc/html/index.html
 
@@ -38,11 +37,3 @@ webdoc : doc
 # to reference the image.
 .PHONY : web
 web : webdoc dist
-	-rm -rf $(PACKAGE)
-	mv doc/html $(PACKAGE)
-	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)/
-
-#	gtar cvfz $(PACKAGE)web.tar.gz $(PACKAGE)
-#	-rm -rf $(PACKAGE) 
-
-

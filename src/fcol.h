@@ -172,14 +172,9 @@ protected:
    \ref fcol_getinputstream "CCol::inst()->getInputStream()".
    
    \section download Download 
-   Go to Zipios++ project page on SourceForge.
+   Go to Zipios++ project page on SourceForge for tar balls and ChangeLog.
    <A HREF="http://sourceforge.net/project/?group_id=5418" >
    http://sourceforge.net/project/?group_id=5418</A>
-
-   
-   \htmlonly
-   <A HREF="ChangeLog">ChangeLog</A>
-   \endhtmlonly
    
    \section links Links
    <A HREF="http://www.miba.auc.dk/~thomas/streambuf">Deriving
