@@ -109,6 +109,8 @@ int DirectoryCollection::size() const {
   if ( ! _valid )
     throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
   // FIXME: implement this method.
+  cerr << "DirectoryCollection::size() not supported yet" << endl ; 
+  return 0 ;
 }
 
 
