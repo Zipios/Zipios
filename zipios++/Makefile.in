@@ -1,0 +1,541 @@
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+CC = @CC@
+CPP = @CPP@
+CXX = @CXX@
+LEX = @LEX@
+MAKEINFO = @MAKEINFO@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+VERSION = @VERSION@
+
+AUTOMAKE_OPTIONS = gnu
+
+EXTRA_DIST = test.zip
+
+# CXXFLAGS= -g
+
+INCLUDES = -I..
+
+lib_LIBRARIES = libzipios.a
+
+pkginclude_HEADERS = FlexLexer.h             flist.h                                       backbuffer.h            flistentry.h                                  basicentry.h            flistscanner.h                                collcoll.h              inflateinputstreambuf.h                       dircoll.h               simplesmartptr.h                              fcoll.h                 zipfile.h                                     fcoll_common.h          ziphead.h                                     fcollexceptions.h       zipinputstream.h                              fileentry.h             zipinputstreambuf.h                           filterinputstreambuf.h  zipios-config.h
+
+
+noinst_PROGRAMS = test_zipinputstreambuf test_zipinputstream test_zip example_zip                   test_dircoll test_collcoll
+
+# test_flist 
+
+libzipios_a_SOURCES = backbuffer.h               basicentry.h                                    basicentry.cpp             fcoll.cpp                                       fcoll.h                    fcoll_common.h                                  fcollexceptions.cpp        fcollexceptions.h                               fileentry.cpp              fileentry.h                                     filterinputstreambuf.cpp                                                   filterinputstreambuf.h     inflateinputstreambuf.cpp                       inflateinputstreambuf.h    zipinputstreambuf.cpp                           zipinputstreambuf.h        zipinputstream.cpp                              zipinputstream.h           zipfile.cpp                                     zipfile.h                  ziphead.cpp                                     ziphead.h                                                                  simplesmartptr.h           dircoll.h                                       dircoll.cpp                collcoll.h                                      collcoll.cpp               FlexLexer.h                                     flist.cpp                  flist.h                                         flistentry.cpp             flistentry.h                                    flistscanner.h             flistscanner.ll
+
+
+test_zipinputstreambuf_SOURCES = test_zipinputstreambuf.cpp
+
+test_zipinputstream_SOURCES = test_zipinputstream.cpp
+
+test_zip_SOURCES = test_zip.cpp
+
+example_zip_SOURCES = example_zip.cpp
+
+test_dircoll_SOURCES = test_dircoll.cpp
+
+test_collcoll_SOURCES = test_collcoll.cpp
+
+# test_flist_SOURCES = test_flist.cpp
+
+# Notice that libzipios.a is not specified as -L. -lzipios
+# If it was, automake would not include it as a dependency.
+
+test_zipinputstreambuf_LDADD = libzipios.a -lz
+
+test_zipinputstream_LDADD = libzipios.a -lz
+
+test_zip_LDADD = libzipios.a -lz
+
+example_zip_LDADD = libzipios.a -lz
+
+test_dircoll_LDADD = libzipios.a -lz
+
+test_collcoll_LDADD = libzipios.a -lz
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = zipios-config.h
+CONFIG_CLEAN_FILES = 
+LIBRARIES =  $(lib_LIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I.
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+libzipios_a_LIBADD = 
+libzipios_a_OBJECTS =  basicentry.o fcoll.o fcollexceptions.o \
+fileentry.o filterinputstreambuf.o inflateinputstreambuf.o \
+zipinputstreambuf.o zipinputstream.o zipfile.o ziphead.o dircoll.o \
+collcoll.o flist.o flistentry.o flistscanner.o
+AR = ar
+PROGRAMS =  $(noinst_PROGRAMS)
+
+test_zipinputstreambuf_OBJECTS =  test_zipinputstreambuf.o
+test_zipinputstreambuf_DEPENDENCIES =  libzipios.a
+test_zipinputstreambuf_LDFLAGS = 
+test_zipinputstream_OBJECTS =  test_zipinputstream.o
+test_zipinputstream_DEPENDENCIES =  libzipios.a
+test_zipinputstream_LDFLAGS = 
+test_zip_OBJECTS =  test_zip.o
+test_zip_DEPENDENCIES =  libzipios.a
+test_zip_LDFLAGS = 
+example_zip_OBJECTS =  example_zip.o
+example_zip_DEPENDENCIES =  libzipios.a
+example_zip_LDFLAGS = 
+test_dircoll_OBJECTS =  test_dircoll.o
+test_dircoll_DEPENDENCIES =  libzipios.a
+test_dircoll_LDFLAGS = 
+test_collcoll_OBJECTS =  test_collcoll.o
+test_collcoll_DEPENDENCIES =  libzipios.a
+test_collcoll_LDFLAGS = 
+CXXFLAGS = @CXXFLAGS@
+CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LEXLIB = @LEXLIB@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(pkginclude_HEADERS)
+
+DIST_COMMON =  ./stamp-h.in Makefile.am Makefile.in flistscanner.cc \
+zipios-config.h.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+DEP_FILES =  .deps/basicentry.P .deps/collcoll.P .deps/dircoll.P \
+.deps/example_zip.P .deps/fcoll.P .deps/fcollexceptions.P \
+.deps/fileentry.P .deps/filterinputstreambuf.P .deps/flist.P \
+.deps/flistentry.P .deps/flistscanner.P .deps/inflateinputstreambuf.P \
+.deps/test_collcoll.P .deps/test_dircoll.P .deps/test_zip.P \
+.deps/test_zipinputstream.P .deps/test_zipinputstreambuf.P \
+.deps/zipfile.P .deps/ziphead.P .deps/zipinputstream.P \
+.deps/zipinputstreambuf.P
+SOURCES = $(libzipios_a_SOURCES) $(test_zipinputstreambuf_SOURCES) $(test_zipinputstream_SOURCES) $(test_zip_SOURCES) $(example_zip_SOURCES) $(test_dircoll_SOURCES) $(test_collcoll_SOURCES)
+OBJECTS = $(libzipios_a_OBJECTS) $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstream_OBJECTS) $(test_zip_OBJECTS) $(example_zip_OBJECTS) $(test_dircoll_OBJECTS) $(test_collcoll_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .cc .cpp .ll .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu zipios++/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+zipios-config.h: stamp-h
+	@if test ! -f $@; then \
+		rm -f stamp-h; \
+		$(MAKE) stamp-h; \
+	else :; fi
+stamp-h: $(srcdir)/zipios-config.h.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES= CONFIG_HEADERS=zipios++/zipios-config.h \
+	     $(SHELL) ./config.status
+	@echo timestamp > stamp-h 2> /dev/null
+$(srcdir)/zipios-config.h.in: $(srcdir)/stamp-h.in
+	@if test ! -f $@; then \
+		rm -f $(srcdir)/stamp-h.in; \
+		$(MAKE) $(srcdir)/stamp-h.in; \
+	else :; fi
+$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOHEADER)
+	@echo timestamp > $(srcdir)/stamp-h.in 2> /dev/null
+
+mostlyclean-hdr:
+
+clean-hdr:
+
+distclean-hdr:
+	-rm -f zipios-config.h
+
+maintainer-clean-hdr:
+
+mostlyclean-libLIBRARIES:
+
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+
+distclean-libLIBRARIES:
+
+maintainer-clean-libLIBRARIES:
+
+install-libLIBRARIES: $(lib_LIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+libzipios.a: $(libzipios_a_OBJECTS) $(libzipios_a_DEPENDENCIES)
+	-rm -f libzipios.a
+	$(AR) cru libzipios.a $(libzipios_a_OBJECTS) $(libzipios_a_LIBADD)
+	$(RANLIB) libzipios.a
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+test_zipinputstreambuf: $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstreambuf_DEPENDENCIES)
+	@rm -f test_zipinputstreambuf
+	$(CXXLINK) $(test_zipinputstreambuf_LDFLAGS) $(test_zipinputstreambuf_OBJECTS) $(test_zipinputstreambuf_LDADD) $(LIBS)
+
+test_zipinputstream: $(test_zipinputstream_OBJECTS) $(test_zipinputstream_DEPENDENCIES)
+	@rm -f test_zipinputstream
+	$(CXXLINK) $(test_zipinputstream_LDFLAGS) $(test_zipinputstream_OBJECTS) $(test_zipinputstream_LDADD) $(LIBS)
+
+test_zip: $(test_zip_OBJECTS) $(test_zip_DEPENDENCIES)
+	@rm -f test_zip
+	$(CXXLINK) $(test_zip_LDFLAGS) $(test_zip_OBJECTS) $(test_zip_LDADD) $(LIBS)
+
+example_zip: $(example_zip_OBJECTS) $(example_zip_DEPENDENCIES)
+	@rm -f example_zip
+	$(CXXLINK) $(example_zip_LDFLAGS) $(example_zip_OBJECTS) $(example_zip_LDADD) $(LIBS)
+
+test_dircoll: $(test_dircoll_OBJECTS) $(test_dircoll_DEPENDENCIES)
+	@rm -f test_dircoll
+	$(CXXLINK) $(test_dircoll_LDFLAGS) $(test_dircoll_OBJECTS) $(test_dircoll_LDADD) $(LIBS)
+
+test_collcoll: $(test_collcoll_OBJECTS) $(test_collcoll_DEPENDENCIES)
+	@rm -f test_collcoll
+	$(CXXLINK) $(test_collcoll_LDFLAGS) $(test_collcoll_OBJECTS) $(test_collcoll_LDADD) $(LIBS)
+.cc.o:
+	$(CXXCOMPILE) -c $<
+.cpp.o:
+	$(CXXCOMPILE) -c $<
+.ll.cc:
+	$(LEX) $(AM_LFLAGS) $(LFLAGS) $< && mv $(LEX_OUTPUT_ROOT).c $@
+
+install-pkgincludeHEADERS: $(pkginclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgincludedir)/$$p; \
+	done
+
+uninstall-pkgincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgincludedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES) zipios-config.h.in $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)zipios-config.h.in$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags zipios-config.h.in $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = zipios++
+
+distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu zipios++/Makefile
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf .deps
+
+maintainer-clean-depend:
+
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+
+%.o: %.cc
+	@echo '$(CXXCOMPILE) -c $<'; \
+	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.cc
+	@echo '$(LTCXXCOMPILE) -c $<'; \
+	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+
+%.o: %.cpp
+	@echo '$(CXXCOMPILE) -c $<'; \
+	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.cpp
+	@echo '$(LTCXXCOMPILE) -c $<'; \
+	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+all-recursive-am: zipios-config.h
+	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+
+install-exec-am: install-libLIBRARIES
+install-exec: install-exec-am
+
+install-data-am: install-pkgincludeHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLIBRARIES uninstall-pkgincludeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS) zipios-config.h
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgincludedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "flistscannerll" || rm -f flistscannerll
+mostlyclean-am:  mostlyclean-hdr mostlyclean-libLIBRARIES \
+		mostlyclean-compile mostlyclean-noinstPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-hdr clean-libLIBRARIES clean-compile \
+		clean-noinstPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-hdr distclean-libLIBRARIES distclean-compile \
+		distclean-noinstPROGRAMS distclean-tags \
+		distclean-depend distclean-generic clean-am
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-libLIBRARIES \
+		maintainer-clean-compile \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
+mostlyclean-libLIBRARIES distclean-libLIBRARIES clean-libLIBRARIES \
+maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
+install-libLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-pkgincludeHEADERS \
+install-pkgincludeHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir mostlyclean-depend \
+distclean-depend clean-depend maintainer-clean-depend info-am info \
+dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# test_flist_LDADD = libzipios.a
+
+flistscanner.cc : flistscanner.ll
+	$(LEX) -+ -PFListScanner -o$@ $^
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
