@@ -149,18 +149,17 @@ const FileCollection &FileCollection::operator= ( const FileCollection &src ) {
    
    \section intro Introduction
    
-   Zipios++ is a java.util.zip-like C++ library for reading Zip
-   files. Access to individual entries is provided through standard
-   C++ iostreams. A simple read-only virtual file system that mounts
-   regular directories and zip files is also provided.
+   Zipios++ is a java.util.zip-like C++ library for reading and
+   writing Zip files. Access to individual entries is provided through
+   standard C++ iostreams. A simple read-only virtual file system that
+   mounts regular directories and zip files is also provided.
    
    The source code is released under the <A
    HREF="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
    License</A>.
    
    \section status Status
-   Writing is not supported yet
-   
+
    Spanned archives are not supported, and support is not planned.
    
 

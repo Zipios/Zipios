@@ -1,3 +1,66 @@
+2001-07-15 21:55  thomas
+
+	* Makefile.in, tests/Makefile.am, tests/Makefile.in,
+	tests/test_simplesmartptr.cpp, tests/test_zip.cpp,
+	zipios++/simplesmartptr.h:
+	
+	Changed tests/test_zip to be an autotest and commented out all the
+	debug prints. Changed tests/test_simplesmartptr to be an autotest
+	and changed SimpleSmartPointer to be more test friendly. Also
+	improved the test somewhat. Added both tests to makefile target
+	'check'.
+
+2001-07-15 21:13  thomas
+
+	* tests/: .cvsignore, all_tests.cpp:
+	
+	Forgot tests/all_tests.cpp in my previous commit. Updated
+	tests/.cvsignore to ignore files built for and by the new test.
+
+2001-07-15 21:10  thomas
+
+	* ChangeLog, NEWS, README, aclocal.m4, configure, configure.in,
+	src/fcollexceptions.cpp, tests/Makefile.am, tests/Makefile.in,
+	tests/testcase.h, tests/zipfiletest.cpp, tests/zipfiletest.h,
+	zipios++/fcollexceptions.h:
+	
+	Changed version number to 0.1.5. Added a new exception class called
+	simply Exception. Maybe it should become the base class of all the
+	other exceptions (instead of inheriting directly from
+	std::exception). Added an automatic test case, which can be run
+	with 'make check' - 'make check' of course depends on the build
+	being up to date, so for simple code/run-test iterations simply use
+	make check instead of just make.
+
+2000-12-07 19:54  thomas
+
+	* aclocal.m4, src/zipinputstream.cpp, src/zipinputstreambuf.cpp,
+	tests/Makefile.am, tests/Makefile.in,
+	tests/test_zipinputstream2.cpp, zipios++/zipinputstream.h,
+	zipios++/zipinputstreambuf.h:
+	
+	Pulled out the changes from the last commit. Adding a
+	getCurrentEntry() was the wrong solution to the problem. The right
+	solution is to model the java.util.zip.ZipInputStream, which means
+	that the first call to getNextEntry() gets you the first entry in
+	the Zip file. The right solution will be added shortly.
+
+2000-12-07 18:46  thomas
+
+	* aclocal.m4, src/zipinputstream.cpp, src/zipinputstreambuf.cpp,
+	tests/Makefile.am, tests/Makefile.in,
+	tests/test_zipinputstream2.cpp, zipios++/zipinputstream.h,
+	zipios++/zipinputstreambuf.h:
+	
+	Added a new method
+	
+	ConstEntryPointer getCurrentEntry() ;
+	
+	to ZipInputStreambuf and ZipInputStream.
+	
+	Also added a test in tests/test_zipinputstream2 that demonstrates
+	its use.
+
 2000-09-22 14:02  thomas
 
 	* zipios++/ziphead.h, zipios++/zipoutputstream.h,
