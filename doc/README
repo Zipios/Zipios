@@ -1,0 +1,5 @@
+The documentation for Zipios++ is generated from the source code using
+Doxygen. You can either use the online documentation at
+http://zipios.sourceforge.net, or download the pdf version from the
+same URL, or if you have Doxygen installed you can run 'make doc' in
+the top-level directory.
