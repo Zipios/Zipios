@@ -22,12 +22,11 @@ namespace zipios {
 //
 
 
-ZipFile::ZipFile( const string &name /* , ios::open_mode mode */ ) 
-  : _zipfile      ( name.c_str() /* , mode */ )
-{
+ZipFile::ZipFile( const string &name /* , ios::open_mode mode */ ) {
   _filename = name ;
   
-  init () ;
+  ifstream _zipfile( name.c_str() ) ;
+  init( _zipfile ) ;
 }
 
 ZipFile::~ZipFile() {
@@ -37,11 +36,6 @@ ZipFile::~ZipFile() {
 void ZipFile::close() {
   _valid = false ;
 
-  // FIXME: make sure it's not a problem to close an ifstream, that may not
-  // have been opened. ie. and ifstream created by calling the default constructor
-  
-  // We actually don't need to keep the file open all the time.
-  _zipfile.close() ;
 }
 
 istream *ZipFile::getInputStream( const ConstEntryPointer &entry ) {
@@ -71,7 +65,7 @@ istream *ZipFile::getInputStream( const string &entry_name,
 // Private
 //
 
-bool ZipFile::init() {
+bool ZipFile::init( istream &_zipfile ) {
 
   // Check stream error state
   if ( ! _zipfile ) {
@@ -79,15 +73,15 @@ bool ZipFile::init() {
     return false ;
   }
   
-  _valid = readCentralDirectory() ;
+  _valid = readCentralDirectory( _zipfile ) ;
 
   return _valid ;
 }
 
 
-bool ZipFile::readCentralDirectory () {
+bool ZipFile::readCentralDirectory ( istream &_zipfile ) {
   // Find and read eocd. 
-  if ( ! readEndOfCentralDirectory() ) {
+  if ( ! readEndOfCentralDirectory( _zipfile ) ) {
     cerr << "Could not find eocd" << endl ;
   }
 //    cerr << "FOUND HEADER" << endl ;
@@ -122,7 +116,7 @@ bool ZipFile::readCentralDirectory () {
   }
   // Consistency check 2, are local headers consistent with
   // cd headers
-  if ( ! confirmLocalHeaders() ) {
+  if ( ! confirmLocalHeaders( _zipfile ) ) {
     cerr << "Local headers are inconsistent with central directory entries" << endl ;
     return false ;
   }
@@ -131,7 +125,7 @@ bool ZipFile::readCentralDirectory () {
 }
 
 
-bool ZipFile::readEndOfCentralDirectory () {
+bool ZipFile::readEndOfCentralDirectory ( istream &_zipfile ) {
   BackBuffer bb( _zipfile ) ;
   int read_p = -1 ;
   bool found = false ;
@@ -153,7 +147,7 @@ bool ZipFile::readEndOfCentralDirectory () {
   return found ;
 }
 
-bool ZipFile::confirmLocalHeaders() {
+bool ZipFile::confirmLocalHeaders( istream &_zipfile ) {
   vector< EntryPointer >::const_iterator it ;
   ZipCDirEntry *ent ;
   int inconsistencies = 0 ;

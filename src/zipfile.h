@@ -33,14 +33,12 @@ public:
   virtual istream *getInputStream( const string &entry_name, 
 				     MatchPath matchpath = MATCH ) ;
 private:
-  ifstream _zipfile ;
-
   EndOfCentralDirectory  _eocd ;
 
-  bool init() ;
-  bool readCentralDirectory() ;
-  bool readEndOfCentralDirectory() ;
-  bool confirmLocalHeaders() ;
+  bool init( istream &_zipfile ) ;
+  bool readCentralDirectory( istream &_zipfile ) ;
+  bool readEndOfCentralDirectory( istream &_zipfile ) ;
+  bool confirmLocalHeaders( istream &_zipfile ) ;
   void setError( string error_str ) ;
 };
 
