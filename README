@@ -24,14 +24,15 @@ make install
 For details about installation of autoconfiscated packages refer to
 the INSTALL file
 
-This software package install the Zipios++ header files under
+'make install' installs the Zipios++ header files under
 /usr/include/zipios++/ and the library libzipios.a under
 /usr/lib/. You can choose another base path than /usr/ by using the
 --prefix switch with configure. See the INSTALL file for
 details. Running make also builds a number of test programs that
 remain in the source directory zipios++/. The built example binaries
 and the corresponding source code have names that start with test_ and
-example_.
+example_. These test programs demonstrate the most important features
+in Zipios++.
 
 
 Status
