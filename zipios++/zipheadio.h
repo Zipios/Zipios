@@ -127,17 +127,6 @@ inline void writeByteSeq( ostream &os, const string &con ) {
 inline void readByteSeq ( istream &is, unsigned char *buf, int count ) {
   int rsf = 0 ;
 
-  int f_pos ;
-  int f_len ;
-  f_pos = is.tellg() ;
-  is.seekg( 0, ios::end ) ;
-  f_len = is.tellg() ;
-  cerr << "f_pos = " << f_pos         << "\n" ;
-  cerr << "f_len = " << f_len         << "\n" ;
-  cerr << "diff  = " << f_len - f_pos << "\n" ;
-  cerr << "count = " << count         << "\n" ;
-  is.seekg( f_pos ) ;
-
   while ( rsf < count && is ) {
     is.read ( reinterpret_cast< char * >( buf ) + rsf, count - rsf ) ;
     rsf += is.gcount() ;
