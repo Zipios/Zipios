@@ -2,8 +2,8 @@
 #include "zipios++/zipios-config.h"
 
 #include "zipios++/meta-iostreams.h"
-#include <memory>
-#include <stdlib.h>
+#include <vector>
+
 
 #include "zipios++/simplesmartptr.h"
 
@@ -14,7 +14,7 @@ using std::cout ;
 using std::endl ;
 using std::auto_ptr ;
 using std::ofstream ;
-
+using std::vector ;
 
 class Bogus {
 protected:
@@ -34,9 +34,26 @@ int main() {
   SPBogus sp2 ;
   sp2 = sp1 ;
 
+  SPBogus sp3 ;
+  sp3 = p ;
+
   cerr << " p         = " << p         << endl ;
   cerr << " sp1.get() = " << sp1.get() << endl ;
   cerr << " sp2.get() = " << sp2.get() << endl ;
+  cerr << " sp3.get() = " << sp3.get() << endl ;
+
+
+  vector< int > vec( 3 ) ;
+  
+  vec[ 0 ] = 1 ;
+  vec[ 1 ] = 2 ;
+  vec[ 2 ] = 3 ;
+  
+  std::vector< int >::iterator it ;
+
+  for( it = vec.begin() ; it != vec.end() ; ++it ) 
+    cerr << *it << endl ;
+  
 }
    
 
