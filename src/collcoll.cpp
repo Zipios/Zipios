@@ -56,11 +56,9 @@ ConstEntryPointer CollectionCollection::getEntry( const string &name,
   // Returns the first matching entry.
   vector< FileCollection * >::const_iterator it ;
   ConstEntryPointer cep ;
-  for ( it = _collections.begin() ; it != _collections.end() ; it++ ) {
-    cep = (*it)->getEntry( name, matchpath ) ;
-    if ( cep )
-      break ;
-  }
+
+  getEntry( name, cep, it, matchpath ) ; 
+
   return cep ;
 }
 
@@ -78,12 +76,15 @@ istream *CollectionCollection::getInputStream( const string &entry_name,
   if ( ! _valid )
     throw InvalidStateException( "Attempt to get an input stream from an invalid CollectionCollection" ) ;
 
-  ConstEntryPointer ent = getEntry( entry_name, matchpath ) ;
+  vector< FileCollection * >::const_iterator it ;
+  ConstEntryPointer cep ;
+
+  getEntry( entry_name, cep, it, matchpath ) ; 
   
-  if ( ent == 0 )
+  if ( cep == 0 )
     return 0 ;
   else
-    return new ifstream( fullPath( ent->getName() ).c_str() ) ;
+    return (*it)->getInputStream( entry_name ) ;
   
 }
 
@@ -99,11 +100,25 @@ int CollectionCollection::size() const {
 }
 
 //
-// Protected methods
+// Protected member functions
 //
-string CollectionCollection::fullPath( const string &name ) const {
-  return _filename + name ;
+
+void CollectionCollection::getEntry( const string &name,
+				     ConstEntryPointer &cep, 
+				     vector< FileCollection * >::const_iterator it, 
+				     MatchPath matchpath ) const {
+  
+  // Returns the first matching entry.
+  cep = 0 ;
+  for ( it = _collections.begin() ; it != _collections.end() ; it++ ) {
+    cep = (*it)->getEntry( name, matchpath ) ;
+    if ( cep )
+      break ;
+  }
+  
 }
+
+
 
 } // namespace
 

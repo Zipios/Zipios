@@ -55,8 +55,16 @@ public:
   virtual int size() const ;
 
 protected:
-  inline string fullPath( const string &name ) const ;
-
+  /** A protected getEntry member function, that not only
+      finds an entry that match the name, if such an entry exists
+      in the collection, it also returns, which collection it was found
+      in.
+   */
+  void getEntry( const string &name,
+		 ConstEntryPointer &cep, 
+		 vector< FileCollection * >::const_iterator it, 
+		 MatchPath matchpath = MATCH ) const ;
+  
   vector< FileCollection * > _collections ;
 private:
   static CollectionCollection *_inst ;
