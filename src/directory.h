@@ -89,7 +89,7 @@ namespace boost
 			
 			class proxy
 			{
-				friend dir_it;
+				friend class dir_it;
 				proxy(std::string const &ent): entry(ent) {}
 			public:
 				std::string operator*() const { return entry; }
@@ -305,7 +305,7 @@ namespace boost
 		struct uid { typedef uid_t value_type; };
 		template<> uid_t get<uid>(dir_it const &);
 		template<> void set<uid>(dir_it const &, uid_t);
-		class unknown_uname: public invalid_argument
+		class unknown_uname: public std::invalid_argument
 		{
 		public:
 			unknown_uname(string u): std::invalid_argument("unknown user name"), m_uname(u) {}
@@ -317,7 +317,7 @@ namespace boost
 		template<> string get<uname>(dir_it const &);
 		template<> void set<uname>(dir_it const &, string );
 
-		class unknown_gid: public invalid_argument
+		class unknown_gid: public std::invalid_argument
 		{
 		public:
 			unknown_gid(gid_t g): std::invalid_argument("unknown group ID"), m_gid(g) {}
