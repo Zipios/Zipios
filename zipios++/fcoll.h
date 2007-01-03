@@ -204,9 +204,11 @@ inline ostream & operator<< (ostream &os, const FileCollection& collection) {
    The two most important classes are \ref zipfile_anchor "ZipFile" and 
    \ref ZipInputStream_anchor "ZipInputStream". ZipInputStream is an istream
    for reading zipfiles. It can be instantiated directly, without the
-   use of ZipFile. A new ZipInputStream reads from the first entry, and
-   the user can skip to the next entry by calling
-   \ref ZipInputStream_getnextentry_anchor "ZipInputStream::getNextEntry()".
+   use of ZipFile. \ref ZipInputStream_getnextentry_anchor 
+   "ZipInputStream::getNextEntry()" positions the new ZipInputStream at the
+   first entry. The following entry can be accessed by calling
+   \ref ZipInputStream_getnextentry_anchor "ZipInputStream::getNextEntry()"
+   again.
    
    ZipFile scans the central directory of a zipfile and provides an
    interface to access that directory. The user may search for entries

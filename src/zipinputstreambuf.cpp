@@ -18,13 +18,7 @@ using std::endl ;
 ZipInputStreambuf::ZipInputStreambuf( streambuf *inbuf, int s_pos, bool del_inbuf ) 
   : InflateInputStreambuf( inbuf, s_pos, del_inbuf ),
     _open_entry( false                   ) 
-{
-  ConstEntryPointer entry = getNextEntry() ;
-  
-  if ( ! entry->isValid() ) {
-    ; // FIXME: throw something?
-  }
-}
+{}
 
 void ZipInputStreambuf::closeEntry() {
   if ( ! _open_entry )

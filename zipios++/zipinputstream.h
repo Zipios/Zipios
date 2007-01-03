@@ -42,7 +42,8 @@ public:
 
   /** \anchor ZipInputStream_getnextentry_anchor
       Opens the next entry in the zip archive and returns a const pointer to a 
-      FileEntry object for the entry.
+      FileEntry object for the entry. For new instances this method has to be
+      called once before you can read from the first entry.
       @return a const FileEntry * containing information about the (now) current 
       entry.
   */
