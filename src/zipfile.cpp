@@ -67,10 +67,13 @@ istream *ZipFile::getInputStream( const string &entry_name,
   
   if ( ent == 0 )
     return 0 ;
-  else
-    return new ZipInputStream( _filename,	
-			   static_cast< const ZipCDirEntry * >( ent.get() )->
-			   getLocalHeaderOffset() + _vs.startOffset() ) ;
+  else {
+    ZipInputStream *zis( new ZipInputStream( _filename,
+      static_cast< const ZipCDirEntry * >( ent.get() )->
+      getLocalHeaderOffset() + _vs.startOffset() ) ) ;
+    zis->getNextEntry();
+    return zis;
+  }
 }
 
 
@@ -190,7 +193,7 @@ void ZipFile::setError ( string error_str ) {
 
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000  Thomas SÃ¸ndergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
