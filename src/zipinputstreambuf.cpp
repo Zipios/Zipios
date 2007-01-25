@@ -42,6 +42,7 @@ ConstEntryPointer ZipInputStreambuf::getNextEntry() {
 
   // read the zip local header
   istream is( _inbuf ) ; // istream does not destroy the streambuf.
+  is.exceptions( ios::eofbit | ios::failbit | ios::badbit );
   is >> _curr_entry ;
   if ( _curr_entry.isValid() ) {
     _data_start = _inbuf->pubseekoff(0, ios::cur, 
