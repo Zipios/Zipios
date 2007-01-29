@@ -12,3 +12,7 @@ libtool
 ltmain.sh
 autom4te*.cache
 zipios++.spec
+depcomp
+install-sh
+missing
+mkinstalldirs
