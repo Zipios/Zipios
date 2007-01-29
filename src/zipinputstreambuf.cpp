@@ -43,27 +43,29 @@ ConstEntryPointer ZipInputStreambuf::getNextEntry() {
   // read the zip local header
   istream is( _inbuf ) ; // istream does not destroy the streambuf.
   is.exceptions( ios::eofbit | ios::failbit | ios::badbit );
-  is >> _curr_entry ;
-  if ( _curr_entry.isValid() ) {
-    _data_start = _inbuf->pubseekoff(0, ios::cur, 
-				     ios::in);
-    if ( _curr_entry.getMethod() == DEFLATED ) {
-      _open_entry = true ;
-      reset() ; // reset inflatestream data structures 
-//        cerr << "deflated" << endl ;
-    } else if ( _curr_entry.getMethod() == STORED ) {
-      _open_entry = true ;
-      _remain = _curr_entry.getSize() ;
-      // Force underflow on first read:
-      setg( &( _outvec[ 0 ] ),
-	    &( _outvec[ 0 ] ) + _outvecsize,
-	    &( _outvec[ 0 ] ) + _outvecsize ) ;
-//        cerr << "stored" << endl ;
-    } else {
-      _open_entry = false ; // Unsupported compression format.
-      throw FCollException( "Unsupported compression format" ) ;
+
+  try {
+    is >> _curr_entry ;
+    if ( _curr_entry.isValid() ) {
+      _data_start = _inbuf->pubseekoff(0, ios::cur, ios::in);
+      if ( _curr_entry.getMethod() == DEFLATED ) {
+        _open_entry = true ;
+        reset() ; // reset inflatestream data structures 
+        // cerr << "deflated" << endl ;
+      } else if ( _curr_entry.getMethod() == STORED ) {
+        _open_entry = true ;
+        _remain = _curr_entry.getSize() ;
+        // Force underflow on first read:
+        setg( &( _outvec[ 0 ] ),
+              &( _outvec[ 0 ] ) + _outvecsize,
+              &( _outvec[ 0 ] ) + _outvecsize );
+        // cerr << "stored" << endl ;
+      } else {
+        _open_entry = false ; // Unsupported compression format.
+        throw FCollException( "Unsupported compression format" ) ;
+      }
     }
-  } else {
+  } catch (...) {
     _open_entry = false ;
   }
 
@@ -117,7 +119,7 @@ int ZipInputStreambuf::underflow() {
 
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000  Thomas SÃ¸ndergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
