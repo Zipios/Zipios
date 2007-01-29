@@ -1,14 +1,8 @@
 
-AUTOMAKE_OPTIONS = gnu
-
-# CXXFLAGS= -g
-
-INCLUDES = -I$(srcdir)/..
+AM_CXXFLAGS = -I$(srcdir)/.. @ZLIB_CFLAGS@
 
 lib_LTLIBRARIES = libzipios.la
-
-noinst_PROGRAMS = appendzip
-
+libzipios_la_LDFLAGS = @ZLIB_LDFLAGS@
 libzipios_la_SOURCES = \
 	backbuffer.h \
 	basicentry.cpp \
@@ -36,6 +30,5 @@ libzipios_la_SOURCES = \
 	zipoutputstreambuf.cpp \
 	zipoutputstream.cpp
 
-libzipios_la_LIBADD = -lz
-
+noinst_PROGRAMS = appendzip
 appendzip_SOURCES = appendzip.cpp

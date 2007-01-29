@@ -1,6 +1,4 @@
 
-AUTOMAKE_OPTIONS = gnu
-
 pkginclude_HEADERS = \
 	basicentry.h \
 	collcoll.h \

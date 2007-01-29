@@ -1,7 +1,5 @@
 
-AUTOMAKE_OPTIONS = gnu
-
-EXTRA_DIST = doxyfile doc/images win32 zipios++.spec.in zipios++.spec
+EXTRA_DIST = doxyfile doc/images win32 zipios++.spec.in
 SUBDIRS = zipios++ src tests
 
 DOCTOOL = doxygen
@@ -9,7 +7,7 @@ DOCCONF = doxyfile
 
 .PHONY : ChangeLog
 ChangeLog :
-	cvs2cl.pl --prune --separate-header --global-opts -z3
+	cvs2cl --prune --separate-header --global-opts -z3
 
 .PHONY : doc
 doc :
