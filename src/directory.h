@@ -31,6 +31,7 @@
 #include <string>
 #include <ctime>
 #include <stdexcept>
+#include <cstddef>
 
 // #include <boost.h>  Contents of boost.h
 
@@ -82,10 +83,10 @@ namespace boost
 			struct representation;
 			
 		public:
-			typedef ptrdiff_t   difference_type;
-			typedef std::string value_type;
-			typedef std::string *pointer;
-			typedef std::string &reference;
+			typedef std::ptrdiff_t difference_type;
+			typedef std::string    value_type;
+			typedef std::string *  pointer;
+			typedef std::string &  reference;
 			
 			class proxy
 			{
