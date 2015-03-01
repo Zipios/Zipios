@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# Build the entire project using the autogen.sh, configure, make, make install
+#
+# Use these script at your own risk!
+# These are generally for Unix platforms.
+# Start this script from the source directory.
+
+set -e
+
+# Make a copy
+SOURCE_PATH=`pwd`
+cd ..
+rm -rf GNU_BUILD
+mkdir -p GNU_BUILD/dist
+cp -r $SOURCE_PATH GNU_BUILD/src
+
+# Run tools in copy
+cd GNU_BUILD
+DIST_PATH=`pwd`/dist
+
+cd src
+sh autogen.sh
+./configure --prefix=$DIST_PATH
+make
+make install
+
+
