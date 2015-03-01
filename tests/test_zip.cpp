@@ -17,9 +17,10 @@ using std::auto_ptr ;
 using std::ofstream ;
 
 void entryToFile( const string &ent_name, istream &is, const string &outfile,
-		  bool cerr_report = false ) ;
+                  bool cerr_report = false ) ;
 
-int main() {
+int main()
+{
   try {
     const string name_zipfile( "test.zip"              ) ;
     const string name_entry1 ( "file1.txt"             ) ;
@@ -65,8 +66,12 @@ int main() {
     entryToFile( name_entry3, zf2, name_uz3 ) ;
     
 //      cerr << "Unzipping entries using 'unzip' to get references to 'diff' against :\n" ;
-    system( string( unzipcmd + name_zipfile + " " + name_entry1 + " " + 
-		    name_entry2 + " " + name_entry3 ).c_str() ) ;
+    if(system( string( unzipcmd + name_zipfile + " " + name_entry1 + " " +
+                    name_entry2 + " " + name_entry3 ).c_str() ))
+    {
+      return 1;
+    }
+
 //      cerr << "\nOutput from " << diffcmd << " :\n" ;
 
     // Fail if any one of the fails
@@ -83,7 +88,8 @@ int main() {
 
 
 void entryToFile( const string &, istream &is, const string &outfile,
-		  bool cerr_report ) {
+                  bool cerr_report )
+{
   ofstream ofs( outfile.c_str(), ios::out | ios::binary ) ;
 
 //    cout << "writing " << ent_name << " to " << outfile << endl ;
@@ -123,3 +129,4 @@ void entryToFile( const string &, istream &is, const string &outfile,
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+// vim: ts=2 sw=2 et
