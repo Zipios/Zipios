@@ -1,180 +1,7 @@
-#ifndef ZIPHEADIO_H
-#define ZIPHEADIO_H
-
-#include "zipios++/zipios-config.h"
-
-#include "zipios++/meta-iostreams.h"
-#include <string>
-#include <vector>
-
-#include "zipios++/ziphead.h"
-#include "zipios++/zipios_defs.h"
-
-namespace zipios {
-
-// byte order conversion functions. 
-// ztohs (zip-to-host-short)
-#ifdef MY_BIG_ENDIAN
-
-inline uint16 ztohs ( unsigned char *buf ) {
-  uint16 out ;
-//    *( reinterpret_cast<unsigned char *>( &out )     ) = *( buf  + 1 );
-//    *( reinterpret_cast<unsigned char *>( &out ) + 1 ) = *( buf      );
-  out = ( static_cast< uint16 >( buf[ 0 ] ) << 8  ) + 
-        ( static_cast< uint16 >( buf[ 1 ] )       )  ; 
-
-  return out;
-}
-
-// ztohl (zip-to-host-long)
-inline uint32 ztohl ( unsigned char *buf ) {
-  uint32 out;
-  out = ( static_cast< uint32 >( buf[ 0 ] ) << 24 ) +  
-        ( static_cast< uint32 >( buf[ 1 ] ) << 16 ) + 
-        ( static_cast< uint32 >( buf[ 2 ] ) << 8  ) + 
-        ( static_cast< uint32 >( buf[ 3 ] )       )  ; 
-  
-  return out;
-}
-
-#else
-
-inline uint16 ztohs ( unsigned char *buf ) {
-  uint16 out ;
-  out = ( static_cast< uint16 >( buf[ 1 ] ) << 8  ) + 
-        ( static_cast< uint16 >( buf[ 0 ] )       )  ; 
-  return out;
-}
-
-// ztohl (zip-to-host-long)
-inline uint32 ztohl ( unsigned char *buf ) {
-  uint32 out;
-  out = ( static_cast< uint32 >( buf[ 3 ] ) << 24 ) +  
-        ( static_cast< uint32 >( buf[ 2 ] ) << 16 ) + 
-        ( static_cast< uint32 >( buf[ 1 ] ) << 8  ) + 
-        ( static_cast< uint32 >( buf[ 0 ] )       )  ; 
-//    cerr << "buf : " << static_cast< int >( buf[ 0 ] ) ;
-//    cerr << " "      << static_cast< int >( buf[ 1 ] ) ;
-//    cerr << " "      << static_cast< int >( buf[ 2 ] ) ;
-//    cerr << " "      << static_cast< int >( buf[ 3 ] ) << endl ;
-//    cerr << "uint32 " << out << endl ;
-  return out;
-}
-
-
-#endif
-
-// htozl (host-to-zip-long)
-inline uint32 htozl ( unsigned char *buf ) {
-  return ztohl( buf ) ;
-}
-
-// htozs (host-to-zip-short)
-inline uint16 htozs ( unsigned char *buf ) {
-  return ztohs( buf ) ;
-}
-
-
-inline uint32 readUint32 ( istream &is ) {
-  static const int buf_len = sizeof ( uint32 ) ;
-  unsigned char buf [ buf_len ] ;
-  int rsf = 0 ;
-  while ( rsf < buf_len ) {
-    is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
-    rsf += is.gcount () ;
-  }
-  return  ztohl ( buf ) ;
-}
-
-inline void writeUint32 ( uint32 host_val, ostream &os ) {
-  uint32 val = htozl( reinterpret_cast< unsigned char * >( &host_val ) ) ;
-  os.write( reinterpret_cast< char * >( &val ), sizeof( uint32 ) ) ;
-}
-
-inline uint16 readUint16 ( istream &is ) {
-  static const int buf_len = sizeof ( uint16 ) ;
-  unsigned char buf [ buf_len ] ;
-  int rsf = 0 ;
-  while ( rsf < buf_len ) {
-    is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
-    rsf += is.gcount () ;
-  }
-  return  ztohs ( buf ) ;
-}
-
-inline void writeUint16 ( uint16 host_val, ostream &os ) {
-  uint16 val = htozl( reinterpret_cast< unsigned char * >( &host_val ) ) ;
-  os.write( reinterpret_cast< char * >( &val ), sizeof( uint16 ) ) ;
-}
-
-inline void readByteSeq ( istream &is, string &con, int count ) {
-  char *buf = new char [ count + 1 ] ;
-  int rsf = 0 ;
-  while ( rsf < count && is ) {
-    is.read ( buf + rsf, count - rsf ) ;
-    rsf += is.gcount() ;
-  }
-  buf [ count ] = '\0' ;
-
-  con = buf ;
-  delete [] buf ;
-}
-
-inline void writeByteSeq( ostream &os, const string &con ) {
-  os << con ;
-}
-
-inline void readByteSeq ( istream &is, unsigned char *buf, int count ) {
-  int rsf = 0 ;
-
-  while ( rsf < count && is ) {
-    is.read ( reinterpret_cast< char * >( buf ) + rsf, count - rsf ) ;
-    rsf += is.gcount() ;
-  }
-}
-
-inline void writeByteSeq ( ostream &os, const unsigned char *buf, int count ) {
-  os.rdbuf()->sputn( reinterpret_cast< const char * >( buf ), count ) ;
-}
-
-inline void readByteSeq ( istream &is, vector < unsigned char > &vec, int count ) {
-  unsigned char *buf = new unsigned char [ count ] ;
-  int rsf = 0 ;
-  while ( rsf < count && is ) {
-    is.read ( reinterpret_cast< char * >( buf ) + rsf, count - rsf ) ;
-    rsf += is.gcount() ;
-  }
-  
-  vec.insert ( vec.end (), buf, buf + count ) ;
-  delete [] buf ;
-}
-
-inline void writeByteSeq ( ostream &os, const vector < unsigned char > &vec ) {
-  os.rdbuf()->sputn( reinterpret_cast< const char * >( &( vec[ 0 ] ) ), vec.size() ) ;
-}
-
-istream& operator>> ( istream &is, ZipLocalEntry &zlh         ) ;
-istream& operator>> ( istream &is, DataDescriptor &dd          ) ;
-istream& operator>> ( istream &is, ZipCDirEntry &zcdh           ) ;
-//  istream& operator>> ( istream &is, EndOfCentralDirectory &eocd ) ;
-
-ostream &operator<< ( ostream &os, const ZipLocalEntry &zlh ) ;
-ostream &operator<< ( ostream &os, const ZipCDirEntry &zcdh ) ;
-ostream &operator<< ( ostream &os, const EndOfCentralDirectory &eocd ) ;
-
-
-} // namespace
-
-#endif
-
-/** \file
-    Header file that defines I/O functions for the header structures
-    defined in ziphead.h.
-*/
-
+#pragma once
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -190,3 +17,207 @@ ostream &operator<< ( ostream &os, const EndOfCentralDirectory &eocd ) ;
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+
+/** \file
+    Header file that defines I/O functions for the header structures
+    defined in ziphead.h.
+*/
+
+#include "zipios++/ziphead.h"
+
+#include <memory>
+
+
+namespace zipios
+{
+
+// byte order conversion functions. 
+// ztohs (zip-to-host-short)
+#ifdef MY_BIG_ENDIAN
+
+inline uint16_t ztohs ( unsigned char const *buf )
+{
+  uint16_t out ;
+//    *( reinterpret_cast<unsigned char *>( &out )     ) = *( buf  + 1 );
+//    *( reinterpret_cast<unsigned char *>( &out ) + 1 ) = *( buf      );
+  out = ( static_cast< uint16_t >( buf[ 0 ] ) << 8  ) + 
+        ( static_cast< uint16_t >( buf[ 1 ] )       )  ; 
+
+  return out;
+}
+
+
+// ztohl (zip-to-host-long)
+inline uint32_t ztohl ( unsigned char const *buf )
+{
+  uint32_t out;
+  out = ( static_cast< uint32_t >( buf[ 0 ] ) << 24 ) +  
+        ( static_cast< uint32_t >( buf[ 1 ] ) << 16 ) + 
+        ( static_cast< uint32_t >( buf[ 2 ] ) << 8  ) + 
+        ( static_cast< uint32_t >( buf[ 3 ] )       )  ; 
+  
+  return out;
+}
+
+#else
+
+inline uint16_t ztohs ( unsigned char const *buf )
+{
+  uint16_t out ;
+  out = ( static_cast< uint16_t >( buf[ 1 ] ) << 8  ) + 
+        ( static_cast< uint16_t >( buf[ 0 ] )       )  ; 
+
+  return out;
+}
+
+
+// ztohl (zip-to-host-long)
+inline uint32_t ztohl ( unsigned char const *buf )
+{
+  uint32_t out;
+  out = ( static_cast< uint32_t >( buf[ 3 ] ) << 24 ) +  
+        ( static_cast< uint32_t >( buf[ 2 ] ) << 16 ) + 
+        ( static_cast< uint32_t >( buf[ 1 ] ) << 8  ) + 
+        ( static_cast< uint32_t >( buf[ 0 ] )       )  ; 
+
+//    std::cerr << "buf : " << static_cast< int >( buf[ 0 ] ) ;
+//    std::cerr << " "      << static_cast< int >( buf[ 1 ] ) ;
+//    std::cerr << " "      << static_cast< int >( buf[ 2 ] ) ;
+//    std::cerr << " "      << static_cast< int >( buf[ 3 ] ) << std::endl ;
+//    std::cerr << "uint32_t " << out << std::endl ;
+  return out;
+}
+
+
+#endif
+
+// htozl (host-to-zip-long)
+inline uint32_t htozl ( unsigned char const *buf )
+{
+  return ztohl( buf ) ;
+}
+
+
+// htozs (host-to-zip-short)
+inline uint16_t htozs ( unsigned char const *buf )
+{
+  return ztohs( buf ) ;
+}
+
+
+inline uint32_t readUint32 ( std::istream& is )
+{
+  int const buf_len( sizeof ( uint32_t ) );
+  unsigned char buf [ buf_len ] ;
+  int rsf = 0 ;
+  while ( rsf < buf_len )
+  {
+    is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
+    rsf += is.gcount () ;
+  }
+  return ztohl ( buf ) ;
+}
+
+
+inline void writeUint32 ( uint32_t const host_val, std::ostream& os )
+{
+  uint32_t const val = htozl( reinterpret_cast< unsigned char const * >( &host_val ) ) ;
+  os.write( reinterpret_cast< char const * >( &val ), sizeof( uint32_t ) ) ;
+}
+
+
+inline uint16_t readUint16 ( std::istream& is )
+{
+  int const buf_len( sizeof ( uint16_t ) );
+  unsigned char buf [ buf_len ] ;
+  int rsf = 0 ;
+  while ( rsf < buf_len )
+  {
+    is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
+    rsf += is.gcount () ;
+  }
+  return  ztohs ( buf ) ;
+}
+
+
+inline void writeUint16 ( uint16_t const host_val, std::ostream& os )
+{
+  uint16_t val = htozl( reinterpret_cast< unsigned char const * >( &host_val ) ) ;
+  os.write( reinterpret_cast< char const * >( &val ), sizeof( uint16_t ) ) ;
+}
+
+
+inline void readByteSeq ( std::istream& is, std::string& con, int const count )
+{
+  std::vector<char> buf;
+  buf.resize(count + 1);
+  int rsf = 0 ;
+  while ( rsf < count && is )
+  {
+    is.read ( &buf[0] + rsf, count - rsf ) ;
+    rsf += is.gcount() ;
+  }
+  buf [ count ] = '\0' ;
+
+  con = &buf[0] ;
+}
+
+
+inline void writeByteSeq( std::ostream& os, const std::string& con )
+{
+  os << con ;
+}
+
+
+inline void readByteSeq ( std::istream& is, unsigned char *buf, int const count )
+{
+  int rsf = 0 ;
+
+  while ( rsf < count && is )
+  {
+    is.read ( reinterpret_cast< char * >( buf ) + rsf, count - rsf ) ;
+    rsf += is.gcount() ;
+  }
+}
+
+
+inline void writeByteSeq ( std::ostream &os, unsigned char const *buf, int count )
+{
+  os.rdbuf()->sputn( reinterpret_cast< char const * >( buf ), count ) ;
+}
+
+
+inline void readByteSeq ( std::istream &is, std::vector < unsigned char >& vec, int const count )
+{
+  std::vector<unsigned char> buf;
+  buf.resize(count);
+  int rsf = 0 ;
+  while ( rsf < count && is )
+  {
+    is.read ( reinterpret_cast< char * >( &buf[0] ) + rsf, count - rsf ) ;
+    rsf += is.gcount() ;
+  }
+  
+  vec.insert ( vec.end (), buf.begin(), buf.end() ) ;
+}
+
+
+inline void writeByteSeq ( std::ostream &os, std::vector < unsigned char > const& vec )
+{
+  os.rdbuf()->sputn( reinterpret_cast< char const * >( &( vec[ 0 ] ) ), vec.size() ) ;
+}
+
+
+std::istream& operator >> ( std::istream& is, ZipLocalEntry& zlh ) ;
+std::istream& operator >> ( std::istream& is, DataDescriptor& dd ) ;
+std::istream& operator >> ( std::istream& is, ZipCDirEntry& zcdh ) ;
+//  std::istream& operator >> ( std::istream& is, EndOfCentralDirectory& eocd ) ;
+
+std::ostream &operator << ( std::ostream& os, ZipLocalEntry const& zlh ) ;
+std::ostream &operator << ( std::ostream& os, ZipCDirEntry const& zcdh ) ;
+std::ostream &operator << ( std::ostream& os, EndOfCentralDirectory const& eocd ) ;
+
+
+} // zipios namespace
+
+// vim: ts=2 sw=2 et

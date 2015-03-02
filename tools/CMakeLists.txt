@@ -27,6 +27,16 @@
 #      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 
+project( zipios_tool )
+
+add_executable( ${PROJECT_NAME}
+  zipios.cpp
+)
+
+install( TARGETS ${PROJECT_NAME}
+  DESTINATION bin
+)
+
 project( appendzip )
 
 add_executable( ${PROJECT_NAME}

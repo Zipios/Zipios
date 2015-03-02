@@ -1,36 +1,56 @@
-#ifndef ZIPINPUTSTREAM_H
-#define ZIPINPUTSTREAM_H
+#pragma once
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000-2015  Thomas Sondergaard
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
 
-#include "zipios++/zipios-config.h"
+/** \file 
+    Header file that defines ZipInputStream.
+*/
 
-#include "zipios++/meta-iostreams.h"
-#include <string>
-
-#include "zipios++/ziphead.h"
 #include "zipios++/zipinputstreambuf.h"
 
-namespace zipios {
 
-using std::ifstream ;
+namespace zipios
+{
+
+
 
 /** \anchor ZipInputStream_anchor
-    ZipInputStream is an istream that gets it's input from a zip file. The
-    interface approximates the interface of the Java
-    ZipInputStream. */
-class ZipInputStream : public istream {
+ * ZipInputStream is an istream that gets it's input from a zip file. The
+ * interface approximates the interface of the Java
+ * ZipInputStream.
+ */
+class ZipInputStream : public std::istream
+{
 public:
 
   /** ZipInputStream constructor.
       @param is istream from which the compressed zip archive can be read.
       @param pos position to reposition the istream to before reading.  */
-  explicit ZipInputStream( istream &is, streampos pos = 0 ) ;
+  explicit ZipInputStream( std::istream& is, std::streampos pos = 0 ) ;
 
   /** ZipInputStream constructor.
       @filename filename of a valid zip file.
       @param pos position to reposition the istream to before reading.   */
-  explicit ZipInputStream( const string &filename, streampos pos = 0 ) ;
+  explicit ZipInputStream( std::string const& filename, std::streampos pos = 0 ) ;
   
   int available() ;
+
   /** Closes the current entry, and positions the stream read pointer at 
       the beginning of the next entry (if there is one). */
   void closeEntry() ;
@@ -53,40 +73,17 @@ public:
   virtual ~ZipInputStream() ;
 
 private:
-  ifstream *ifs ;
-  ZipInputStreambuf *izf ;
+  std::ifstream *    f_ifs ;
+  ZipInputStreambuf *f_izf ;
 
   /** Copy-constructor is private to prevent copying. */
-  ZipInputStream( const ZipInputStream &src ) ;
+  ZipInputStream( ZipInputStream const& src ) ;
 
   /** Copy-assignment operator is private to prevent copying.  */
-  const ZipInputStream &operator= ( const ZipInputStream &src ) ;
-
+  ZipInputStream const& operator = ( ZipInputStream const& src ) ;
 };
+
  
-} // namespace.
+} // zipios namespace
 
-#endif
-
-/** \file 
-    Header file that defines ZipInputStream.
-*/
-
-/*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
-  
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
-  
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*/
+// vim: ts=2 sw=2 et

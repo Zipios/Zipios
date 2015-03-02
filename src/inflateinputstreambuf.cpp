@@ -1,27 +1,42 @@
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000-2015  Thomas Sondergaard
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
 
-#include "zipios++/zipios-config.h"
+/** \file
+    Implementation of InflateInputStreambuf.
+*/
 
-#include "zipios++/meta-iostreams.h"
-
-#include <zlib.h>
-
-#include "zipios++/fcollexceptions.h"
 #include "zipios++/inflateinputstreambuf.h"
 
-#include "outputstringstream.h"
+#include "zipios++/zipiosexceptions.h"
 
-namespace zipios {
 
-using std::cerr ;
-using std::endl ;
+namespace zipios
+{
 
-InflateInputStreambuf::InflateInputStreambuf( streambuf *inbuf, int s_pos, bool del_inbuf ) 
-  : FilterInputStreambuf( inbuf, del_inbuf ),
-    _zs_initialized ( false            ),
-    _invecsize      ( 1000             ),
-    _invec          ( _invecsize       ),
-    _outvecsize     ( 1000             ),
-    _outvec         ( _outvecsize      )
+
+InflateInputStreambuf::InflateInputStreambuf( std::streambuf *inbuf, int s_pos, bool del_inbuf ) 
+  : FilterInputStreambuf( inbuf, del_inbuf )
+  , _zs_initialized ( false            )
+  , _invecsize      ( 1000             )
+  , _invec          ( _invecsize       )
+  , _outvecsize     ( 1000             )
+  , _outvec         ( _outvecsize      )
 {
   // NOTICE: It is important that this constructor and the methods it
   // calls doesn't do anything with the input streambuf _inbuf, other
@@ -40,23 +55,28 @@ InflateInputStreambuf::InflateInputStreambuf( streambuf *inbuf, int s_pos, bool 
   // in the constructors of subclasses with all compilers.
 }
 
-InflateInputStreambuf::~InflateInputStreambuf() {
+InflateInputStreambuf::~InflateInputStreambuf()
+{
   // Dealloc z_stream stuff
   int err = inflateEnd( &_zs ) ;
-  if( err != Z_OK ) {
-    cerr << "~inflatebuf: inflateEnd failed" ;
+  if( err != Z_OK )
+  {
+    std::cerr << "~inflatebuf: inflateEnd failed" ;
 #ifdef HAVE_ZERROR
-    cerr << ": " << zError( err ) ;
+    std::cerr << ": " << zError( err ) ;
 #endif
-    cerr << endl ;
+    std::cerr << std::endl ;
   }
 }
 
 
-int InflateInputStreambuf::underflow() {
+int InflateInputStreambuf::underflow()
+{
   // If not underflow don't fill buffer
   if ( gptr() < egptr() )
+  {
     return static_cast< unsigned char >( *gptr() ) ;
+  }
 
   // Prepare _outvec and get array pointers
   _zs.avail_out = _outvecsize ; 
@@ -65,10 +85,11 @@ int InflateInputStreambuf::underflow() {
   // Inflate until _outvec is full
   // eof (or I/O prob) on _inbuf will break out of loop too.
   int err = Z_OK ;
-  while ( _zs.avail_out > 0 && err == Z_OK ) {
-    if ( _zs.avail_in == 0 ) { // fill _invec
-      int bc = _inbuf->sgetn( &(_invec[ 0 ] ) , 
-			      _invecsize ) ;
+  while ( _zs.avail_out > 0 && err == Z_OK )
+  {
+    if ( _zs.avail_in == 0 )
+    { // fill _invec
+      int bc = _inbuf->sgetn( &(_invec[ 0 ] ) , _invecsize ) ;
       // FIXME: handle i/o problems.
       _zs.next_in  = reinterpret_cast< unsigned char * >( &( _invec[0] ) ) ;
       _zs.avail_in = bc ;
@@ -84,38 +105,43 @@ int InflateInputStreambuf::underflow() {
   // full length of the output buffer, but if we can't read
   // more input from the _inbuf streambuf, we end up with
   // less.
-  int inflated_bytes = _outvecsize - _zs.avail_out ;
+  int const inflated_bytes = _outvecsize - _zs.avail_out ;
   setg( &( _outvec[ 0 ] ),
-	&( _outvec[ 0 ] ),
-	&( _outvec[ 0 ] ) + inflated_bytes ) ;
+        &( _outvec[ 0 ] ),
+        &( _outvec[ 0 ] ) + inflated_bytes ) ;
+
   // FIXME: look at the error returned from inflate here, if there is
   // some way to report it to the InflateInputStreambuf user.
   // Until I find out I'll just print a warning to stdout.
-  if( err != Z_OK && err != Z_STREAM_END ) {
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM)
-    // Throw an exception to make istream set badbit
+  // This at least throws, we probably want to create a log mechanism
+  // that the end user can connect to with a callback.
+  if( err != Z_OK && err != Z_STREAM_END )
+  {
     OutputStringStream msgs ;
     msgs << "InflateInputStreambuf: inflate failed" ;
-#ifdef HAVE_ZERROR
+#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM) && defined (HAVE_ZERROR)
     msgs << ": " << zError( err ) ;
 #endif
+    // Throw an exception to make istream set badbit
     throw IOException( msgs.str() ) ;
-#endif
-    // If HAVE_STD_IOSTREAM not defined we just return eof
-    // if no output is produced, and that happens anyway
   }
+
   if (inflated_bytes > 0 )
+  {
     return static_cast< unsigned char >( *gptr() ) ;
-  else 
-    return EOF ; // traits_type::eof() ;
+  }
+
+  return EOF ; // traits_type::eof() ;
 }
 
 
 
 // This method is called in the constructor, so it must not
 // read anything from the input streambuf _inbuf (see notice in constructor)
-bool InflateInputStreambuf::reset( int stream_position ) {
-  if ( stream_position >= 0 ) { // reposition _inbuf
+bool InflateInputStreambuf::reset( int stream_position )
+{
+  if ( stream_position >= 0 )
+  { // reposition _inbuf
     _inbuf->pubseekpos( stream_position ) ;
   }
 
@@ -125,9 +151,12 @@ bool InflateInputStreambuf::reset( int stream_position ) {
   _zs.avail_in = 0 ;
   
   int err ;
-  if( _zs_initialized ) {                    // just reset it
+  if( _zs_initialized )
+  { // just reset it
     err = inflateReset( &_zs ) ;
-  } else {                                   // init it
+  }
+  else
+  { // init it
     err = inflateInit2( &_zs, -MAX_WBITS ) ;
     /* windowBits is passed < 0 to tell that there is no zlib header.
      Note that in this case inflate *requires* an extra "dummy" byte
@@ -144,36 +173,11 @@ bool InflateInputStreambuf::reset( int stream_position ) {
   // - and that gptr() is not less than  egptr() (so we trigger underflow
   //   the first time data is read).
   setg( &( _outvec[ 0 ] ),
-	&( _outvec[ 0 ] ) + _outvecsize,
-	&( _outvec[ 0 ] ) + _outvecsize ) ;
+        &( _outvec[ 0 ] ) + _outvecsize,
+        &( _outvec[ 0 ] ) + _outvecsize ) ;
 
-  if ( err == Z_OK )
-    return true ;
-  else
-    return false ;
+  return err == Z_OK ;
 }
 
 } // namespace
-
-/** \file
-    Implementation of InflateInputStreambuf.
-*/
-
-/*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
-  
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
-  
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*/
+// vim: ts=2 sw=2 et

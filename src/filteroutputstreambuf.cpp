@@ -1,35 +1,6 @@
-
-#include "zipios++/zipios-config.h"
-
-#include "zipios++/filteroutputstreambuf.h"
-
-namespace zipios {
-
-FilterOutputStreambuf::FilterOutputStreambuf( streambuf *outbuf, bool del_outbuf ) 
-  : _outbuf( outbuf),
-    _del_outbuf( del_outbuf )
-{
-  if ( _outbuf == NULL ) {
-    // throw an exception
-  }
-}
-
-
-FilterOutputStreambuf::~FilterOutputStreambuf() {
-  if ( _del_outbuf )
-    delete _outbuf ;
-}
-
-
-} // namespace
-
-/** \file
-    Implementation of FilterOutputStreambuf.
-*/
-
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -45,3 +16,39 @@ FilterOutputStreambuf::~FilterOutputStreambuf() {
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+
+/** \file
+    Implementation of FilterOutputStreambuf.
+*/
+
+#include "zipios++/filteroutputstreambuf.h"
+
+#include "zipios++/zipiosexceptions.h"
+
+
+namespace zipios
+{
+
+
+FilterOutputStreambuf::FilterOutputStreambuf( std::streambuf *outbuf, bool del_outbuf ) 
+  : _outbuf( outbuf)
+  , _del_outbuf( del_outbuf )
+{
+  if ( ! _outbuf )
+  {
+    throw InvalidStateException("FilterOutputStreambuf was called with a null streambuf pointer");
+  }
+}
+
+
+FilterOutputStreambuf::~FilterOutputStreambuf()
+{
+  if ( _del_outbuf )
+  {
+    delete _outbuf ;
+  }
+}
+
+
+} // zipios namespace
+// vim: ts=2 sw=2 et

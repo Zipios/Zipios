@@ -1,33 +1,55 @@
-#ifndef ZIPOUTPUTSTREAMBUF_H
-#define ZIPOUTPUTSTREAMBUF_H
+#pragma once
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000-2015  Thomas Sondergaard
 
-#include "zipios++/zipios-config.h"
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
 
-#include <vector>
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
 
-#include <zlib.h>
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
 
-#include "zipios++/fcoll.h"
+/** \file
+    Header file that defines ZipOutputStreambuf.
+*/
+
+
 #include "zipios++/deflateoutputstreambuf.h"
+
 #include "zipios++/ziphead.h"
 
-namespace zipios {
+
+namespace zipios
+{
 
 /** ZipOutputStreambuf is a zip output streambuf filter.  */
-class ZipOutputStreambuf : public DeflateOutputStreambuf {
+class ZipOutputStreambuf : public DeflateOutputStreambuf
+{
 public:
 
-  enum CompressionLevels { NO_COMPRESSION      = Z_NO_COMPRESSION, 
-			   BEST_SPEED          = Z_BEST_SPEED,
-			   BEST_COMPRESSION    = Z_BEST_COMPRESSION,
-                           DEFAULT_COMPRESSION = Z_DEFAULT_COMPRESSION  } ;
+  enum class CompressionLevels : int
+  {
+    NO_COMPRESSION      = Z_NO_COMPRESSION, 
+    BEST_SPEED          = Z_BEST_SPEED,
+    BEST_COMPRESSION    = Z_BEST_COMPRESSION,
+    DEFAULT_COMPRESSION = Z_DEFAULT_COMPRESSION
+  } ;
 
   /** ZipOutputStreambuf constructor. A newly constructed ZipOutputStreambuf
       is not ready to accept data, putNextEntry() must be invoked first.
       @param outbuf the streambuf to use for input.
       @param del_outbuf if true is specified outbuf will be deleted, when 
       the ZipOutputStreambuf is destructed.  */
-  explicit ZipOutputStreambuf( streambuf *outbuf, bool del_outbuf = false ) ;
+  explicit ZipOutputStreambuf( std::streambuf *outbuf, bool del_outbuf = false ) ;
 
   /** Closes the current entry, and positions the stream read pointer at 
       the beginning of the next entry (if there is one). */
@@ -47,13 +69,14 @@ public:
       FileEntry object for the entry.
       @return a const FileEntry * containing information about the (now) current 
       entry. */
-  void putNextEntry( const ZipCDirEntry &entry ) ;
+  void putNextEntry( ZipCDirEntry const& entry ) ;
 
   /** Sets the global comment for the Zip archive. */
-  void setComment( const string &comment ) ;
+  void setComment( std::string const& comment ) ;
 
   /** Sets the compression level to be used for subsequent entries. */
   void setLevel( int level ) ;
+  void setLevel( CompressionLevels level ) ;
 
   /** Sets the compression method to be used. only STORED and DEFLATED are
       supported. */
@@ -70,15 +93,15 @@ protected:
   void updateEntryHeaderInfo() ;
 
   // Should/could be moved to zipheadio.h ?!
-  static void writeCentralDirectory( const vector< ZipCDirEntry > &entries, 
-				     EndOfCentralDirectory eocd,
-				     ostream &os ) ;
+  static void writeCentralDirectory( std::vector< ZipCDirEntry > const& entries, 
+                                     EndOfCentralDirectory eocd,
+                                     std::ostream& os ) ;
 
 
 
 private:
-  string _zip_comment ;
-  vector< ZipCDirEntry > _entries ;
+  std::string _zip_comment ;
+  std::vector< ZipCDirEntry > _entries ;
   bool _open_entry ;
   bool _open ;
   StorageMethod _method ;
@@ -86,31 +109,6 @@ private:
 };
 
 
-} // namespace
+} // zipios namespace
 
-
-
-#endif
-
-/** \file
-    Header file that defines ZipOutputStreambuf.
-*/
-
-/*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
-  
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
-  
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*/
+// vim: ts=2 sw=2 et

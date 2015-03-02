@@ -1,160 +1,6 @@
-
-#include "zipios++/zipios-config.h"
-
-#include "zipios++/meta-iostreams.h"
-#include <vector>
-#include <sys/stat.h>
-
-#include "zipios++/dircoll.h"
-
-#include "directory.h"
-
-
-namespace zipios {
-
-using std::cerr ;
-using std::endl ;
-using std::vector ;
-using std::ifstream ;
-
-DirectoryCollection::DirectoryCollection( const string &path, bool recursive, 
-					  bool load_now ) 
-  : _entries_loaded( false ),
-    _recursive     ( recursive ),
-    _filepath      ( path      )
-{
-  _filename = _filepath ;
-  _valid = _filepath.isDirectory() ;
-
-  if( _valid && load_now )
-    loadEntries() ;
-}
-
-void DirectoryCollection::close() {
-  _valid = false ;
-}
-
-
-ConstEntries DirectoryCollection::entries() const {
-  if ( ! _valid )
-    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
-
-  loadEntries() ;
-
-  return FileCollection::entries() ;
-}
-
-
-ConstEntryPointer
-DirectoryCollection::getEntry( const string &name, 
-			       MatchPath matchpath ) const {
-  if ( ! _valid )
-    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
-
-  if ( matchpath != MATCH || _entries_loaded ) {
-    loadEntries() ;
-    return FileCollection::getEntry( name, matchpath ) ;
-  } else {
-    // avoid loading entries if possible.
-    ConstEntryPointer ent ( new DirEntry( name, "", _filepath ) ) ;
-    if ( ent->isValid() )
-      return ent ;
-    else
-      return 0 ;
-  }
-}
-
-
-istream *DirectoryCollection::getInputStream( const ConstEntryPointer &entry ) {
-  if ( ! _valid )
-    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
-
-  return getInputStream( entry->getName() ) ;
-}
-
-
-istream *DirectoryCollection::getInputStream( const string &entry_name, 
-					      MatchPath matchpath ) {
-  if ( ! _valid )
-    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
-
-  if ( matchpath != MATCH || _entries_loaded ) {
-    loadEntries() ;
-
-    ConstEntryPointer ent = getEntry( entry_name, matchpath ) ;
-    
-    if ( ent == 0 )
-      return 0 ;
-    else {
-      string real_path( _filepath + entry_name ) ;
-      return new ifstream( real_path.c_str(), ios::in | ios::binary ) ;
-    }
-
-  } else {
-    // avoid loading entries if possible.
-    string real_path( _filepath + entry_name ) ;
-    ifstream *ifs = new ifstream( real_path.c_str(), ios::in | ios::binary ) ;
-    if( ! *ifs ) {
-      delete ifs ;
-      return 0 ;
-    } else 
-      return ifs ;
-  }  
-}
-
-
-int DirectoryCollection::size() const {
-  if ( ! _valid )
-    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
-  loadEntries() ;
-
-  return _entries.size() ;
-}
-
-FileCollection *DirectoryCollection::clone() const {
-  return new DirectoryCollection( *this ) ;
-}
-
-DirectoryCollection::~DirectoryCollection() {}
-
-
-void DirectoryCollection::loadEntries() const {
-  if( _entries_loaded )
-    return ;
-
-  const_cast< DirectoryCollection * >( this )->load( _recursive ) ;
-
-  _entries_loaded = true ;
-}
-
-
-void DirectoryCollection::load( bool recursive, const FilePath &subdir ) {
-  using namespace boost::filesystem ;
-  BasicEntry *ent ;
-  for ( dir_it it( _filepath + subdir ) ; it != dir_it() ; ++it ) {
-
-    if ( *it == "." || *it == ".." || *it == "..." )
-      continue ;
-
-    if ( get< is_directory >( it ) && recursive ) {
-      load( recursive, subdir + *it ) ;
-    } else {
-      _entries.push_back( ent = new BasicEntry( subdir + *it, "", _filepath ) ) ;
-      ent->setSize( get< boost::filesystem::size >( it ) ) ;
-    }
-
-  }
-}
-
-} // namespace
-
-/** \file
-    Implementation of DirectoryCollection.
-*/
-
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -170,3 +16,188 @@ void DirectoryCollection::load( bool recursive, const FilePath &subdir ) {
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+
+/** \file
+    Implementation of DirectoryCollection.
+*/
+
+#include "zipios++/dircoll.h"
+
+#include "zipios++/zipiosexceptions.h"
+
+#include "directory.h"
+
+namespace zipios
+{
+
+DirectoryCollection::DirectoryCollection( std::string const& path,
+                                          bool recursive, 
+                                          bool load_now ) 
+  : _entries_loaded( false )
+  , _recursive     ( recursive )
+  , _filepath      ( path      )
+{
+  _filename = _filepath ;
+  _valid = _filepath.isDirectory() ;
+
+  if( _valid && load_now )
+  {
+    loadEntries() ;
+  }
+}
+
+
+void DirectoryCollection::close()
+{
+  _valid = false ;
+}
+
+
+ConstEntries DirectoryCollection::entries() const
+{
+  if ( ! _valid )
+  {
+    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
+  }
+
+  loadEntries() ;
+
+  return FileCollection::entries() ;
+}
+
+
+ConstEntryPointer DirectoryCollection::getEntry( std::string const& name, 
+                                                 MatchPath matchpath ) const
+{
+  if ( ! _valid )
+  {
+    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
+  }
+
+  if ( matchpath != MatchPath::MATCH || _entries_loaded )
+  {
+    loadEntries() ;
+    return FileCollection::getEntry( name, matchpath ) ;
+  }
+
+  // avoid loading entries if possible.
+  ConstEntryPointer ent ( new DirEntry( name, "", _filepath ) ) ;
+  if ( ent->isValid() )
+  {
+    return ent ;
+  }
+
+  return 0 ;
+}
+
+
+std::istream *DirectoryCollection::getInputStream( ConstEntryPointer const& entry )
+{
+  if ( ! _valid )
+  {
+    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
+  }
+
+  return getInputStream( entry->getName() ) ;
+}
+
+
+std::istream *DirectoryCollection::getInputStream( std::string const& entry_name, 
+                                                   MatchPath matchpath )
+{
+  if ( ! _valid )
+  {
+    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
+  }
+
+  if ( matchpath != MatchPath::MATCH || _entries_loaded )
+  {
+    loadEntries() ;
+
+    ConstEntryPointer ent = getEntry( entry_name, matchpath ) ;
+    if ( ! ent )
+    {
+      return 0 ;
+    }
+
+    std::string real_path( _filepath + entry_name ) ;
+    return new std::ifstream( real_path.c_str(), std::ios::in | std::ios::binary ) ;
+  }
+
+  // avoid loading entries if possible.
+  std::string real_path( _filepath + entry_name ) ;
+  std::ifstream *ifs = new std::ifstream( real_path.c_str(), std::ios::in | std::ios::binary ) ;
+  if( ! *ifs )
+  {
+    delete ifs ;
+    return 0 ;
+  }
+
+  return ifs ;
+}
+
+
+int DirectoryCollection::size() const
+{
+  if ( ! _valid )
+  {
+    throw InvalidStateException( "Attempt to use an invalid DirectoryCollection" ) ;
+  }
+
+  loadEntries() ;
+
+  return _entries.size() ;
+}
+
+
+FileCollection *DirectoryCollection::clone() const
+{
+  return new DirectoryCollection( *this ) ;
+}
+
+
+DirectoryCollection::~DirectoryCollection()
+{
+}
+
+
+void DirectoryCollection::loadEntries() const
+{
+  if( _entries_loaded )
+  {
+    return ;
+  }
+
+  const_cast< DirectoryCollection * >( this )->load( _recursive ) ;
+
+  _entries_loaded = true ;
+}
+
+
+void DirectoryCollection::load( bool recursive, const FilePath &subdir )
+{
+  //using namespace boost::filesystem ;
+  BasicEntry *ent ;
+  for ( boost::filesystem::dir_it it( _filepath + subdir ) ; it != boost::filesystem::dir_it() ; ++it )
+  {
+    // TBD: skipping "..." ?!?
+    if ( *it == "." || *it == ".." || *it == "..." )
+    {
+      continue ;
+    }
+
+    if ( boost::filesystem::get< boost::filesystem::is_directory >( it ) && recursive )
+    {
+      load( recursive, subdir + *it ) ;
+    }
+    else
+    {
+      _entries.push_back( ent = new BasicEntry( subdir + *it, "", _filepath ) ) ;
+      ent->setSize( boost::filesystem::get< boost::filesystem::size >( it ) ) ;
+    }
+  }
+}
+
+
+} // zipios namespace
+// vim: ts=2 sw=2 et

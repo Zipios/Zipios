@@ -1,93 +1,21 @@
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000-2015  Thomas Sondergaard
 
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
 
-#include "zipios++/zipios-config.h"
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
 
-#include "zipios++/meta-iostreams.h"
-#include <memory>
-
-#include "zipios++/dircoll.h"
-#include "zipios++/zipfile.h"
-#include "zipios++/collcoll.h"
-
-using namespace zipios ;
-
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::auto_ptr ;
-
-int main() {
-  try {
-  
-    cout << "Instantiating a DirectoryCollection" << endl ;
-    DirectoryCollection dircoll( "." ) ;
-
-    cout << "Instantiating a ZipFile" << endl ;
-    ZipFile zipfile( "test.zip" ) ;
-    
-    cout << "Instantiating a CollectionCollection" << endl ;
-    CollectionCollection collcoll_orig ;
-
-    cout << "Adding the zip file and directory collection to the collection collection" 
-	 << endl ;
-    if ( ! collcoll_orig.addCollection( zipfile ) ) {
-      cerr << "Failed to add the zip file" << endl ;
-      return 1 ;
-    }
-    if ( ! collcoll_orig.addCollection( dircoll ) ) {
-      cerr << "Failed to add the zip file" << endl ;
-      return 1 ;
-    }
-
-    CollectionCollection collcoll( collcoll_orig ) ; // Test copy constructor
-    CColl::inst() = collcoll ; // test copy-assignment and Singleton instance inst().
-
-//      if ( ! collcoll.addCollection( new ZipFile( "test.zip" ) ) ) {
-//        cerr << "Failed to add the zip file" << endl ;
-//        return 1 ;
-//      }
-//      if ( ! collcoll.addCollection( new DirectoryCollection( "." ) ) ) {
-//        cerr << "Failed to add the zip file" << endl ;
-//        return 1 ;
-//      }
-
-//      cout << "list length : " << collcoll.size() << endl ;
-    
-//      ConstEntries entries ;
-//      entries = collcoll.entries() ;
-    
-    
-//      ConstEntries::iterator it ;
-//      for( it = entries.begin() ; it != entries.end() ; it++)
-//        cout << *(*it) << endl ;
-    
-    ConstEntryPointer ent = CColl::inst().getEntry( "file2.txt" ) ;
-    if ( ent != 0 ) {
-      auto_ptr< istream > is( CColl::inst().getInputStream( ent ) ) ;
-      
-      cout << "Contents of entry, " << ent->getName() << " :" << endl ;
-      
-      cout << is->rdbuf() ;
-    }
-
-    ent = CColl::inst().getEntry( "flistentry.cpp" ) ;
-    if ( ent != 0 ) {
-      auto_ptr< istream > is( CColl::inst().getInputStream( ent ) ) ;
-      
-      cout << "Contents of entry, " << ent->getName() << " :" << endl ;
-      
-      cout << is->rdbuf() ;
-    }
-    cout << "end of main()" << endl ;
-    
-    return 0 ;
-  }
-  catch( exception &excp ) {
-    cerr << "Exception caught in main() :" << endl ;
-    cerr << excp.what() << endl ;
-  }
-  return -1;
-}
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
 
 /** \file
     \anchor example_zip_anchor
@@ -95,21 +23,91 @@ int main() {
     of Zipios++.
 */
 
-/*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
-  
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
-  
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*/
+
+#include "zipios++/collcoll.h"
+
+#include "zipios++/dircoll.h"
+#include "zipios++/zipfile.h"
+
+#include <memory>
+
+
+int main()
+{
+  try
+  {
+    std::cout << "Instantiating a DirectoryCollection" << std::endl ;
+    zipios::DirectoryCollection dircoll( "." ) ;
+
+    std::cout << "Instantiating a ZipFile" << std::endl ;
+    zipios::ZipFile zipfile( "test.zip" ) ;
+
+    std::cout << "Instantiating a CollectionCollection" << std::endl ;
+    zipios::CollectionCollection collcoll_orig ;
+
+    std::cout << "Adding the zip file and directory collection to the collection collection" << std::endl ;
+    if ( ! collcoll_orig.addCollection( zipfile ) )
+    {
+      std::cerr << "Failed to add the zip file" << std::endl ;
+      return 1 ;
+    }
+    if ( ! collcoll_orig.addCollection( dircoll ) )
+    {
+      std::cerr << "Failed to add the zip file" << std::endl ;
+      return 1 ;
+    }
+
+    zipios::CollectionCollection collcoll( collcoll_orig ) ; // Test copy constructor
+    zipios::CColl::inst() = collcoll ; // test copy-assignment and Singleton instance inst().
+
+//      if ( ! collcoll.addCollection( new ZipFile( "test.zip" ) ) ) {
+//        std::cerr << "Failed to add the zip file" << std::endl ;
+//        return 1 ;
+//      }
+//      if ( ! collcoll.addCollection( new DirectoryCollection( "." ) ) ) {
+//        std::cerr << "Failed to add the zip file" << std::endl ;
+//        return 1 ;
+//      }
+
+//      std::cout << "list length : " << collcoll.size() << std::endl ;
+
+//      ConstEntries entries ;
+//      entries = collcoll.entries() ;
+
+
+//      ConstEntries::iterator it ;
+//      for( it = entries.begin() ; it != entries.end() ; it++)
+//        std::cout << *(*it) << std::endl ;
+
+    zipios::ConstEntryPointer ent = zipios::CColl::inst().getEntry( "file2.txt" ) ;
+    if ( ent )
+    {
+      std::auto_ptr< std::istream > is( zipios::CColl::inst().getInputStream( ent ) ) ;
+
+      std::cout << "Contents of entry, " << ent->getName() << " :" << std::endl ;
+
+      std::cout << is->rdbuf() ;
+    }
+
+    ent = zipios::CColl::inst().getEntry( "flistentry.cpp" ) ;
+    if ( ent )
+    {
+      std::auto_ptr< std::istream > is( zipios::CColl::inst().getInputStream( ent ) ) ;
+
+      std::cout << "Contents of entry, " << ent->getName() << " :" << std::endl ;
+
+      std::cout << is->rdbuf() ;
+    }
+    std::cout << "end of main()" << std::endl ;
+  }
+  catch( std::exception const& e )
+  {
+    std::cerr << "Exception caught in main() :" << std::endl ;
+    std::cerr << e.what() << std::endl ;
+    return 1;
+  }
+
+  return 0 ;
+}
+
+// vim: ts=2 sw=2 et

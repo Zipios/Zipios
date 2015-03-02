@@ -1,3 +1,4 @@
+#pragma once
 /** \file
     This file and directory.cpp are borrowed from the dir_it library
     available at http://www.boost.org. dir_it is a directory iterator.
@@ -18,12 +19,9 @@
 
 // Author: Dietmar Kuehl dietmar.kuehl@claas-solutions.de 
 // Title:  An input iterator used to list the entries in a directory 
-// Version: $Name$ $Id$
 
 // -------------------------------------------------------------------------- 
 
-#if !defined(BOOST_DIRECTORY_H)
-#define BOOST_DIRECTORY_H 1
 
 // --------------------------------------------------------------------------
 
@@ -366,4 +364,4 @@ namespace std
 
 // --------------------------------------------------------------------------
 
-#endif /* BOOST_DIRECTORY_H */
+// vim: ts=2 sw=2 et

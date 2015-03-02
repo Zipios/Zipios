@@ -1,18 +1,36 @@
-#ifndef GZIPOUTPUTSTREAMBUF_H
-#define GZIPOUTPUTSTREAMBUF_H
+#pragma once
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000-2015  Thomas Sondergaard
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
 
-#include "zipios++/zipios-config.h"
-
-#include <vector>
-
-#include <zlib.h>
+/** \file
+    Header file that defines ZipOutputStreambuf.
+*/
 
 #include "zipios++/deflateoutputstreambuf.h"
 
-namespace zipios {
+
+namespace zipios
+{
 
 /** GZIPOutputStreambuf is a zip output streambuf filter.  */
-class GZIPOutputStreambuf : public DeflateOutputStreambuf {
+class GZIPOutputStreambuf : public DeflateOutputStreambuf
+{
 public:
 
   /** GZIPOutputStreambuf constructor. A newly constructed GZIPOutputStreambuf
@@ -20,10 +38,10 @@ public:
       @param outbuf the streambuf to use for output.
       @param del_outbuf if true is specified outbuf will be deleted, when 
       the GZIPOutputStreambuf is destructed.  */
-  explicit GZIPOutputStreambuf( streambuf *outbuf, bool del_outbuf = false ) ;
+  explicit GZIPOutputStreambuf( std::streambuf *outbuf, bool del_outbuf = false ) ;
 
-  void setFilename( const string &filename );
-  void setComment( const string &comment );
+  void setFilename( std::string const& filename );
+  void setComment( std::string const& comment );
 
   /** Calls finish. */
   void close() ;
@@ -41,7 +59,7 @@ protected:
 private:
   void writeHeader();
   void writeTrailer();
-  void writeInt(uint32 i);
+  void writeInt(uint32_t i);
   
   std::string _filename;
   std::string _comment;
@@ -49,31 +67,6 @@ private:
 };
 
 
-} // namespace
+} // zipios namespace
 
-
-
-#endif
-
-/** \file
-    Header file that defines ZipOutputStreambuf.
-*/
-
-/*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
-  
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
-  
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*/
+// vim: ts=2 sw=2 et

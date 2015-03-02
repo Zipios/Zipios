@@ -1,151 +1,6 @@
-
-#include "zipios++/zipios-config.h"
-
-#include <cassert>
-
-#include "zipios++/meta-iostreams.h"
-#include <string>
-
-#include "zipios_common.h"
-#include "zipios++/basicentry.h"
-#include "zipios++/zipios_defs.h"
-
-#include "outputstringstream.h"
-
-namespace zipios {
-
-using std::ifstream ;
-using std::ios ;
-
-//
-// Public definitions
-//
-
-BasicEntry::BasicEntry( const string &filename, const string &comment,
-		       const FilePath &basepath ) 
-  : _filename ( filename ),
-    _comment  ( comment  ),
-    _basepath ( basepath )
-{
-  string full_path = _basepath + _filename ;
-  ifstream is( full_path.c_str(), ios::in | ios::binary ) ;
-  if ( ! is ) {
-    _valid = false ;
-  } else {
-    is.seekg( 0, ios::end ) ;
-    _size = is.tellg() ;
-    is.close() ;
-    _valid = true ;
-  }
-}
-
-string BasicEntry::getComment() const {
-  return _comment ;
-}
-
-uint32 BasicEntry::getCompressedSize() const {
-  return getSize() ;
-}
-
-uint32 BasicEntry::getCrc() const {
-  return 0 ;
-}
-
-vector< unsigned char > BasicEntry::getExtra() const {
-  return vector< unsigned char > () ;
-}
-
-StorageMethod BasicEntry::getMethod() const {
-  return STORED ;
-}
-
-string BasicEntry::getName() const {
-  return _filename ;
-}
-
-string BasicEntry::getFileName() const {
-  if ( isDirectory() )
-    return string() ;
-  string::size_type pos ;
-  pos = _filename.find_last_of( separator ) ;
-  if ( pos != string::npos ) { // separator found!
-    // isDirectory() check means pos should not be last, so pos+1 is ok 
-    return _filename.substr(pos + 1) ;
-  } else {
-    return _filename ;
-  }
-}
-
-uint32 BasicEntry::getSize() const {
-  return _size ;
-}
-
-int BasicEntry::getTime() const {
-  return 0 ; // FIXME later
-}
-
-bool BasicEntry::isValid() const {
-  return _valid ;
-}
-
-//     virtual int hashCode() const {}
-bool BasicEntry::isDirectory() const {
-  assert( _filename.size() != 0 ) ;
-  return  _filename[ _filename.size() - 1 ] == separator ;
-}
-
-
-void BasicEntry::setComment( const string &comment ) {
-  _comment = comment ;
-}
-
-void BasicEntry::setCompressedSize( uint32  ) {
-}
-
-void BasicEntry::setCrc( uint32  ) {
-}
-
-void BasicEntry::setExtra( const vector< unsigned char > & ) {
-}
-
-void BasicEntry::setMethod( StorageMethod ) {
-}
-
-void BasicEntry::setName( const string &name ) {
-  _filename = name ;
-}
-
-void BasicEntry::setSize( uint32 size ) {
-  _size = size ;
-}
-
-void BasicEntry::setTime( int  ) {
-}
-
-
-string BasicEntry::toString() const {
-  OutputStringStream sout ;
-  sout << _filename << " (" << _size << " bytes)" ;
-  return sout.str() ;
-}
-
-FileEntry *BasicEntry::clone() const {
-  return new BasicEntry( *this ) ;
-}
-
-BasicEntry::~BasicEntry() {
-}
-
-
-} // namespace
-
-/** \file
-    Implementation of BasicEntry.
-*/
-
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -161,3 +16,208 @@ BasicEntry::~BasicEntry() {
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+
+/** \file
+    Implementation of BasicEntry.
+*/
+
+#include "zipios++/basicentry.h"
+
+#include "zipios++/zipiosexceptions.h"
+
+#include "zipios_common.h"
+
+
+namespace zipios
+{
+
+
+//
+// Public definitions
+//
+
+BasicEntry::BasicEntry( std::string const& filename,
+                        std::string const& comment,
+                        FilePath const& basepath )
+  : _filename ( filename )
+  , _comment ( comment )
+  , _size ( 0 )
+  , _valid ( false )
+  , _basepath ( basepath )
+{
+  std::string full_path = _basepath + _filename ;
+  std::ifstream is( full_path.c_str(), std::ios::in | std::ios::binary ) ;
+  if ( ! is )
+  {
+    _valid = false ;
+  }
+  else
+  {
+    is.seekg( 0, std::ios::end ) ;
+    _size = is.tellg() ;
+    is.close() ;
+    _valid = true ;
+  }
+}
+
+
+std::string BasicEntry::getComment() const
+{
+  return _comment ;
+}
+
+
+uint32_t BasicEntry::getCompressedSize() const
+{
+  return getSize() ;
+}
+
+
+uint32_t BasicEntry::getCrc() const
+{
+  return 0 ;
+}
+
+
+std::vector< unsigned char > BasicEntry::getExtra() const
+{
+  return std::vector< unsigned char > () ;
+}
+
+
+StorageMethod BasicEntry::getMethod() const
+{
+  return StorageMethod::STORED ;
+}
+
+std::string BasicEntry::getName() const
+{
+  return _filename ;
+}
+
+
+std::string BasicEntry::getFileName() const
+{
+  if ( isDirectory() )
+  {
+    return std::string() ;
+  }
+
+  std::string::size_type pos = _filename.find_last_of( separator ) ;
+  if ( pos != std::string::npos ) // separator found!
+  {
+    // isDirectory() check means pos should not be last, so pos+1 is ok 
+    return _filename.substr(pos + 1) ;
+  }
+
+  return _filename ;
+}
+
+uint32_t BasicEntry::getSize() const
+{
+  return _size ;
+}
+
+
+int BasicEntry::getTime() const
+{
+  return 0 ; // FIXME later
+}
+
+
+std::time_t BasicEntry::getUnixTime() const
+{
+  return 0; // Mon Mar 24 18:33:19 PDT 2014 (RDB)
+}
+
+
+bool BasicEntry::isValid() const
+{
+  return _valid ;
+}
+
+
+//     virtual int hashCode() const {}
+
+
+bool BasicEntry::isDirectory() const
+{
+  if( _filename.size() == 0 )
+  {
+    throw IOException( "directory filename cannot be empty" ) ;
+  }
+
+  return _filename[ _filename.size() - 1 ] == separator ;
+}
+
+
+void BasicEntry::setComment( std::string const& comment )
+{
+  _comment = comment ;
+}
+
+
+void BasicEntry::setCompressedSize( uint32_t  )
+{
+}
+
+
+void BasicEntry::setCrc( uint32_t  )
+{
+}
+
+
+void BasicEntry::setExtra( std::vector< unsigned char > const& )
+{
+}
+
+
+void BasicEntry::setMethod( StorageMethod )
+{
+}
+
+
+void BasicEntry::setName( std::string const& name )
+{
+  _filename = name ;
+}
+
+
+void BasicEntry::setSize( uint32_t size )
+{
+  _size = size ;
+}
+
+
+void BasicEntry::setTime( int )
+{
+}
+
+
+void BasicEntry::setUnixTime( std::time_t )
+{
+}
+
+
+std::string BasicEntry::toString() const
+{
+  OutputStringStream sout ;
+  sout << _filename << " (" << _size << " bytes)" ;
+  return sout.str() ;
+}
+
+
+FileEntry *BasicEntry::clone() const
+{
+  return new BasicEntry( *this ) ;
+}
+
+
+BasicEntry::~BasicEntry()
+{
+}
+
+
+} // zipios namespace
+
+// vim: ts=2 sw=2 et

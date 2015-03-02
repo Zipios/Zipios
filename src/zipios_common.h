@@ -1,40 +1,7 @@
-#ifndef ZIPIOS_COMMON_H
-#define ZIPIOS_COMMON_H
-
-#include "zipios++/zipios-config.h"
-
-#include <vector>
-
-namespace zipios {
-
-using std::vector;
-
-static const char separator = '/' ;
-
-template< class Type >
-void operator += ( vector< Type > &v1, const vector< Type > &v2 ) {
-  typename std::vector<Type>::const_iterator cit ;
-  for ( cit = v2.begin() ; cit != v2.end() ; ++cit )
-    v1.push_back( *cit ) ;
-}
-
-template< class T >
-inline const T& min( const T& a, const T& b ) {
-  return b < a ? b : a ;
-}
-
-
-} // namespace
-
-#endif
-
-/** \file
-    Header file containing miscellaneous small functions.
-*/
-
+#pragma once
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -50,3 +17,43 @@ inline const T& min( const T& a, const T& b ) {
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+
+/** \file
+    Header file containing miscellaneous small functions.
+*/
+
+#include "zipios++/zipios-config.h"
+
+#include <vector>
+
+namespace zipios
+{
+
+
+static char const separator = '/' ;
+
+
+/** \brief Contatenate two vectors together.
+ *
+ * This function appends vector v2 to vector v1 using a push_back()
+ * of all the elements of v2.
+ */
+template< class Type >
+void operator += ( std::vector< Type >& v1, std::vector< Type > const& v2 )
+{
+  // make sure these are not the same vector or the insert()
+  // is not unlikely to fail badly
+  if(&v1 != &v2)
+  {
+    v1.insert(v1.end(), v2.begin(), v2.end());
+  }
+  //for ( std::vector< Type >::const_iterator cit = v2.begin() ; cit != v2.end() ; ++cit )
+  //{
+  //  v1.push_back( *cit ) ;
+  //}
+}
+
+
+} // zipios namespace
+
+// vim: ts=2 sw=2 et

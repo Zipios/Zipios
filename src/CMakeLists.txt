@@ -1,47 +1,70 @@
+#
+# File:
+#      CMakeLists.txt
+#
+# Description:
+#      Build zipios++ library.
+#
+# Documentation:
+#      See the CMake documentation.
+#
+# License:
+#      Zipios++ - a small C++ library that provides easy access to .zip files.
+#      Copyright (C) 2000-2015  Thomas Sondergaard
+#
+#      This library is free software; you can redistribute it and/or
+#      modify it under the terms of the GNU Lesser General Public
+#      License as published by the Free Software Foundation; either
+#      version 2 of the License, or (at your option) any later version.
+#
+#      This library is distributed in the hope that it will be useful,
+#      but WITHOUT ANY WARRANTY; without even the implied warranty of
+#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#      Lesser General Public License for more details.
+#
+#      You should have received a copy of the GNU Lesser General Public
+#      License along with this library; if not, write to the Free Software
+#      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#
+
 project( zipios )
 
 add_library( ${PROJECT_NAME} SHARED
-	backbuffer.h
-	../zipios++/basicentry.h
-	basicentry.cpp
-	collcoll.cpp
-	dircoll.cpp
-	directory.cpp
-	directory.h
-	dostime.h
-	dostime.c
-	fcoll.cpp
-	../zipios++/fileentry.h
-	fileentry.cpp
-	filepath.cpp
-	filterinputstreambuf.cpp
-	inflateinputstreambuf.cpp
-	outputstringstream.h
-	gzipoutputstream.cpp
-	gzipoutputstreambuf.cpp
-	zipfile.cpp
-	../zipios++/ziphead.h
-	ziphead.cpp
-	zipheadio.cpp
-	zipinputstream.cpp
-	zipinputstreambuf.cpp
-	zipios_common.h
-	filteroutputstreambuf.cpp
-	deflateoutputstreambuf.cpp
-	zipoutputstreambuf.cpp
-	zipoutputstream.cpp
+  basicentry.cpp
+  collcoll.cpp
+  dircoll.cpp
+  directory.cpp
+  dostime.c
+  fcoll.cpp
+  fileentry.cpp
+  filepath.cpp
+  filterinputstreambuf.cpp
+  inflateinputstreambuf.cpp
+  gzipoutputstream.cpp
+  gzipoutputstreambuf.cpp
+  zipfile.cpp
+  ziphead.cpp
+  zipheadio.cpp
+  zipinputstream.cpp
+  zipinputstreambuf.cpp
+  filteroutputstreambuf.cpp
+  deflateoutputstreambuf.cpp
+  zipoutputstreambuf.cpp
+  zipoutputstream.cpp
+)
+
+target_link_libraries( ${PROJECT_NAME}
+  ${ZLIB_LIBRARIES}
 )
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES
-    VERSION ${VERSION}
-    SOVERSION ${SOVERSION}
+  VERSION ${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}
+  SOVERSION ${ZIPIOS_VERSION_MAJOR}
 )
 
-install( TARGETS ${PROJECT_NAME} DESTINATION lib )
+install( TARGETS ${PROJECT_NAME}
+  DESTINATION lib
+)
 
-project( appendzip )
 
-add_executable( ${PROJECT_NAME} appendzip.cpp )
-
-install( TARGETS ${PROJECT_NAME} DESTINATION bin )
-
+# vim: ts=2 sw=2 et

@@ -1,31 +1,53 @@
-#ifndef ZIPOUTPUTSTREAM_H
-#define ZIPOUTPUTSTREAM_H
+#pragma once
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000-2015  Thomas Sondergaard
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
 
-#include "zipios++/zipios-config.h"
+/** \file 
+    Header file that defines ZipOutputStream.
+*/
 
-#include "zipios++/meta-iostreams.h"
-
-#include <string>
-
-#include "zipios++/ziphead.h"
 #include "zipios++/zipoutputstreambuf.h"
 
-namespace zipios {
+
+namespace zipios
+{
 
 /** \anchor ZipOutputStream_anchor
-    ZipOutputStream is an ostream that writes the output to a zip file. The
-    interface approximates the interface of the Java ZipOutputStream. */
-class ZipOutputStream : public std::ostream {
+ * ZipOutputStream is an ostream that writes the output to a zip file. The
+ * interface approximates the interface of the Java ZipOutputStream.
+ */
+class ZipOutputStream : public std::ostream
+{
 public:
 
   /** ZipOutputStream constructor.
       @param os ostream to which the compressed zip archive is written.
       @param pos position to reposition the ostream to before reading.  */
-  explicit ZipOutputStream( std::ostream &os ) ;
+  explicit ZipOutputStream( std::ostream& os ) ;
 
-  /** ZipOutputStream constructor.
-      @filename filename to write the zip archive to. */
-  explicit ZipOutputStream( const std::string &filename ) ;
+  /** \brief ZipOutputStream constructor.
+   *
+   * Create an output stream that will be saved to a file.
+   *
+   * \param[in] filename Name of the file to write the zip archive to.
+   */
+  explicit ZipOutputStream( std::string const& filename ) ;
   
   /** Closes the current entry updates its header with the relevant
       size information and positions the stream write pointer for the
@@ -48,15 +70,15 @@ public:
   /** \anchor ZipOutputStream_putnextentry_anchor
       Begins writing the next entry.
   */
-  void putNextEntry( const ZipCDirEntry &entry ) ;
+  void putNextEntry( ZipCDirEntry const& entry ) ;
 
   /** \anchor ZipOutputStream_putnextentry2_anchor
       Begins writing the next entry.
   */
-  void putNextEntry(const std::string& entryName);
+  void putNextEntry( std::string const& entryName);
 
   /** Sets the global comment for the Zip archive. */
-  void setComment( const std::string& comment ) ;
+  void setComment( std::string const& comment ) ;
 
   /** Sets the compression level to be used for subsequent entries. */
   void setLevel( int level ) ;
@@ -69,33 +91,10 @@ public:
   virtual ~ZipOutputStream() ;
 
 private:
-  std::ofstream *ofs ;
-  ZipOutputStreambuf *ozf ;
+  std::ofstream *     f_ofs ;
+  ZipOutputStreambuf *f_ozf ;
 };
  
-} // namespace.
+} // zipios namespace
 
-#endif
-
-/** \file 
-    Header file that defines ZipOutputStream.
-*/
-
-/*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
-  
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
-  
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*/
+// vim: ts=2 sw=2 et

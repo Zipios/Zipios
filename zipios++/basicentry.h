@@ -1,75 +1,7 @@
-#ifndef BASICENTRY_H
-#define BASICENTRY_H
-
-#include "zipios++/zipios-config.h"
-
-#include "zipios++/meta-iostreams.h"
-#include <string>
-
-#include "zipios++/fcollexceptions.h"
-#include "zipios++/fileentry.h"
-#include "zipios++/filepath.h"
-#include "zipios++/zipios_defs.h"
-
-namespace zipios {
-
-/** BasicEntry is a FileEntry that is suitable as a base class for
-    basic entries, that e.g. do not support any form of compression */
-class BasicEntry : public FileEntry {
-public:
-  /** Constructor.
-      @param filename the filename of the entry.
-      @param comment a comment for the entry.
-   */
-  explicit BasicEntry( const string &filename, const string &comment,
-		       const FilePath &basepath = FilePath() ) ;
-  virtual string getComment() const ;
-  virtual uint32 getCompressedSize() const ;
-  virtual uint32 getCrc() const ;
-  virtual vector< unsigned char > getExtra() const ;
-  virtual StorageMethod getMethod() const ;
-  virtual string getName() const ;
-  virtual string getFileName() const ;
-  virtual uint32 getSize() const ;
-  virtual int getTime() const ;
-  virtual bool isValid() const ;
-  
-  //     virtual int hashCode() const ;
-  virtual bool isDirectory() const ;
-  
-  virtual void setComment( const string &comment ) ;
-  virtual void setCompressedSize( uint32 size ) ;
-  virtual void setCrc( uint32 crc ) ;
-  virtual void setExtra( const vector< unsigned char > &extra ) ;
-  virtual void setMethod( StorageMethod method ) ;
-  virtual void setName( const string &name ) ;
-  virtual void setSize( uint32 size ) ;
-  virtual void setTime( int time ) ;
-  
-  virtual string toString() const ;
-  
-  virtual FileEntry *clone() const ;
-
-  virtual ~BasicEntry() ;
-protected:
-  string _filename ;
-  string _comment ;
-  int _size ;
-  bool _valid ;
-  FilePath _basepath ;
-
-};
-
-}
-#endif
-
-/** \file
-    Header file that defines BasicEntry.
-*/
-
+#pragma once
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -85,3 +17,75 @@ protected:
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+
+/** \file
+    Header file that defines BasicEntry.
+*/
+
+#include "zipios++/fileentry.h"
+#include "zipios++/filepath.h"
+
+
+namespace zipios
+{
+
+/** \brief A file entry that does not use compression.
+ *
+ * BasicEntry is a FileEntry that is suitable as a base class for
+ * basic entries, that e.g. do not support any form of compression
+ */
+class BasicEntry : public FileEntry
+{
+public:
+  /** Constructor.
+   *
+   * \param[in] filename  The filename of the entry.
+   * \param[in] comment  A comment for the entry.
+   * \param[in] basepath  The base path to file.
+   */
+  explicit BasicEntry( std::string const& filename,
+                       std::string const& comment,
+                       FilePath const& basepath = FilePath() ) ;
+
+  virtual std::string getComment() const ;
+  virtual uint32_t getCompressedSize() const ;
+  virtual uint32_t getCrc() const ;
+  virtual std::vector< unsigned char > getExtra() const ;
+  virtual StorageMethod getMethod() const ;
+  virtual std::string getName() const ;
+  virtual std::string getFileName() const ;
+  virtual uint32_t getSize() const ;
+  virtual int getTime() const ;
+  virtual std::time_t getUnixTime() const ;
+  virtual bool isValid() const ;
+  
+  //     virtual int hashCode() const ;
+  virtual bool isDirectory() const ;
+  
+  virtual void setComment( std::string const& comment ) ;
+  virtual void setCompressedSize( uint32_t size ) ;
+  virtual void setCrc( uint32_t crc ) ;
+  virtual void setExtra( std::vector< unsigned char > const& extra ) ;
+  virtual void setMethod( StorageMethod method ) ;
+  virtual void setName( std::string const& name ) ;
+  virtual void setSize( uint32_t size ) ;
+  virtual void setTime( int time ) ;
+  virtual void setUnixTime( std::time_t time ) ;
+
+  virtual std::string toString() const ;
+
+  virtual FileEntry *clone() const ;
+
+  virtual ~BasicEntry() ;
+
+protected:
+  std::string _filename ;
+  std::string _comment ;
+  int _size ;
+  bool _valid ;
+  FilePath _basepath ;
+};
+
+} // zipios namespace
+
+// vim: ts=2 sw=2 et

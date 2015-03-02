@@ -1,75 +1,6 @@
-#include "zipios++/zipios-config.h"
-
-#include "zipios++/meta-iostreams.h"
-#include <string>
-
-#include "zipios++/zipoutputstreambuf.h"
-
-using namespace zipios ;
-
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::ifstream ;
-using std::ios ;
-using std::ofstream ;
-using std::string ;
-
-void writeFileToZipOutputStreambuf( ZipOutputStreambuf &zosb, const string &filename ) ;
-
-int main() {
-  try {
-    ofstream of( "zosb.zip", ios::out | ios::binary ) ;
-    
-    ZipOutputStreambuf ozf( of.rdbuf() ) ;
-    
-    writeFileToZipOutputStreambuf( ozf, "test_zip" ) ;
-    writeFileToZipOutputStreambuf( ozf, "test_dircoll" ) ;
-    
-    cerr << "End of main" << endl ;
-    
-    return 0;
-  }
-  catch( exception &excp ) {
-    cerr << "Exception caught in main() :" << endl ;
-    cerr << excp.what() << endl ;
-  }
-  return -1;
-}
-
-void writeFileToZipOutputStreambuf( ZipOutputStreambuf &zosb, const string &filename ) {
-  zosb.putNextEntry( ZipCDirEntry( filename ) ) ;
-
-  ifstream ifs( filename.c_str(), ios::in | ios::binary ) ;
-  ostream ozs( &zosb ) ;
-  ozs << ifs.rdbuf() ; 
-  cerr << ifs.rdbuf() ;
-//    char buf[ 100 ] ;
-//    int rds ;
-//    while ( ( rds = ifs.rdbuf()->sgetn( buf, 100 ) ) > 0 ) 
-//      ozs.write( buf, rds ) ;
-
-  cerr << "ostream Stream state: "  ;
-  cerr << "good() = " << ozs.good() << ",\t" ;
-  cerr << "fail() = " << ozs.fail() << ",\t" ;
-  cerr << "bad()  = " << ozs.bad()  << ",\t" ;
-  cerr << "eof()  = " << ozs.eof()  << endl << endl;
-
-  cerr << "istream Stream state: "  ;
-  cerr << "good() = " << ifs.good() << ",\t" ;
-  cerr << "fail() = " << ifs.fail() << ",\t" ;
-  cerr << "bad()  = " << ifs.bad()  << ",\t" ;
-  cerr << "eof()  = " << ifs.eof()  << endl << endl;
-
-}
-
-/** \file
-    Source for a test program for testing ZipOutputStreambuf.
-*/
-
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -85,3 +16,62 @@ void writeFileToZipOutputStreambuf( ZipOutputStreambuf &zosb, const string &file
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+
+/** \file
+    Source for a test program for testing ZipOutputStreambuf.
+*/
+
+
+#include "zipios++/zipoutputstreambuf.h"
+
+
+void writeFileToZipOutputStreambuf( zipios::ZipOutputStreambuf& zosb, std::string const& filename )
+{
+  zosb.putNextEntry( zipios::ZipCDirEntry( filename ) ) ;
+
+  std::ifstream ifs( filename.c_str(), std::ios::in | std::ios::binary ) ;
+  std::ostream ozs( &zosb ) ;
+  ozs << ifs.rdbuf() ; 
+  std::cerr << ifs.rdbuf() ;
+//    char buf[ 100 ] ;
+//    int rds ;
+//    while ( ( rds = ifs.rdbuf()->sgetn( buf, 100 ) ) > 0 ) 
+//      ozs.write( buf, rds ) ;
+
+  std::cerr << "ostream Stream state: "  ;
+  std::cerr << "good() = " << ozs.good() << ",\t" ;
+  std::cerr << "fail() = " << ozs.fail() << ",\t" ;
+  std::cerr << "bad()  = " << ozs.bad()  << ",\t" ;
+  std::cerr << "eof()  = " << ozs.eof()  << std::endl << std::endl;
+
+  std::cerr << "istream Stream state: "  ;
+  std::cerr << "good() = " << ifs.good() << ",\t" ;
+  std::cerr << "fail() = " << ifs.fail() << ",\t" ;
+  std::cerr << "bad()  = " << ifs.bad()  << ",\t" ;
+  std::cerr << "eof()  = " << ifs.eof()  << std::endl << std::endl;
+
+}
+
+int main() {
+  try {
+    std::ofstream of( "zosb.zip", std::ios::out | std::ios::binary ) ;
+    
+    zipios::ZipOutputStreambuf ozf( of.rdbuf() ) ;
+    
+    writeFileToZipOutputStreambuf( ozf, "test_zip" ) ;
+    writeFileToZipOutputStreambuf( ozf, "test_dircoll" ) ;
+    
+    std::cerr << "End of main" << std::endl ;
+    
+  }
+  catch( std::exception &e )
+  {
+    std::cerr << "Exception caught in main() :" << std::endl ;
+    std::cerr << e.what() << std::endl ;
+    return 1;
+  }
+
+  return 0;
+}
+
+// vim: ts=2 sw=2 et

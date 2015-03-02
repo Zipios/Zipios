@@ -1,3 +1,4 @@
+#pragma once
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -21,7 +22,49 @@
  * \brief zipios configuration header.
  *
  * Various configuration parameters, all of which are defined using
- * system specific #ifdef and similar preprocessor.
+ * system specific \#ifdef and similar preprocessor.
+ *
+ * This file also includes some general information such as the library
+ * version.
  */
 
 
+#define    ZIPIOS_VERSION_MAJOR   @ZIPIOS_VERSION_MAJOR@
+#define    ZIPIOS_VERSION_MINOR   @ZIPIOS_VERSION_MINOR@
+#define    ZIPIOS_VERSION_PATCH   @ZIPIOS_VERSION_PATCH@
+#define    ZIPIOS_VERSION_STRING  "ZIPIOS_VERSION_MAJOR@.@ZIPIOS_VERSION_MINOR@.@ZIPIOS_VERSION_PATCH@"
+
+
+namespace zipios
+{
+
+inline char const *get_version()
+{
+  return ZIPIOS_VERSION_STRING;
+}
+
+}
+
+
+// Visual C++
+#ifdef _MSC_VER
+
+// Disable class-browser warning about truncated template-names
+// Still needed? TBD
+//#pragma warning( disable : 4786 )
+
+#endif //_MSC_VER
+
+#ifdef WIN32
+
+// Needed for FilePath
+#define S_ISREG(mode)   (((mode) & _S_IFREG) == _S_IFREG)
+#define S_ISDIR(mode)   (((mode) & _S_IFDIR) == _S_IFDIR)
+#define S_ISCHR(mode)   (((mode) & _S_IFCHR) == _S_IFCHR)
+#define S_ISBLK(mode)   0
+#define S_ISSOCK(mode)  0
+#define S_ISFIFO(mode)  (((mode) & _S_IFIFO) == _S_IFIFO)
+
+#endif
+
+// vim: ts=2 sw=2 et

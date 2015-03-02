@@ -1,3 +1,10 @@
+Release notes for Zipios++ 2.0.0
+--------------------------------
+
+This new release is a big change to make use of modern C++ (c++11 for now)
+and fix a certain number of bugs in the library.
+
+
 Release notes for Zipios++ 0.1.6
 --------------------------------
 

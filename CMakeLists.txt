@@ -3,7 +3,7 @@
 #      CMakeLists.txt
 #
 # Description:
-#      Build zipios++ library, tools, packages, tests.
+#      Build zipios++ library, tools, packages, tests, documentation.
 #
 # Documentation:
 #      See the CMake documentation.
@@ -66,61 +66,16 @@ if( ${${PROJECT_NAME}_COVERAGE} )
     set( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} ${COV_EXE_LINKER_FLAGS}"       )
 endif()
 
-################################################################################
-# Copy of the AddDoxygenTarget from the Snap! C++ project
-# https://sourceforge.net/projects/snapcpp/
-#
-function( AddDoxygenTarget TARGET_NAME VERSION_MAJOR VERSION_MINOR VERSION_PATCH )
-    project( ${TARGET_NAME}_Documentation )
-
-    set( VERSION "${VERSION_MAJOR}.${VERSION_MINOR}" )
-    set( FULL_VERSION "${VERSION}.${VERSION_PATCH}" )
-
-    if( DOXYGEN_FOUND )
-        if( NOT DOXYGEN_DOT_FOUND )
-            message( WARNING "The dot executable was not found. Did you install Graphviz? No graphic output shall be generated in documentation." )
-        endif()
-
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${TARGET_NAME}.doxy.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.doxy @ONLY)
-        set( DOCUMENTATION_OUTPUT ${TARGET_NAME}-doc-${VERSION} )
-
-        add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTATION_OUTPUT}.tar.gz ${DOCUMENTATION_OUTPUT}
-            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.doxy
-                1> ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}-doxy.log
-                2> ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}-doxy.err
-            COMMAND echo Compacting as ${DOCUMENTATION_OUTPUT}.tar.gz
-            COMMAND rm -rf ${DOCUMENTATION_OUTPUT}
-            COMMAND mv html ${DOCUMENTATION_OUTPUT}
-            COMMAND tar czf ${DOCUMENTATION_OUTPUT}.tar.gz ${DOCUMENTATION_OUTPUT}
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        )
-
-        add_custom_target( ${TARGET_NAME}_Documentation ALL
-            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTATION_OUTPUT}.tar.gz
-            COMMENT "Generating API documentation with Doxygen" VERBATIM
-        )
-
-        string( TOLOWER ${TARGET_NAME} LOWER_TARGET_NAME )
-        install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTATION_OUTPUT}/
-                DESTINATION share/doc/${LOWER_TARGET_NAME}/html/
-        )
-    else()
-        message( WARNING "You do not seem to have doxygen installed on this system, no documentation will be generated." )
-    endif()
-endfunction()
-
 find_package( ZLIB REQUIRED )
 
-configure_file(
-    ${CMAKE_SOURCE_DIR}/zipios++/zipios-config.h.in
-    ${CMAKE_BINARY_DIR}/zipios++/zipios-config.h
-)
-
-AddDoxygenTarget( zipios ${ZIPIOS_VERSION_MAJOR} ${ZIPIOS_VERSION_MINOR} ${ZIPIOS_VERSION_PATCH} )
+configure_file( ${CMAKE_SOURCE_DIR}/zipios++/zipios-config.h.in ${CMAKE_BINARY_DIR}/zipios++/zipios-config.h )
 
 include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 
 add_subdirectory( src )
+add_subdirectory( tools )
+add_subdirectory( tests )
+add_subdirectory( doc )
 
 install( DIRECTORY zipios++
     DESTINATION include
@@ -133,6 +88,17 @@ install( FILES ${CMAKE_BINARY_DIR}/zipios++/zipios-config.h
     DESTINATION include/zipios++
 )
 
-install( DIRECTORY cmake/ DESTINATION share/cmake-2.8/Modules )
+install( DIRECTORY cmake/
+    DESTINATION share/cmake-2.8/Modules
+)
+
+add_custom_target(zipios_code_analysis
+    # Make sure we have an output folder
+    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/analysis
+
+    # Boost inspect tool that reports various problems in the source
+    COMMAND echo "inspect -- output ${PROJECT_BINARY_DIR}/analysis/inspect.html"
+    COMMAND inspect -tab -crlf -end -path_name -ascii -minmax -assert_macro -deprecated_macro -unnamed -link -copyright >"${PROJECT_BINARY_DIR}/analysis/inspect.html"
+)
 
 # vim: ts=4 sw=4 et nocindent

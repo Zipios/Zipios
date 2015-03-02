@@ -79,7 +79,7 @@
    added RCS tags
 
 */
-#include "dostime.h"
+#include "zipios++/dostime.h"
 
 /*
 

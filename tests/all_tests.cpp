@@ -1,34 +1,3 @@
-#include <iostream>
-
-#include <cppunit/TestSuite.h>
-#include <cppunit/TextTestResult.h>
-#include <cppunit/TestCaller.h>
-#include "zipinputstreamtest.h"
-#include "zipoutputstreamtest.h"
-#include "zipfiletest.h"
-
-using namespace CppUnit;
-
-int main(int argc, char* argv[]) {
-  TextTestResult result;
-  {
-    TestSuite suite;
-    suite.addTest(zipios::ZipOutputStreamTest::suite());
-    suite.addTest(zipios::ZipInputStreamTest::suite());
-    suite.addTest(zipios::ZipFileTest::suite());
-    
-    suite.run(&result);
-    std::cout << result << std::endl;
-  }
-  return result.failures().size();
-}
-
-
-/** \file
-    \anchor all_tests_anchor
-    Zipios++ unit test suite.
-*/
-
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000  Thomas Søndergaard
@@ -47,3 +16,37 @@ int main(int argc, char* argv[]) {
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
+
+/** \file
+    \anchor all_tests_anchor
+    Zipios++ unit test suite.
+*/
+
+
+#include "zipinputstreamtest.h"
+#include "zipoutputstreamtest.h"
+#include "zipfiletest.h"
+
+#include <cppunit/TestSuite.h>
+#include <cppunit/TextTestResult.h>
+#include <cppunit/TestCaller.h>
+
+//#include <iostream>
+
+
+int main(int /*argc*/, char* /*argv*/[])
+{
+  CppUnit::TextTestResult result;
+  {
+    CppUnit::TestSuite suite;
+    suite.addTest(zipios_test::ZipOutputStreamTest::suite());
+    suite.addTest(zipios_test::ZipInputStreamTest::suite());
+    suite.addTest(zipios_test::ZipFileTest::suite());
+
+    suite.run(&result);
+    std::cout << result << std::endl;
+  }
+  return result.failures().size();
+}
+
+

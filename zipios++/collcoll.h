@@ -1,16 +1,33 @@
-#ifndef COLLCOLL_H
-#define COLLCOLL_H
+#pragma once
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000-2015  Thomas Sondergaard
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
 
-#include "zipios++/zipios-config.h"
-
-#include <string>
-#include <vector>
+/** \file
+    Header file that defines CollectionCollection.
+*/
 
 #include "zipios++/fcoll.h"
 
-namespace zipios {
 
-using std::string ;
+namespace zipios
+{
+
 
 /** \anchor collcoll_anchor
     CollectionCollection is a FileCollection that consists of an
@@ -23,7 +40,8 @@ using std::string ;
     the same path only the one in the first added collection will
     be accessible.
 */
-class CollectionCollection : public FileCollection {
+class CollectionCollection : public FileCollection
+{
 public:
   /** \anchor collcoll_inst_anchor
       This static method provides a singleton instance of a CollectionCollection.
@@ -37,10 +55,10 @@ public:
   explicit CollectionCollection() ;
 
   /** Copy constructor. */
-  inline CollectionCollection( const CollectionCollection &src ) ;
+  inline CollectionCollection( CollectionCollection const& src ) ;
 
   /** Copy assignment operator. */
-  inline const CollectionCollection &operator= ( const CollectionCollection &src ) ;
+  inline const CollectionCollection &operator = ( CollectionCollection const& src ) ;
 
   /** \anchor collcoll_addcoll_anchor
       Adds a collection.
@@ -48,7 +66,7 @@ public:
       @return true if the collection was added succesfully and
       the added collection is valid.
    */
-  bool addCollection( const FileCollection &collection ) ;
+  bool addCollection( FileCollection const& collection ) ;
 
   /** Adds the collection pointed to by collection. The CollectionCollection
       will call delete on the pointer when it is destructed, so the caller
@@ -65,16 +83,17 @@ public:
 
   virtual ConstEntries entries() const ;
 
-  virtual ConstEntryPointer getEntry( const string &name, 
-				      MatchPath matchpath = MATCH ) const ;
+  virtual ConstEntryPointer getEntry( std::string const& name, 
+                                      MatchPath matchpath = MatchPath::MATCH ) const ;
 
-  virtual istream *getInputStream( const ConstEntryPointer &entry ) ;
+  virtual std::istream *getInputStream( ConstEntryPointer const& entry ) ;
 
-  virtual istream *getInputStream( const string &entry_name, 
-				   MatchPath matchpath = MATCH ) ;
+  virtual std::istream *getInputStream( std::string const& entry_name, 
+                                        MatchPath matchpath = MatchPath::MATCH ) ;
 
   /** Returns the number in entries in all collections kept by
-      the CollectionCollection object */
+   *  the CollectionCollection object
+   */
   virtual int size() const ;
   
   virtual FileCollection *clone() const ;
@@ -87,20 +106,22 @@ protected:
       in the collection, it also returns, which collection it was found
       in.
    */
-  void getEntry( const string &name,
-		 ConstEntryPointer &cep, 
-		 std::vector< FileCollection * >::const_iterator &it, 
-		 MatchPath matchpath = MATCH ) const ;
+  void getEntry( std::string const& name,
+		             ConstEntryPointer& cep, 
+		             std::vector< FileCollection * >::const_iterator& it, 
+		             MatchPath matchpath = MatchPath::MATCH ) const ;
   
-  vector< FileCollection * > _collections ;
+  std::vector< FileCollection * > _collections ;
+
 private:
   static CollectionCollection *_inst ;
 };
 
 
 /** Shortcut name for a CollectionCollection. If the static method
-inst is used, it is often used a lot, so it's handy with a short name for
-CollectionCollection */
+ * inst is used, it is often used a lot, so it's handy with a short name for
+ * CollectionCollection
+ */
 typedef CollectionCollection CColl ;
 
 
@@ -108,67 +129,54 @@ typedef CollectionCollection CColl ;
 // Inline (member) functions
 //
 
-CollectionCollection &CollectionCollection::inst() {
+CollectionCollection &CollectionCollection::inst()
+{
   if( _inst != 0 )
+  {
     return *_inst ;
-  else
-    return *( _inst = new CollectionCollection ) ;
+  }
+
+  return *( _inst = new CollectionCollection ) ;
 }
 
-CollectionCollection::CollectionCollection( const CollectionCollection &src ) 
+
+CollectionCollection::CollectionCollection( CollectionCollection const& src )
   : FileCollection( src )
 {
   _collections.reserve( src._collections.size() ) ;
   std::vector< FileCollection * >::const_iterator it ;
   for ( it = src._collections.begin() ; it != src._collections.end() ; ++it )
+  {
     _collections.push_back( (*it)->clone() ) ;
+  }
 }
 
 
-const CollectionCollection &
-CollectionCollection::operator= ( const CollectionCollection &src ) {
-  this->FileCollection::operator=( src ) ;
-//    FileCollection::=( static_cast< FileCollection >( src ) ) ; 
+CollectionCollection const& CollectionCollection::operator = ( CollectionCollection const& src )
+{
+  FileCollection::operator = ( src ) ;
 
-  if ( this != &src ) {
+  if ( this != &src )
+  {
     // Destroy current contents.
     std::vector< FileCollection * >::const_iterator it ;
     for ( it = _collections.begin() ; it != _collections.end() ; ++it )
+    {
       delete *it ;
+    }
+
     //  Then copy src's content.
     _collections.clear() ;
     _collections.reserve( src._collections.size() ) ;
     for ( it = src._collections.begin() ; it != src._collections.end() ; ++it )
+    {
       _collections.push_back( (*it)->clone() ) ;
+    }
   }
+
   return *this ;
 }
 
 } // namespace
 
-
-
-#endif
-
-/** \file
-    Header file that defines CollectionCollection.
-*/
-
-/*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
-  
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
-  
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-  
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*/
+// vim: ts=2 sw=2 et

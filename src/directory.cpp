@@ -18,13 +18,12 @@
 
 // Author: Dietmar Kuehl dietmar.kuehl@claas-solutions.de 
 // Title:  Implementation of the directory iterator
-// Version: $Name$ $Id$
 
 // -------------------------------------------------------------------------- 
 
 #include "directory.h"
 
-#include <string.h>
+#include <cstring>
 
 #if defined(unix) || defined(__unix) || defined(__unix__)
 #  define BOOST_UNIX 1

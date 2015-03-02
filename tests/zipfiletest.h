@@ -1,47 +1,67 @@
-#ifndef ZIPIOS_ZIPFILETEST_H
-#define ZIPIOS_ZIPFILETEST_H
+#pragma once
+/*
+  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Copyright (C) 2000-2015  Thomas Sondergaard
 
-#include <string>
-#include <vector>
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
+
+/** \file
+    \anchor zipfiletest_anchor
+    Source code to a small program that tests the functionality of Zipios++.
+*/
+
+
+
+#include "zipios++/zipoutputstream.h"
 
 #include <cppunit/TestCase.h>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestAssert.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "zipios++/zipoutputstream.h"
+#include <string>
+#include <vector>
 
-namespace zipios {
+namespace zipios_test
+{
 
-  using std::string;
-  using std::vector;
-  using std::istream;
-  
-  class ZipFileTest : public CppUnit::TestCase {
-  public:
-    CPPUNIT_TEST_SUITE(ZipFileTest);
+
+class ZipFileTest : public CppUnit::TestCase
+{
+public:
+  CPPUNIT_TEST_SUITE(ZipFileTest);
     CPPUNIT_TEST(testUnzip);
     CPPUNIT_TEST(testZipUnzip);
     CPPUNIT_TEST(testComment);
     CPPUNIT_TEST(testClone);
-    CPPUNIT_TEST_SUITE_END();
+  CPPUNIT_TEST_SUITE_END();
 
-    void testUnzip();
-    void testZipUnzip();
-    void testComment();
-    void testClone();
-    
-  private:
-    static void writeZipFile(const string &zipFileName, 
-			     vector<string> entryFileNames);
-    static void compareZipFile(const string &zipFileName, 
-			       vector<string> entryFileNames);
-    static void writeFileToZipOutputStream(ZipOutputStream &zos, 
-					   const string &filename );
-    static void compareStreams(const std::string& entryName,
-			       istream &is1, istream &is2);
-  };
+private:
+  void testUnzip();
+  void testZipUnzip();
+  void testComment();
+  void testClone();
 
-} // zipios
+  void writeZipFile(std::string const& zipFileName, std::vector<std::string> const& entryFileNames);
+  void compareZipFile(std::string const& zipFileName, std::vector<std::string> const& entryFileNames);
+  void writeFileToZipOutputStream(zipios::ZipOutputStream &zos, std::string const& filename);
+  void compareStreams(std::string const& entryName, std::istream& is1, std::istream& is2);
+};
 
-#endif
+
+} // zipios_test namespace
+
+// vim: ts=2 sw=2 et
