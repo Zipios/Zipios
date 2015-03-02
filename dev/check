@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Run the tests against an existing GNU_BUILD
+
+set -e
+
+cp tests/* ../GNU_BUILD/src/tests/.
+
+cd ../GNU_BUILD/src/tests
+
+make all_tests
+./all_tests
+
