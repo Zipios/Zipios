@@ -148,7 +148,8 @@ struct boost::filesystem::dir_it::representation
             chmod((m_directory + m_current).c_str(), get_stat().st_mode ^ m);
         }
     }
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
     void change_owner(uid_t uid)
     {
         chown((m_directory + m_current).c_str(), uid, get_stat().st_gid);
@@ -158,6 +159,7 @@ struct boost::filesystem::dir_it::representation
     {
         chown((m_directory + m_current).c_str(), get_stat().st_uid, gid);
     }
+#pragma GCC diagnostic pop
 
 private:
     DIR *       m_handle;

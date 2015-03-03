@@ -2,8 +2,7 @@ Source: zipios++
 Section: libs
 Priority: optional
 Maintainer: Masayuki Hatta (mhatta) <mhatta@debian.org>
-Build-Depends: cmake, debhelper (>> 4.0.0), doxygen, graphviz, graphicsmagick-imagemagick-compat, libcppunit-dev, libz-dev,
-    snapcmakemodules (>= 0.1.6~saucy)
+Build-Depends: cmake, debhelper (>> 4.0.0), doxygen, graphviz, graphicsmagick-imagemagick-compat, libcppunit-dev, libz-dev, catch
 Standards-Version: 3.9.4
 
 Package: libzipios++-dev
