@@ -105,8 +105,12 @@ add_custom_target(zipios_code_analysis
     COMMAND inspect -tab -crlf -end -path_name -ascii -minmax -assert_macro -deprecated_macro -unnamed -copyright >"${PROJECT_BINARY_DIR}/analysis/inspect.html"
 
     # Count the number of TODO, XXX, TBD, FIXME, and \todo
-    COMMAND echo "TODO -- output ${PROJECT_BINARY_DIR}/analysis/inspect.html"
+    COMMAND echo "TODO -- output ${PROJECT_BINARY_DIR}/analysis/todo.txt"
     COMMAND sh dev/todo.sh "${PROJECT_BINARY_DIR}/analysis"
+
+    # Search for files with "invalid" (unwanted really) spaces
+    COMMAND echo "Spaces -- output ${PROJECT_BINARY_DIR}/analysis/spaces.txt"
+    COMMAND sh dev/spaces.sh "${PROJECT_BINARY_DIR}/analysis"
 
     # All of these are expected to work on source code so make sure we are
     # in the source code top directory

@@ -79,9 +79,9 @@ int main() {
       sp2 = sp1 ;
       assert( sp1.getReferenceCount() == 2 );
       { 
-	SPBogus sp3 ;
-	sp3 = p ;
-	assert( sp1.getReferenceCount() == 3 );
+        SPBogus sp3 ;
+        sp3 = p ;
+        assert( sp1.getReferenceCount() == 3 );
       }
       assert( sp1.getReferenceCount() == 2 );
       assert( isAlive );

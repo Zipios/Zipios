@@ -1,17 +1,17 @@
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
@@ -19,7 +19,7 @@
 
 /** \file
     \anchor appendzip_anchor
-    Source code to a small program appendzip that appends a zip 
+    Source code to a small program appendzip that appends a zip
     archive to another file. Run appendzip without arguments to
     get a helpful usage message.
 */
@@ -33,13 +33,13 @@
 namespace
 {
 
-char *g_progname ;
+char *g_progname;
 
 }
 
 void usage()
 {
-    std::cout << "Usage:  " << g_progname << " [-opt] [file]" << std::endl ;
+    std::cout << "Usage:  " << g_progname << " [-opt] [file]" << std::endl;
     std::cout << "Where -opt is one or more of:" << std::endl;
     std::cout << "  --count         count the number of files in a .zip archive" << std::endl;
     std::cout << "  --help          show this help screen" << std::endl;

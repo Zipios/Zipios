@@ -8,8 +8,5 @@ set -e
 make -C ../BUILD/zipios
 
 # Go in the tests directory
-cd tests
-
-# Run the tests
-../../BUILD/zipios/tests/zipios_tests
+make -C ../BUILD/zipios run_zipios_tests
 

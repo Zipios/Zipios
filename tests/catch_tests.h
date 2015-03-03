@@ -19,41 +19,19 @@
 */
 
 /** \file
-    Header file that defines VirtualSeeker.
-*/
+ * \brief Common header for all our catch tests.
+ *
+ * Zipios++ comes with a unit test suite. This header defines things
+ * that all the tests access, such as the catch.hpp header file.
+ */
 
-#include "zipios++/meta-iostreams.h"
+#include <catch.hpp>
 
-#include <stdexcept>
-
-
-namespace zipios
+namespace zipios_test
 {
 
 
-class VirtualSeeker
-{
-public:
-    typedef off_t   offset_t;
-
-                    VirtualSeeker(offset_t start_offset = 0, offset_t end_offset = 0);
-
-    void            setOffsets(offset_t start_offset, offset_t end_offset);
-    void            getOffsets(offset_t& start_offset, offset_t& end_offset) const;
-    offset_t        startOffset() const;
-    offset_t        endOffset() const;
-    void            vseekg(std::istream& is, offset_t offset, std::ios::seekdir sd) const;
-    std::streampos  vtellg(std::istream& is) const;
-
-private:
-    offset_t        m_start_offset = 0;
-    offset_t        m_end_offset = 0;
-};
 
 
-
-
-
-} // namespace
-
+} // zipios_test namespace 
 // vim: ts=4 sw=4 et

@@ -1,17 +1,17 @@
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
@@ -130,7 +130,7 @@ int BackBuffer::readChunk(int& read_pointer)
     m_vs.vseekg(m_is, m_file_pos, std::ios::beg);
 
     // Make space for m_chunk_size new bytes
-    insert(begin(), m_chunk_size, static_cast<char>(0)); 
+    insert(begin(), m_chunk_size, static_cast<char>(0));
 
     // Read in the next m_chunk_size bytes
     readByteSeq(m_is, &(*this)[0], m_chunk_size);

@@ -168,7 +168,7 @@ int InflateInputStreambuf::underflow()
 
 
 
-/** \brief 
+/** \brief
  *
  * Resets the zlib stream and purges input and output buffers.
  * repositions the input streambuf at stream_position.
@@ -211,7 +211,7 @@ bool InflateInputStreambuf::reset(int stream_position)
     }
 
     // streambuf init:
-    // The important thing here, is that 
+    // The important thing here, is that
     // - the pointers are not NULL (which would mean unbuffered)
     // - and that gptr() is not less than  egptr() (so we trigger underflow
     //   the first time data is read).

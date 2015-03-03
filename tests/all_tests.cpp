@@ -20,8 +20,6 @@
 /** \file
     \anchor all_tests_anchor
     Zipios++ unit test suite.
-
-    https://github.com/philsquared/Catch/blob/master/docs/tutorial.md
 */
 
 

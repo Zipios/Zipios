@@ -2,17 +2,17 @@
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
@@ -61,9 +61,9 @@ public:
 
     /** \anchor fcoll_entries_anchor
       Returns a vector of const pointers to the entries in the
-      FileCollection.  
+      FileCollection.
       @return a ConstEntries
-      containing the entries of the FileCollection. 
+      containing the entries of the FileCollection.
       @throw InvalidStateException Thrown if the collection is invalid. */
     virtual ConstEntries entries() const;
 
@@ -74,17 +74,17 @@ public:
     };
 
     /** \anchor fcoll_getentry_anchor
-     * Returns a ConstEntryPointer to a FileEntry object for the entry 
+     * Returns a ConstEntryPointer to a FileEntry object for the entry
      * with the specified name. To ignore the path part of the filename in search of a
      * match, specify FileCollection::IGNORE as the second argument.
      * @param name A string containing the name of the entry to get.
-     * @param matchpath Speficy MATCH, if the path should match as well, 
+     * @param matchpath Speficy MATCH, if the path should match as well,
      * specify IGNORE, if the path should be ignored.
      * @return A ConstEntryPointer to the found entry. The returned pointer
      * equals zero if no entry is found.
      * @throw InvalidStateException Thrown if the collection is invalid.
      */
-    virtual ConstEntryPointer getEntry(std::string const& name, 
+    virtual ConstEntryPointer getEntry(std::string const& name,
                                        MatchPath matchpath = MatchPath::MATCH) const;
 
     /** \anchor fcoll_getinputstream
@@ -119,22 +119,22 @@ public:
      *         allocated on heap and it is the caller's responsibility to
      *         delete it when he is done with it.
      */
-    virtual std::istream *getInputStream(std::string const& entry_name, 
+    virtual std::istream *getInputStream(std::string const& entry_name,
                                          MatchPath matchpath = MatchPath::MATCH ) = 0;
 
     /** Returns the name of the FileCollection.
-      @return the name of the FileCollection. 
+      @return the name of the FileCollection.
       @throw InvalidStateException Thrown if the collection is invalid. */
     virtual std::string getName() const;
 
     /** Returns the number of entries in the FileCollection.
-      @return the number of entries in the FileCollection. 
+      @return the number of entries in the FileCollection.
       @throw InvalidStateException Thrown if the collection is invalid. */
     virtual int size() const;
 
     /** The member function returns true if the collection is valid.
       @return true if the collection is valid.
-     */ 
+     */
     bool isValid() const
     {
         return m_valid;
@@ -142,7 +142,7 @@ public:
 
     void mustBeValid() const;
 
-    /** Create a heap allocated clone of the object this method is called for. The 
+    /** Create a heap allocated clone of the object this method is called for. The
       caller is responsible for deallocating the clone when he is done with it.
       @return A heap allocated copy of the object this method is called for.
      */

@@ -4,22 +4,22 @@
 */
 
 // -*-C++-*- directory.cc
-// <!!----------------------------------------------------------------------> 
-// <!! Copyright (C) 1998 Dietmar Kuehl, Claas Solutions GmbH > 
-// <!!> 
-// <!! Permission to use, copy, modify, distribute and sell this > 
-// <!! software for any purpose is hereby granted without fee, provided > 
-// <!! that the above copyright notice appears in all copies and that > 
-// <!! both that copyright notice and this permission notice appear in > 
-// <!! supporting documentation. Dietmar Kuehl and Claas Solutions make no > 
-// <!! representations about the suitability of this software for any > 
-// <!! purpose. It is provided "as is" without express or implied warranty. > 
-// <!!----------------------------------------------------------------------> 
+// <!!---------------------------------------------------------------------->
+// <!! Copyright (C) 1998 Dietmar Kuehl, Claas Solutions GmbH >
+// <!!>
+// <!! Permission to use, copy, modify, distribute and sell this >
+// <!! software for any purpose is hereby granted without fee, provided >
+// <!! that the above copyright notice appears in all copies and that >
+// <!! both that copyright notice and this permission notice appear in >
+// <!! supporting documentation. Dietmar Kuehl and Claas Solutions make no >
+// <!! representations about the suitability of this software for any >
+// <!! purpose. It is provided "as is" without express or implied warranty. >
+// <!!---------------------------------------------------------------------->
 
-// Author: Dietmar Kuehl dietmar.kuehl@claas-solutions.de 
+// Author: Dietmar Kuehl dietmar.kuehl@claas-solutions.de
 // Title:  Implementation of the directory iterator
 
-// -------------------------------------------------------------------------- 
+// --------------------------------------------------------------------------
 
 #include "directory.h"
 
@@ -29,9 +29,9 @@
 #  define BOOST_UNIX 1
 #elif defined(_WINDOWS)
 #  define BOOST_WINNT 1
-#endif 
+#endif
 
-// -------------------------------------------------------------------------- 
+// --------------------------------------------------------------------------
 // The POSIX version uses the functions opendir(), readdir(), and closdir()
 // to find directory entries. In addition, stat() is used to find out
 // about specific file attributes.
@@ -40,7 +40,7 @@
 
 #ifndef __USE_BSD
 #define __USE_BSD
-#endif 
+#endif
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -385,7 +385,7 @@ namespace filesystem
 } // boost namespace
 #endif
 
-// -------------------------------------------------------------------------- 
+// --------------------------------------------------------------------------
 
 boost::filesystem::dir_it::dir_it():
     rep(new representation())
@@ -415,7 +415,7 @@ boost::filesystem::dir_it &boost::filesystem::dir_it::operator= (boost::filesyst
     return *this;
 }
 
-// -------------------------------------------------------------------------- 
+// --------------------------------------------------------------------------
 
 std::string boost::filesystem::dir_it::operator* () const
 {
@@ -435,7 +435,7 @@ boost::filesystem::dir_it::proxy boost::filesystem::dir_it::operator++ (int)
     return rc;
 }
 
-// -------------------------------------------------------------------------- 
+// --------------------------------------------------------------------------
 
 bool boost::filesystem::dir_it::operator== (boost::filesystem::dir_it const &it) const
 {

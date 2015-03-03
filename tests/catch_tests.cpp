@@ -1,4 +1,3 @@
-#pragma once
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -19,41 +18,26 @@
 */
 
 /** \file
-    Header file that defines VirtualSeeker.
-*/
+ * \anchor catch_tests_anchor
+ *
+ * Zipios++ unit test suite using catch.hpp, see for details:
+ *
+ *   https://github.com/philsquared/Catch/blob/master/docs/tutorial.md
+ */
 
-#include "zipios++/meta-iostreams.h"
+// Ask Catch to define the main() function in this file
+#define CATCH_CONFIG_MAIN
 
-#include <stdexcept>
+#include "catch_tests.h"
+
+#include <cstring>
 
 
-namespace zipios
+namespace zipios_test
 {
 
 
-class VirtualSeeker
-{
-public:
-    typedef off_t   offset_t;
-
-                    VirtualSeeker(offset_t start_offset = 0, offset_t end_offset = 0);
-
-    void            setOffsets(offset_t start_offset, offset_t end_offset);
-    void            getOffsets(offset_t& start_offset, offset_t& end_offset) const;
-    offset_t        startOffset() const;
-    offset_t        endOffset() const;
-    void            vseekg(std::istream& is, offset_t offset, std::ios::seekdir sd) const;
-    std::streampos  vtellg(std::istream& is) const;
-
-private:
-    offset_t        m_start_offset = 0;
-    offset_t        m_end_offset = 0;
-};
 
 
-
-
-
-} // namespace
-
+} // zipios_test namespace
 // vim: ts=4 sw=4 et

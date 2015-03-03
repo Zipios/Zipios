@@ -2,17 +2,17 @@
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
@@ -31,7 +31,7 @@
 namespace zipios
 {
 
-// byte order conversion functions. 
+// byte order conversion functions.
 // ztohs (zip-to-host-short)
 #ifdef MY_BIG_ENDIAN
 
@@ -40,8 +40,8 @@ inline uint16_t ztohs ( unsigned char const *buf )
   uint16_t out ;
 //    *( reinterpret_cast<unsigned char *>( &out )     ) = *( buf  + 1 );
 //    *( reinterpret_cast<unsigned char *>( &out ) + 1 ) = *( buf      );
-  out = ( static_cast< uint16_t >( buf[ 0 ] ) << 8  ) + 
-        ( static_cast< uint16_t >( buf[ 1 ] )       )  ; 
+  out = ( static_cast< uint16_t >( buf[ 0 ] ) << 8  ) +
+        ( static_cast< uint16_t >( buf[ 1 ] )       )  ;
 
   return out;
 }
@@ -51,11 +51,11 @@ inline uint16_t ztohs ( unsigned char const *buf )
 inline uint32_t ztohl ( unsigned char const *buf )
 {
   uint32_t out;
-  out = ( static_cast< uint32_t >( buf[ 0 ] ) << 24 ) +  
-        ( static_cast< uint32_t >( buf[ 1 ] ) << 16 ) + 
-        ( static_cast< uint32_t >( buf[ 2 ] ) << 8  ) + 
-        ( static_cast< uint32_t >( buf[ 3 ] )       )  ; 
-  
+  out = ( static_cast< uint32_t >( buf[ 0 ] ) << 24 ) +
+        ( static_cast< uint32_t >( buf[ 1 ] ) << 16 ) +
+        ( static_cast< uint32_t >( buf[ 2 ] ) << 8  ) +
+        ( static_cast< uint32_t >( buf[ 3 ] )       )  ;
+
   return out;
 }
 
@@ -64,8 +64,8 @@ inline uint32_t ztohl ( unsigned char const *buf )
 inline uint16_t ztohs ( unsigned char const *buf )
 {
   uint16_t out ;
-  out = ( static_cast< uint16_t >( buf[ 1 ] ) << 8  ) + 
-        ( static_cast< uint16_t >( buf[ 0 ] )       )  ; 
+  out = ( static_cast< uint16_t >( buf[ 1 ] ) << 8  ) +
+        ( static_cast< uint16_t >( buf[ 0 ] )       )  ;
 
   return out;
 }
@@ -75,10 +75,10 @@ inline uint16_t ztohs ( unsigned char const *buf )
 inline uint32_t ztohl ( unsigned char const *buf )
 {
   uint32_t out;
-  out = ( static_cast< uint32_t >( buf[ 3 ] ) << 24 ) +  
-        ( static_cast< uint32_t >( buf[ 2 ] ) << 16 ) + 
-        ( static_cast< uint32_t >( buf[ 1 ] ) << 8  ) + 
-        ( static_cast< uint32_t >( buf[ 0 ] )       )  ; 
+  out = ( static_cast< uint32_t >( buf[ 3 ] ) << 24 ) +
+        ( static_cast< uint32_t >( buf[ 2 ] ) << 16 ) +
+        ( static_cast< uint32_t >( buf[ 1 ] ) << 8  ) +
+        ( static_cast< uint32_t >( buf[ 0 ] )       )  ;
 
 //    std::cerr << "buf : " << static_cast< int >( buf[ 0 ] ) ;
 //    std::cerr << " "      << static_cast< int >( buf[ 1 ] ) ;
@@ -197,7 +197,7 @@ inline void readByteSeq ( std::istream &is, std::vector < unsigned char >& vec, 
     is.read ( reinterpret_cast< char * >( &buf[0] ) + rsf, count - rsf ) ;
     rsf += is.gcount() ;
   }
-  
+
   vec.insert ( vec.end (), buf.begin(), buf.end() ) ;
 }
 

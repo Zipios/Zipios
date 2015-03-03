@@ -27,9 +27,9 @@
 #      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 
-find_package( CppUnit )
+find_package( Catch )
 
-if(CPPUNIT_FOUND)
+if(CATCH_FOUND)
 
 project( zipios_tests )
 
@@ -41,22 +41,23 @@ project( zipios_tests )
 #          test.zip     a zip file for test purposes
 
 include_directories(
-  SYSTEM
-    ${CPPUNIT_INCLUDE_DIR}
+    ${CATCH_INCLUDE_DIR}
 )
 
 add_executable( ${PROJECT_NAME}
-  all_tests.cpp
+    catch_tests.cpp
 
-  commontest.cpp
-  zipfiletest.cpp
-  zipinputstreamtest.cpp
-  zipoutputstreamtest.cpp
+    catch_filepath.cpp
 
-# test_appzip.cpp                                        test_zipinputstream.cpp      
-# test_collcoll.cpp          test_simplesmartptr.cpp     test_zipoutputstreambuf.cpp  
-# test_dircoll.cpp                                       test_zipoutputstream.cpp     
-# example_zip.cpp            test_zip.cpp                
+# commontest.cpp
+# zipfiletest.cpp
+# zipinputstreamtest.cpp
+# zipoutputstreamtest.cpp
+
+# test_appzip.cpp                                        test_zipinputstream.cpp
+# test_collcoll.cpp          test_simplesmartptr.cpp     test_zipoutputstreambuf.cpp
+# test_dircoll.cpp                                       test_zipoutputstream.cpp
+# example_zip.cpp            test_zip.cpp
 # test_gzipoutputstream.cpp  test_zipinputstreambuf.cpp
 )
 
@@ -65,8 +66,19 @@ target_link_libraries( ${PROJECT_NAME}
     ${CPPUNIT_LIBRARIES}
 )
 
-else(CPPUNIT_FOUND)
-  message("No test will be created because you do not seem to have cppunit installed")
-endif(CPPUNIT_FOUND)
+add_custom_target(run_zipios_tests
+    COMMAND ./zipios_tests
+)
 
-# vim: ts=2 sw=2 et
+else(CATCH_FOUND)
+
+message("No test will be created because you do not seem to have catch.hpp installed...")
+
+# For compatibility, just in case
+add_custom_target(run_zipios_tests
+    COMMAND echo "No tests were built because it looks like you are missing Catch."
+)
+
+endif(CATCH_FOUND)
+
+# vim: ts=4 sw=4 et

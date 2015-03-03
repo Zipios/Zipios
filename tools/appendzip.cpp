@@ -19,7 +19,7 @@
 
 /** \file
     \anchor appendzip_anchor
-    Source code to a small program appendzip that appends a zip 
+    Source code to a small program appendzip that appends a zip
     archive to another file. Run appendzip without arguments to
     get a helpful usage message.
 */

@@ -1,6 +1,6 @@
 #pragma once
 /*
-  dostime.h - routines for converting UNIX time to MS-DOS time.  
+  dostime.h - routines for converting UNIX time to MS-DOS time.
 
   Borrowed from Info-zip's unzip
 

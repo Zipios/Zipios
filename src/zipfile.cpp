@@ -93,7 +93,7 @@ ZipFile::ZipFile()
  * be read, then the constructor throws an exception.
  *
  * \param[in] filename  The filename of the zip file to open.
- * \param[in] s_off  Offset relative to the start of the file, that 
+ * \param[in] s_off  Offset relative to the start of the file, that
  *                   indicates the beginning of the zip data in the file.
  * \param[in] e_off  Offset relative to the end of the file, that
  *                   indicates the end of the zip data in the file.

@@ -147,7 +147,7 @@ ConstEntries CollectionCollection::entries() const
 }
 
 
-ConstEntryPointer CollectionCollection::getEntry(std::string const& name, 
+ConstEntryPointer CollectionCollection::getEntry(std::string const& name,
                                                  MatchPath matchpath) const
 {
     mustBeValid();
@@ -156,7 +156,7 @@ ConstEntryPointer CollectionCollection::getEntry(std::string const& name,
     std::vector<FileCollection *>::const_iterator it;
     ConstEntryPointer cep;
 
-    getEntry(name, cep, it, matchpath); 
+    getEntry(name, cep, it, matchpath);
 
     return cep;
 }
@@ -170,7 +170,7 @@ std::istream *CollectionCollection::getInputStream(ConstEntryPointer const& entr
 }
 
 
-std::istream *CollectionCollection::getInputStream(std::string const& entry_name, 
+std::istream *CollectionCollection::getInputStream(std::string const& entry_name,
                                                    MatchPath matchpath)
 {
     mustBeValid();
@@ -178,7 +178,7 @@ std::istream *CollectionCollection::getInputStream(std::string const& entry_name
     std::vector< FileCollection * >::const_iterator it;
     ConstEntryPointer cep;
 
-    getEntry(entry_name, cep, it, matchpath); 
+    getEntry(entry_name, cep, it, matchpath);
 
     return cep ? (*it)->getInputStream(entry_name) : nullptr;
 }
