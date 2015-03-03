@@ -2,17 +2,17 @@
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
@@ -46,7 +46,7 @@ namespace zipios
 class Exception : public std::runtime_error
 {
 public:
-  Exception( std::string const& msg ) : runtime_error( msg ) {}
+    Exception(std::string const& msg) : runtime_error(msg) {}
 };
 
 
@@ -59,7 +59,19 @@ public:
 class IOException : public Exception
 {
 public:
-  IOException( std::string const& msg ) : Exception( msg ) {}
+    IOException(std::string const& msg) : Exception(msg) {}
+};
+
+
+/** \brief An InvalidException is used when invalid data is provided.
+ *
+ * When calling a function, if one of the input parameters is invalid
+ * then this exception is raised.
+ */
+class InvalidException : public Exception
+{
+public:
+    InvalidException(std::string const& msg) : Exception(msg) {}
 };
 
 
@@ -71,7 +83,7 @@ public:
 class FCollException : public Exception
 {
 public:
-  FCollException( std::string const& msg ) : Exception( msg ) {}
+    FCollException(std::string const& msg) : Exception(msg) {}
 };
 
 
@@ -84,11 +96,11 @@ public:
 class InvalidStateException : public Exception
 {
 public:
-  InvalidStateException( std::string const& msg ) : Exception( msg ) {}
+    InvalidStateException(std::string const& msg) : Exception(msg) {}
 };
 
 
 
 } // namespace
 
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

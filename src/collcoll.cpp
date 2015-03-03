@@ -32,151 +32,175 @@ namespace zipios
 {
 
 
-CollectionCollection *CollectionCollection::_inst = 0 ;
+CollectionCollection *CollectionCollection::g_instance = nullptr;
 
 
 CollectionCollection::CollectionCollection()
 {
-  _valid = true ; // we are valid even though we are empty!
+    m_valid = true; // we are valid even though we are empty!
 }
 
 
-bool CollectionCollection::addCollection( FileCollection const& collection )
+CollectionCollection::CollectionCollection(CollectionCollection const& src)
+    : FileCollection(src)
 {
-  if ( ! _valid )
-  {
-    throw InvalidStateException( "Attempt to add a FileCollection to an invalid CollectionCollection" ) ;
-  }
-
-  if ( this == &collection || ! collection.isValid()  )
-  {
-    return false ;
-  }
-
-  _collections.push_back( collection.clone() ) ;
-
-  return true ;
+    m_collections.reserve( src.m_collections.size() ) ;
+    for(auto it = src.m_collections.begin() ; it != src.m_collections.end(); ++it)
+    {
+        m_collections.push_back((*it)->clone());
+    }
 }
 
 
-bool CollectionCollection::addCollection( FileCollection *collection )
+CollectionCollection const& CollectionCollection::operator = (CollectionCollection const& src)
 {
-  if ( ! _valid )
-  {
-    throw InvalidStateException( "Attempt to add a FileCollection to an invalid CollectionCollection" ) ;
-  }
+    FileCollection::operator = (src);
 
-  if ( collection == 0 || this == collection || ! collection->isValid() )
-  {
-    return false ;
-  }
+    if(this != &src)
+    {
+        // Destroy current contents.
+        for(auto it = m_collections.begin(); it != m_collections.end(); ++it)
+        {
+            delete *it;
+        }
 
-  _collections.push_back( collection ) ;
+        //  Then copy src's content.
+        m_collections.clear();
+        m_collections.reserve(src.m_collections.size());
+        for(auto it = src.m_collections.begin(); it != src.m_collections.end(); ++it)
+        {
+            m_collections.push_back((*it)->clone());
+        }
+    }
 
-  return true ;
-}
-
-
-void CollectionCollection::close()
-{
-  _valid = false ;
-}
-
-
-ConstEntries CollectionCollection::entries() const
-{
-  if ( ! _valid )
-  {
-    throw InvalidStateException( "Attempt to get entries from an invalid CollectionCollection" ) ;
-  }
-
-  ConstEntries all_entries ;
-  for ( std::vector< FileCollection * >::const_iterator it = _collections.begin() ; it != _collections.end() ; it++ )
-  {
-    all_entries += (*it)->entries() ;
-  }
-
-  return all_entries ;
-}
-
-
-ConstEntryPointer CollectionCollection::getEntry( std::string const& name, 
-                                                  MatchPath matchpath ) const
-{
-  if ( ! _valid )
-  {
-    throw InvalidStateException( "Attempt to get an entry from an invalid CollectionCollection" ) ;
-  }
-
-  // Returns the first matching entry.
-  std::vector< FileCollection * >::const_iterator it ;
-  ConstEntryPointer cep ;
-
-  getEntry( name, cep, it, matchpath ) ; 
-
-  return cep ;
-}
-
-
-std::istream *CollectionCollection::getInputStream( ConstEntryPointer const& entry )
-{
-  if ( ! _valid )
-  {
-    throw InvalidStateException( "Attempt to get an input stream from an invalid CollectionCollection" ) ;
-  }
-
-  return getInputStream( entry->getName() ) ;
-}
-
-
-std::istream *CollectionCollection::getInputStream( std::string const& entry_name, 
-                                               MatchPath matchpath )
-{
-  if ( ! _valid )
-  {
-    throw InvalidStateException( "Attempt to get an input stream from an invalid CollectionCollection" ) ;
-  }
-
-  std::vector< FileCollection * >::const_iterator it ;
-  ConstEntryPointer cep ;
-
-  getEntry( entry_name, cep, it, matchpath ) ; 
-
-  return cep ? (*it)->getInputStream( entry_name ) : 0 ;
-}
-
-
-int CollectionCollection::size() const
-{
-  if ( ! _valid )
-  {
-    throw InvalidStateException( "Attempt to get the size of an invalid CollectionCollection" ) ;
-  }
-
-  int sz = 0 ;
-  std::vector< FileCollection * >::const_iterator it ;
-  for ( it = _collections.begin() ; it != _collections.end() ; it++ )
-  {
-    sz += (*it)->size() ;
-  }
-
-  return sz ;
-}
-
-
-FileCollection *CollectionCollection::clone() const
-{
-  return new CollectionCollection( *this ) ;
+    return *this ;
 }
 
 
 CollectionCollection::~CollectionCollection()
 {
-  std::vector< FileCollection * >::iterator it ;
-  for ( it = _collections.begin() ; it != _collections.end() ; ++it )
-  {
-    delete *it ;
-  }
+    for(auto it = m_collections.begin(); it != m_collections.end(); ++it)
+    {
+        delete *it;
+    }
+}
+
+
+CollectionCollection &CollectionCollection::inst()
+{
+    if(g_instance != 0)
+    {
+        return *g_instance;
+    }
+
+    return *(g_instance = new CollectionCollection);
+}
+
+
+bool CollectionCollection::addCollection(FileCollection const& collection)
+{
+    mustBeValid();
+
+    if(this == &collection || !collection.isValid())
+    {
+        return false ;
+    }
+
+    m_collections.push_back(collection.clone());
+
+    return true ;
+}
+
+
+bool CollectionCollection::addCollection(FileCollection *collection)
+{
+    mustBeValid();
+
+    if(collection == nullptr || this == collection || !collection->isValid())
+    {
+        return false;
+    }
+
+    m_collections.push_back(collection);
+
+    return true;
+}
+
+
+void CollectionCollection::close()
+{
+    m_valid = false;
+}
+
+
+ConstEntries CollectionCollection::entries() const
+{
+    mustBeValid();
+
+    ConstEntries all_entries;
+    for(auto it = m_collections.begin(); it != m_collections.end(); it++)
+    {
+        all_entries += (*it)->entries();
+    }
+
+    return all_entries;
+}
+
+
+ConstEntryPointer CollectionCollection::getEntry(std::string const& name, 
+                                                 MatchPath matchpath) const
+{
+    mustBeValid();
+
+    // Returns the first matching entry.
+    std::vector<FileCollection *>::const_iterator it;
+    ConstEntryPointer cep;
+
+    getEntry(name, cep, it, matchpath); 
+
+    return cep;
+}
+
+
+std::istream *CollectionCollection::getInputStream(ConstEntryPointer const& entry)
+{
+  mustBeValid();
+
+  return getInputStream( entry->getName() ) ;
+}
+
+
+std::istream *CollectionCollection::getInputStream(std::string const& entry_name, 
+                                                   MatchPath matchpath)
+{
+    mustBeValid();
+
+    std::vector< FileCollection * >::const_iterator it;
+    ConstEntryPointer cep;
+
+    getEntry(entry_name, cep, it, matchpath); 
+
+    return cep ? (*it)->getInputStream(entry_name) : nullptr;
+}
+
+
+int CollectionCollection::size() const
+{
+    mustBeValid();
+
+    int sz(0);
+    for(auto it = m_collections.begin() ; it != m_collections.end(); ++it)
+    {
+        sz += (*it)->size();
+    }
+
+    return sz;
+}
+
+
+FileCollection *CollectionCollection::clone() const
+{
+    return new CollectionCollection(*this);
 }
 
 
@@ -184,23 +208,35 @@ CollectionCollection::~CollectionCollection()
 // Protected member functions
 //
 
-void CollectionCollection::getEntry( std::string const& name,
-                                     ConstEntryPointer& cep, 
-                                     std::vector< FileCollection * >::const_iterator& it, 
-                                     MatchPath matchpath ) const
+/** \brief Seach for an entry.
+ *
+ * This function searchs for an entry that match the given name.
+ * If that entry exists, the \p it parameter will be pointing
+ * to it.
+ *
+ * The \p cep parameter is also set to the object found.
+ *
+ * \param[in] name  The name of the entry to search.
+ * \param[out] cep  The pointer to the entry found.
+ * \param[out] it  The iterator pointing to the entry in this collection.
+ * \param[in] matchpath  How the name of the entry is compared with \p name.
+ */
+void CollectionCollection::getEntry(std::string const& name,
+                                    ConstEntryPointer& cep,
+                                    std::vector<FileCollection *>::const_iterator& it,
+                                    MatchPath matchpath) const
 {
-  // Returns the first matching entry.
-  cep = 0 ;
-  for ( it = _collections.begin() ; it != _collections.end() ; it++ )
-  {
-    cep = (*it)->getEntry( name, matchpath ) ;
-    if ( cep )
+    for(it = m_collections.begin() ; it != m_collections.end() ; it++)
     {
-      break ;
+        cep = (*it)->getEntry(name, matchpath);
+        if(cep)
+        {
+            break;
+        }
     }
-  }
+    cep = nullptr;
 }
 
 
 } // zipios namespace
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

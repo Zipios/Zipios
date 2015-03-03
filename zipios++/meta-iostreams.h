@@ -22,12 +22,12 @@
  * Includes the different iostream libraries
  */
 
-
 #include "zipios++/zipios-config.h"
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 
 namespace zipios
 {

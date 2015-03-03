@@ -10,74 +10,103 @@ multiple sources (e.g. from zip files or from ordinary directories)
 transparently.
 
 The source code is released under the GNU Lesser General Public
-License.
+License (LGPL).
+
 
 Dependencies
 ------------
-Requires zlib (http:://www.zlib.org). To run the automatic unit test
-suite you need CppUnit (http://cppunit.sourceforge.net)
+Requires zlib (http:://www.zlib.org).
+
+To run the automatic unit test suite you need CppUnit
+(http://cppunit.sourceforge.net)
 
 
 Installation (Unix)
 -------------------
-This software package uses autoconf/automake, so the fast installation
-procedure is
+This version of the software uses cmake to generate the necessary make
+files or solutions under MS-Windows.
 
-./configure
-make
-make install
+Once you have cmake installed, you should be able to run the following:
 
-For details about installation of autoconfiscated packages refer to
-the INSTALL file
+  tar xf zipios.tar.gz
+  mkdir BUILD
+  cd BUILD
+  cmake ../zipios
+  make
+  make install
+
+The project comes with a build script (see "dev/build") that can be used
+to run those steps. It will assume that you do not mind to have your
+BUILD directory blown away and rebuilds everything. It also may setup
+various flags on the command line to build the DEBUG version, for example.
+
+If you make changes to the source tree, you may re-run the make from the
+source tree with something like:
+
+  make -C ../BUILD
+
+For details about available installation configurations of cmake packages
+refer to the CMake documentation online.
+
+  http://www.cmake.org/
 
 'make install' installs the Zipios++ header files under
-/usr/include/zipios++/ and the library libzipios.a under
-/usr/lib/. You can choose another base path than /usr/ by using the
---prefix switch with configure. See the INSTALL file for
-details. Running make also builds a number of test programs that
-remain in the source directory zipios++/. The built example binaries
-and the corresponding source code have names that start with test_ and
-example_. These test programs demonstrate the most important features
-in Zipios++.
+/usr/include/zipios++/ and the library libzipios.so under
+/usr/lib/. You can choose another base path than /usr/ using the
+following option on the command line:
+
+  -DCMAKE_INSTALL_PREFIX=/home/alexis/zipios
+
+The build script actually installs everything under BUILD/dist so one
+can verify the results and package them before shipping.
+
+Running make also builds one test program. It can be found in
+the tests directory in your BUILD folder. It is one program that
+actually runs many tests.
+
 
 Installation (Windows)
 ----------------------
-Currently, makefiles are only provided for Visual C++, along with a
-Developer Studio project. It is also planned to support Inprise and Gnu
-compilers in the near future.
+CMake comes with a graphical tool one can use under MS-Windows to configure
+and generate a project supporting cmake. You will find more information
+about cmake on their official website:
 
-Before building, if zlib is not in a standard compiler path, the location of
-its headers and .lib file must be defined at the top of win32\Makefile.com
+  http://www.cmake.org/
 
-To install, using the appropriate make program and one of the following
-makefiles:
-	Makefile.vc	- Visual C++ 5, 6 and 7
+The output of CMake can be projects and a solution for Visual Studio C++
+or a set of nmake files. cmake also supports other formats such as JOM.
 
-the procedure (for Visual C++) is
-cd win32
-nmake -f Makefile.vc
+Once the cmake output was generated, you can run your build tools and
+then run the INSTALL target. That will install the binary files in one
+place.
 
-To use the Developer Studio project, run configure.bat from win32 before
-compiling. Again, a non-standard location for zlib must be defined in the
-project settings before building.
+It is strongly advise that your define the CMAKE_INSTALL_PREFIX variable
+before you install anything.
 
-No install options have been defined yet.
 
 Status and Documentation
--------------
-Please refer to the online documentation at
-http://zipios.sourceforge.net. A printable version of the online
-documentation is also available at the same URL. The documentation can
-be automatically generated from the source if you have Doxygen
-installed by running
+------------------------
+Please refer to the online documentation at:
 
-./configure
-make doc
+  http://zipios.sourceforge.net
+
+At this time, we generate the HTML and Latex version of the documentation.
+It is pretty big, but we'll do our best to offer a .tar.gz of the
+documentation on SourceForge.net
+
+If you have Doxygen installed, then the documentation will automatically
+be generated. Note that under MS-Windows you may have to specify a path
+for cmake to find Doxygen and properly generate the output. The setup
+makes use of dot to generate images showing relationships between classes
+and files.
 
 
 Bugs
 ----
-Submit bug reports and patches to thomass@deltadata.dk 
+Submit bug reports and patches on
+
+  http://sourceforge.net/projects/zipios
+
 
 Contributing
 ------------

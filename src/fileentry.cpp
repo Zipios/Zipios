@@ -28,9 +28,9 @@ namespace zipios
 
 std::ostream& operator << ( std::ostream& os, FileEntry const& entry )
 {
-  os << entry.toString() ;
-  return os ;
+    os << entry.toString() ;
+    return os ;
 }
 
 } // namespace
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

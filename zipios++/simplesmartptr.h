@@ -131,11 +131,11 @@ public:
     return ! _p ;
   }
 
-  // This next method is inspired by iostream, and is for use with 
+  // This next method is inspired by iostream, and is for use with
   // if ( some_smart_pointer ).
   operator void * () const
   {
-    return _p ? (void *)(-1) : (void *)(0) ;
+    return _p ? reinterpret_cast<void *>(-1) : reinterpret_cast<void *>(0) ;
   }
 
   Type *get() const

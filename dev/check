@@ -4,10 +4,12 @@
 
 set -e
 
-cp tests/* ../GNU_BUILD/src/tests/.
+# Run a build first
+make -C ../BUILD/zipios
 
-cd ../GNU_BUILD/src/tests
+# Go in the tests directory
+cd tests
 
-make all_tests
-./all_tests
+# Run the tests
+../../BUILD/zipios/tests/zipios_tests
 

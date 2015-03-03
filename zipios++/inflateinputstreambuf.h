@@ -35,54 +35,31 @@ namespace zipios
 
 
 
-/** InflateInputStreambuf is an input stream filter, that inflates the input
-    from the attached input stream. Deflation/Inflation is a
-    compression/decompression method used in gzip and zip. The zlib
-    library is used to perform the actual inflation, this class only
-    wraps the functionality in an input stream filter. */
 class InflateInputStreambuf : public FilterInputStreambuf
 {
 public:
-  /** InflateInputStreambuf constructor.
-      @param inbuf the streambuf to use for input.
-      @param s_pos a position to reset the inbuf to before reading. Specify
-      -1 to read from the current position.
-      @param del_inbuf if true is specified inbuf will be deleted, when 
-      the InflateInputStreambuf is destructed.
-  */
-  explicit InflateInputStreambuf( std::streambuf *inbuf, int s_pos = -1, bool del_inbuf = false ) ;
-  virtual ~InflateInputStreambuf() ;
+    explicit    InflateInputStreambuf(std::streambuf *inbuf, int s_pos = -1);
+                InflateInputStreambuf(InflateInputStreambuf const& src) = delete;
+                InflateInputStreambuf const& operator = (InflateInputStreambuf const& src) = delete;
+    virtual     ~InflateInputStreambuf();
 
-  /** Resets the zlib stream and purges input and output buffers.
-      repositions the input streambuf at stream_position.
-      @param stream_position a position to reset the inbuf to before reading. Specify
-      -1 to read from the current position.
-  */
-  bool reset( int stream_position = -1 ) ;
+    bool        reset(int stream_position = -1);
 
 protected:
-  virtual int underflow() ;
+    virtual int underflow();
+
+    // FIXME: reconsider design?
+    int const           m_outvecsize = 1000; // FIXME: define a ZIPIOS_BUFSIZ
+    std::vector<char>   m_outvec;
 
 private:
-  z_stream _zs ;
-  bool _zs_initialized ;
-  const int _invecsize ;
-  std::vector< char > _invec ;
-
-protected: // FIXME: reconsider design?
-  int const _outvecsize ;
-  std::vector< char > _outvec ;
-
-private:
-
-  /** Copy-constructor is private to prevent copying. */
-  InflateInputStreambuf( InflateInputStreambuf const& src ) ;
-
-  /** Copy-assignment operator is private to prevent copying.  */
-  InflateInputStreambuf const& operator = ( InflateInputStreambuf const& src ) ;
+    z_stream            m_zs;
+    bool                m_zs_initialized = false;
+    int const           m_invecsize = 1000; // FIXME: define a ZIPIOS_BUFSIZ
+    std::vector<char>   m_invec;
 };
 
 
 } // namespace
 
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

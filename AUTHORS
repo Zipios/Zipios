@@ -1,11 +1,12 @@
 Main author:              Thomas Sondergaard (thomass@deltadata.dk)
 FreeBSD port maintainer:  Ying-Chieh Liao    (ijliao@csie.nctu.edu.tw)
+Conversion to c++11:      Alexis Wilke       (alexis@m2osw.com)
 
 The files zipios++/directory.h and zipios++/directory.cpp originate
 from the dir_it library written by Dietmar Kuehl (it's available for
 download at http://www.boost.org)
 
-zipios++.spec contributed by Rui Miguel Silva Seabra
+contrib/zipios++.spec.in contributed by Rui Miguel Silva Seabra
 
 libtool/shared library patch contributed by Arkadiusz Miskiewicz (arekm)
 

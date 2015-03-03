@@ -30,23 +30,21 @@
 project( zipios_tool )
 
 add_executable( ${PROJECT_NAME}
-  zipios.cpp
+    zipios.cpp
 )
 
 install( TARGETS ${PROJECT_NAME}
-  DESTINATION bin
+    DESTINATION bin
 )
 
 project( appendzip )
 
 add_executable( ${PROJECT_NAME}
-  appendzip.cpp
+    appendzip.cpp
 )
 
-# The appendzip tool is used internally and is not expected to be
-# installed on a target system (it's not what I would call a safe tool!)
-#install( TARGETS ${PROJECT_NAME}
-#  DESTINATION bin
-#)
+install( TARGETS ${PROJECT_NAME}
+    DESTINATION bin
+)
 
-# vim: ts=2 sw=2 et
+# vim: ts=4 sw=4 et

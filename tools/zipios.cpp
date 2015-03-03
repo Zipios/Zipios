@@ -39,89 +39,89 @@ char *g_progname ;
 
 void usage()
 {
-  std::cout << "Usage:  " << g_progname << " [-opt] [file]" << std::endl ;
-  std::cout << "Where -opt is one or more of:" << std::endl;
-  std::cout << "  --count         count the number of files in a .zip archive" << std::endl;
-  std::cout << "  --help          show this help screen" << std::endl;
-  std::cout << "  --version       print the library version and exit" << std::endl;
-  std::cout << "  --version-tool  print the tool version and exit" << std::endl;
-  exit(1);
+    std::cout << "Usage:  " << g_progname << " [-opt] [file]" << std::endl ;
+    std::cout << "Where -opt is one or more of:" << std::endl;
+    std::cout << "  --count         count the number of files in a .zip archive" << std::endl;
+    std::cout << "  --help          show this help screen" << std::endl;
+    std::cout << "  --version       print the library version and exit" << std::endl;
+    std::cout << "  --version-tool  print the tool version and exit" << std::endl;
+    exit(1);
 }
 
 
 enum class func_t
 {
-  UNDEFINED,
-  COUNT
+    UNDEFINED,
+    COUNT
 };
 
 
 int main( int argc, char *argv[] )
 {
-  // define program name
-  g_progname = argv[ 0 ] ;
-  char *e(strrchr(g_progname, '/'));
-  if(e)
-  {
-    g_progname = e + 1;
-  }
-  e = strrchr(g_progname, '\\');
-  if(e)
-  {
-    g_progname = e + 1;
-  }
-
-  // check the various command line options
-  std::vector<std::string> files;
-  func_t function(func_t::UNDEFINED);
-  for(int i(1); i < argc; ++i)
-  {
-    if(argv[i][0] == '-')
+    // define program name
+    g_progname = argv[ 0 ] ;
+    char *e(strrchr(g_progname, '/'));
+    if(e)
     {
-      if(strcmp(argv[i], "--help") == 0)
-      {
+        g_progname = e + 1;
+    }
+    e = strrchr(g_progname, '\\');
+    if(e)
+    {
+        g_progname = e + 1;
+    }
+
+    // check the various command line options
+    std::vector<std::string> files;
+    func_t function(func_t::UNDEFINED);
+    for(int i(1); i < argc; ++i)
+    {
+        if(argv[i][0] == '-')
+        {
+            if(strcmp(argv[i], "--help") == 0)
+            {
+                usage();
+            }
+            if(strcmp(argv[i], "--version") == 0)
+            {
+                // version of the .so library
+                std::cout << zipios::get_version() << std::endl;
+                exit(0);
+            }
+            if(strcmp(argv[i], "--version-tool") == 0)
+            {
+                // version of this tool (compiled with this version)
+                // it should be the same as the --version
+                std::cout << ZIPIOS_VERSION_STRING << std::endl;
+                exit(0);
+            }
+            if(strcmp(argv[i], "--count") == 0)
+            {
+                function = func_t::COUNT;
+            }
+        }
+        else
+        {
+            files.push_back(argv[i]);
+        }
+    }
+
+    switch(function)
+    {
+    case func_t::COUNT:
+        // TODO: ...
+        std::cerr << "sorry, not implemented yet...\n";
+        break;
+
+    default:
+        std::cerr << g_progname << ":error: undefined function." << std::endl;
         usage();
-      }
-      if(strcmp(argv[i], "--version") == 0)
-      {
-        // version of the .so library
-        std::cout << zipios::get_version() << std::endl;
-        exit(0);
-      }
-      if(strcmp(argv[i], "--version-tool") == 0)
-      {
-        // version of this tool (compiled with this version)
-        // it should be the same as the --version
-        std::cout << ZIPIOS_VERSION_STRING << std::endl;
-        exit(0);
-      }
-      if(strcmp(argv[i], "--count") == 0)
-      {
-        function = func_t::COUNT;
-      }
+        break;
+
     }
-    else
-    {
-      files.push_back(argv[i]);
-    }
-  }
 
-  switch(function)
-  {
-  case func_t::COUNT:
-    // TODO: ...
-    std::cerr << "sorry, not implemented yet...\n";
-    break;
-
-  default:
-    std::cerr << g_progname << ":error: undefined function." << std::endl;
-    usage();
-    break;
-
-  }
-
-  return 0;
+    return 0;
 }
 
 
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

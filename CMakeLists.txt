@@ -35,7 +35,7 @@ set( ZIPIOS_VERSION_MAJOR 2 )
 set( ZIPIOS_VERSION_MINOR 0 )
 set( ZIPIOS_VERSION_PATCH 0 )
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -fdiagnostics-show-option -fPIC -Wunused-parameter -Wfloat-equal" )
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -fdiagnostics-show-option -fPIC -Wunused-parameter -Wfloat-equal -Wold-style-cast -Wnoexcept" )
 set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0" )
 set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
 
@@ -68,7 +68,11 @@ endif()
 
 find_package( ZLIB REQUIRED )
 
-configure_file( ${CMAKE_SOURCE_DIR}/zipios++/zipios-config.h.in ${CMAKE_BINARY_DIR}/zipios++/zipios-config.h )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios++/zipios-config.h.in ${CMAKE_CURRENT_BINARY_DIR}/zipios++/zipios-config.h )
+
+# Generate the RPM package specification file
+set(PACKAGE "libzipios++")
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios++.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios++.spec )
 
 include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 
@@ -98,7 +102,15 @@ add_custom_target(zipios_code_analysis
 
     # Boost inspect tool that reports various problems in the source
     COMMAND echo "inspect -- output ${PROJECT_BINARY_DIR}/analysis/inspect.html"
-    COMMAND inspect -tab -crlf -end -path_name -ascii -minmax -assert_macro -deprecated_macro -unnamed -link -copyright >"${PROJECT_BINARY_DIR}/analysis/inspect.html"
+    COMMAND inspect -tab -crlf -end -path_name -ascii -minmax -assert_macro -deprecated_macro -unnamed -copyright >"${PROJECT_BINARY_DIR}/analysis/inspect.html"
+
+    # Count the number of TODO, XXX, TBD, FIXME, and \todo
+    COMMAND echo "TODO -- output ${PROJECT_BINARY_DIR}/analysis/inspect.html"
+    COMMAND sh dev/todo.sh "${PROJECT_BINARY_DIR}/analysis"
+
+    # All of these are expected to work on source code so make sure we are
+    # in the source code top directory
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
 # vim: ts=4 sw=4 et nocindent

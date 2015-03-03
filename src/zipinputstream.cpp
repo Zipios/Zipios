@@ -28,87 +28,56 @@ namespace zipios
 {
 
 
-ZipInputStream::ZipInputStream( std::istream &is, std::streampos pos )
-  : std::istream( 0 )
-  , f_ifs( 0 )
-  , f_izf( 0 )
+ZipInputStream::ZipInputStream(std::istream &is, std::streampos pos)
+    //: std::istream(nullptr)
+    //, m_ifs(nullptr) -- auto-init
+    : m_izf(new ZipInputStreambuf(is.rdbuf(), pos))
 {
-  f_izf = new ZipInputStreambuf( is.rdbuf(), pos ) ;
-//  rdbuf( f_izf ) ; is replaced by:
-  try
-  {
-    init( f_izf ) ;
-  }
-  catch(...)
-  {
-    delete f_izf;
-    throw;
-  }
+    //  rdbuf(m_izf); is replaced by:
+    init(m_izf.get());
 }
 
 
-ZipInputStream::ZipInputStream( std::string const& filename, std::streampos pos )
-  : std::istream( 0 )
-  , f_ifs( 0 )
-  , f_izf( 0 )
+ZipInputStream::ZipInputStream(std::string const& filename, std::streampos pos)
+    //: std::istream(nullptr)
+    : m_ifs(new std::ifstream(filename.c_str(), std::ios::in | std::ios::binary))
+    , m_izf(new ZipInputStreambuf(m_ifs->rdbuf(), pos))
 {
-  f_ifs = new std::ifstream( filename.c_str(), std::ios::in | std::ios::binary ) ;
-  try
-  {
-    f_izf = new ZipInputStreambuf( f_ifs->rdbuf(), pos ) ;
-  }
-  catch(...)
-  {
-    delete f_ifs;
-    throw;
-  }
-//  rdbuf( f_izf ) ; is replaced by:
-  try
-  {
-    init( f_izf ) ;
-  }
-  catch(...)
-  {
-    delete f_izf;
-    delete f_ifs;
-    throw;
-  }
+    //  rdbuf(m_izf); is replaced by:
+    init(m_izf.get());
+}
+
+
+ZipInputStream::~ZipInputStream()
+{
 }
 
 
 int ZipInputStream::available()
 {
-  return 1 ; // FIXME: Dummy implementation
+    return 1; // FIXME: Dummy implementation
 }
 
 
 void ZipInputStream::closeEntry()
 {
-  f_izf->closeEntry() ;
+    m_izf->closeEntry();
 }
 
 
 void ZipInputStream::close()
 {
-  f_izf->close() ;  
+    m_izf->close();
 }
 
 //    ZipLocalEntry *ZipInputStream::createZipCDirEntry( const string &name ) {}
 
 ConstEntryPointer ZipInputStream::getNextEntry()
 {
-  clear() ; // clear eof and other flags.
-  return f_izf->getNextEntry() ;
-}
-
-
-ZipInputStream::~ZipInputStream()
-{
-  // It's ok to call delete with a Null pointer.
-  delete f_izf ;
-  delete f_ifs ;
+    clear(); // clear eof and other flags.
+    return m_izf->getNextEntry();
 }
 
 
 } // zipios namespace
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

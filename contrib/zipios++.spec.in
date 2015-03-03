@@ -1,7 +1,7 @@
 %define release	2
 
 Name: @PACKAGE@
-Version: @VERSION@
+Version: @ZIPIOS_VERSION_MAJOR@.@ZIPIOS_VERSION_MINOR@.@ZIPIOS_VERSION_PATCH@
 Summary: Zipios++ is a small C++ library for reading zip files
 Release: %{release}
 Source: %{name}-%{version}.tar.gz

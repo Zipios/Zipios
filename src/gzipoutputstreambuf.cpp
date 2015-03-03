@@ -25,100 +25,127 @@
 #include "zipios++/gzipoutputstreambuf.h"
 
 
-namespace zipios {
+namespace zipios
+{
 
-GZIPOutputStreambuf::GZIPOutputStreambuf( std::streambuf *outbuf, bool del_outbuf )
-    : DeflateOutputStreambuf( outbuf, true, del_outbuf )
-    , _open( false ) 
+
+/** \brief Initialize a GZIPOutputStreambuf object.
+ *
+ * A newly constructed GZIPOutputStreambuf is ready to accept data.
+ *
+ * \param[in,out] outbuf  The streambuf to use for output.
+ * \param[in] del_outbuf  If true then we become responsible of outbuf
+ *                        which will be deleted, when the
+ *                        GZIPOutputStreambuf is destructed.
+ */
+GZIPOutputStreambuf::GZIPOutputStreambuf(std::streambuf *outbuf)
+    : DeflateOutputStreambuf(outbuf, true)
+    //, m_open(false) -- auto-init
 {
 }
 
 
-void GZIPOutputStreambuf::setFilename( std::string const& filename )
-{
-    _filename = filename ;
-}
-
-
-void GZIPOutputStreambuf::setComment( std::string const& comment )
-{
-    _comment = comment ;
-}
-
-
-void GZIPOutputStreambuf::close()
-{
-    finish() ;
-}
-
-
-void GZIPOutputStreambuf::finish()
-{
-    if( ! _open )
-    {
-        return ;
-    }
-
-    closeStream();  
-    writeTrailer();
-  
-    _open = false ;
-}
-
-
+/** \brief Ensures that the stream gets closed properly.
+ *
+ * This function makes sure that the stream gets closed properly
+ * which means that the compress terminates by calling finish()
+ * and the streams get closed.
+ */
 GZIPOutputStreambuf::~GZIPOutputStreambuf()
 {
-    finish() ;
+    finish();
 }
 
 
-int GZIPOutputStreambuf::overflow( int c )
+void GZIPOutputStreambuf::setFilename(std::string const& filename)
 {
-    if (!_open)
+    m_filename = filename;
+}
+
+
+void GZIPOutputStreambuf::setComment(std::string const& comment)
+{
+    m_comment = comment;
+}
+
+
+/** \brief Close the stream.
+ *
+ * This function ensures that the streams get closed.
+ */
+void GZIPOutputStreambuf::close()
+{
+    finish();
+}
+
+
+/** \brief Finishes the compression.
+ *
+ * Write whatever is still necessary and close the streams.
+ */
+void GZIPOutputStreambuf::finish()
+{
+    if(!m_open)
+    {
+        return;
+    }
+    m_open = false;
+
+    closeStream();
+    writeTrailer();
+}
+
+
+int GZIPOutputStreambuf::overflow(int c)
+{
+    if(!m_open)
     {
         writeHeader();
-        _open = true;
+        m_open = true;
     }
 
-    return DeflateOutputStreambuf::overflow( c ) ;
+    return DeflateOutputStreambuf::overflow(c);
 }
+
 
 int GZIPOutputStreambuf::sync()
 {
-    return DeflateOutputStreambuf::sync() ;
+    return DeflateOutputStreambuf::sync();
 }
 
 
 void GZIPOutputStreambuf::writeHeader()
 {
-    unsigned char flg = 0x00;
-    flg |= (_filename == "") ? 0x00 : 0x08;
-    flg |= (_comment  == "") ? 0x00 : 0x10;
+    unsigned char const flg(
+                  (m_filename.empty() ? 0x00 : 0x08)
+                | (m_comment.empty()  ? 0x00 : 0x10)
+            );
 
-    std::ostream os( _outbuf ) ;
-    os << (unsigned char)0x1f;  // Magic #
-    os << (unsigned char)0x8b;  // Magic #
-    os << (unsigned char)0x08;  // Deflater.DEFLATED
-    os << flg;                  // FLG
-    os << (unsigned char)0x00;  // MTIME
-    os << (unsigned char)0x00;  // MTIME
-    os << (unsigned char)0x00;  // MTIME
-    os << (unsigned char)0x00;  // MTIME
-    os << (unsigned char)0x00;  // XFLG
-    os << (unsigned char)0x00;  // OS
-        
-    if (_filename != "")
+    std::ostream os(m_outbuf) ;
+    os << static_cast<unsigned char>(0x1f);  // Magic #
+    os << static_cast<unsigned char>(0x8b);  // Magic #
+    os << static_cast<unsigned char>(0x08);  // Deflater.DEFLATED
+    os << flg;                               // FLG
+    os << static_cast<unsigned char>(0x00);  // MTIME
+    os << static_cast<unsigned char>(0x00);  // MTIME
+    os << static_cast<unsigned char>(0x00);  // MTIME
+    os << static_cast<unsigned char>(0x00);  // MTIME
+    os << static_cast<unsigned char>(0x00);  // XFLG
+    os << static_cast<unsigned char>(0x00);  // OS
+
+    if(!m_filename.empty())
     {
-        os << _filename.c_str();// Filename
-        os << (unsigned char)0x00;
+        os << m_filename.c_str();             // Filename
+        os << static_cast<unsigned char>(0x00);
     }
-    
-    if (_comment != "")
+
+    if(!m_comment.empty())
     {
-        os << _comment.c_str(); // Comment
-        os << (unsigned char)0x00;
+        os << m_comment.c_str();              // Comment
+        os << static_cast<unsigned char>(0x00);
     }
 }
+
 
 void GZIPOutputStreambuf::writeTrailer()
 {
@@ -126,14 +153,16 @@ void GZIPOutputStreambuf::writeTrailer()
     writeInt(getCount());
 }
 
+
 void GZIPOutputStreambuf::writeInt(uint32_t i)
 {
-    std::ostream os( _outbuf ) ;
-    os << (unsigned char)( i        & 0xFF);
-    os << (unsigned char)((i >>  8) & 0xFF);
-    os << (unsigned char)((i >> 16) & 0xFF);
-    os << (unsigned char)((i >> 24) & 0xFF);
+    std::ostream os(m_outbuf);
+    os << static_cast<unsigned char>( i        & 0xFF);
+    os << static_cast<unsigned char>((i >>  8) & 0xFF);
+    os << static_cast<unsigned char>((i >> 16) & 0xFF);
+    os << static_cast<unsigned char>((i >> 24) & 0xFF);
 }
 
-} // namespace
-// vim: ts=2 sw=2 et
+
+} // zipios namespace
+// vim: ts=4 sw=4 et

@@ -1,25 +1,25 @@
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
 
 /** \file
-    Implementation of InflateInputStreambuf.
-*/
+ * \brief Implementation of InflateInputStreambuf.
+ */
 
 #include "zipios++/inflateinputstreambuf.h"
 
@@ -29,155 +29,197 @@
 namespace zipios
 {
 
+/** \class InflateInputStreambuf
+ *
+ * The InflateInputStreambuf class is an input stream filter, that
+ * inflates the input from the attached input stream.
+ *
+ * Deflation/Inflation is a compression/decompression method used
+ * in gzip and zip. The zlib library is used to perform the actual
+ * inflation, this class only wraps the functionality in an input
+ * stream filter.
+ *
+ * \todo
+ * Add support for bzip2 compression.
+ */
 
-InflateInputStreambuf::InflateInputStreambuf( std::streambuf *inbuf, int s_pos, bool del_inbuf ) 
-  : FilterInputStreambuf( inbuf, del_inbuf )
-  , _zs_initialized ( false            )
-  , _invecsize      ( 1000             )
-  , _invec          ( _invecsize       )
-  , _outvecsize     ( 1000             )
-  , _outvec         ( _outvecsize      )
+
+
+/** \brief Initialize a InflateInputStreambuf.
+ *
+ * The constructor initializes the various stream buffers and
+ * setup the stream start position using the \p start_pos
+ * parameter.
+ *
+ * Data will be inflated (decompressed using zlib) before being
+ * returned.
+ *
+ * \param[in,out] inbuf  The streambuf to use for input.
+ * \param[in] start_pos  A position to reset the inbuf to before reading. Specify
+ *                       -1 to not change the position.
+ */
+InflateInputStreambuf::InflateInputStreambuf(std::streambuf *inbuf, int start_pos)
+    : FilterInputStreambuf(inbuf)
+    //, m_outvecsize(1000) -- auto-init
+    , m_outvec(m_outvecsize)
+    //, m_zs_initialized(false) -- auto-init
+    //, m_invecsize(1000) -- auto-init
+    , m_invec(m_invecsize)
 {
-  // NOTICE: It is important that this constructor and the methods it
-  // calls doesn't do anything with the input streambuf _inbuf, other
-  // than repositioning it to the specified position. The reason is
-  // that this class can be subclassed, and the subclass should get a
-  // chance to read from the buffer first)
+    // NOTICE: It is important that this constructor and the methods it
+    // calls doesn't do anything with the input streambuf inbuf, other
+    // than repositioning it to the specified position. The reason is
+    // that this class can be subclassed, and the subclass should get a
+    // chance to read from the buffer first)
 
-  // zlib init:
-  _zs.zalloc = Z_NULL ;
-  _zs.zfree  = Z_NULL ;
-  _zs.opaque = Z_NULL ;
+    // zlib init:
+    m_zs.zalloc = Z_NULL;
+    m_zs.zfree  = Z_NULL;
+    m_zs.opaque = Z_NULL;
 
-  reset( s_pos ) ;
-  // We're not checking the return value of reset() and throwing
-  // an exception in case of an error, because we cannot catch the exception
-  // in the constructors of subclasses with all compilers.
+    reset(start_pos);
+    // We are not checking the return value of reset() and throwing
+    // an exception in case of an error, because we cannot catch the exception
+    // in the constructors of subclasses with all compilers.
 }
 
+
+/** \brief Clean up the InflateInputStreambuf object.
+ *
+ * The destructor makes sure all allocated resources get cleaned up.
+ */
 InflateInputStreambuf::~InflateInputStreambuf()
 {
-  // Dealloc z_stream stuff
-  int err = inflateEnd( &_zs ) ;
-  if( err != Z_OK )
-  {
-    std::cerr << "~inflatebuf: inflateEnd failed" ;
+    // Dealloc z_stream stuff
+    int const err(inflateEnd(&m_zs));
+    if(err != Z_OK)
+    {
+        std::cerr << "~inflatebuf: inflateEnd failed";
 #ifdef HAVE_ZERROR
-    std::cerr << ": " << zError( err ) ;
+        std::cerr << ": " << zError(err);
 #endif
-    std::cerr << std::endl ;
-  }
+        std::cerr << std::endl;
+    }
 }
 
 
 int InflateInputStreambuf::underflow()
 {
-  // If not underflow don't fill buffer
-  if ( gptr() < egptr() )
-  {
-    return static_cast< unsigned char >( *gptr() ) ;
-  }
-
-  // Prepare _outvec and get array pointers
-  _zs.avail_out = _outvecsize ; 
-  _zs.next_out  = reinterpret_cast< unsigned char * >( &( _outvec[ 0 ] ) ) ;
-
-  // Inflate until _outvec is full
-  // eof (or I/O prob) on _inbuf will break out of loop too.
-  int err = Z_OK ;
-  while ( _zs.avail_out > 0 && err == Z_OK )
-  {
-    if ( _zs.avail_in == 0 )
-    { // fill _invec
-      int bc = _inbuf->sgetn( &(_invec[ 0 ] ) , _invecsize ) ;
-      // FIXME: handle i/o problems.
-      _zs.next_in  = reinterpret_cast< unsigned char * >( &( _invec[0] ) ) ;
-      _zs.avail_in = bc ;
-      // If we could not read any new data (bc == 0) and inflate isn't
-      // done it will return Z_BUF_ERROR and thus breaks out of the
-      // loop. This means we don't have to respond to the situation
-      // where we can't read more bytes here.
+    // If not underflow don't fill buffer
+    if(gptr() < egptr())
+    {
+        return static_cast<unsigned char>(*gptr());
     }
 
-    err = inflate( &_zs, Z_NO_FLUSH ) ;
-  }
-  // Normally the number of inflated bytes will be the
-  // full length of the output buffer, but if we can't read
-  // more input from the _inbuf streambuf, we end up with
-  // less.
-  int const inflated_bytes = _outvecsize - _zs.avail_out ;
-  setg( &( _outvec[ 0 ] ),
-        &( _outvec[ 0 ] ),
-        &( _outvec[ 0 ] ) + inflated_bytes ) ;
+    // Prepare _outvec and get array pointers
+    m_zs.avail_out = m_outvecsize;
+    m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
 
-  // FIXME: look at the error returned from inflate here, if there is
-  // some way to report it to the InflateInputStreambuf user.
-  // Until I find out I'll just print a warning to stdout.
-  // This at least throws, we probably want to create a log mechanism
-  // that the end user can connect to with a callback.
-  if( err != Z_OK && err != Z_STREAM_END )
-  {
-    OutputStringStream msgs ;
-    msgs << "InflateInputStreambuf: inflate failed" ;
+    // Inflate until _outvec is full
+    // eof (or I/O prob) on _inbuf will break out of loop too.
+    int err = Z_OK;
+    while(m_zs.avail_out > 0 && err == Z_OK)
+    {
+        if(m_zs.avail_in == 0)
+        {
+            // fill m_invec
+            int const bc = m_inbuf->sgetn(&m_invec[0], m_invecsize);
+            // FIXME: handle i/o problems.
+            m_zs.next_in = reinterpret_cast<unsigned char *>(&m_invec[0]);
+            m_zs.avail_in = bc;
+            // If we could not read any new data (bc == 0) and inflate is not
+            // done it will return Z_BUF_ERROR and thus breaks out of the
+            // loop. This means we do not have to respond to the situation
+            // where we cannot read more bytes here.
+        }
+
+        err = inflate(&m_zs, Z_NO_FLUSH);
+    }
+    // Normally the number of inflated bytes will be the
+    // full length of the output buffer, but if we can't read
+    // more input from the _inbuf streambuf, we end up with
+    // less.
+    int const inflated_bytes = m_outvecsize - m_zs.avail_out;
+    setg(&m_outvec[0], &m_outvec[0], &m_outvec[0] + inflated_bytes);
+
+    // FIXME: look at the error returned from inflate here, if there is
+    // some way to report it to the InflateInputStreambuf user.
+    // Until I find out I'll just print a warning to stdout.
+    // This at least throws, we probably want to create a log mechanism
+    // that the end user can connect to with a callback.
+    if(err != Z_OK && err != Z_STREAM_END)
+    {
+        OutputStringStream msgs ;
+        msgs << "InflateInputStreambuf: inflate failed";
 #if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM) && defined (HAVE_ZERROR)
-    msgs << ": " << zError( err ) ;
+        msgs << ": " << zError(err);
 #endif
-    // Throw an exception to make istream set badbit
-    throw IOException( msgs.str() ) ;
-  }
+        // Throw an exception to make istream set badbit
+        throw IOException(msgs.str());
+    }
 
-  if (inflated_bytes > 0 )
-  {
-    return static_cast< unsigned char >( *gptr() ) ;
-  }
+    if(inflated_bytes > 0)
+    {
+        return static_cast<unsigned char>(*gptr());
+    }
 
-  return EOF ; // traits_type::eof() ;
+    return EOF; // traits_type::eof() ;
 }
 
 
 
-// This method is called in the constructor, so it must not
-// read anything from the input streambuf _inbuf (see notice in constructor)
-bool InflateInputStreambuf::reset( int stream_position )
+/** \brief 
+ *
+ * Resets the zlib stream and purges input and output buffers.
+ * repositions the input streambuf at stream_position.
+ * @param stream_position a position to reset the inbuf to before reading. Specify
+ * -1 to read from the current position.
+ *
+ * This method is called in the constructor, so it must not
+ * read anything from the input streambuf _inbuf (see notice in constructor)
+ */
+bool InflateInputStreambuf::reset(int stream_position)
 {
-  if ( stream_position >= 0 )
-  { // reposition _inbuf
-    _inbuf->pubseekpos( stream_position ) ;
-  }
+    if(stream_position >= 0)
+    {
+        // reposition m_inbuf
+        m_inbuf->pubseekpos(stream_position);
+    }
 
-  // _zs.next_in and avail_in must be set according to
-  // zlib.h (inline doc).
-  _zs.next_in  = reinterpret_cast< unsigned char * >( &( _invec[0] ) ) ;
-  _zs.avail_in = 0 ;
-  
-  int err ;
-  if( _zs_initialized )
-  { // just reset it
-    err = inflateReset( &_zs ) ;
-  }
-  else
-  { // init it
-    err = inflateInit2( &_zs, -MAX_WBITS ) ;
-    /* windowBits is passed < 0 to tell that there is no zlib header.
-     Note that in this case inflate *requires* an extra "dummy" byte
-     after the compressed stream in order to complete decompression
-     and return Z_STREAM_END.  We always have an extra "dummy" byte,
-     because there is always some trailing data after the compressed
-     data (either the next entry or the central directory.  */
-    _zs_initialized = true ;
-  }
+    // m_zs.next_in and avail_in must be set according to
+    // zlib.h (inline doc).
+    m_zs.next_in = reinterpret_cast<unsigned char *>(&m_invec[0]);
+    m_zs.avail_in = 0;
 
-  // streambuf init:
-  // The important thing here, is that 
-  // - the pointers are not NULL (which would mean unbuffered)
-  // - and that gptr() is not less than  egptr() (so we trigger underflow
-  //   the first time data is read).
-  setg( &( _outvec[ 0 ] ),
-        &( _outvec[ 0 ] ) + _outvecsize,
-        &( _outvec[ 0 ] ) + _outvecsize ) ;
+    int err(0);
+    if(m_zs_initialized)
+    {
+        // just reset it
+        err = inflateReset(&m_zs);
+    }
+    else
+    {
+        // initialize it
+        err = inflateInit2(&m_zs, -MAX_WBITS);
+        /* windowBits is passed < 0 to tell that there is no zlib header.
+           Note that in this case inflate *requires* an extra "dummy" byte
+           after the compressed stream in order to complete decompression
+           and return Z_STREAM_END.  We always have an extra "dummy" byte,
+           because there is always some trailing data after the compressed
+           data (either the next entry or the central directory.  */
+        m_zs_initialized = true;
+    }
 
-  return err == Z_OK ;
+    // streambuf init:
+    // The important thing here, is that 
+    // - the pointers are not NULL (which would mean unbuffered)
+    // - and that gptr() is not less than  egptr() (so we trigger underflow
+    //   the first time data is read).
+    setg(&m_outvec[0], &m_outvec[0] + m_outvecsize, &m_outvec[0] + m_outvecsize);
+
+    return err == Z_OK;
 }
+
 
 } // namespace
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

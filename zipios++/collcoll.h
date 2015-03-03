@@ -43,32 +43,36 @@ namespace zipios
 class CollectionCollection : public FileCollection
 {
 public:
-  /** \anchor collcoll_inst_anchor
-      This static method provides a singleton instance of a CollectionCollection.
-      The instance is instantiated the first time the method is called.
-      @return A pointer to a singleton CollectionCollection instance.
-   */
-  static inline CollectionCollection &inst() ;
+    /** \anchor collcoll_inst_anchor
+     * This static method provides a singleton instance of a
+     * CollectionCollection.
+     *
+     * The instance is instantiated the first time the method is called.
+     * @return A pointer to a singleton CollectionCollection instance.
+     */
+    static CollectionCollection& inst();
 
-  /** Constructor.
-   */
-  explicit CollectionCollection() ;
+    /** Constructor.
+     */
+    explicit CollectionCollection();
 
-  /** Copy constructor. */
-  inline CollectionCollection( CollectionCollection const& src ) ;
+    /** Copy constructor. */
+    CollectionCollection(CollectionCollection const& src);
 
-  /** Copy assignment operator. */
-  inline const CollectionCollection &operator = ( CollectionCollection const& src ) ;
+    virtual ~CollectionCollection();
 
-  /** \anchor collcoll_addcoll_anchor
-      Adds a collection.
-      @param collection The collection to add.
-      @return true if the collection was added succesfully and
-      the added collection is valid.
-   */
-  bool addCollection( FileCollection const& collection ) ;
+    /** Copy assignment operator. */
+    const CollectionCollection& operator = (CollectionCollection const& src);
 
-  /** Adds the collection pointed to by collection. The CollectionCollection
+    /** \anchor collcoll_addcoll_anchor
+     * Adds a collection.
+     * @param collection The collection to add.
+     * @return true if the collection was added succesfully and
+     * the added collection is valid.
+     */
+    bool addCollection(FileCollection const& collection);
+
+    /** Adds the collection pointed to by collection. The CollectionCollection
       will call delete on the pointer when it is destructed, so the caller
       should make absolutely sure to only pass in a collection created with new
       and be sure to leave it alone after adding it. If the collection is not
@@ -77,44 +81,37 @@ public:
       @param collection A pointer to the collection to add.
       @return true if the collection was added succesfully and
       the added collection is valid. */
-  bool addCollection( FileCollection *collection ) ;
+    bool addCollection( FileCollection *collection ) ;
 
-  virtual void close() ;
+    virtual void close() ;
 
-  virtual ConstEntries entries() const ;
+    virtual ConstEntries entries() const ;
 
-  virtual ConstEntryPointer getEntry( std::string const& name, 
-                                      MatchPath matchpath = MatchPath::MATCH ) const ;
+    virtual ConstEntryPointer getEntry( std::string const& name, 
+            MatchPath matchpath = MatchPath::MATCH ) const ;
 
-  virtual std::istream *getInputStream( ConstEntryPointer const& entry ) ;
+    virtual std::istream *getInputStream( ConstEntryPointer const& entry ) ;
 
-  virtual std::istream *getInputStream( std::string const& entry_name, 
-                                        MatchPath matchpath = MatchPath::MATCH ) ;
+    virtual std::istream *getInputStream( std::string const& entry_name, 
+                                          MatchPath matchpath = MatchPath::MATCH ) ;
 
-  /** Returns the number in entries in all collections kept by
-   *  the CollectionCollection object
-   */
-  virtual int size() const ;
-  
-  virtual FileCollection *clone() const ;
+    /** Returns the number in entries in all collections kept by
+     *  the CollectionCollection object
+     */
+    virtual int size() const ;
 
-  virtual ~CollectionCollection() ;
+    virtual FileCollection *clone() const ;
 
 protected:
-  /** A protected getEntry member function, that not only
-      finds an entry that match the name, if such an entry exists
-      in the collection, it also returns, which collection it was found
-      in.
-   */
-  void getEntry( std::string const& name,
-		             ConstEntryPointer& cep, 
-		             std::vector< FileCollection * >::const_iterator& it, 
-		             MatchPath matchpath = MatchPath::MATCH ) const ;
-  
-  std::vector< FileCollection * > _collections ;
+    void getEntry(std::string const& name,
+                  ConstEntryPointer& cep, 
+                  std::vector< FileCollection * >::const_iterator& it, 
+                  MatchPath matchpath = MatchPath::MATCH) const;
+
+    std::vector<FileCollection *>   m_collections;
 
 private:
-  static CollectionCollection *_inst ;
+    static CollectionCollection *   g_instance;
 };
 
 
@@ -122,61 +119,11 @@ private:
  * inst is used, it is often used a lot, so it's handy with a short name for
  * CollectionCollection
  */
-typedef CollectionCollection CColl ;
+typedef CollectionCollection CColl;
 
 
-//
-// Inline (member) functions
-//
 
-CollectionCollection &CollectionCollection::inst()
-{
-  if( _inst != 0 )
-  {
-    return *_inst ;
-  }
-
-  return *( _inst = new CollectionCollection ) ;
-}
-
-
-CollectionCollection::CollectionCollection( CollectionCollection const& src )
-  : FileCollection( src )
-{
-  _collections.reserve( src._collections.size() ) ;
-  std::vector< FileCollection * >::const_iterator it ;
-  for ( it = src._collections.begin() ; it != src._collections.end() ; ++it )
-  {
-    _collections.push_back( (*it)->clone() ) ;
-  }
-}
-
-
-CollectionCollection const& CollectionCollection::operator = ( CollectionCollection const& src )
-{
-  FileCollection::operator = ( src ) ;
-
-  if ( this != &src )
-  {
-    // Destroy current contents.
-    std::vector< FileCollection * >::const_iterator it ;
-    for ( it = _collections.begin() ; it != _collections.end() ; ++it )
-    {
-      delete *it ;
-    }
-
-    //  Then copy src's content.
-    _collections.clear() ;
-    _collections.reserve( src._collections.size() ) ;
-    for ( it = src._collections.begin() ; it != src._collections.end() ; ++it )
-    {
-      _collections.push_back( (*it)->clone() ) ;
-    }
-  }
-
-  return *this ;
-}
 
 } // namespace
 
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

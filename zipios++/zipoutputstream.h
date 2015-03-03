@@ -24,6 +24,8 @@
 
 #include "zipios++/zipoutputstreambuf.h"
 
+#include <memory>
+
 
 namespace zipios
 {
@@ -36,65 +38,65 @@ class ZipOutputStream : public std::ostream
 {
 public:
 
-  /** ZipOutputStream constructor.
+    /** ZipOutputStream constructor.
       @param os ostream to which the compressed zip archive is written.
       @param pos position to reposition the ostream to before reading.  */
-  explicit ZipOutputStream( std::ostream& os ) ;
+    explicit ZipOutputStream(std::ostream& os);
 
-  /** \brief ZipOutputStream constructor.
-   *
-   * Create an output stream that will be saved to a file.
-   *
-   * \param[in] filename Name of the file to write the zip archive to.
-   */
-  explicit ZipOutputStream( std::string const& filename ) ;
-  
-  /** Closes the current entry updates its header with the relevant
+    /** \brief ZipOutputStream constructor.
+     *
+     * Create an output stream that will be saved to a file.
+     *
+     * \param[in] filename  Name of the file to write the zip archive to.
+     */
+    explicit ZipOutputStream(std::string const& filename);
+
+    /** Destructor. */
+    virtual ~ZipOutputStream();
+
+    /** Closes the current entry updates its header with the relevant
       size information and positions the stream write pointer for the
       next entry header. Puts the stream in EOF state. Call
       putNextEntry() to clear the EOF stream state flag. */
-  void closeEntry() ;
+    void closeEntry();
 
-  /** Calls finish and if the ZipOutputStream was created with a
+    /** Calls finish and if the ZipOutputStream was created with a
       filename as a parameter that file is closed as well. If the
       ZipOutputStream was created with an ostream as its first
       parameter nothing but the call to finish happens. */
-  void close() ;
+    void close();
 
-  /** Closes the current entry (if one is open), then writes the Zip
+    /** Closes the current entry (if one is open), then writes the Zip
       Central Directory Structure closing the ZipOutputStream. The
       output stream that the zip archive is being written to is not
       closed. */
-  void finish() ;
+    void finish();
 
-  /** \anchor ZipOutputStream_putnextentry_anchor
-      Begins writing the next entry.
-  */
-  void putNextEntry( ZipCDirEntry const& entry ) ;
+    /** \anchor ZipOutputStream_putnextentry_anchor
+     * Begins writing the next entry.
+     */
+    void putNextEntry(ZipCDirEntry const& entry);
 
-  /** \anchor ZipOutputStream_putnextentry2_anchor
-      Begins writing the next entry.
-  */
-  void putNextEntry( std::string const& entryName);
+    /** \anchor ZipOutputStream_putnextentry2_anchor
+     * Begins writing the next entry.
+     */
+    void putNextEntry(std::string const& entryName);
 
-  /** Sets the global comment for the Zip archive. */
-  void setComment( std::string const& comment ) ;
+    /** Sets the global comment for the Zip archive. */
+    void setComment(std::string const& comment);
 
-  /** Sets the compression level to be used for subsequent entries. */
-  void setLevel( int level ) ;
+    /** Sets the compression level to be used for subsequent entries. */
+    void setLevel(int level);
 
-  /** Sets the compression method to be used. only STORED and DEFLATED are
+    /** Sets the compression method to be used. only STORED and DEFLATED are
       supported. */
-  void setMethod( StorageMethod method ) ;
-
-  /** Destructor. */
-  virtual ~ZipOutputStream() ;
+    void setMethod(StorageMethod method);
 
 private:
-  std::ofstream *     f_ofs ;
-  ZipOutputStreambuf *f_ozf ;
+    std::unique_ptr<std::ofstream>      m_ofs;
+    std::unique_ptr<ZipOutputStreambuf> m_ozf;
 };
  
 } // zipios namespace
 
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

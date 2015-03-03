@@ -1,6 +1,6 @@
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000  Thomas Søndergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,8 @@
 /** \file
     \anchor all_tests_anchor
     Zipios++ unit test suite.
+
+    https://github.com/philsquared/Catch/blob/master/docs/tutorial.md
 */
 
 

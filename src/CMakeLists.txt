@@ -30,41 +30,44 @@
 project( zipios )
 
 add_library( ${PROJECT_NAME} SHARED
-  basicentry.cpp
-  collcoll.cpp
-  dircoll.cpp
-  directory.cpp
-  dostime.c
-  fcoll.cpp
-  fileentry.cpp
-  filepath.cpp
-  filterinputstreambuf.cpp
-  inflateinputstreambuf.cpp
-  gzipoutputstream.cpp
-  gzipoutputstreambuf.cpp
-  zipfile.cpp
-  ziphead.cpp
-  zipheadio.cpp
-  zipinputstream.cpp
-  zipinputstreambuf.cpp
-  filteroutputstreambuf.cpp
-  deflateoutputstreambuf.cpp
-  zipoutputstreambuf.cpp
-  zipoutputstream.cpp
+    backbuffer.cpp
+    basicentry.cpp
+    collcoll.cpp
+    deflateoutputstreambuf.cpp
+    dircoll.cpp
+    directory.cpp
+    dostime.c
+    fcoll.cpp
+    fileentry.cpp
+    filepath.cpp
+    filterinputstreambuf.cpp
+    filteroutputstreambuf.cpp
+    gzipoutputstream.cpp
+    gzipoutputstreambuf.cpp
+    inflateinputstreambuf.cpp
+    virtualseeker.cpp
+    zipfile.cpp
+    ziphead.cpp
+    zipheadio.cpp
+    zipinputstream.cpp
+    zipinputstreambuf.cpp
+    zipios_common.cpp
+    zipoutputstream.cpp
+    zipoutputstreambuf.cpp
 )
 
 target_link_libraries( ${PROJECT_NAME}
-  ${ZLIB_LIBRARIES}
+    ${ZLIB_LIBRARIES}
 )
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES
-  VERSION ${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}
-  SOVERSION ${ZIPIOS_VERSION_MAJOR}
+    VERSION ${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}
+    SOVERSION ${ZIPIOS_VERSION_MAJOR}
 )
 
 install( TARGETS ${PROJECT_NAME}
-  DESTINATION lib
+    DESTINATION lib
 )
 
 
-# vim: ts=2 sw=2 et
+# vim: ts=4 sw=4 et
