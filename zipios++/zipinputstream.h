@@ -82,7 +82,7 @@ public:
     /** Closes the istream. */
     void                            close();
 
-    //    ZipLocalEntry *createZipCDirEntry( const string &name ) ;
+    //ZipLocalEntry *createZipCDirEntry(const string &name);
 
     /** \anchor ZipInputStream_getnextentry_anchor
      * Opens the next entry in the zip archive and returns a const pointer to a

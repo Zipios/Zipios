@@ -32,6 +32,7 @@
 namespace zipios
 {
 
+
 /** \brief An output stream using strings.
  *
  * This object is used whenever we want to output a buffer from
@@ -39,6 +40,6 @@ namespace zipios
  */
 typedef std::ostringstream OutputStringStream;
 
-} // zipios namespace
 
+} // zipios namespace
 // vim: ts=2 sw=2 et

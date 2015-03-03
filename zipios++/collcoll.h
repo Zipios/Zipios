@@ -81,26 +81,22 @@ public:
       @param collection A pointer to the collection to add.
       @return true if the collection was added succesfully and
       the added collection is valid. */
-    bool addCollection( FileCollection *collection ) ;
+    bool addCollection(FileCollection *collection);
 
-    virtual void close() ;
+    virtual void close();
 
-    virtual ConstEntries entries() const ;
+    virtual ConstEntries entries() const;
 
-    virtual ConstEntryPointer getEntry( std::string const& name,
-            MatchPath matchpath = MatchPath::MATCH ) const ;
-
-    virtual std::istream *getInputStream( ConstEntryPointer const& entry ) ;
-
-    virtual std::istream *getInputStream( std::string const& entry_name,
-                                          MatchPath matchpath = MatchPath::MATCH ) ;
+    virtual ConstEntryPointer getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
+    virtual stream_pointer_t getInputStream(ConstEntryPointer const& entry);
+    virtual stream_pointer_t getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
 
     /** Returns the number in entries in all collections kept by
      *  the CollectionCollection object
      */
-    virtual int size() const ;
+    virtual int size() const;
 
-    virtual FileCollection *clone() const ;
+    virtual FileCollection *clone() const;
 
 protected:
     void getEntry(std::string const& name,

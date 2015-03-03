@@ -154,36 +154,34 @@ namespace zipios
 {
 
 
-/** \anchor zipfile_anchor
- *  ZipFile is a FileCollection, where the files are stored
+/** \brief The ZipFile class represents a collection of files.
+ * \anchor zipfile_anchor
+ *
+ * ZipFile is a FileCollection, where the files are stored
  * in a .zip file.
  */
 class ZipFile : public FileCollection
 {
 public:
-    static ZipFile          openEmbeddedZipFile(std::string const& name);
+    static ZipFile              openEmbeddedZipFile(std::string const& name);
 
-                            ZipFile();
-    explicit                ZipFile(std::string const& filename, int s_off = 0, int e_off = 0);
+                                ZipFile();
+    explicit                    ZipFile(std::string const& filename, int s_off = 0, int e_off = 0);
+    virtual FileCollection *    clone() const;
+    virtual                     ~ZipFile();
 
-    virtual FileCollection *clone() const;
-
-    /** Destructor. */
-    virtual                 ~ZipFile();
-
-    virtual void            close();
-
-    virtual std::istream *  getInputStream(ConstEntryPointer const& entry);
-    virtual std::istream *  getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
+    virtual void                close();
+    virtual stream_pointer_t    getInputStream(ConstEntryPointer const& entry);
+    virtual stream_pointer_t    getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
 
 private:
-    bool                    init(std::istream& zipfile);
-    bool                    readCentralDirectory(std::istream& zipfile);
-    bool                    readEndOfCentralDirectory(std::istream& zipfile);
-    bool                    confirmLocalHeaders(std::istream& zipfile);
+    bool                        init(std::istream& zipfile);
+    bool                        readCentralDirectory(std::istream& zipfile);
+    bool                        readEndOfCentralDirectory(std::istream& zipfile);
+    bool                        confirmLocalHeaders(std::istream& zipfile);
 
-    VirtualSeeker           m_vs;
-    EndOfCentralDirectory   m_eocd;
+    VirtualSeeker           	m_vs;
+    EndOfCentralDirectory   	m_eocd;
 };
 
 

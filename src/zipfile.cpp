@@ -127,15 +127,14 @@ void ZipFile::close()
 }
 
 
-std::istream *ZipFile::getInputStream(ConstEntryPointer const& entry)
+ZipFile::stream_pointer_t ZipFile::getInputStream(ConstEntryPointer const& entry)
 {
     mustBeValid();
     return getInputStream(entry->getName());
 }
 
 
-std::istream *ZipFile::getInputStream(std::string const& entry_name,
-                                      MatchPath matchpath)
+ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name, MatchPath matchpath)
 {
     mustBeValid();
 
@@ -145,7 +144,7 @@ std::istream *ZipFile::getInputStream(std::string const& entry_name,
         return 0;
     }
 
-    ZipInputStream *zis(new ZipInputStream(m_filename, static_cast<ZipCDirEntry const *>(ent.get())->getLocalHeaderOffset() + m_vs.startOffset()));
+    stream_pointer_t zis(new ZipInputStream(m_filename, static_cast<ZipCDirEntry const *>(ent.get())->getLocalHeaderOffset() + m_vs.startOffset()));
     //
     // Wed Mar 19 18:16:34 PDT 2014 (RDB)
     // This was causing a basic_ios::clear exception.

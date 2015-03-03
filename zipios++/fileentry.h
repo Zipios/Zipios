@@ -206,10 +206,6 @@ public:
      */
     virtual FileEntry *clone() const = 0;
 
-    // TBD: could these be protected?
-    class MatchName;
-    class MatchFileName;
-
 protected:
     friend class SimpleSmartPointer< FileEntry > ;
     friend class SimpleSmartPointer< const FileEntry > ;
@@ -247,50 +243,6 @@ typedef std::vector<EntryPointer> Entries;
  */
 typedef std::vector<EntryPointer> ConstEntries;
 
-
-/** Function object to be used with the STL find_if algorithm to
-    find a FileEntry in a container, which name (as obtained with
-    FileEntry::getName()) is identical to the name specified in the
-    MatchName constructor. */
-class FileEntry::MatchName
-{
-public:
-    explicit MatchName(std::string const& name)
-        : m_name(name)
-    {
-    }
-
-    bool operator() (ConstEntryPointer const& entry) const
-    {
-        return entry->getName() == m_name;
-    }
-
-private:
-    std::string const       m_name;
-};
-
-
-/** Function object to be used with the STL find_if algorithm to
- * find a FileEntry in a container, which name (as obtained with
- * FileEntry::getFileName()) is identical to the name specified in the
- * MatchName constructor.
- */
-class FileEntry::MatchFileName
-{
-public:
-    explicit MatchFileName(std::string const& name)
-        : m_name(name)
-    {
-    }
-
-    bool operator() (ConstEntryPointer const& entry) const
-    {
-        return entry->getFileName() == m_name;
-    }
-
-private:
-    std::string const       m_name;
-};
 
 
 std::ostream& operator << (std::ostream &os, FileEntry const& entry);

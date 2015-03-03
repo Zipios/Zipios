@@ -162,7 +162,7 @@ ConstEntryPointer CollectionCollection::getEntry(std::string const& name,
 }
 
 
-std::istream *CollectionCollection::getInputStream(ConstEntryPointer const& entry)
+CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(ConstEntryPointer const& entry)
 {
   mustBeValid();
 
@@ -170,8 +170,7 @@ std::istream *CollectionCollection::getInputStream(ConstEntryPointer const& entr
 }
 
 
-std::istream *CollectionCollection::getInputStream(std::string const& entry_name,
-                                                   MatchPath matchpath)
+CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(std::string const& entry_name, MatchPath matchpath)
 {
     mustBeValid();
 

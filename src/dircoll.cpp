@@ -119,7 +119,7 @@ ConstEntryPointer DirectoryCollection::getEntry(std::string const& name,
 }
 
 
-std::istream *DirectoryCollection::getInputStream(ConstEntryPointer const& entry)
+DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(ConstEntryPointer const& entry)
 {
     mustBeValid();
 
@@ -127,7 +127,7 @@ std::istream *DirectoryCollection::getInputStream(ConstEntryPointer const& entry
 }
 
 
-std::istream *DirectoryCollection::getInputStream(std::string const& entry_name,
+DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::string const& entry_name,
                                                   MatchPath matchpath)
 {
     mustBeValid();
@@ -143,15 +143,15 @@ std::istream *DirectoryCollection::getInputStream(std::string const& entry_name,
         }
 
         std::string real_path(m_filepath + entry_name);
-        return new std::ifstream(real_path.c_str(), std::ios::in | std::ios::binary);
+        DirectoryCollection::stream_pointer_t p(new std::ifstream(real_path.c_str(), std::ios::in | std::ios::binary));
+        return p;
     }
 
     // avoid loading entries if possible.
     std::string real_path(m_filepath + entry_name);
-    std::ifstream *ifs(new std::ifstream(real_path.c_str(), std::ios::in | std::ios::binary));
+    DirectoryCollection::stream_pointer_t ifs(new std::ifstream(real_path.c_str(), std::ios::in | std::ios::binary));
     if(!*ifs)
     {
-        delete ifs;
         return 0;
     }
 
