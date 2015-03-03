@@ -1,0 +1,45 @@
+Source: zipios++
+Section: libs
+Priority: optional
+Maintainer: Masayuki Hatta (mhatta) <mhatta@debian.org>
+Build-Depends: cmake, debhelper (>> 4.0.0), doxygen, graphviz, graphicsmagick-imagemagick-compat, libcppunit-dev, libz-dev,
+    snapcmakemodules (>= 0.1.6~saucy)
+Standards-Version: 3.9.4
+
+Package: libzipios++-dev
+Section: libdevel
+Architecture: any
+Depends: libzipios++0m2osw (= ${binary:Version}), libz-dev
+Description: a small C++ library for reading zip files (development)
+ Zipios++ is a java.util.zip-like C++ library for reading and writing Zip
+ files. Access to individual entries is provided through standard C++
+ iostreams. A simple read-only virtual file system that mounts regular
+ directories and zip files is also provided.
+ .
+ This package contains files needed for development with zipios++.
+
+Package: libzipios++0m2osw
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Conflicts: libzipios++0c2a, libzipios++0c102, libzipios++0
+Replaces: libzipios++0c2a, libzipios++0c102, libzipios++0
+Description: a small C++ library for reading zip files (library)
+ Zipios++ is a java.util.zip-like C++ library for reading and writing Zip
+ files. Access to individual entries is provided through standard C++
+ iostreams. A simple read-only virtual file system that mounts regular
+ directories and zip files is also provided.
+ .
+ This package contains shared library.
+
+Package: libzipios++-doc
+Section: doc
+Architecture: all
+Suggests: libzipios++-dev
+Description: a small C++ library for reading zip files (documents)
+ Zipios++ is a java.util.zip-like C++ library for reading and writing Zip
+ files. Access to individual entries is provided through standard C++
+ iostreams. A simple read-only virtual file system that mounts regular
+ directories and zip files is also provided.
+ .
+ This package contains documentations for development with zipios++.
