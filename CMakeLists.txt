@@ -35,6 +35,8 @@ set( ZIPIOS_VERSION_MAJOR 2 )
 set( ZIPIOS_VERSION_MINOR 0 )
 set( ZIPIOS_VERSION_PATCH 0 )
 
+set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
+
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -fdiagnostics-show-option -fPIC -Wunused-parameter -Wfloat-equal -Wold-style-cast -Wnoexcept" )
 set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0" )
 set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
