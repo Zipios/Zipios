@@ -1,8 +1,7 @@
 zipios++ (2.0.0.1~trusty) trusty; urgency=high
 
   * Moving to the new 2.X version.
-  * Lots of updates and upgrades from Alexis, since he came on as the new
-	lead.
+  * Lots of updates and upgrades from Alexis, since he came on as the new lead.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Tue, 3 Mar 2015 08:37:31 -0700
 
