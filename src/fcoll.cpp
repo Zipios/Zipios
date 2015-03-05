@@ -50,7 +50,7 @@ public:
     {
     }
 
-    bool operator() (ConstEntryPointer const& entry) const
+    bool operator() (FileEntry::pointer_t entry) const
     {
         return entry->getName() == m_name;
     }
@@ -73,7 +73,7 @@ public:
     {
     }
 
-    bool operator() (ConstEntryPointer const& entry) const
+    bool operator() (FileEntry::pointer_t entry) const
     {
         return entry->getFileName() == m_name;
     }
@@ -209,41 +209,40 @@ FileCollection const& FileCollection::operator = (FileCollection const& src)
         }
     }
 
-    return *this ;
+    return *this;
 }
 
 
-/** FileCollection destructor. */
+/** \brief Make sure the resources are released.
+ *
+ * The FileCollection destructor makes sure that any resources
+ * still allocated get released.
+ *
+ * For example, the ZipFile implementation calls the close()
+ * function.
+ */
 FileCollection::~FileCollection()
 {
 }
 
 
 
-/** \brief Retrieve an array of entries.
+/** \brief Retrieve the array of entries.
  * \anchor fcoll_entries_anchor
  *
- * This function returns a vector of const pointers to the entries in the
- * FileCollection.
+ * This function returns a copy of the file collection vector of entries.
+ * Note that the vector is copied but not the entries, so modifications
+ * to the entries will be reflected in this FileCollection entries.
+ * However, adding and removing entries to the collection is not
+ * reflected in the copy.
  *
- * \return A ConstEntries containing the entries of the FileCollection.
+ * \return A vector containing the entries of this FileCollection.
  */
-ConstEntries FileCollection::entries() const
+FileEntry::vector_t FileCollection::entries() const
 {
     mustBeValid();
 
-    // The constructor below is not in all vector impl. (not those
-    // without member templates)
-    // ConstEntries ( _entries.begin(), _entries.end() ) ;
-    // Instead of using that we copy the vector manually
-    ConstEntries cep_vec;
-    cep_vec.reserve(m_entries.size());
-    for(auto cit = m_entries.begin(); cit != m_entries.end(); ++cit)
-    {
-        cep_vec.push_back(*cit);
-    }
-
-    return cep_vec;
+    return m_entries;
 }
 
 
@@ -268,12 +267,11 @@ ConstEntries FileCollection::entries() const
  *
  * \sa mustBeValid()
  */
-ConstEntryPointer FileCollection::getEntry(std::string const& name,
-                                           MatchPath matchpath) const
+FileEntry::pointer_t FileCollection::getEntry(std::string const& name, MatchPath matchpath) const
 {
     mustBeValid();
 
-    Entries::const_iterator iter;
+    FileEntry::vector_t::const_iterator iter;
     if(matchpath == MatchPath::MATCH)
     {
         iter = std::find_if(m_entries.begin(), m_entries.end(), MatchName(name));
@@ -283,7 +281,7 @@ ConstEntryPointer FileCollection::getEntry(std::string const& name,
         iter = std::find_if(m_entries.begin(), m_entries.end(), MatchFileName(name));
     }
 
-    return iter == m_entries.end() ? EntryPointer() : *iter;
+    return iter == m_entries.end() ? FileEntry::pointer_t() : *iter;
 }
 
 
@@ -316,7 +314,7 @@ std::string FileCollection::getName() const
  *
  * \sa mustBeValid()
  */
-int FileCollection::size() const
+size_t FileCollection::size() const
 {
     mustBeValid();
     return m_entries.size();
@@ -357,18 +355,15 @@ void FileCollection::mustBeValid() const
 }
 
 
-std::ostream & operator << (std::ostream& os, FileCollection const& collection)
+std::ostream& operator << (std::ostream& os, FileCollection const& collection)
 {
     os << "collection '" << collection.getName() << "' {" ;
-    ConstEntries entries(collection.entries());
-    bool isFirst(true);
+    FileEntry::vector_t entries(collection.entries());
+    char const *sep("");
     for(auto it = entries.begin(); it != entries.end(); ++it)
     {
-        if(!isFirst)
-        {
-            os << ", ";
-            isFirst = false;
-        }
+        os << sep;
+        sep = ", ";
         os << (*it)->getName();
     }
     os << "}";

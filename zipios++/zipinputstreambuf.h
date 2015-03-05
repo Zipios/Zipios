@@ -66,16 +66,16 @@ public:
       @return a const FileEntry * containing information about the (now) current
       entry.
      */
-    ConstEntryPointer getNextEntry();
+    FileEntry::pointer_t    getNextEntry();
 
 protected:
-    virtual int underflow();
+    virtual int             underflow();
 
 private:
-    bool                  m_open_entry = false;
-    ZipLocalEntry         m_curr_entry;
-    int                   m_data_start; // Do not forget entry header has a length too.
-    int                   m_remain;     // For STORED entry only. the number of bytes that
+    bool                    m_open_entry = false;
+    ZipLocalEntry           m_curr_entry;
+    int                     m_data_start; // Do not forget entry header has a length too.
+    int                     m_remain;     // For STORED entry only. the number of bytes that
                                         // has not been put in the m_outvec yet.
 };
 

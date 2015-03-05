@@ -66,7 +66,6 @@ bool operator == (ZipLocalEntry const& zlh, ZipCDirEntry const& ze)
            zlh.m_compress_method == ze.m_compress_method     &&
            zlh.m_last_mod_ftime  == ze.m_last_mod_ftime      &&
            zlh.m_last_mod_fdate  == ze.m_last_mod_fdate      &&
-           zlh.m_filename_len    == ze.m_filename_len        &&
            zlh.m_filename        == ze.m_filename;
 }
 
@@ -90,19 +89,13 @@ std::string ZipLocalEntry::getComment() const
 }
 
 
-uint32_t ZipLocalEntry::getCompressedSize() const
+size_t ZipLocalEntry::getCompressedSize() const
 {
     return m_compress_size;
 }
 
 
-uint32_t ZipLocalEntry::getCrc() const
-{
-    return m_crc_32;
-}
-
-
-std::vector< unsigned char > ZipLocalEntry::getExtra() const
+ZipLocalEntry::buffer_t ZipLocalEntry::getExtra() const
 {
     return m_extra_field;
 }
@@ -114,69 +107,13 @@ StorageMethod ZipLocalEntry::getMethod() const
 }
 
 
-std::string ZipLocalEntry::getName() const
-{
-  return m_filename;
-}
 
 
-std::string ZipLocalEntry::getFileName() const
-{
-  if(isDirectory())
-  {
-    return std::string();
-  }
-  std::string::size_type const pos(m_filename.find_last_of(g_separator));
-  if(pos != std::string::npos)
-  {
-    // separator found!
-    // isDirectory() check means pos should not be last, so pos+1 is ok
-    return m_filename.substr(pos + 1);
-  }
-
-  return m_filename;
-}
 
 
-uint32_t ZipLocalEntry::getSize() const
-{
-  return m_uncompress_size;
-}
-
-
-int ZipLocalEntry::getTime() const
+ZipLocalEntry::dostime_t ZipLocalEntry::getTime() const
 {
   return (m_last_mod_fdate << 16) + m_last_mod_ftime;
-  // FIXME: what to do with this time date thing? (not only here?)
-}
-
-
-std::time_t ZipLocalEntry::getUnixTime() const
-{
-    return dos2unixtime(getTime());
-}
-
-
-bool ZipLocalEntry::isValid() const
-{
-    return m_valid;
-}
-
-
-bool ZipLocalEntry::isDirectory() const
-{
-    if(m_filename.size() == 0)
-    {
-        throw IOException("directory filename cannot be empty");
-    }
-
-    return m_filename[m_filename.size() - 1] == g_separator;
-}
-
-
-void ZipLocalEntry::setComment(std::string const &)
-{
-    // A local entry cannot hold a comment
 }
 
 
@@ -189,6 +126,7 @@ void ZipLocalEntry::setCompressedSize(uint32_t size)
 void ZipLocalEntry::setCrc(uint32_t crc)
 {
     m_crc_32 = crc;
+    m_has_crc_32 = true;
 }
 
 
@@ -205,20 +143,13 @@ void ZipLocalEntry::setMethod(StorageMethod method)
 }
 
 
-void ZipLocalEntry::setName(std::string const& name)
-{
-    m_filename = name;
-    m_filename_len = m_filename.size();
-}
-
-
 void ZipLocalEntry::setSize(uint32_t size)
 {
     m_uncompress_size = size;
 }
 
 
-void ZipLocalEntry::setTime(int time)
+void ZipLocalEntry::setTime(dostime_t time)
 {
   // FIXME: fix time setting here, and ind flist and elsewhere. Define the
   // date time semantics before mucking about - how surprising
@@ -255,12 +186,12 @@ bool ZipLocalEntry::trailingDataDescriptor() const
     // gp_bitfield bit 3 is one, if this entry uses a trailing data
     // descriptor to keep size, compressed size and crc-32
     // fields.
-    return (m_gp_bitfield & 4 ) != 0;
+    return (m_gp_bitfield & 4) != 0;
 }
 
-FileEntry *ZipLocalEntry::clone() const
+FileEntry::pointer_t ZipLocalEntry::clone() const
 {
-    return new ZipLocalEntry(*this);
+    return FileEntry::pointer_t(new ZipLocalEntry(*this));
 }
 
 
@@ -319,9 +250,9 @@ int ZipCDirEntry::getCDirHeaderSize() const
 }
 
 
-FileEntry *ZipCDirEntry::clone() const
+FileEntry::pointer_t ZipCDirEntry::clone() const
 {
-    return new ZipCDirEntry(*this);
+    return FileEntry::pointer_t(new ZipCDirEntry(*this));
 }
 
 

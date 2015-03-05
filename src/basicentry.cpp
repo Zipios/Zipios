@@ -48,9 +48,9 @@ namespace zipios
 BasicEntry::BasicEntry(std::string const& filename,
                        std::string const& comment,
                        FilePath const& basepath)
-    : m_filename(filename)
+    : FileEntry(filename)
     , m_comment(comment)
-    //, m_size(0) -- auto-init
+    //, m_uncompress_size(0) -- auto-init
     //, m_valid(false) -- auto-init
     , m_basepath(basepath)
 {
@@ -63,10 +63,26 @@ BasicEntry::BasicEntry(std::string const& filename,
     else
     {
         is.seekg(0, std::ios::end);
-        m_size = is.tellg();
+        m_uncompress_size = is.tellg();
         is.close();
         m_valid = true;
     }
+}
+
+
+/** \brief Create a copy of the BasicEntry.
+ *
+ * The clone function creates a copy of this BasicEntry object.
+ *
+ * In most cases, when a collection is copied, a clone of each
+ * entry is created to avoid potential problems with sharing
+ * the same object between various lists.
+ *
+ * \return A shared pointer of the new BasicEntry object.
+ */
+BasicEntry::pointer_t BasicEntry::clone() const
+{
+    return BasicEntry::pointer_t(new BasicEntry(*this));
 }
 
 
@@ -81,88 +97,19 @@ std::string BasicEntry::getComment() const
 }
 
 
-uint32_t BasicEntry::getCompressedSize() const
-{
-    return getSize();
-}
-
-
-uint32_t BasicEntry::getCrc() const
-{
-    return 0;
-}
-
-
-std::vector<unsigned char> BasicEntry::getExtra() const
-{
-    return std::vector<unsigned char>();
-}
-
-
 StorageMethod BasicEntry::getMethod() const
 {
     return StorageMethod::STORED;
 }
 
-std::string BasicEntry::getName() const
-{
-    return m_filename;
-}
 
-
-std::string BasicEntry::getFileName() const
-{
-    if(isDirectory())
-    {
-        return std::string();
-    }
-
-    std::string::size_type const pos(m_filename.find_last_of(g_separator));
-    if(pos != std::string::npos) // separator found!
-    {
-        // isDirectory() check means pos should not be last, so pos+1 is ok
-        return m_filename.substr(pos + 1);
-    }
-
-    return m_filename;
-}
-
-uint32_t BasicEntry::getSize() const
-{
-    return m_size;
-}
-
-
-int BasicEntry::getTime() const
+BasicEntry::dostime_t BasicEntry::getTime() const
 {
     return 0; // FIXME later
 }
 
 
-std::time_t BasicEntry::getUnixTime() const
-{
-    return 0; // Mon Mar 24 18:33:19 PDT 2014 (RDB)
-}
-
-
-bool BasicEntry::isValid() const
-{
-    return m_valid;
-}
-
-
 //     virtual int hashCode() const {}
-
-
-bool BasicEntry::isDirectory() const
-{
-    if(m_filename.size() == 0)
-    {
-        throw IOException("directory filename cannot be empty");
-    }
-
-    return m_filename[m_filename.size() - 1] == g_separator;
-}
 
 
 void BasicEntry::setComment(std::string const& comment)
@@ -172,11 +119,6 @@ void BasicEntry::setComment(std::string const& comment)
 
 
 void BasicEntry::setCompressedSize(uint32_t)
-{
-}
-
-
-void BasicEntry::setCrc(uint32_t)
 {
 }
 
@@ -199,11 +141,11 @@ void BasicEntry::setName(std::string const& name)
 
 void BasicEntry::setSize(uint32_t size)
 {
-    m_size = size;
+    m_uncompress_size = size;
 }
 
 
-void BasicEntry::setTime(int)
+void BasicEntry::setTime(dostime_t)
 {
 }
 
@@ -216,17 +158,10 @@ void BasicEntry::setUnixTime(std::time_t)
 std::string BasicEntry::toString() const
 {
     OutputStringStream sout;
-    sout << m_filename << " (" << m_size << " bytes)";
+    sout << m_filename << " (" << m_uncompress_size << " bytes)";
     return sout.str();
 }
 
 
-FileEntry *BasicEntry::clone() const
-{
-    return new BasicEntry(*this);
-}
-
-
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

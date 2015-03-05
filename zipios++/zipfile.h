@@ -98,20 +98,7 @@
  * other collections. Using a single CollectionCollection any number of
  * other FileCollections can be placed under its control and accessed
  * through the same single interface that is used to access a ZipFile or
- * a DirectoryCollection. A singleton (a unique global instance)
- * CollectionCollection can be obtained through
- *
- * \ref collcoll_inst_anchor "CollectionCollection::inst()" ;
- *
- * To save typing CollectionCollection has been typedef'ed to CColl. In
- * the initialization part of an application FileCollections can be
- * created, and placed under CColll::inst()'s control using
- *
- * \ref collcoll_addcoll_anchor "CColl::inst().addCollection()"
- *
- * and later an istream can be obtained using
- *
- * \ref fcoll_getinputstream "CColl::inst().getInputStream()".
+ * a DirectoryCollection.
  *
  * \section download Download
  * Go to Zipios++ project page on SourceForge for tar balls and ChangeLog.
@@ -163,25 +150,25 @@ namespace zipios
 class ZipFile : public FileCollection
 {
 public:
-    static ZipFile              openEmbeddedZipFile(std::string const& name);
+    static ZipFile::pointer_t           openEmbeddedZipFile(std::string const& name);
 
-                                ZipFile();
-    explicit                    ZipFile(std::string const& filename, int s_off = 0, int e_off = 0);
-    virtual FileCollection *    clone() const;
-    virtual                     ~ZipFile();
+                                        ZipFile();
+    explicit                            ZipFile(std::string const& filename, int s_off = 0, int e_off = 0);
+    virtual FileCollection::pointer_t   clone() const;
+    virtual                             ~ZipFile();
 
-    virtual void                close();
-    virtual stream_pointer_t    getInputStream(ConstEntryPointer const& entry);
-    virtual stream_pointer_t    getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
+    virtual void                        close();
+    virtual stream_pointer_t            getInputStream(FileEntry::pointer_t entry);
+    virtual stream_pointer_t            getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
 
 private:
-    bool                        init(std::istream& zipfile);
-    bool                        readCentralDirectory(std::istream& zipfile);
-    bool                        readEndOfCentralDirectory(std::istream& zipfile);
-    bool                        confirmLocalHeaders(std::istream& zipfile);
+    bool                                init(std::istream& zipfile);
+    bool                                readCentralDirectory(std::istream& zipfile);
+    bool                                readEndOfCentralDirectory(std::istream& zipfile);
+    bool                                confirmLocalHeaders(std::istream& zipfile);
 
-    VirtualSeeker           	m_vs;
-    EndOfCentralDirectory   	m_eocd;
+    VirtualSeeker           	        m_vs;
+    EndOfCentralDirectory   	        m_eocd;
 };
 
 

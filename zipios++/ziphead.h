@@ -46,68 +46,51 @@ class ZipLocalEntry : public FileEntry
 public:
     inline ZipLocalEntry(std::string const& filename = "",
                          std::vector<unsigned char> const& extra_field = std::vector<unsigned char>())
-        //: m_gp_bitfield(0) -- auto-init
-        //, m_valid(false) -- auto-init
+        : FileEntry(filename)
+        //, m_gp_bitfield(0) -- auto-init
     {
         setDefaultExtract();
         setName(filename);
         setExtra(extra_field);
     }
 
-    virtual FileEntry *         clone() const ;
+    inline ZipLocalEntry&       operator = (ZipLocalEntry const& src);
+    virtual pointer_t           clone() const ;
 
     virtual                     ~ZipLocalEntry() {}
 
-    void                        setDefaultExtract();
-    inline ZipLocalEntry&       operator = (ZipLocalEntry const& src);
     virtual std::string         getComment() const;
-    virtual uint32_t            getCompressedSize() const;
-    virtual uint32_t            getCrc() const;
-    virtual std::vector<unsigned char> getExtra() const;
+    virtual size_t              getCompressedSize() const;
+    virtual buffer_t            getExtra() const;
     virtual StorageMethod       getMethod() const;
-    virtual std::string         getName() const;
-    virtual std::string         getFileName() const;
-    virtual uint32_t            getSize() const;
-    virtual int                 getTime() const;
-    virtual std::time_t         getUnixTime() const;
-    virtual bool                isValid() const;
+    virtual dostime_t           getTime() const;
 
-    virtual bool                isDirectory() const;
-
-    virtual void                setComment(std::string const& comment);
     virtual void                setCompressedSize(uint32_t size);
-    virtual void                setCrc(uint32_t crc);
+    virtual void                setCrc(crc32_t crc);
+    void                        setDefaultExtract();
     virtual void                setExtra(std::vector<unsigned char> const& extra);
     virtual void                setMethod(StorageMethod method);
-    virtual void                setName(std::string const& name);
     virtual void                setSize(uint32_t size);
-    virtual void                setTime(int time);
+    virtual void                setTime(dostime_t time);
     virtual void                setUnixTime(std::time_t time);
+    virtual std::string         toString() const;
+    int                         getLocalHeaderSize() const;
+    bool                        trailingDataDescriptor() const;
 
-    virtual std::string         toString() const ;
+protected:
+    static uint32_t const       g_signature;
 
-    int                         getLocalHeaderSize() const ;
-
-    bool                        trailingDataDescriptor() const ;
-
-    protected:
-    static const uint32_t       g_signature;
-
+    // TODO: we need defaults for all those values!
     uint16_t                    m_extract_version;
     uint16_t                    m_gp_bitfield = 0;
     uint16_t                    m_compress_method;
     uint16_t                    m_last_mod_ftime;
     uint16_t                    m_last_mod_fdate;
-    uint32_t                    m_crc_32;
-    uint32_t                    m_compress_size;
-    uint32_t                    m_uncompress_size;
+    size_t                      m_compress_size;
     uint16_t                    m_filename_len;
     uint16_t                    m_extra_field_len;
 
-    std::string                 m_filename;
-    std::vector<unsigned char>  m_extra_field;
-
-    bool                        m_valid = false;
+    buffer_t                    m_extra_field;
 };
 
 
@@ -151,7 +134,7 @@ public:
         setDefaultWriter();
     }
 
-    virtual FileEntry *         clone() const;
+    virtual pointer_t           clone() const;
 
     virtual                     ~ZipCDirEntry() {}
 

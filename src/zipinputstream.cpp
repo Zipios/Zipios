@@ -72,7 +72,7 @@ void ZipInputStream::close()
 
 //    ZipLocalEntry *ZipInputStream::createZipCDirEntry( const string &name ) {}
 
-ConstEntryPointer ZipInputStream::getNextEntry()
+FileEntry::pointer_t ZipInputStream::getNextEntry()
 {
     clear(); // clear eof and other flags.
     return m_izf->getNextEntry();

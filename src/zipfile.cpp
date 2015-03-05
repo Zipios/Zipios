@@ -59,7 +59,7 @@ namespace zipios
  *
  * \return A ZipFile that one can use to read compressed data.
  */
-ZipFile ZipFile::openEmbeddedZipFile(std::string const& name)
+ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const& name)
 {
     // open zipfile, read 4 last bytes close file
     // create ZipFile object.
@@ -67,7 +67,7 @@ ZipFile ZipFile::openEmbeddedZipFile(std::string const& name)
     ifs.seekg(-4, std::ios::end);
     uint32_t const start_offset(readUint32(ifs));
     ifs.close();
-    return ZipFile(name, start_offset, 4);
+    return ZipFile::pointer_t(new ZipFile(name, start_offset, 4));
 }
 
 
@@ -109,9 +109,9 @@ ZipFile::ZipFile(std::string const& filename, int s_off, int e_off)
 }
 
 
-FileCollection *ZipFile::clone() const
+FileCollection::pointer_t ZipFile::clone() const
 {
-    return new ZipFile(*this);
+    return FileCollection::pointer_t(new ZipFile(*this));
 }
 
 
@@ -127,7 +127,7 @@ void ZipFile::close()
 }
 
 
-ZipFile::stream_pointer_t ZipFile::getInputStream(ConstEntryPointer const& entry)
+ZipFile::stream_pointer_t ZipFile::getInputStream(FileEntry::pointer_t entry)
 {
     mustBeValid();
     return getInputStream(entry->getName());
@@ -138,7 +138,7 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name,
 {
     mustBeValid();
 
-    ConstEntryPointer ent(getEntry( entry_name, matchpath));
+    FileEntry::pointer_t ent(getEntry(entry_name, matchpath));
     if(!ent)
     {
         return 0;
@@ -190,9 +190,9 @@ bool ZipFile::readCentralDirectory(std::istream& zipfile)
     m_entries.resize(m_eocd.totalCount(), 0);
     while(entry_num < m_eocd.totalCount())
     {
-        ZipCDirEntry *ent(new ZipCDirEntry);
+        ZipCDirEntry::pointer_t ent(new ZipCDirEntry);
         m_entries[entry_num] = ent;
-        zipfile >> *ent;
+        zipfile >> *static_cast<ZipCDirEntry *>(ent.get());
         if(!zipfile)
         {
             if(zipfile.bad())

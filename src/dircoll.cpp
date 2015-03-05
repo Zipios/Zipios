@@ -87,7 +87,7 @@ void DirectoryCollection::close()
 }
 
 
-ConstEntries DirectoryCollection::entries() const
+FileEntry::vector_t DirectoryCollection::entries() const
 {
     mustBeValid();
 
@@ -97,8 +97,7 @@ ConstEntries DirectoryCollection::entries() const
 }
 
 
-ConstEntryPointer DirectoryCollection::getEntry(std::string const& name,
-                                                MatchPath matchpath) const
+FileEntry::pointer_t DirectoryCollection::getEntry(std::string const& name, MatchPath matchpath) const
 {
     mustBeValid();
 
@@ -109,7 +108,7 @@ ConstEntryPointer DirectoryCollection::getEntry(std::string const& name,
     }
 
     // avoid loading entries if possible.
-    ConstEntryPointer ent(new DirEntry(name, "", m_filepath));
+    FileEntry::pointer_t ent(new DirEntry(name, "", m_filepath));
     if(ent->isValid())
     {
         return ent;
@@ -119,7 +118,7 @@ ConstEntryPointer DirectoryCollection::getEntry(std::string const& name,
 }
 
 
-DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(ConstEntryPointer const& entry)
+DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(FileEntry::pointer_t entry)
 {
     mustBeValid();
 
@@ -127,8 +126,7 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(ConstE
 }
 
 
-DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::string const& entry_name,
-                                                  MatchPath matchpath)
+DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::string const& entry_name, MatchPath matchpath)
 {
     mustBeValid();
 
@@ -136,7 +134,7 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::s
     {
         loadEntries();
 
-        ConstEntryPointer ent(getEntry(entry_name, matchpath));
+        FileEntry::pointer_t ent(getEntry(entry_name, matchpath));
         if(!ent)
         {
             return 0;
@@ -159,7 +157,7 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::s
 }
 
 
-int DirectoryCollection::size() const
+size_t DirectoryCollection::size() const
 {
     mustBeValid();
 
@@ -169,9 +167,9 @@ int DirectoryCollection::size() const
 }
 
 
-FileCollection *DirectoryCollection::clone() const
+FileCollection::pointer_t DirectoryCollection::clone() const
 {
-    return new DirectoryCollection(*this);
+    return FileCollection::pointer_t(new DirectoryCollection(*this));
 }
 
 
@@ -190,7 +188,6 @@ void DirectoryCollection::loadEntries() const
 
 void DirectoryCollection::load(bool recursive, const FilePath &subdir)
 {
-    BasicEntry *ent;
     for(boost::filesystem::dir_it it(m_filepath + subdir); it != boost::filesystem::dir_it(); ++it)
     {
         // TBD: skipping "..." ?!?
@@ -205,7 +202,7 @@ void DirectoryCollection::load(bool recursive, const FilePath &subdir)
         }
         else
         {
-            ent = new BasicEntry(subdir + *it, "", m_filepath);
+            FileEntry::pointer_t ent(new BasicEntry(subdir + *it, "", m_filepath));
             m_entries.push_back(ent);
             ent->setSize(boost::filesystem::get<boost::filesystem::size>(it));
         }

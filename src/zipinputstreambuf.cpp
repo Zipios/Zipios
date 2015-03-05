@@ -65,7 +65,7 @@ void ZipInputStreambuf::close()
 }
 
 
-ConstEntryPointer ZipInputStreambuf::getNextEntry()
+FileEntry::pointer_t ZipInputStreambuf::getNextEntry()
 {
     if(m_open_entry)
     {
@@ -114,7 +114,7 @@ ConstEntryPointer ZipInputStreambuf::getNextEntry()
         throw FCollException("Trailing data descriptor in zip file not supported");
     }
 
-    return new ZipLocalEntry(m_curr_entry);
+    return FileEntry::pointer_t(new ZipLocalEntry(m_curr_entry));
 }
 
 

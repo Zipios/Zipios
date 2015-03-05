@@ -1,7 +1,7 @@
 #pragma once
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 20000-2015  Thomas Sondergaard
+  Copyright (C) 2000-2015  Thomas Sondergaard
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -24,11 +24,10 @@
 
 #include "zipios++/meta-iostreams.h"
 
-#include "zipios++/simplesmartptr.h"
-
+#include <ctime>
+#include <memory>
 #include <string>
 #include <vector>
-#include <ctime>
 
 
 namespace zipios
@@ -44,126 +43,54 @@ namespace zipios
  */
 enum class StorageMethod : uint8_t
 {
-  STORED = 0,
-  SHRUNK,
-  REDUCED1,
-  REDUCED2,
-  REDUCED3,
-  REDUCED4,
-  IMPLODED,
-  RESERVED,
-  DEFLATED
+    STORED = 0,
+    SHRUNK,
+    REDUCED1,
+    REDUCED2,
+    REDUCED3,
+    REDUCED4,
+    IMPLODED,
+    RESERVED,
+    DEFLATED
 };
 
 
 
-/** \brief A FileEntry represents an entry in a FileCollection.
- *
- * The interface is a copy of the ZipEntry interface from the java.util.zip
- * package. The name has been changed to FileEntry, as FileCollection
- * is a more general abstraction, that covers other types of file
- * collections than just zip files.
- */
 class FileEntry
 {
 public:
+    typedef std::shared_ptr<FileEntry>      pointer_t;
+    typedef std::vector<pointer_t>          vector_t;
+    typedef std::vector<unsigned char>      buffer_t;
+    typedef uint32_t                        crc32_t;
+    typedef uint32_t                        dostime_t;
 
-    /* Default constructor, copy constructor, and copy assignment
-       operator are sufficient. */
+                                FileEntry(std::string const& filename);
+    virtual pointer_t           clone() const = 0;
+    virtual                     ~FileEntry();
 
-    /** FileEntry destructor. */
-    virtual ~FileEntry() {}
-
-    /** Returns the comment of the entry, if it has one. Otherwise it
-      returns an empty string.
-      @return the comment associated with the entry, if there is one.
-     */
-    virtual std::string getComment() const = 0;
-
-    /** Returns the compressed size of the entry. If the entry is not
-      stored in a compressed format, the uncompressed size is
-      returned.
-      @return the compressed size of the entry. If the entry is stored without
-      compression the uncompressed size is returned.
-     */
-    virtual uint32_t getCompressedSize() const = 0;
-
-    /** Returns the Crc for the entry, if it has one. FIXME: what is
-      returned if it doesn't have one?
-      @return the Crc for the entry, if it has one.
-     */
-    virtual uint32_t getCrc() const = 0;
-
-    /** Returns a vector of bytes of extra data that may be stored with
-      the entry.
-      @return A vector< unsigned char > of extra bytes that may potentially
-      be associated with an entry.
-     */
-    virtual std::vector< unsigned char > getExtra() const = 0;
-
-    /** Returns the method used to store the entry in the FileCollection.
-      @return the storage method used to store the entry in the collection.
-      @see StorageMethod.
-     */
-    virtual StorageMethod getMethod() const = 0;
-
-    /** Returns the full filename of the entry, including a path if the
-      entry is stored in a subfolder.
-      @return the filename of the entry, including path if the entry is stored
-      in a sub-folder.
-     */
-    virtual std::string getName() const = 0;
-
-    /** Returns the filename of the entry.
-      @return Returns the filename of the entry.
-     */
-    virtual std::string getFileName() const = 0;
-
-    /** Returns the (uncompressed) size of the entry data.
-      @return Returns the (uncompressed) size of the entry.
-     */
-    virtual uint32_t getSize() const = 0;
-
-    /** Returns the date and time of the entry in MSDOS date/time format.
-      @return the date and time of the entry.
-     */
-    virtual int getTime() const = 0;
-
-    /** Returns the date and time of the entry in Unix date/time format (see time()).
-      @return the date and time of the entry.
-     */
-    virtual std::time_t getUnixTime() const = 0;
-
-    /** Any method or operator that initializes a FileEntry may set a
-      flag, that specifies whether the read entry is valid or not. If
-      it isn't this method returns false.
-      @return true if the FileEntry has been parsed succesfully.
-     */
-    virtual bool isValid() const = 0;
-
-    //     virtual int hashCode() const = 0;
-
-    /** Returns true if the entry is a directory. A directory entry is
-      an entry which name ends with a separator ('/' for Unix systems,
-      '\' for Windows and DOS systems.
-      @return true if the entry is a directory.
-     */
-    virtual bool isDirectory() const = 0;
-
-    /** Sets the comment field for the FileEntry.
-      @param comment string with the new comment.
-     */
-    virtual void setComment(std::string const& comment) = 0;
+    virtual std::string         getComment() const = 0;
+    virtual size_t              getCompressedSize() const;
+    virtual crc32_t             getCrc() const;
+    virtual buffer_t            getExtra() const;
+    virtual StorageMethod       getMethod() const = 0;
+    virtual std::string         getName() const;
+    virtual std::string         getFileName() const;
+    virtual size_t              getSize() const;
+    virtual dostime_t           getTime() const = 0;
+    virtual std::time_t         getUnixTime() const;
+    bool                        hasCrc() const;
+    //virtual int                 hashCode() const = 0;
+    virtual bool                isDirectory() const;
+    virtual bool                isValid() const;
+    virtual void                setComment(std::string const& comment);
 
     /** Set the compressed size field of the entry.
       @param size value to set the compressed size field of the entry to.
      */
     virtual void setCompressedSize(uint32_t size) = 0;
 
-    /** Sets the crc field.
-      @param crc value to set the crc field to.
-     */
-    virtual void setCrc(uint32_t crc) = 0;
+    virtual void setCrc(crc32_t crc);
 
     /** Sets the extra field.
       @param extra the extra field is set to this value.
@@ -178,17 +105,14 @@ public:
     /** Sets the name field for the entry.
       @param name the name field is set to the specified value.
      */
-    virtual void setName(std::string const& name) = 0;
+    virtual void setName(std::string const& name);
 
-    /**   Sets the size field for the entry.
-      @param size the size field is set to this value.
-     */
     virtual void setSize(uint32_t size) = 0;
 
     /** Sets the time field for the entry.
       @param time set time field as is using this MSDOS date/time formatted value.
      */
-    virtual void setTime(int time) = 0;
+    virtual void setTime(dostime_t time) = 0;
 
     /** Sets the time field in Unix time format for the entry.
       @param time the time field is set to the specified value.
@@ -200,62 +124,18 @@ public:
      */
     virtual std::string toString() const = 0;
 
-    /** Create a heap allocated clone of the object this method is called for. The
-      caller is responsible for deallocating the clone when he is done with it.
-      @return A heap allocated copy of the object this method is called for.
-     */
-    virtual FileEntry *clone() const = 0;
-
 protected:
-    friend class SimpleSmartPointer< FileEntry > ;
-    friend class SimpleSmartPointer< const FileEntry > ;
-
-    void ref() const
-    {
-        _refcount.ref() ;
-    }
-
-    unsigned int unref() const
-    {
-        return _refcount.unref() ;
-    }
-
-    ReferenceCount< FileEntry > _refcount;
+    std::string             m_filename;
+    size_t                  m_uncompress_size = 0;
+    uint32_t                m_crc_32 = 0;
+    bool                    m_has_crc_32 = false;
+    bool                    m_valid = false;
 };
 
 
-/** \brief EntryPointer is a SimpleSmartPointer for a FileEntry.
- */
-typedef SimpleSmartPointer<FileEntry> EntryPointer;
-
-
-/** \brief ConstEntryPointer is a SimpleSmartPointer for a constant FileEntry.
- */
-typedef SimpleSmartPointer<const FileEntry> ConstEntryPointer;
-
-
-/** \brief Entries is a vector of EntryPointer pointers.
- */
-typedef std::vector<EntryPointer> Entries;
-
-
-/** ConstEntries is a vector of ConstEntryPointer's
- */
-typedef std::vector<EntryPointer> ConstEntries;
-
-
-
 std::ostream& operator << (std::ostream &os, FileEntry const& entry);
-
-
-inline std::ostream& operator << (std::ostream &os, ConstEntryPointer const& entry)
-{
-    os << *entry;
-    return os;
-}
-
+std::ostream& operator << (std::ostream &os, FileEntry::pointer_t const& entry);
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

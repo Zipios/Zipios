@@ -35,42 +35,27 @@ public:
     explicit                BasicEntry(std::string const& filename,
                                        std::string const& comment,
                                        FilePath const& basepath = FilePath());
+    virtual pointer_t       clone() const;
     virtual                 ~BasicEntry();
 
-    virtual std::string     getComment() const ;
-    virtual uint32_t        getCompressedSize() const ;
-    virtual uint32_t        getCrc() const ;
-    virtual std::vector<unsigned char>  getExtra() const ;
-    virtual StorageMethod   getMethod() const ;
-    virtual std::string     getName() const;
-    virtual std::string     getFileName() const;
-    virtual uint32_t        getSize() const;
-    virtual int             getTime() const;
-    virtual std::time_t     getUnixTime() const;
-    virtual bool            isValid() const;
-
-    //     virtual int hashCode() const;
-    virtual bool            isDirectory() const;
+    virtual std::string     getComment() const;
+    virtual StorageMethod   getMethod() const;
+    virtual dostime_t       getTime() const;
 
     virtual void            setComment(std::string const& comment);
     virtual void            setCompressedSize(uint32_t size);
-    virtual void            setCrc(uint32_t crc);
     virtual void            setExtra(std::vector<unsigned char> const& extra);
     virtual void            setMethod(StorageMethod method);
     virtual void            setName(std::string const& name);
     virtual void            setSize(uint32_t size);
-    virtual void            setTime(int time);
+    virtual void            setTime(dostime_t time);
     virtual void            setUnixTime(std::time_t time);
 
     virtual std::string     toString() const;
 
-    virtual FileEntry *     clone() const;
 
 protected:
-    std::string             m_filename;
     std::string             m_comment;
-    int                     m_size = 0;
-    bool                    m_valid = false;
     FilePath                m_basepath;
 };
 

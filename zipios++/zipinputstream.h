@@ -92,7 +92,7 @@ public:
      * \return A list constant FileEntry pointers containing information
      *         about the (now) current entry.
      */
-    ConstEntryPointer                   getNextEntry();
+    FileEntry::pointer_t                getNextEntry();
 
 private:
     std::unique_ptr<std::ifstream>      m_ifs;

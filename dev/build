@@ -21,7 +21,6 @@ BUILD_PATH=`pwd`
 cd zipios
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$BUILD_PATH/dist \
       -DCMAKE_BUILD_TYPE=Debug \
-      -DCMAKE_MODULE_PATH:PATH=$SOURCE_PATH/cmake \
           ../../zipios
 
 # Build

@@ -38,27 +38,25 @@ typedef BasicEntry DirEntry ;
 class DirectoryCollection : public FileCollection
 {
 public:
-    explicit                    DirectoryCollection();
-    explicit                    DirectoryCollection(std::string const& path,
-                                                    bool recursive = true,
-                                                    bool load_now = false);
-    virtual FileCollection *    clone() const;
-    virtual                     ~DirectoryCollection() ;
+    explicit                            DirectoryCollection();
+    explicit                            DirectoryCollection(std::string const& path, bool recursive = true, bool load_now = false);
+    virtual FileCollection::pointer_t   clone() const;
+    virtual                             ~DirectoryCollection();
 
-    virtual void                close();
-    virtual ConstEntries        entries() const;
-    virtual ConstEntryPointer   getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
-    virtual stream_pointer_t    getInputStream(ConstEntryPointer const& entry);
-    virtual stream_pointer_t    getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
-    virtual int                 size() const;
+    virtual void                        close();
+    virtual FileEntry::vector_t         entries() const;
+    virtual FileEntry::pointer_t        getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
+    virtual stream_pointer_t            getInputStream(FileEntry::pointer_t entry);
+    virtual stream_pointer_t            getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
+    virtual size_t                      size() const;
 
 protected:
-    void                        loadEntries() const;
-    void                        load(bool recursive, FilePath const& subdir = FilePath());
+    void                                loadEntries() const;
+    void                                load(bool recursive, FilePath const& subdir = FilePath());
 
-    mutable bool                m_entries_loaded = false;
-    bool                        m_recursive = true; // recurse into subdirs.
-    FilePath                    m_filepath;
+    mutable bool                        m_entries_loaded = false;
+    bool                                m_recursive = true; // recurse into subdirs.
+    FilePath                            m_filepath;
 };
 
 } // namespace

@@ -19,12 +19,12 @@
 */
 
 /** \file
-    Header file that defines FileCollection.
-*/
+ * \brief Header file that defines FileCollection.
+ *
+ * This object holds a vector of FileEntry objects.
+ */
 
 #include "zipios++/fileentry.h"
-
-#include <memory>
 
 
 namespace zipios
@@ -34,6 +34,8 @@ namespace zipios
 class FileCollection
 {
 public:
+    typedef std::shared_ptr<FileCollection> pointer_t;
+    typedef std::vector<pointer_t>          vector_t;
     typedef std::shared_ptr<std::istream>   stream_pointer_t;
 
     enum class MatchPath : uint32_t
@@ -42,26 +44,26 @@ public:
         MATCH
     };
 
-    explicit                    FileCollection();
-                                FileCollection(FileCollection const& src);
-    const FileCollection&       operator = (FileCollection const& src);
-    virtual FileCollection *    clone() const = 0;
-    virtual                     ~FileCollection();
+    explicit                        FileCollection();
+                                    FileCollection(FileCollection const& src);
+    const FileCollection&           operator = (FileCollection const& src);
+    virtual pointer_t               clone() const = 0;
+    virtual                         ~FileCollection();
 
-    virtual void                close() = 0;
-    virtual ConstEntries        entries() const;
-    virtual ConstEntryPointer   getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
-    virtual stream_pointer_t    getInputStream(ConstEntryPointer const& entry) = 0;
-    virtual stream_pointer_t    getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) = 0;
-    virtual std::string         getName() const;
-    virtual int                 size() const;
-    bool                        isValid() const;
-    void                        mustBeValid() const;
+    virtual void                    close() = 0;
+    virtual FileEntry::vector_t     entries() const;
+    virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
+    virtual stream_pointer_t        getInputStream(FileEntry::pointer_t entry) = 0;
+    virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) = 0;
+    virtual std::string             getName() const;
+    virtual size_t                  size() const;
+    bool                            isValid() const;
+    void                            mustBeValid() const;
 
 protected:
-    std::string                 m_filename;
-    Entries                     m_entries;
-    bool                        m_valid;
+    std::string                     m_filename;
+    FileEntry::vector_t             m_entries;
+    bool                            m_valid;
 };
 
 
