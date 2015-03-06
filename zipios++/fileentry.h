@@ -19,8 +19,13 @@
 */
 
 /** \file
-    Header file that defines FileEntry.
-*/
+ * \brief Header file that defines FileEntry.
+ *
+ * The FileEntry class is an interface defining a virtual representation
+ * to a file. File entries are found in various file collections.
+ *
+ * \sa FileCollection
+ */
 
 #include "zipios++/meta-iostreams.h"
 
@@ -34,13 +39,6 @@ namespace zipios
 {
 
 
-/** \brief The types used with FileEntry::setMethod and FileEntry::getMethod.
- *
- * The current entries are the types supported by the zip format. The
- * numbering matches one to one the numbering used in the zip file format,
- * i.e. STORED is indicated by a 0 in the method field in a zip file and
- * so on.
- */
 enum class StorageMethod : uint8_t
 {
     STORED = 0,
@@ -69,64 +67,34 @@ public:
     virtual pointer_t           clone() const = 0;
     virtual                     ~FileEntry();
 
-    virtual std::string         getComment() const = 0;
+    virtual std::string         getComment() const;
     virtual size_t              getCompressedSize() const;
     virtual crc32_t             getCrc() const;
     virtual buffer_t            getExtra() const;
-    virtual StorageMethod       getMethod() const = 0;
+    virtual StorageMethod       getMethod() const;
     virtual std::string         getName() const;
     virtual std::string         getFileName() const;
     virtual size_t              getSize() const;
-    virtual dostime_t           getTime() const = 0;
+    virtual dostime_t           getTime() const;
     virtual std::time_t         getUnixTime() const;
     bool                        hasCrc() const;
-    //virtual int                 hashCode() const = 0;
     virtual bool                isDirectory() const;
     virtual bool                isValid() const;
     virtual void                setComment(std::string const& comment);
-
-    /** Set the compressed size field of the entry.
-      @param size value to set the compressed size field of the entry to.
-     */
-    virtual void setCompressedSize(uint32_t size) = 0;
-
-    virtual void setCrc(crc32_t crc);
-
-    /** Sets the extra field.
-      @param extra the extra field is set to this value.
-     */
-    virtual void setExtra(std::vector<unsigned char> const& extra) = 0;
-
-    /** Sets the storage method field for the entry.
-      @param method the method field is set to the specified value.
-     */
-    virtual void setMethod(StorageMethod method) = 0;
-
-    /** Sets the name field for the entry.
-      @param name the name field is set to the specified value.
-     */
-    virtual void setName(std::string const& name);
-
-    virtual void setSize(uint32_t size) = 0;
-
-    /** Sets the time field for the entry.
-      @param time set time field as is using this MSDOS date/time formatted value.
-     */
-    virtual void setTime(dostime_t time) = 0;
-
-    /** Sets the time field in Unix time format for the entry.
-      @param time the time field is set to the specified value.
-     */
-    virtual void setUnixTime(std::time_t time) = 0;
-
-    /** Returns a human-readable string representation of the entry.
-      @return a human-readable string representation of the entry.
-     */
-    virtual std::string toString() const = 0;
+    virtual void                setCompressedSize(size_t size);
+    virtual void                setCrc(crc32_t crc);
+    virtual void                setExtra(buffer_t const& extra);
+    virtual void                setMethod(StorageMethod method);
+    virtual void                setName(std::string const& name);
+    virtual void                setSize(size_t size);
+    virtual void                setTime(dostime_t time);
+    virtual void                setUnixTime(std::time_t time);
+    virtual std::string         toString() const = 0;
 
 protected:
     std::string             m_filename;
-    size_t                  m_uncompress_size = 0;
+    size_t                  m_uncompressed_size = 0;
+    time_t                  m_unix_time = 0;
     uint32_t                m_crc_32 = 0;
     bool                    m_has_crc_32 = false;
     bool                    m_valid = false;
@@ -134,7 +102,6 @@ protected:
 
 
 std::ostream& operator << (std::ostream &os, FileEntry const& entry);
-std::ostream& operator << (std::ostream &os, FileEntry::pointer_t const& entry);
 
 
 } // zipios namespace

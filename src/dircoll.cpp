@@ -114,7 +114,7 @@ FileEntry::pointer_t DirectoryCollection::getEntry(std::string const& name, Matc
         return ent;
     }
 
-    return 0;
+    return FileEntry::pointer_t();
 }
 
 
@@ -137,10 +137,10 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::s
         FileEntry::pointer_t ent(getEntry(entry_name, matchpath));
         if(!ent)
         {
-            return 0;
+            return DirectoryCollection::stream_pointer_t();
         }
 
-        std::string real_path(m_filepath + entry_name);
+        std::string const real_path(m_filepath + entry_name);
         DirectoryCollection::stream_pointer_t p(new std::ifstream(real_path.c_str(), std::ios::in | std::ios::binary));
         return p;
     }
@@ -150,7 +150,7 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::s
     DirectoryCollection::stream_pointer_t ifs(new std::ifstream(real_path.c_str(), std::ios::in | std::ios::binary));
     if(!*ifs)
     {
-        return 0;
+        return DirectoryCollection::stream_pointer_t();
     }
 
     return ifs;
@@ -180,13 +180,13 @@ void DirectoryCollection::loadEntries() const
         return;
     }
 
-    const_cast< DirectoryCollection * >(this)->load(m_recursive);
+    const_cast<DirectoryCollection *>(this)->load(m_recursive);
 
     m_entries_loaded = true;
 }
 
 
-void DirectoryCollection::load(bool recursive, const FilePath &subdir)
+void DirectoryCollection::load(bool recursive, FilePath const& subdir)
 {
     for(boost::filesystem::dir_it it(m_filepath + subdir); it != boost::filesystem::dir_it(); ++it)
     {
@@ -196,15 +196,24 @@ void DirectoryCollection::load(bool recursive, const FilePath &subdir)
             continue;
         }
 
-        if(boost::filesystem::get<boost::filesystem::is_directory>(it) && recursive)
+        if(boost::filesystem::get<boost::filesystem::is_directory>(it))
         {
-            load(recursive, subdir + *it);
+            // FIXME -- should we be adding directories to the collection?
+            //          if so, we probably want the BasicEntry implementation
+            //          to properly support such (right not it marks those
+            //          as invalid entries... probably a bug!)
+            //
+            if(recursive)
+            {
+                load(recursive, subdir + *it);
+            }
+            //else -- ignore directories because BasicEntry() does not support them!?
         }
         else
         {
             FileEntry::pointer_t ent(new BasicEntry(subdir + *it, "", m_filepath));
             m_entries.push_back(ent);
-            ent->setSize(boost::filesystem::get<boost::filesystem::size>(it));
+            //ent->setSize(boost::filesystem::get<boost::filesystem::size>(it)); -- FIXME -- to be verified, but from what I can see this is done in the constructor of BasicEntry already
         }
     }
 }

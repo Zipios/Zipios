@@ -29,7 +29,7 @@ namespace zipios
 {
 
 /** DirEntry is a BasicEntry. */
-typedef BasicEntry DirEntry ;
+typedef BasicEntry DirEntry;
 
 /** \anchor dircol_anchor
  * DirectoryCollection is a FileCollection that obtains its entries

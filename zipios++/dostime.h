@@ -28,7 +28,7 @@ extern "C"
 {
 #endif
 
-time_t dos2unixtime( unsigned long dostime );
+time_t dos2unixtime(unsigned long dostime);
 
 unsigned long dostime(
     int y, /* year   */
@@ -39,7 +39,7 @@ unsigned long dostime(
     int s  /* second */
 );
 
-unsigned long unix2dostime( time_t *t );
+unsigned long unix2dostime(time_t const *t);
 
 // vim: ts=2 sw=2 et
 #ifdef __cplusplus

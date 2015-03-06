@@ -35,42 +35,31 @@ namespace zipios
 
 inline uint16_t ztohs ( unsigned char const *buf )
 {
-    uint16_t out ;
-    //    *( reinterpret_cast<unsigned char *>( &out )     ) = *( buf  + 1 );
-    //    *( reinterpret_cast<unsigned char *>( &out ) + 1 ) = *( buf      );
-    out = ( static_cast< uint16_t >( buf[ 0 ] ) << 8  ) +
-          ( static_cast< uint16_t >( buf[ 1 ] )       )  ;
-
-    return out;
+    return (static_cast<uint16_t>(buf[0]) << 8) +
+           (static_cast<uint16_t>(buf[1])     );
 }
 
 
 // ztohl (zip-to-host-long)
 inline uint32_t ztohl ( unsigned char const *buf )
 {
-    uint32_t out;
-    out = ( static_cast< uint32_t >( buf[ 0 ] ) << 24 ) +
-          ( static_cast< uint32_t >( buf[ 1 ] ) << 16 ) +
-          ( static_cast< uint32_t >( buf[ 2 ] ) << 8  ) +
-          ( static_cast< uint32_t >( buf[ 3 ] )       )  ;
-
-    return out;
+    return (static_cast<uint32_t>(buf[0]) << 24) +
+           (static_cast<uint32_t>(buf[1]) << 16) +
+           (static_cast<uint32_t>(buf[2]) << 8 ) +
+           (static_cast<uint32_t>(buf[3])      );
 }
 
 #else
 
-inline uint16_t ztohs ( unsigned char const *buf )
+inline uint16_t ztohs(unsigned char const *buf)
 {
-    uint16_t out ;
-    out = ( static_cast< uint16_t >( buf[ 1 ] ) << 8  ) +
-          ( static_cast< uint16_t >( buf[ 0 ] )       )  ;
-
-    return out;
+    return (static_cast<uint16_t>(buf[1]) << 8) +
+           (static_cast<uint16_t>(buf[0])     );
 }
 
 
 // ztohl (zip-to-host-long)
-inline uint32_t ztohl ( unsigned char const *buf )
+inline uint32_t ztohl(unsigned char const *buf)
 {
     uint32_t out;
     out = ( static_cast< uint32_t >( buf[ 3 ] ) << 24 ) +
@@ -90,30 +79,30 @@ inline uint32_t ztohl ( unsigned char const *buf )
 #endif
 
 // htozl (host-to-zip-long)
-inline uint32_t htozl ( unsigned char const *buf )
+inline uint32_t htozl(unsigned char const *buf)
 {
-    return ztohl( buf ) ;
+    return ztohl(buf);
 }
 
 
 // htozs (host-to-zip-short)
-inline uint16_t htozs ( unsigned char const *buf )
+inline uint16_t htozs(unsigned char const *buf)
 {
-    return ztohs( buf ) ;
+    return ztohs(buf);
 }
 
 
-inline uint32_t readUint32 ( std::istream& is )
+inline uint32_t readUint32(std::istream& is)
 {
-    int const buf_len( sizeof ( uint32_t ) );
-    unsigned char buf [ buf_len ] ;
-    int rsf = 0 ;
-    while ( rsf < buf_len )
+    int const buf_len(sizeof(uint32_t));
+    unsigned char buf[buf_len];
+    int rsf(0);
+    while(rsf < buf_len)
     {
-        is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
-        rsf += is.gcount () ;
+        is.read(reinterpret_cast<char *>(buf) + rsf, buf_len - rsf);
+        rsf += is.gcount();
     }
-    return ztohl ( buf ) ;
+    return ztohl(buf);
 }
 
 
@@ -124,17 +113,17 @@ inline void writeUint32 ( uint32_t const host_val, std::ostream& os )
 }
 
 
-inline uint16_t readUint16 ( std::istream& is )
+inline uint16_t readUint16(std::istream& is)
 {
-    int const buf_len( sizeof ( uint16_t ) );
-    unsigned char buf [ buf_len ] ;
-    int rsf = 0 ;
-    while ( rsf < buf_len )
+    int const buf_len(sizeof(uint16_t));
+    unsigned char buf[buf_len];
+    int rsf(0);
+    while(rsf < buf_len)
     {
-        is.read ( reinterpret_cast< char * >( buf ) + rsf, buf_len - rsf ) ;
-        rsf += is.gcount () ;
+        is.read(reinterpret_cast<char *>(buf) + rsf, buf_len - rsf);
+        rsf += is.gcount();
     }
-    return  ztohs ( buf ) ;
+    return ztohs(buf);
 }
 
 

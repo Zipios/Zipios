@@ -44,7 +44,7 @@ bool operator == (ZipLocalEntry const& zlh, ZipCDirEntry const& ze)
     // Not all fields need to be identical. Some of the information
     // may be put in a data descriptor that trails the compressed
     // data, according to the specs (The trailing data descriptor
-    // can contain crc_32, compress_size and uncompress_size.)
+    // can contain crc_32, compressed_size and uncompressed_size.)
 
     // Experience has shown that extra_field and extra_field_len
     // can differ too.
@@ -64,8 +64,9 @@ bool operator == (ZipLocalEntry const& zlh, ZipCDirEntry const& ze)
     return zlh.m_extract_version == ze.m_extract_version     &&
            zlh.m_gp_bitfield     == ze.m_gp_bitfield         &&
            zlh.m_compress_method == ze.m_compress_method     &&
-           zlh.m_last_mod_ftime  == ze.m_last_mod_ftime      &&
-           zlh.m_last_mod_fdate  == ze.m_last_mod_fdate      &&
+           //zlh.m_last_mod_ftime  == ze.m_last_mod_ftime      &&
+           //zlh.m_last_mod_fdate  == ze.m_last_mod_fdate      &&
+           zlh.m_unix_time       == ze.m_unix_time           &&
            zlh.m_filename        == ze.m_filename;
 }
 
@@ -83,15 +84,9 @@ void ZipLocalEntry::setDefaultExtract()
 }
 
 
-std::string ZipLocalEntry::getComment() const
-{
-    return ""; // No comment in a local entry
-}
-
-
 size_t ZipLocalEntry::getCompressedSize() const
 {
-    return m_compress_size;
+    return m_compressed_size;
 }
 
 
@@ -111,15 +106,15 @@ StorageMethod ZipLocalEntry::getMethod() const
 
 
 
-ZipLocalEntry::dostime_t ZipLocalEntry::getTime() const
-{
-  return (m_last_mod_fdate << 16) + m_last_mod_ftime;
-}
+//ZipLocalEntry::dostime_t ZipLocalEntry::getTime() const
+//{
+//  return (m_last_mod_fdate << 16) + m_last_mod_ftime;
+//}
 
 
-void ZipLocalEntry::setCompressedSize(uint32_t size)
+void ZipLocalEntry::setCompressedSize(size_t size)
 {
-    m_compress_size = size;
+    m_compressed_size = size;
 }
 
 
@@ -143,34 +138,22 @@ void ZipLocalEntry::setMethod(StorageMethod method)
 }
 
 
-void ZipLocalEntry::setSize(uint32_t size)
-{
-    m_uncompress_size = size;
-}
-
-
-void ZipLocalEntry::setTime(dostime_t time)
-{
-  // FIXME: fix time setting here, and ind flist and elsewhere. Define the
-  // date time semantics before mucking about - how surprising
-
-  // Mark Donszelmann: added these lines to make zip work for winzip
-  m_last_mod_fdate = (time >> 16) & 0x0000FFFF;
-  m_last_mod_ftime = time & 0x0000FFFF;
-}
-
-
-void ZipLocalEntry::setUnixTime(std::time_t time)
-{
-    setTime(unix2dostime(&time));
-}
+//void ZipLocalEntry::setTime(dostime_t time)
+//{
+//  // FIXME: fix time setting here, and ind flist and elsewhere. Define the
+//  // date time semantics before mucking about - how surprising
+//
+//  // Mark Donszelmann: added these lines to make zip work for winzip
+//  m_last_mod_fdate = (time >> 16) & 0x0000FFFF;
+//  m_last_mod_ftime = time & 0x0000FFFF;
+//}
 
 
 std::string ZipLocalEntry::toString() const
 {
     OutputStringStream sout;
-    sout << m_filename << " (" << m_uncompress_size << " bytes, ";
-    sout << m_compress_size << " bytes compressed)";
+    sout << m_filename << " (" << m_uncompressed_size << " bytes, ";
+    sout << m_compressed_size << " bytes compressed)";
     return sout.str();
 }
 
@@ -238,8 +221,8 @@ void ZipCDirEntry::setComment(std::string const& comment)
 std::string ZipCDirEntry::toString() const
 {
     OutputStringStream sout;
-    sout << m_filename << " (" << m_uncompress_size << " bytes, ";
-    sout << m_compress_size << " bytes compressed)";
+    sout << m_filename << " (" << m_uncompressed_size << " bytes, ";
+    sout << m_compressed_size << " bytes compressed)";
     return sout.str();
 }
 

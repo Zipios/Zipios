@@ -24,6 +24,9 @@
 
 #include "zipios++/zipheadio.h"
 
+#include "zipios++/dostime.h"
+#include "zipios++/zipiosexceptions.h"
+
 
 namespace zipios
 {
@@ -50,16 +53,17 @@ std::istream& operator >> (std::istream& is, ZipLocalEntry& zlh)
         return is;
     }
 
-    zlh.m_extract_version = readUint16(is);
-    zlh.m_gp_bitfield     = readUint16(is);
-    zlh.m_compress_method = readUint16(is);
-    zlh.m_last_mod_ftime  = readUint16(is);
-    zlh.m_last_mod_fdate  = readUint16(is);
-    zlh.m_crc_32          = readUint32(is);
-    zlh.m_compress_size   = readUint32(is);
-    zlh.m_uncompress_size = readUint32(is);
-    zlh.m_filename_len    = readUint16(is);
-    zlh.m_extra_field_len = readUint16(is);
+    zlh.m_extract_version   = readUint16(is);
+    zlh.m_gp_bitfield       = readUint16(is);
+    zlh.m_compress_method   = readUint16(is);
+    uint16_t const last_mod_ftime = readUint16(is);    // FIXME can we use Uint32 instead?
+    uint16_t const last_mod_fdate = readUint16(is);
+    zlh.m_unix_time = dos2unixtime((last_mod_fdate << 16) + last_mod_ftime);
+    zlh.m_crc_32            = readUint32(is);
+    zlh.m_compressed_size   = readUint32(is);
+    zlh.m_uncompressed_size = readUint32(is);
+    zlh.m_filename_len      = readUint16(is);
+    zlh.m_extra_field_len   = readUint16(is);
 
     // Read filename and extra_field
     readByteSeq(is, zlh.m_filename,    zlh.m_filename_len);
@@ -99,11 +103,12 @@ std::istream& operator >> (std::istream& is, ZipCDirEntry& zcdh)
     zcdh.m_extract_version      = readUint16(is);
     zcdh.m_gp_bitfield          = readUint16(is);
     zcdh.m_compress_method      = readUint16(is);
-    zcdh.m_last_mod_ftime       = readUint16(is);
-    zcdh.m_last_mod_fdate       = readUint16(is);
+    uint16_t const last_mod_ftime = readUint16(is);    // FIXME can we use Uint32 instead?
+    uint16_t const last_mod_fdate = readUint16(is);
+    zcdh.m_unix_time = dos2unixtime((last_mod_fdate << 16) + last_mod_ftime);
     zcdh.m_crc_32               = readUint32(is);
-    zcdh.m_compress_size        = readUint32(is);
-    zcdh.m_uncompress_size      = readUint32(is);
+    zcdh.m_compressed_size      = readUint32(is);
+    zcdh.m_uncompressed_size    = readUint32(is);
     zcdh.m_filename_len         = readUint16(is);
     zcdh.m_extra_field_len      = readUint16(is);
     zcdh.m_file_comment_len     = readUint16(is);
@@ -130,17 +135,25 @@ std::ostream& operator << (std::ostream& os, ZipLocalEntry const& zlh)
 {
     if(os)
     {
-        writeUint32(zlh.g_signature      , os);
-        writeUint16(zlh.m_extract_version, os);
-        writeUint16(zlh.m_gp_bitfield    , os);
-        writeUint16(zlh.m_compress_method, os);
-        writeUint16(zlh.m_last_mod_ftime , os);
-        writeUint16(zlh.m_last_mod_fdate , os);
-        writeUint32(zlh.m_crc_32         , os);
-        writeUint32(zlh.m_compress_size  , os);
-        writeUint32(zlh.m_uncompress_size, os);
-        writeUint16(zlh.m_filename_len   , os);
-        writeUint16(zlh.m_extra_field_len, os);
+        if(zlh.m_compressed_size >= 0x100000000
+        || zlh.m_uncompressed_size >= 0x100000000)
+        {
+            throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
+        }
+
+        uint32_t const dostime(unix2dostime(&zlh.m_unix_time));
+
+        writeUint32(zlh.g_signature                     , os);
+        writeUint16(zlh.m_extract_version               , os);
+        writeUint16(zlh.m_gp_bitfield                   , os);
+        writeUint16(zlh.m_compress_method               , os);
+        writeUint16(static_cast<uint16_t>(dostime)      , os); // FIXME can we use Uint32 instead?
+        writeUint16(static_cast<uint16_t>(dostime >> 16), os);
+        writeUint32(zlh.m_crc_32                        , os);
+        writeUint32(zlh.m_compressed_size               , os);
+        writeUint32(zlh.m_uncompressed_size             , os);
+        writeUint16(zlh.m_filename_len                  , os);
+        writeUint16(zlh.m_extra_field_len               , os);
 
         // Write filename and extra_field
         writeByteSeq(os, zlh.m_filename);
@@ -155,23 +168,31 @@ std::ostream& operator << (std::ostream& os, ZipCDirEntry const& zcdh)
 {
     if(os)
     {
-        writeUint32(zcdh.g_signature          , os);
-        writeUint16(zcdh.m_writer_version     , os);
-        writeUint16(zcdh.m_extract_version    , os);
-        writeUint16(zcdh.m_gp_bitfield        , os);
-        writeUint16(zcdh.m_compress_method    , os);
-        writeUint16(zcdh.m_last_mod_ftime     , os);
-        writeUint16(zcdh.m_last_mod_fdate     , os);
-        writeUint32(zcdh.m_crc_32             , os);
-        writeUint32(zcdh.m_compress_size      , os);
-        writeUint32(zcdh.m_uncompress_size    , os);
-        writeUint16(zcdh.m_filename_len       , os);
-        writeUint16(zcdh.m_extra_field_len    , os);
-        writeUint16(zcdh.m_file_comment_len   , os);
-        writeUint16(zcdh.m_disk_num_start     , os);
-        writeUint16(zcdh.m_intern_file_attr   , os);
-        writeUint32(zcdh.m_extern_file_attr   , os);
-        writeUint32(zcdh.m_rel_offset_loc_head, os);
+        if(zcdh.m_compressed_size >= 0x100000000
+        || zcdh.m_uncompressed_size >= 0x100000000)
+        {
+            throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
+        }
+
+        uint32_t const dostime(unix2dostime(&zcdh.m_unix_time));
+
+        writeUint32(zcdh.g_signature                    , os);
+        writeUint16(zcdh.m_writer_version               , os);
+        writeUint16(zcdh.m_extract_version              , os);
+        writeUint16(zcdh.m_gp_bitfield                  , os);
+        writeUint16(zcdh.m_compress_method              , os);
+        writeUint16(static_cast<uint16_t>(dostime)      , os); // FIXME can we use Uint32 instead?
+        writeUint16(static_cast<uint16_t>(dostime >> 16), os);
+        writeUint32(zcdh.m_crc_32                       , os);
+        writeUint32(zcdh.m_compressed_size              , os);
+        writeUint32(zcdh.m_uncompressed_size            , os);
+        writeUint16(zcdh.m_filename_len                 , os);
+        writeUint16(zcdh.m_extra_field_len              , os);
+        writeUint16(zcdh.m_file_comment_len             , os);
+        writeUint16(zcdh.m_disk_num_start               , os);
+        writeUint16(zcdh.m_intern_file_attr             , os);
+        writeUint32(zcdh.m_extern_file_attr             , os);
+        writeUint32(zcdh.m_rel_offset_loc_head          , os);
 
         // Write filename and extra_field
         writeByteSeq(os, zcdh.m_filename);
@@ -179,7 +200,7 @@ std::ostream& operator << (std::ostream& os, ZipCDirEntry const& zcdh)
         writeByteSeq(os, zcdh.m_file_comment);
     }
 
-    return os ;
+    return os;
 }
 
 

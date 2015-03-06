@@ -38,6 +38,18 @@
 namespace zipios
 {
 
+/** \enum StorageMethod
+ * \brief The types used with FileEntry::setMethod and FileEntry::getMethod.
+ *
+ * The current entries are the types supported by the zip format. The
+ * numbering matches one to one the numbering used in the zip file format,
+ * i.e. STORED is indicated by a 0 in the method field in a zip file and
+ * so on.
+ *
+ * The zipios library only support STORED and DEFLATED at this time.
+ */
+
+
 /** \class FileEntry
  * \brief A FileEntry represents an entry in a FileCollection.
  *
@@ -45,6 +57,10 @@ namespace zipios
  * package. The name has been changed to FileEntry, as FileCollection
  * is a more general abstraction, that covers other types of file
  * collections than just zip files.
+ *
+ * \note
+ * The hashCode() supported in Java is not included as we do not have an
+ * equivalent in this library.
  */
 
 
@@ -56,7 +72,7 @@ namespace zipios
  */
 FileEntry::FileEntry(std::string const& filename)
     : m_filename(filename)
-    //, m_uncompress_size(0) -- auto-init
+    //, m_uncompressed_size(0) -- auto-init
     //, m_crc_32(0) -- auto-init
     //, m_has_crc_32(false) -- auto-init
     //, m_valid(false) -- auto-init
@@ -87,16 +103,23 @@ FileEntry::~FileEntry()
 }
 
 
-/** \func std::string getComment() const;
- * \brief Retrieve the comment of the file entry.
+/** \brief Retrieve the comment of the file entry.
  *
- * This function returns the comment of thse entry.
+ * This function returns the comment of this entry.
  *
  * If the entry was not assigned a comment, this function returns
  * an empty string.
  *
+ * Note that certain types of file entries cannot be assigned a
+ * comment and thus this method will always return an empty string
+ * for those.
+ *
  * \return The comment associated with this entry, if there is one.
  */
+std::string FileEntry::getComment() const
+{
+    return "";
+}
 
 
 /** \brief Retrive the size of the file when compressed.
@@ -149,8 +172,7 @@ FileEntry::buffer_t FileEntry::getExtra() const
 
 
 
-/** \func StorageMethod getMethod();
- * \brief Return the method used to create this entry.
+/** \brief Return the method used to create this entry.
  *
  * This function returns the method used to store the entry in
  * the FileCollection it is attached to.
@@ -158,7 +180,14 @@ FileEntry::buffer_t FileEntry::getExtra() const
  * \return the storage method used to store the entry in a collection.
  *
  * \sa StorageMethod
+ * \sa setMethod()
  */
+StorageMethod FileEntry::getMethod() const
+{
+    return StorageMethod::STORED;
+}
+
+
 
 
 /** \brief Return the filename of the entry.
@@ -194,8 +223,19 @@ std::string FileEntry::getFileName() const
 }
 
 
-/** \func uint32_t getTime() const
- * \brief Get the MS-DOS date/time of this entry.
+/** \brief Retrieve the size of the file when uncompressed.
+ *
+ * This function returns the uncompressed size of the entry data.
+ *
+ * \return Returns the uncompressed size of the entry.
+ */
+size_t FileEntry::getSize() const
+{
+    return m_uncompressed_size;
+}
+
+
+/** \brief Get the MS-DOS date/time of this entry.
  *
  * This function returns the date and time of the entry in MSDOS
  * date/time format.
@@ -206,25 +246,23 @@ std::string FileEntry::getFileName() const
  *
  * \return The date and time of the entry in MS-DOS format.
  */
-
-
-/** \brief Retrieve the size of the file when uncompressed.
- *
- * This function returns the uncompressed size of the entry data.
- *
- * \return Returns the uncompressed size of the entry.
- */
-size_t FileEntry::getSize() const
+FileEntry::dostime_t FileEntry::getTime() const
 {
-    return m_uncompress_size;
+    return unix2dostime(&m_unix_time);
 }
 
 
-/** \func std::time_t getUnixTime() const;
- * \brief Get the Unix date/time of this entry.
+/** \brief Get the Unix date/time of this entry.
  *
  * This function returns the date and time of the entry in Unix
  * date/time format (see time()).
+ *
+ * \note
+ * The FileEntry object saves the time as a Unix time_t value,
+ * however, the Zip file format uses the DOS time format. So
+ * for a Zip file, the precision of the date is to the next
+ * even second. Yet, this function may return a value which
+ * is odd when the time comes from a file on disk.
  *
  * \note
  * Unless you have an old 32 bit system that defines time_t
@@ -235,7 +273,7 @@ size_t FileEntry::getSize() const
  */
 std::time_t FileEntry::getUnixTime() const
 {
-    return dos2unixtime(getTime());
+    return m_unix_time;
 }
 
 
@@ -251,6 +289,10 @@ std::time_t FileEntry::getUnixTime() const
  */
 bool FileEntry::isDirectory() const
 {
+    // TODO: It seems to me that a FileEntry with an empty filename should
+    //       not be possible; so this test should be in the setName()
+    //       and each constructor to avoid any other problems
+    //
     if(m_filename.empty())
     {
         throw IOException("FileEntry filename cannot be empty if it is to represent a directory.");
@@ -288,6 +330,20 @@ void FileEntry::setComment(std::string const &)
 }
 
 
+/** \brief Set the size when the file is compressed.
+ *
+ * This function saves the compressed size of the entry in this object.
+ *
+ * By default the compressed size is viewed as the same as the
+ * uncompressed size (i.e. as if STORED was used for the compression
+ * method.)
+ *
+ * \param[in] size  Value to set the compressed size field of the entry to.
+ */
+void FileEntry::setCompressedSize(size_t size)
+{
+    static_cast<void>(size);
+}
 
 
 /** \brief Save the CRC of the entry.
@@ -302,13 +358,105 @@ void FileEntry::setCrc(crc32_t crc)
 }
 
 
-/**   Sets the size field for the entry.
- * \param size the size field is set to this value.
+/** \brief Set the extra field buffer.
+ *
+ * This function is used to set the extra field.
+ *
+ * Only one type of file entry supports an extra field buffer.
+ * The others do nothing when this function is called.
+ *
+ * \param[in] extra  The extra field is set to this value.
+ */
+void FileEntry::setExtra(buffer_t const& extra)
+{
+    static_cast<void>(extra);
+}
+
+
+/** \brief Sets the storage method field for the entry.
+ *
+ * This function sets the method with which the file data is to
+ * be compressed.
+ *
+ * The method is ignored in a file entry which cannot be compressed.
+ * (or more precisly, the method is forced as STORED.)
+ *
+ * \param[in] method  The method field is set to the specified value.
+ */
+void FileEntry::setMethod(StorageMethod method)
+{
+    static_cast<void>(method);
+}
+
+
+/** \brief Sets the name field for the entry.
+ *
+ * This function is used to change the filename of this entry.
+ *
+ * The name may include a path.
+ *
+ * \param[in] name  The name field is set to the specified value.
  */
 void FileEntry::setName(std::string const& name)
 {
     m_filename = name;
 }
+
+
+/** \brief Sets the size field for the entry.
+ *
+ * This function is used to save the size of this file on disk
+ * when uncompressed.
+ *
+ * \param[in] size  The size field is set to this value.
+ */
+void FileEntry::setSize(size_t size)
+{
+    m_uncompressed_size = size;
+}
+
+
+/** \brief Set the FileEntry time using a DOS time.
+ *
+ * This function saves the specified \p dostime value as the last modification
+ * date and time of this entry. This is generally used when reading that information
+ * from a Zip archive. Otherwise you probably want to use the setUnixTime()
+ * instead since it is one to one compatible with the value handle by time(),
+ * stat(), and other OS functions.
+ *
+ * \param[in] dostime  Set time field as is using this MSDOS date/time value.
+ */
+void FileEntry::setTime(dostime_t dostime)
+{
+    setUnixTime(dos2unixtime(dostime));
+}
+
+
+/** \brief Sets the time field in Unix time format for the entry.
+ *
+ * This function is used to set the last modification time of this
+ * entry. In most cases this comes from the stat structure field
+ * named st_mtime. If you are creating a file directly in memory,
+ * you may use the return value of <code>time(nullptr);</code>.
+ *
+ * \param[in] time  The time field is set to the specified value.
+ */
+void FileEntry::setUnixTime(std::time_t time)
+{
+    m_unix_time = time;
+}
+
+
+/** \func std::string toString() const;
+ * \brief Returns a human-readable string representation of the entry.
+ *
+ * This function transforms the basic information of the entry in a
+ * string. Note that most of the information is lost as the function
+ * is likely to only display the filename and the size of the file,
+ * nothing more.
+ *
+ * \return A human-readable string representation of the entry.
+ */
 
 
 /** \brief Output an entry as a string to a stream.
@@ -324,26 +472,6 @@ void FileEntry::setName(std::string const& name)
 std::ostream& operator << (std::ostream& os, FileEntry const& entry)
 {
     os << entry.toString();
-    return os;
-}
-
-
-/** \brief Output an entry from its pointer.
- *
- * To make it easier, we offer an ostream << operator to print out a
- * FileEntry from a pointer_t of such.
- *
- * The one limitation is that you would have to reinterpret cast your
- * pointer to (void *) if you wanted to print the actual pointer.
- *
- * \param[in,out] os  The output stream.
- * \param[in] entry_ptr  The entry pointer to print out.
- *
- * \return A reference to the output stream.
- */
-std::ostream& operator << (std::ostream &os, FileEntry::pointer_t const& entry_ptr)
-{
-    os << entry_ptr->toString();
     return os;
 }
 

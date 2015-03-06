@@ -35,24 +35,12 @@ public:
     explicit                BasicEntry(std::string const& filename,
                                        std::string const& comment,
                                        FilePath const& basepath = FilePath());
-    virtual pointer_t       clone() const;
-    virtual                 ~BasicEntry();
+    virtual pointer_t       clone() const override;
+    virtual                 ~BasicEntry() override;
 
-    virtual std::string     getComment() const;
-    virtual StorageMethod   getMethod() const;
-    virtual dostime_t       getTime() const;
-
-    virtual void            setComment(std::string const& comment);
-    virtual void            setCompressedSize(uint32_t size);
-    virtual void            setExtra(std::vector<unsigned char> const& extra);
-    virtual void            setMethod(StorageMethod method);
-    virtual void            setName(std::string const& name);
-    virtual void            setSize(uint32_t size);
-    virtual void            setTime(dostime_t time);
-    virtual void            setUnixTime(std::time_t time);
-
-    virtual std::string     toString() const;
-
+    virtual std::string     getComment() const override;
+    virtual void            setComment(std::string const& comment) override;
+    virtual std::string     toString() const override;
 
 protected:
     std::string             m_comment;

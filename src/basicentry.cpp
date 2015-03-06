@@ -50,20 +50,21 @@ BasicEntry::BasicEntry(std::string const& filename,
                        FilePath const& basepath)
     : FileEntry(filename)
     , m_comment(comment)
-    //, m_uncompress_size(0) -- auto-init
+    //, m_uncompressed_size(0) -- auto-init
     //, m_valid(false) -- auto-init
     , m_basepath(basepath)
 {
+    // TODO: convert this open + close in a stat() instead so we get mtime too
     std::string const full_path(m_basepath + m_filename);
     std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
-    if (!is)
+    if(!is)
     {
         m_valid = false;
     }
     else
     {
         is.seekg(0, std::ios::end);
-        m_uncompress_size = is.tellg();
+        m_uncompressed_size = is.tellg();
         is.close();
         m_valid = true;
     }
@@ -97,68 +98,16 @@ std::string BasicEntry::getComment() const
 }
 
 
-StorageMethod BasicEntry::getMethod() const
-{
-    return StorageMethod::STORED;
-}
-
-
-BasicEntry::dostime_t BasicEntry::getTime() const
-{
-    return 0; // FIXME later
-}
-
-
-//     virtual int hashCode() const {}
-
-
 void BasicEntry::setComment(std::string const& comment)
 {
     m_comment = comment;
 }
 
 
-void BasicEntry::setCompressedSize(uint32_t)
-{
-}
-
-
-void BasicEntry::setExtra(std::vector<unsigned char> const&)
-{
-}
-
-
-void BasicEntry::setMethod(StorageMethod)
-{
-}
-
-
-void BasicEntry::setName(std::string const& name)
-{
-    m_filename = name;
-}
-
-
-void BasicEntry::setSize(uint32_t size)
-{
-    m_uncompress_size = size;
-}
-
-
-void BasicEntry::setTime(dostime_t)
-{
-}
-
-
-void BasicEntry::setUnixTime(std::time_t)
-{
-}
-
-
 std::string BasicEntry::toString() const
 {
     OutputStringStream sout;
-    sout << m_filename << " (" << m_uncompress_size << " bytes)";
+    sout << m_filename << " (" << m_uncompressed_size << " bytes)";
     return sout.str();
 }
 

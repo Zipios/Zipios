@@ -153,7 +153,7 @@ unsigned long dostime(int y, int n, int d, int h, int m, int s)
  *
  * \return The Unix date in DOS format.
  */
-unsigned long unix2dostime(time_t *t)
+unsigned long unix2dostime(time_t const *t)
 {
     time_t t_even;
     struct tm *s;         /* result of localtime() */

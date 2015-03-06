@@ -44,8 +44,7 @@ class ZipLocalEntry : public FileEntry
     friend bool operator == (ZipLocalEntry const& zlh, const ZipCDirEntry& ze);
 
 public:
-    inline ZipLocalEntry(std::string const& filename = "",
-                         std::vector<unsigned char> const& extra_field = std::vector<unsigned char>())
+    inline ZipLocalEntry(std::string const& filename = "", buffer_t const& extra_field = buffer_t())
         : FileEntry(filename)
         //, m_gp_bitfield(0) -- auto-init
     {
@@ -55,25 +54,20 @@ public:
     }
 
     inline ZipLocalEntry&       operator = (ZipLocalEntry const& src);
-    virtual pointer_t           clone() const ;
+    virtual pointer_t           clone() const override;
 
-    virtual                     ~ZipLocalEntry() {}
+    virtual                     ~ZipLocalEntry() override {}
 
-    virtual std::string         getComment() const;
-    virtual size_t              getCompressedSize() const;
-    virtual buffer_t            getExtra() const;
-    virtual StorageMethod       getMethod() const;
-    virtual dostime_t           getTime() const;
+    virtual size_t              getCompressedSize() const override;
+    virtual buffer_t            getExtra() const override;
+    virtual StorageMethod       getMethod() const override;
 
-    virtual void                setCompressedSize(uint32_t size);
-    virtual void                setCrc(crc32_t crc);
+    virtual void                setCompressedSize(size_t size) override;
+    virtual void                setCrc(crc32_t crc) override;
     void                        setDefaultExtract();
-    virtual void                setExtra(std::vector<unsigned char> const& extra);
-    virtual void                setMethod(StorageMethod method);
-    virtual void                setSize(uint32_t size);
-    virtual void                setTime(dostime_t time);
-    virtual void                setUnixTime(std::time_t time);
-    virtual std::string         toString() const;
+    virtual void                setExtra(buffer_t const& extra) override;
+    virtual void                setMethod(StorageMethod method) override;
+    virtual std::string         toString() const override;
     int                         getLocalHeaderSize() const;
     bool                        trailingDataDescriptor() const;
 
@@ -84,9 +78,9 @@ protected:
     uint16_t                    m_extract_version;
     uint16_t                    m_gp_bitfield = 0;
     uint16_t                    m_compress_method;
-    uint16_t                    m_last_mod_ftime;
-    uint16_t                    m_last_mod_fdate;
-    size_t                      m_compress_size;
+    //uint16_t                    m_last_mod_ftime;
+    //uint16_t                    m_last_mod_fdate;
+    size_t                      m_compressed_size;
     uint16_t                    m_filename_len;
     uint16_t                    m_extra_field_len;
 
@@ -101,8 +95,8 @@ protected:
 struct DataDescriptor
 {
     uint32_t    crc_32;
-    uint32_t    compress_size;
-    uint32_t    uncompress_size;
+    uint32_t    compressed_size;
+    uint32_t    uncompressed_size;
 };
 
 
@@ -123,9 +117,11 @@ public:
                         std::string const& file_comment = "",
                         std::vector< unsigned char > const& extra_field = std::vector<unsigned char>())
         : ZipLocalEntry(filename, extra_field)
+        // TODO -- missing initialization of many member variables
         //, m_disk_num_start(0) -- auto-init
         //, m_intern_file_attr(0) -- auto-init
         //, m_extern_file_attr(0x81B40000) -- auto-init
+
         // FIXME: I do not understand the external mapping, simply
         //        copied value for a file with -rw-rw-r-- permissions
         //        compressed with info-zip
@@ -134,17 +130,17 @@ public:
         setDefaultWriter();
     }
 
-    virtual pointer_t           clone() const;
+    virtual pointer_t           clone() const override;
 
-    virtual                     ~ZipCDirEntry() {}
+    virtual                     ~ZipCDirEntry() override {}
 
     void                        setDefaultWriter();
 
     inline ZipCDirEntry&        operator = (ZipCDirEntry const& rhs);
-    virtual std::string         toString() const;
+    virtual std::string         toString() const override;
 
-    virtual std::string         getComment() const;
-    virtual void                setComment(std::string const& comment);
+    virtual std::string         getComment() const override;
+    virtual void                setComment(std::string const& comment) override;
 
     virtual uint32_t            getLocalHeaderOffset() const;
     virtual void                setLocalHeaderOffset(uint32_t offset);
@@ -217,7 +213,7 @@ private:
 };
 
 
-bool operator == ( ZipLocalEntry const& zlh, ZipCDirEntry const& ze );
+bool operator == (ZipLocalEntry const& zlh, ZipCDirEntry const& ze);
 
 
 inline bool operator == (ZipCDirEntry const& ze, ZipLocalEntry const& zlh)
@@ -239,17 +235,17 @@ inline bool operator != (ZipCDirEntry const& ze, ZipLocalEntry const& zlh)
 
 // Inline member functions
 
-ZipCDirEntry& ZipCDirEntry::operator = ( ZipCDirEntry const& src )
+ZipCDirEntry& ZipCDirEntry::operator = (ZipCDirEntry const& src)
 {
     m_writer_version      = src.m_writer_version      ;
     m_extract_version     = src.m_extract_version     ;
     m_gp_bitfield         = src.m_gp_bitfield         ;
     m_compress_method     = src.m_compress_method     ;
-    m_last_mod_ftime      = src.m_last_mod_ftime      ;
-    m_last_mod_fdate      = src.m_last_mod_fdate      ;
+    //m_last_mod_ftime      = src.m_last_mod_ftime      ;
+    //m_last_mod_fdate      = src.m_last_mod_fdate      ;
     m_crc_32              = src.m_crc_32              ;
-    m_compress_size       = src.m_compress_size       ;
-    m_uncompress_size     = src.m_uncompress_size     ;
+    m_compressed_size     = src.m_compressed_size     ;
+    m_uncompressed_size   = src.m_uncompressed_size   ;
     m_filename_len        = src.m_filename_len        ;
     m_extra_field_len     = src.m_extra_field_len     ;
     m_file_comment_len    = src.m_file_comment_len    ;
