@@ -21,9 +21,9 @@
  * \brief The implementation file of BackBuffer.
  */
 
-#include "backbuffer.h"
+#include "backbuffer.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
 
 namespace zipios
@@ -141,5 +141,4 @@ int BackBuffer::readChunk(int& read_pointer)
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

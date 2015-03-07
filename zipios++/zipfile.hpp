@@ -132,21 +132,15 @@
  * \endhtmlonly
  */
 
-#include "zipios++/fcoll.h"
-#include "zipios++/ziphead.h"
-#include "zipios++/virtualseeker.h"
+#include "zipios++/filecollection.hpp"
+#include "zipios++/ziphead.hpp"
+#include "zipios++/virtualseeker.hpp"
 
 
 namespace zipios
 {
 
 
-/** \brief The ZipFile class represents a collection of files.
- * \anchor zipfile_anchor
- *
- * ZipFile is a FileCollection, where the files are stored
- * in a .zip file.
- */
 class ZipFile : public FileCollection
 {
 public:
@@ -173,5 +167,4 @@ private:
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

@@ -26,13 +26,13 @@
  * header file.
  */
 
-#include "zipios++/fileentry.h"
+#include "zipios++/fileentry.hpp"
 
-#include "zipios++/dostime.h"
-#include "zipios++/filepath.h"
-#include "zipios++/zipiosexceptions.h"
+#include "dostime.h"
+#include "zipios++/filepath.hpp"
+#include "zipios++/zipiosexceptions.hpp"
 
-#include "zipios_common.h"
+#include "zipios_common.hpp"
 
 
 namespace zipios

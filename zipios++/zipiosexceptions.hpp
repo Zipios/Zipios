@@ -19,15 +19,17 @@
 */
 
 /** \file
-    Header file that defines a number of exceptions used by FileCollection and
-    its subclasses.
-*/
+ * \brief Various exceptions used throughout the zipios++ library.
+ *
+ * Header file that defines a number of exceptions used throughout
+ * the zipios++ library.
+ */
 
-
-#include "zipios++/zipios-config.h"
+#include "zipios++/zipios-config.hpp"
 
 #include <stdexcept>
 #include <string>
+
 
 namespace zipios
 {
@@ -100,7 +102,5 @@ public:
 };
 
 
-
-} // namespace
-
+} // zipios namespace
 // vim: ts=4 sw=4 et

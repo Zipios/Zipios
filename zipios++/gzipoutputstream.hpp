@@ -19,45 +19,35 @@
 */
 
 /** \file
- * Header file containing miscellaneous small functions and variables.
+ * \brief Header file that defines GZIPOutputStream.
  */
 
-#include "zipios++/zipios-config.h"
+#include "zipios++/gzipoutputstreambuf.hpp"
 
-#include <vector>
+#include <memory>
+
 
 namespace zipios
 {
 
 
-extern char const g_separator;
-
-
-/** \brief Contatenate two vectors together.
- *
- * This function appends vector v2 to vector v1 using a push_back()
- * of all the elements of v2.
- *
- * \param[in,out] v1  The vector which receives a copy of v2.
- * \param[in]  v2  The vector to concatenate at the end of v1.
- */
-template<class Type>
-void operator += (std::vector<Type>& v1, std::vector<Type> const& v2)
+class GZIPOutputStream : public std::ostream
 {
-    // make sure these are not the same vector or the insert()
-    // is not unlikely to fail badly
-    if(&v1 != &v2)
-    {
-        v1.reserve(v1.size() + v2.size());
-        v1.insert(v1.end(), v2.begin(), v2.end());
-    }
-    //for ( std::vector< Type >::const_iterator cit = v2.begin() ; cit != v2.end() ; ++cit )
-    //{
-    //  v1.push_back( *cit ) ;
-    //}
-}
+public:
+    explicit  GZIPOutputStream(std::ostream& os);
+    explicit  GZIPOutputStream(std::string const& filename);
+    virtual   ~GZIPOutputStream();
+
+    void      setFilename(std::string const& filename);
+    void      setComment(std::string const& comment);
+    void      close();
+    void      finish();
+
+private:
+    std::unique_ptr<std::ofstream>        m_ofs;
+    std::unique_ptr<GZIPOutputStreambuf>  m_ozf;
+};
 
 
-} // zipios namespace
-
+} // zipios namespace.
 // vim: ts=4 sw=4 et

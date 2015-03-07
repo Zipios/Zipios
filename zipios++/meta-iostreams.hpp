@@ -19,34 +19,27 @@
 */
 
 /** \file
-    Header file that defines GZIPOutputStream.
-*/
+ * \brief Includes the different iostream libraries
+ */
 
-#include "zipios++/gzipoutputstreambuf.h"
+#include "zipios++/zipios-config.hpp"
 
-#include <memory>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 
 namespace zipios
 {
 
-class GZIPOutputStream : public std::ostream
-{
-public:
-  explicit  GZIPOutputStream(std::ostream& os);
-  explicit  GZIPOutputStream(std::string const& filename);
-  virtual   ~GZIPOutputStream();
 
-  void      setFilename(std::string const& filename);
-  void      setComment(std::string const& comment);
-  void      close();
-  void      finish();
+/** \brief An output stream using strings.
+ *
+ * This object is used whenever we want to output a buffer from
+ * a string and convert that to a string.
+ */
+typedef std::ostringstream OutputStringStream;
 
-private:
-  std::unique_ptr<std::ofstream>        m_ofs;
-  std::unique_ptr<GZIPOutputStreambuf>  m_ozf;
-};
 
-} // zipios namespace.
-
+} // zipios namespace
 // vim: ts=2 sw=2 et

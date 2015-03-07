@@ -22,7 +22,7 @@
  * Header file that defines DeflateOutputStreambuf.
  */
 
-#include "zipios++/filteroutputstreambuf.h"
+#include "zipios++/filteroutputstreambuf.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -108,5 +108,4 @@ protected: // FIXME: reconsider design?
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

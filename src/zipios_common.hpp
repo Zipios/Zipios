@@ -19,43 +19,45 @@
 */
 
 /** \file
-    Header file that defines ZipOutputStreambuf.
-*/
+ * Header file containing miscellaneous small functions and variables.
+ */
 
-#include "zipios++/deflateoutputstreambuf.h"
+#include "zipios++/zipios-config.hpp"
+
+#include <vector>
 
 
 namespace zipios
 {
 
-/** GZIPOutputStreambuf is a zip output streambuf filter.
+
+extern char const g_separator;
+
+
+/** \brief Contatenate two vectors together.
+ *
+ * This function appends vector v2 to vector v1 using a push_back()
+ * of all the elements of v2.
+ *
+ * \param[in,out] v1  The vector which receives a copy of v2.
+ * \param[in]  v2  The vector to concatenate at the end of v1.
  */
-class GZIPOutputStreambuf : public DeflateOutputStreambuf
+template<class Type>
+void operator += (std::vector<Type>& v1, std::vector<Type> const& v2)
 {
-public:
-    explicit      GZIPOutputStreambuf(std::streambuf *outbuf);
-    virtual       ~GZIPOutputStreambuf();
-
-    void          setFilename(std::string const& filename);
-    void          setComment(std::string const& comment);
-    void          close();
-    void          finish();
-
-protected:
-    virtual int   overflow(int c = EOF);
-    virtual int   sync();
-
-private:
-    void          writeHeader();
-    void          writeTrailer();
-    void          writeInt(uint32_t i);
-
-    std::string   m_filename;
-    std::string   m_comment;
-    bool          m_open = false;
-};
+    // make sure these are not the same vector or the insert()
+    // is not unlikely to fail badly
+    if(&v1 != &v2)
+    {
+        v1.reserve(v1.size() + v2.size());
+        v1.insert(v1.end(), v2.begin(), v2.end());
+    }
+    //for ( std::vector< Type >::const_iterator cit = v2.begin() ; cit != v2.end() ; ++cit )
+    //{
+    //  v1.push_back( *cit ) ;
+    //}
+}
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

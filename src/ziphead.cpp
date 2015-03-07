@@ -18,17 +18,19 @@
 */
 
 /** \file
+ * \brief Implementation of zip header handling.
+ *
  * Implementation of routines for reading the central directory and
  * local headers of a zip archive.
  */
 
-#include "zipios++/ziphead.h"
+#include "zipios++/ziphead.hpp"
 
-#include "zipios++/dostime.h"
-#include "zipios++/zipheadio.h"
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
-#include "zipios_common.h"
+#include "dostime.h"
+#include "zipheadio.hpp"
+#include "zipios_common.hpp"
 
 
 namespace zipios
@@ -282,5 +284,4 @@ bool EndOfCentralDirectory::checkSignature(uint32_t sig) const
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

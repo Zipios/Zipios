@@ -27,7 +27,7 @@
 
 #include "catch_tests.h"
 
-#include "zipios++/filepath.h"
+#include "zipios++/filepath.hpp"
 
 #include <fstream>
 

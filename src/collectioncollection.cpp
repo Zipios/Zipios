@@ -18,26 +18,84 @@
 */
 
 /** \file
-    Implementation of CollectionCollection.
-*/
+ * \brief Implementation of CollectionCollection.
+ */
 
-#include "zipios++/collcoll.h"
+#include "zipios++/collectioncollection.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
-#include "zipios_common.h"
+#include "zipios_common.hpp"
 
 
 namespace zipios
 {
 
 
+namespace
+{
+
+/** \brief Seach for an entry.
+ *
+ * This function searchs for an entry that match the given name.
+ * If that entry exists, the \p it parameter will be pointing
+ * to it.
+ *
+ * The \p cep parameter is also set to the object found.
+ *
+ * \param[in] name  The name of the entry to search.
+ * \param[out] cep  The pointer to the entry found.
+ * \param[out] it  The iterator pointing to the entry in this collection.
+ * \param[in] matchpath  How the name of the entry is compared with \p name.
+ */
+void matchEntry(CollectionCollection::vector_t collections, std::string const& name, FileEntry::pointer_t& cep, FileCollection::vector_t::const_iterator& it, CollectionCollection::MatchPath matchpath)
+{
+    for(it = collections.begin(); it != collections.end(); it++)
+    {
+        cep = (*it)->getEntry(name, matchpath);
+        if(cep)
+        {
+            break;
+        }
+    }
+    cep = nullptr;
+}
+
+} // no name namespace
+
+
+/** \anchor collcoll_anchor
+ * \brief A collection of collections.
+ *
+ * CollectionCollection is a FileCollection that consists of an
+ * arbitrary number of FileCollection's. With a CollectionCollection
+ * the user can use multiple FileCollection objects transparently, making
+ * it easy for a program to keep some of its files in a zip archive and
+ * others stored in ordinary files. CollectionCollection can be used
+ * to create a simple virtual filesystem, where all collections are
+ * mounted on /. If more than one collection contain a file with
+ * the same path only the one in the first added collection is
+ * accessible.
+ */
+
+
+
+/** Constructor.
+ */
 CollectionCollection::CollectionCollection()
 {
     m_valid = true; // we are valid even though we are empty!
 }
 
 
+/** \brief Copy a CollectionCollection in another.
+ *
+ * This function copies a collection of collections in another. Note
+ * that all the children get cloned so the copy can be edited without
+ * modify the source.
+ *
+ * \param[in] src  The source to copy in the new CollectionCollection.
+ */
 CollectionCollection::CollectionCollection(CollectionCollection const& src)
     : FileCollection(src)
 {
@@ -49,6 +107,16 @@ CollectionCollection::CollectionCollection(CollectionCollection const& src)
 }
 
 
+/** \brief Copy assignment operator.
+ *
+ * This assignment operator copies \p rhs to this collection replacing
+ * the file entries that exist in this collection.
+ *
+ * Note that the source file entries are cloned in the destination so
+ * modifying this collection will not modify the source.
+ *
+ * \param[in] rhs  The source to copy in this collection.
+ */
 CollectionCollection const& CollectionCollection::operator = (CollectionCollection const& rhs)
 {
     FileCollection::operator = (rhs);
@@ -148,7 +216,7 @@ FileEntry::pointer_t CollectionCollection::getEntry(std::string const& name, Mat
     FileCollection::vector_t::const_iterator it;
     FileEntry::pointer_t cep;
 
-    getEntry(name, cep, it, matchpath);
+    matchEntry(m_collections, name, cep, it, matchpath);
 
     return cep;
 }
@@ -169,12 +237,19 @@ CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(std:
     FileCollection::vector_t::const_iterator it;
     FileEntry::pointer_t cep;
 
-    getEntry(entry_name, cep, it, matchpath);
+    matchEntry(m_collections, entry_name, cep, it, matchpath);
 
     return cep ? (*it)->getInputStream(entry_name) : nullptr;
 }
 
 
+/** \brief Return the size of the of this collection.
+ *
+ * This function computes the total size of this collection and its
+ * children collections.
+ *
+ * \return The total size of the collection.
+ */
 size_t CollectionCollection::size() const
 {
     mustBeValid();
@@ -186,37 +261,6 @@ size_t CollectionCollection::size() const
     }
 
     return sz;
-}
-
-
-//
-// Protected member functions
-//
-
-/** \brief Seach for an entry.
- *
- * This function searchs for an entry that match the given name.
- * If that entry exists, the \p it parameter will be pointing
- * to it.
- *
- * The \p cep parameter is also set to the object found.
- *
- * \param[in] name  The name of the entry to search.
- * \param[out] cep  The pointer to the entry found.
- * \param[out] it  The iterator pointing to the entry in this collection.
- * \param[in] matchpath  How the name of the entry is compared with \p name.
- */
-void CollectionCollection::getEntry(std::string const& name, FileEntry::pointer_t& cep, FileCollection::vector_t::const_iterator& it, MatchPath matchpath) const
-{
-    for(it = m_collections.begin(); it != m_collections.end(); it++)
-    {
-        cep = (*it)->getEntry(name, matchpath);
-        if(cep)
-        {
-            break;
-        }
-    }
-    cep = nullptr;
 }
 
 

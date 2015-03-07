@@ -24,7 +24,7 @@
  * FilePath is used to manage paths and filenames to files and directories.
  */
 
-#include "zipios++/zipios-config.h"
+#include "zipios++/zipios-config.hpp"
 
 #include <string>
 

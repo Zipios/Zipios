@@ -21,22 +21,27 @@
  * \brief The implementation of ZipFile.
  */
 
+#include "zipios++/zipfile.hpp"
 
-#include "zipios++/zipfile.h"
+#include "zipios++/zipinputstream.hpp"
+#include "zipios++/zipiosexceptions.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "backbuffer.hpp"
 
-#include "zipios++/zipinputstream.h"
-
-
-#include "backbuffer.h"
 
 namespace zipios
 {
 
-//
-// Public
-//
+
+/** \class ZipFile
+ * \brief The ZipFile class represents a collection of files.
+ * \anchor zipfile_anchor
+ *
+ * ZipFile is a FileCollection, where the files are stored
+ * in a .zip file.
+ */
+
+
 
 /** \anchor zipfile_openembeddedzipfile
  * \brief Open a zip archive that was previously appened to another file.
@@ -276,5 +281,4 @@ bool ZipFile::confirmLocalHeaders(std::istream& zipfile)
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

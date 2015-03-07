@@ -19,12 +19,12 @@
 */
 
 /** \file
-    Header file that defines ZipInputStreambuf.
-*/
+ * \brief Header file that defines ZipInputStreambuf.
+ */
 
-#include "zipios++/inflateinputstreambuf.h"
+#include "zipios++/inflateinputstreambuf.hpp"
 
-#include "zipios++/ziphead.h"
+#include "zipios++/ziphead.hpp"
 
 
 namespace zipios
@@ -74,12 +74,12 @@ protected:
 private:
     bool                    m_open_entry = false;
     ZipLocalEntry           m_curr_entry;
+    // TODO: require initialization
     int                     m_data_start; // Do not forget entry header has a length too.
     int                     m_remain;     // For STORED entry only. the number of bytes that
-                                        // has not been put in the m_outvec yet.
+                                          // has not been put in the m_outvec yet.
 };
 
 
 } // namespace
-
 // vim: ts=4 sw=4 et

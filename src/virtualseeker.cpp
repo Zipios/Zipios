@@ -18,12 +18,12 @@
 */
 
 /** \file
- * Implementation file that defines VirtualSeeker.
+ * \brief Implementation file that defines VirtualSeeker.
  */
 
-#include "zipios++/virtualseeker.h"
+#include "zipios++/virtualseeker.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
 
 namespace zipios

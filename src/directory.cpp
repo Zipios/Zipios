@@ -21,7 +21,7 @@
 
 // --------------------------------------------------------------------------
 
-#include "directory.h"
+#include "directory.hpp"
 
 #include <cstring>
 

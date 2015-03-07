@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -19,32 +19,26 @@
 */
 
 /** \file
-    The header file for BackBuffer
-*/
+ * \brief Header file that defines FilterOutputStreambuf.
+ */
 
-#include "zipios++/zipheadio.h"
-#include "zipios++/virtualseeker.h"
+#include "zipios++/meta-iostreams.hpp"
 
 
 namespace zipios
 {
 
 
-class BackBuffer : public std::vector<unsigned char>
+class FilterOutputStreambuf : public std::streambuf
 {
 public:
-    explicit                BackBuffer(std::istream& is, VirtualSeeker const& vs = VirtualSeeker(), int const chunk_size = 1024 );
+    explicit            FilterOutputStreambuf(std::streambuf *outbuf);
+    virtual             ~FilterOutputStreambuf();
 
-    int                     readChunk(int &read_pointer);
-
-private:
-    VirtualSeeker           m_vs;
-    int                     m_chunk_size;
-    std::istream&           m_is;
-    std::streampos          m_file_pos;
+protected:
+    std::streambuf *    m_outbuf;
 };
 
 
-} // zipios namespace
-
+} // namespace
 // vim: ts=4 sw=4 et

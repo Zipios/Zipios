@@ -70,7 +70,7 @@ endif()
 
 find_package( ZLIB REQUIRED )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios++/zipios-config.h.in ${CMAKE_CURRENT_BINARY_DIR}/zipios++/zipios-config.h )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios++/zipios-config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/zipios++/zipios-config.hpp )
 
 # Generate the RPM package specification file
 set(PACKAGE "libzipios++")
@@ -86,11 +86,9 @@ add_subdirectory( doc )
 install( DIRECTORY zipios++
     DESTINATION include
     PATTERN "*.in" EXCLUDE
-    PATTERN "*.w32" EXCLUDE
-    PATTERN "*.am" EXCLUDE
 )
 
-install( FILES ${CMAKE_BINARY_DIR}/zipios++/zipios-config.h
+install( FILES ${CMAKE_BINARY_DIR}/zipios++/zipios-config.hpp
     DESTINATION include/zipios++
 )
 

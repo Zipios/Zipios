@@ -18,12 +18,12 @@
 */
 
 /** \file
- * Implementation of DeflateOutputStreambuf.
+ * \brief Implementation of DeflateOutputStreambuf.
  */
 
-#include "zipios++/deflateoutputstreambuf.h"
+#include "zipios++/deflateoutputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
 
 namespace zipios

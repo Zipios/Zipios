@@ -19,16 +19,15 @@
 */
 
 /** \file
-    Header file containing classes and functions for reading the central
-    directory and local header fields in a zip archive.
-*/
+ * \brief Header file containing classes and functions for reading the central
+ * directory and local header fields in a zip archive.
+ */
 
-#include "zipios++/fileentry.h"
+#include "zipios++/fileentry.hpp"
 
 
 namespace zipios
 {
-
 
 
 class ZipCDirEntry;
@@ -262,8 +261,5 @@ ZipCDirEntry& ZipCDirEntry::operator = (ZipCDirEntry const& src)
 }
 
 
-
-
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

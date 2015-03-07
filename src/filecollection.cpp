@@ -18,12 +18,12 @@
 */
 
 /** \file
-    Implementation of FileCollection.
-*/
+ * \brief Implementation of FileCollection.
+ */
 
-#include "zipios++/fcoll.h"
+#include "zipios++/filecollection.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
 #include <algorithm>
 

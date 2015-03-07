@@ -32,12 +32,12 @@ project( zipios )
 add_library( ${PROJECT_NAME} SHARED
     backbuffer.cpp
     basicentry.cpp
-    collcoll.cpp
+    collectioncollection.cpp
     deflateoutputstreambuf.cpp
-    dircoll.cpp
+    directorycollection.cpp
     directory.cpp
     dostime.c
-    fcoll.cpp
+    filecollection.cpp
     fileentry.cpp
     filepath.cpp
     filterinputstreambuf.cpp

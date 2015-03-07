@@ -27,7 +27,7 @@
  * \sa FileCollection
  */
 
-#include "zipios++/meta-iostreams.h"
+#include "zipios++/meta-iostreams.hpp"
 
 #include <ctime>
 #include <memory>

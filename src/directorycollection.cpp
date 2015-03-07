@@ -18,17 +18,27 @@
 */
 
 /** \file
-    Implementation of DirectoryCollection.
-*/
+ * \brief Implementation of DirectoryCollection.
+ */
 
-#include "zipios++/dircoll.h"
+#include "zipios++/directorycollection.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
-#include "directory.h"
+#include "directory.hpp"
+
 
 namespace zipios
 {
+
+/** \class DirectoryCollection
+ * \brief A collection generated from reading a directory.
+ * \anchor dircol_anchor
+ *
+ * The DirectoryCollection is a FileCollection that obtains its entries
+ * from a directory.
+ */
+
 
 /** \brief Initialize a DirectoryCollection object.
  *
@@ -55,9 +65,7 @@ DirectoryCollection::DirectoryCollection()
  *                      Otherwise it will be read when it is first
  *                      needed.
  */
-DirectoryCollection::DirectoryCollection(std::string const& path,
-                                         bool recursive,
-                                         bool load_now)
+DirectoryCollection::DirectoryCollection(std::string const& path, bool recursive, bool load_now)
     //: m_entries_loaded(false) -- auto-init
     : m_recursive(recursive)
     , m_filepath(path)
@@ -108,7 +116,7 @@ FileEntry::pointer_t DirectoryCollection::getEntry(std::string const& name, Matc
     }
 
     // avoid loading entries if possible.
-    FileEntry::pointer_t ent(new DirEntry(name, "", m_filepath));
+    FileEntry::pointer_t ent(new BasicEntry(name, "", m_filepath));
     if(ent->isValid())
     {
         return ent;

@@ -24,10 +24,10 @@
     get a helpful usage message.
 */
 
-#include "zipios++/zipheadio.h"
+#include "zipios++/ziphead.hpp"
 
-//#include <cstdlib>
 #include <cstring>
+
 
 // static variables
 namespace
@@ -36,6 +36,7 @@ namespace
 char *g_progname;
 
 }
+
 
 void usage()
 {

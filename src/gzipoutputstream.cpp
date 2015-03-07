@@ -21,7 +21,7 @@
  * \brief Implementation of GZIPOutputStream.
  */
 
-#include "zipios++/gzipoutputstream.h"
+#include "zipios++/gzipoutputstream.hpp"
 
 
 namespace zipios
@@ -144,5 +144,4 @@ void GZIPOutputStream::finish()
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

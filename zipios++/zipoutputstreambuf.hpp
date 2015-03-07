@@ -19,22 +19,22 @@
 */
 
 /** \file
-    Header file that defines ZipOutputStreambuf.
-*/
+ * \brief Header file that defines ZipOutputStreambuf.
+ */
 
+#include "zipios++/deflateoutputstreambuf.hpp"
 
-#include "zipios++/deflateoutputstreambuf.h"
-
-#include "zipios++/ziphead.h"
+#include "zipios++/ziphead.hpp"
 
 
 namespace zipios
 {
 
+
 class ZipOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
-    // unfortunately zlib does not define a type for its compression level
+    // zlib does not define a type for its compression level
     typedef int             CompressionLevel;
 
     static CompressionLevel const   NO_COMPRESSION      = Z_NO_COMPRESSION;
@@ -44,6 +44,7 @@ public:
 
     explicit                ZipOutputStreambuf(std::streambuf *outbuf);
     virtual                 ~ZipOutputStreambuf();
+
     void                    closeEntry();
     void                    close();
     void                    finish();
@@ -59,9 +60,7 @@ protected:
     void                    updateEntryHeaderInfo();
 
     // Should/could be moved to zipheadio.h ?!
-    static void             writeCentralDirectory(ZipCDirEntry::vector_t const& entries,
-                                                  EndOfCentralDirectory eocd,
-                                                  std::ostream& os);
+    static void             writeCentralDirectory(ZipCDirEntry::vector_t const& entries, EndOfCentralDirectory eocd, std::ostream& os);
 
 private:
     std::string             m_zip_comment;
@@ -74,5 +73,4 @@ private:
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

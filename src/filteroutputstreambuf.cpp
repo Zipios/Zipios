@@ -18,16 +18,22 @@
 */
 
 /** \file
- * Implementation of FilterOutputStreambuf.
+ * \brief Implementation of FilterOutputStreambuf.
  */
 
-#include "zipios++/filteroutputstreambuf.h"
+#include "zipios++/filteroutputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
 
 namespace zipios
 {
+
+
+/** \class GZIPOutputStreambuf
+ * \brief GZIPOutputStreambuf is a zip output streambuf filter.
+ */
+
 
 /** \class FilterOutputStreambuf
  * \brief The buffer for the output filter.

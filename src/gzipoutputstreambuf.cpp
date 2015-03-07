@@ -18,11 +18,10 @@
 */
 
 /** \file
-    Implementation of GZIPOutputStreambuf.
-*/
+ * \brief Implementation of GZIPOutputStreambuf.
+ */
 
-
-#include "zipios++/gzipoutputstreambuf.h"
+#include "zipios++/gzipoutputstreambuf.hpp"
 
 
 namespace zipios

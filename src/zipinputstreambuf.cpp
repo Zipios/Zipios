@@ -18,12 +18,12 @@
 */
 
 /** \file
-    Implementation of ZipInputStreambuf.
-*/
+ * \brief Implementation of ZipInputStreambuf.
+ */
 
-#include "zipios++/zipinputstreambuf.h"
+#include "zipios++/zipinputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
 
 namespace zipios

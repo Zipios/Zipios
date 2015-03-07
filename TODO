@@ -1,0 +1,6 @@
+
+A few things that contributors can definitively help with:
+
+ * Update the contrib/zipios++.spec.in so it works with 2.0
+ * Help with getting the project to work under MS-Windows.
+

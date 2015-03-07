@@ -21,9 +21,9 @@
  * \brief Implementation of InflateInputStreambuf.
  */
 
-#include "zipios++/inflateinputstreambuf.h"
+#include "zipios++/inflateinputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
 
 namespace zipios
@@ -221,5 +221,5 @@ bool InflateInputStreambuf::reset(int stream_position)
 }
 
 
-} // namespace
+} // zipios namespace
 // vim: ts=4 sw=4 et

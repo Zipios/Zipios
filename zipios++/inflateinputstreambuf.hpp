@@ -19,11 +19,10 @@
 */
 
 /** \file
-    Header file that defines InflateInputStreambuf.
-*/
+ * \brief Header file that defines InflateInputStreambuf.
+ */
 
-
-#include "zipios++/filterinputstreambuf.h"
+#include "zipios++/filterinputstreambuf.hpp"
 
 #include <vector>
 
@@ -32,7 +31,6 @@
 
 namespace zipios
 {
-
 
 
 class InflateInputStreambuf : public FilterInputStreambuf
@@ -61,5 +59,4 @@ private:
 
 
 } // namespace
-
 // vim: ts=4 sw=4 et

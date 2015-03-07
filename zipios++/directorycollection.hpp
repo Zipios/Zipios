@@ -19,22 +19,16 @@
 */
 
 /** \file
-    Header file that defines DirectoryCollection.
-*/
+ * \brief Header file that defines DirectoryCollection.
+ */
 
-#include "zipios++/fcoll.h"
-#include "zipios++/basicentry.h"
+#include "zipios++/filecollection.hpp"
+#include "zipios++/basicentry.hpp"
 
 namespace zipios
 {
 
-/** DirEntry is a BasicEntry. */
-typedef BasicEntry DirEntry;
 
-/** \anchor dircol_anchor
- * DirectoryCollection is a FileCollection that obtains its entries
- * from a directory.
- */
 class DirectoryCollection : public FileCollection
 {
 public:
@@ -55,10 +49,10 @@ protected:
     void                                load(bool recursive, FilePath const& subdir = FilePath());
 
     mutable bool                        m_entries_loaded = false;
-    bool                                m_recursive = true; // recurse into subdirs.
+    bool                                m_recursive = true;
     FilePath                            m_filepath;
 };
 
-} // namespace
 
+} // namespace
 // vim: ts=4 sw=4 et

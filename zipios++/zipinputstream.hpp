@@ -19,10 +19,10 @@
 */
 
 /** \file
- * Header file that defines ZipInputStream.
+ * \brief Header file that defines ZipInputStream.
  */
 
-#include "zipios++/zipinputstreambuf.h"
+#include "zipios++/zipinputstreambuf.hpp"
 
 #include <memory>
 
@@ -101,5 +101,4 @@ private:
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

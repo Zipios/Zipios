@@ -19,16 +19,17 @@
 */
 
 /** \file
-    Header file that defines ZipOutputStream.
-*/
+ * \brief Header file that defines ZipOutputStream.
+ */
 
-#include "zipios++/zipoutputstreambuf.h"
+#include "zipios++/zipoutputstreambuf.hpp"
 
 #include <memory>
 
 
 namespace zipios
 {
+
 
 /** \anchor ZipOutputStream_anchor
  * ZipOutputStream is an ostream that writes the output to a zip file. The
@@ -97,6 +98,6 @@ private:
     std::unique_ptr<ZipOutputStreambuf> m_ozf;
 };
 
-} // zipios namespace
 
+} // zipios namespace
 // vim: ts=4 sw=4 et

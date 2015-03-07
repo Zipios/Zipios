@@ -18,14 +18,15 @@
 */
 
 /** \file
- * Implementation of FilePath.
+ * \brief Implementation of FilePath.
  */
 
-#include "zipios++/filepath.h"
+#include "zipios++/filepath.hpp"
 
-#include "zipios_common.h"
+#include "zipios_common.hpp"
 
 #include <sys/stat.h>
+
 
 namespace zipios
 {

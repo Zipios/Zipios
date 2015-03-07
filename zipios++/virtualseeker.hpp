@@ -19,32 +19,37 @@
 */
 
 /** \file
-    Header file that defines FilterInputStreambuf.
-*/
+ * \brief Header file that defines VirtualSeeker.
+ */
 
-#include "zipios++/meta-iostreams.h"
+#include "zipios++/meta-iostreams.hpp"
+
+#include <stdexcept>
 
 
 namespace zipios
 {
 
 
-/** An input streambuf filter is a streambuf that filters the input it
- gets from the streambuf it is attached to. FilterInputStreambuf is a base class to
- derive input streambuf filters from. */
-class FilterInputStreambuf : public std::streambuf
+class VirtualSeeker
 {
 public:
-    explicit                    FilterInputStreambuf(std::streambuf *inbuf);
-                                FilterInputStreambuf(FilterInputStreambuf const& src) = delete;
-    FilterInputStreambuf const& operator = (FilterInputStreambuf const& src) = delete;
-    virtual                     ~FilterInputStreambuf();
+    typedef off_t   offset_t;
 
-protected:
-    std::streambuf *            m_inbuf;
+                    VirtualSeeker(offset_t start_offset = 0, offset_t end_offset = 0);
+
+    void            setOffsets(offset_t start_offset, offset_t end_offset);
+    void            getOffsets(offset_t& start_offset, offset_t& end_offset) const;
+    offset_t        startOffset() const;
+    offset_t        endOffset() const;
+    void            vseekg(std::istream& is, offset_t offset, std::ios::seekdir sd) const;
+    std::streampos  vtellg(std::istream& is) const;
+
+private:
+    offset_t        m_start_offset = 0;
+    offset_t        m_end_offset = 0;
 };
 
 
 } // namespace
-
 // vim: ts=4 sw=4 et

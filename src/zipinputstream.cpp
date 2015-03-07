@@ -18,10 +18,10 @@
 */
 
 /** \file
-    Implementation of ZipInputStream.
-*/
+ * \brief Implementation of ZipInputStream.
+ */
 
-#include "zipios++/zipinputstream.h"
+#include "zipios++/zipinputstream.hpp"
 
 
 namespace zipios

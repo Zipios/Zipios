@@ -40,10 +40,10 @@ namespace zipios
 
 inline char const *get_version()
 {
-  return ZIPIOS_VERSION_STRING;
+    return ZIPIOS_VERSION_STRING;
 }
 
-}
+} // zipios namespace
 
 
 // Visual C++
@@ -67,4 +67,4 @@ inline char const *get_version()
 
 #endif
 
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

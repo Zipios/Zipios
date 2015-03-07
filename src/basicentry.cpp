@@ -21,11 +21,11 @@
  * \brief Implementation of BasicEntry.
  */
 
-#include "zipios++/basicentry.h"
+#include "zipios++/basicentry.hpp"
 
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
 
-#include "zipios_common.h"
+#include "zipios_common.hpp"
 
 
 namespace zipios

@@ -18,16 +18,19 @@
 */
 
 /** \file
-    \anchor appendzip_anchor
-    Source code to a small program appendzip that appends a zip
-    archive to another file. Run appendzip without arguments to
-    get a helpful usage message.
-*/
+ * \brief Tool used to append a Zip archive at the end of another file.
+ * \anchor appendzip_anchor
+ *
+ * Source code to a small program appendzip that appends a zip
+ * archive to another file. Run appendzip without arguments to
+ * get a helpful usage message.
+ */
 
-#include "zipios++/zipheadio.h"
+#include "zipios++/ziphead.hpp"
 
 #include <cstdlib>
 #include <cstring>
+
 
 // static variables
 namespace
@@ -37,6 +40,7 @@ char *g_progname;
 
 }
 
+
 void usage()
 {
     // see the ZipFile::openEmbeddedZipFile() function for details...
@@ -45,7 +49,6 @@ void usage()
     std::cout << "The openEmbeddedZipFile() function can then be used to read the file." << std::endl;
     exit(1);
 }
-
 
 
 int main(int argc, char *argv[])
@@ -89,7 +92,11 @@ int main(int argc, char *argv[])
     exef << zipf.rdbuf();
 
     // write zipfile start offset to file
-    zipios::writeUint32(zip_start, exef);
+    exef << static_cast<unsigned char>(zip_start);
+    exef << static_cast<unsigned char>(zip_start >> 8);
+    exef << static_cast<unsigned char>(zip_start >> 16);
+    exef << static_cast<unsigned char>(zip_start >> 24);
+    //zipios::writeUint32(zip_start, exef);
 
     return 0;
 }

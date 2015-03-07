@@ -18,10 +18,11 @@
 */
 
 /** \file
- * Implementation file containing miscellaneous small functions.
+ * \brief Implementation file containing miscellaneous small functions.
  */
 
-#include "zipios_common.h"
+#include "zipios_common.hpp"
+
 
 namespace zipios
 {
@@ -31,5 +32,4 @@ char const g_separator = '/';
 
 
 } // zipios namespace
-
 // vim: ts=4 sw=4 et

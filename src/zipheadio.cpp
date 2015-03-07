@@ -18,14 +18,17 @@
 */
 
 /** \file
-    Implementation of I/O functions for the header structures
-    defined in ziphead.h.
-*/
+ * \brief The implementation of the I/O to and from a Zip archive.
+ *
+ * Implementation of I/O functions for the header structures
+ * defined in ziphead.h.
+ */
 
-#include "zipios++/zipheadio.h"
+#include "zipheadio.hpp"
 
-#include "zipios++/dostime.h"
-#include "zipios++/zipiosexceptions.h"
+#include "zipios++/zipiosexceptions.hpp"
+
+#include "dostime.h"
 
 
 namespace zipios

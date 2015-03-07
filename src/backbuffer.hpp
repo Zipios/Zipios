@@ -1,4 +1,4 @@
-#pragma once
+#pragma
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -19,27 +19,32 @@
 */
 
 /** \file
- * Includes the different iostream libraries
- */
+    The header file for BackBuffer
+*/
 
-#include "zipios++/zipios-config.h"
+#include "zipios++/virtualseeker.hpp"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
+#include "zipheadio.hpp"
 
 
 namespace zipios
 {
 
 
-/** \brief An output stream using strings.
- *
- * This object is used whenever we want to output a buffer from
- * a string and convert that to a string.
- */
-typedef std::ostringstream OutputStringStream;
+class BackBuffer : public std::vector<unsigned char>
+{
+public:
+    explicit                BackBuffer(std::istream& is, VirtualSeeker const& vs = VirtualSeeker(), int const chunk_size = 1024 );
+
+    int                     readChunk(int &read_pointer);
+
+private:
+    VirtualSeeker           m_vs;
+    int                     m_chunk_size;
+    std::istream&           m_is;
+    std::streampos          m_file_pos;
+};
 
 
 } // zipios namespace
-// vim: ts=2 sw=2 et
+// vim: ts=4 sw=4 et

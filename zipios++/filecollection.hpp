@@ -24,7 +24,7 @@
  * This object holds a vector of FileEntry objects.
  */
 
-#include "zipios++/fileentry.h"
+#include "zipios++/fileentry.hpp"
 
 
 namespace zipios

@@ -18,14 +18,15 @@
 */
 
 /** \file
-    Implementation of ZipOutputStream.
-*/
+ * \brief Implementation of ZipOutputStream.
+ */
 
-#include "zipios++/zipoutputstream.h"
+#include "zipios++/zipoutputstream.hpp"
 
 
 namespace zipios
 {
+
 
 ZipOutputStream::ZipOutputStream(std::ostream& os)
     //: std::ostream(nullptr)
@@ -102,6 +103,5 @@ void ZipOutputStream::setMethod(StorageMethod method)
 }
 
 
-
-} // namespace
+} // zipios namespace
 // vim: ts=4 sw=4 et

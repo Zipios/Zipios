@@ -19,27 +19,41 @@
 */
 
 /** \file
-    Header file that defines FilterOutputStreambuf.
+    Header file that defines ZipOutputStreambuf.
 */
 
-#include "zipios++/meta-iostreams.h"
+#include "zipios++/deflateoutputstreambuf.hpp"
 
 
 namespace zipios
 {
 
 
-class FilterOutputStreambuf : public std::streambuf
+class GZIPOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
-    explicit            FilterOutputStreambuf(std::streambuf *outbuf);
-    virtual             ~FilterOutputStreambuf();
+    explicit      GZIPOutputStreambuf(std::streambuf *outbuf);
+    virtual       ~GZIPOutputStreambuf();
+
+    void          setFilename(std::string const& filename);
+    void          setComment(std::string const& comment);
+    void          close();
+    void          finish();
 
 protected:
-    std::streambuf *    m_outbuf;
+    virtual int   overflow(int c = EOF);
+    virtual int   sync();
+
+private:
+    void          writeHeader();
+    void          writeTrailer();
+    void          writeInt(uint32_t i);
+
+    std::string   m_filename;
+    std::string   m_comment;
+    bool          m_open = false;
 };
 
 
-} // namespace
-
+} // zipios namespace
 // vim: ts=4 sw=4 et

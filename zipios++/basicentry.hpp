@@ -22,8 +22,8 @@
     Header file that defines BasicEntry.
 */
 
-#include "zipios++/fileentry.h"
-#include "zipios++/filepath.h"
+#include "zipios++/fileentry.hpp"
+#include "zipios++/filepath.hpp"
 
 
 namespace zipios
@@ -47,6 +47,6 @@ protected:
     FilePath                m_basepath;
 };
 
-} // zipios namespace
 
+} // zipios namespace
 // vim: ts=4 sw=4 et
