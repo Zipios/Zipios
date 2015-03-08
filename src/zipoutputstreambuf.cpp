@@ -279,29 +279,14 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
     }
 
     std::ostream os(m_outbuf);
-    int const curr_pos = os.tellp();
+    int const curr_pos(os.tellp());
 
-    // update fields in _entries.back()
-    ZipCDirEntry& entry = m_entries.back();
+    // update fields in m_entries.back()
+    ZipCDirEntry& entry(m_entries.back());
     entry.setSize(getCount());
     entry.setCrc(getCrc32());
     entry.setCompressedSize(curr_pos - entry.getLocalHeaderOffset() - entry.getLocalHeaderSize());
-
-#if 0
-    // Mark Donszelmann: added current date and time
-    time_t ltime;
-    time( &ltime );
-    struct tm *now;
-    now = localtime( &ltime );
-    int dosTime = (now->tm_year - 80) << 25 | (now->tm_mon + 1) << 21 | now->tm_mday << 16 |
-        now->tm_hour << 11 | now->tm_min << 5 | now->tm_sec >> 1;
-    entry.setTime( dosTime );
-#else
-    // Mon Mar 24 19:10:46 PDT 2014 (RDB)
-    // Use std time_t, and get the local time. Use new setUnixTime method.
-    //
     entry.setUnixTime(std::time(nullptr));
-#endif
 
     // write ZipLocalEntry header to header position
     os.seekp(entry.getLocalHeaderOffset());
@@ -325,7 +310,7 @@ void ZipOutputStreambuf::writeCentralDirectory(std::vector<ZipCDirEntry> const& 
     eocd.setOffset(cdir_start);
     eocd.setCDirSize(cdir_size);
     eocd.setTotalCount(entries.size());
-    os << eocd;
+    eocd.write(os);
 }
 
 

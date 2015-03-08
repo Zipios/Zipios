@@ -29,6 +29,8 @@
 
 #include "zipios++/meta-iostreams.hpp"
 
+#include "zipios++/filepath.hpp"
+
 #include <ctime>
 #include <memory>
 #include <string>
@@ -63,7 +65,7 @@ public:
     typedef uint32_t                        crc32_t;
     typedef uint32_t                        dostime_t;
 
-                                FileEntry(std::string const& filename);
+                                FileEntry(FilePath const& filename);
     virtual pointer_t           clone() const = 0;
     virtual                     ~FileEntry();
 
@@ -85,23 +87,22 @@ public:
     virtual void                setCrc(crc32_t crc);
     virtual void                setExtra(buffer_t const& extra);
     virtual void                setMethod(StorageMethod method);
-    virtual void                setName(std::string const& name);
     virtual void                setSize(size_t size);
     virtual void                setTime(dostime_t time);
     virtual void                setUnixTime(std::time_t time);
     virtual std::string         toString() const = 0;
 
 protected:
-    std::string             m_filename;
-    size_t                  m_uncompressed_size = 0;
-    time_t                  m_unix_time = 0;
-    uint32_t                m_crc_32 = 0;
-    bool                    m_has_crc_32 = false;
-    bool                    m_valid = false;
+    FilePath                    m_filename;
+    size_t                      m_uncompressed_size = 0;
+    time_t                      m_unix_time = 0;
+    uint32_t                    m_crc_32 = 0;
+    bool                        m_has_crc_32 = false;
+    bool                        m_valid = false;
 };
 
 
-std::ostream& operator << (std::ostream &os, FileEntry const& entry);
+std::ostream& operator << (std::ostream& os, FileEntry const& entry);
 
 
 } // zipios namespace

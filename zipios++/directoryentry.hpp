@@ -19,32 +19,28 @@
 */
 
 /** \file
-    Header file that defines BasicEntry.
-*/
+ * \brief Header file that defines DirectoryEntry.
+ */
 
 #include "zipios++/fileentry.hpp"
-#include "zipios++/filepath.hpp"
 
 
 namespace zipios
 {
 
-class BasicEntry : public FileEntry
+class DirectoryEntry : public FileEntry
 {
 public:
-    explicit                BasicEntry(std::string const& filename,
-                                       std::string const& comment,
-                                       FilePath const& basepath = FilePath());
+                            DirectoryEntry(FilePath const& filename, std::string const& comment);
     virtual pointer_t       clone() const override;
-    virtual                 ~BasicEntry() override;
+    virtual                 ~DirectoryEntry() override;
 
     virtual std::string     getComment() const override;
     virtual void            setComment(std::string const& comment) override;
     virtual std::string     toString() const override;
 
-protected:
+private:
     std::string             m_comment;
-    FilePath                m_basepath;
 };
 
 

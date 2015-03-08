@@ -2,9 +2,12 @@
 /*
   dostime.h - routines for converting UNIX time to MS-DOS time.
 
-  Borrowed from Info-zip's unzip
+  Various Copyrights:
 
-  Copyright (C) 1999 Bryan Burns
+  First written by Mark Adler, Richard B. Wales, Jean-loup Gailly,
+  Kai Uwe Rommel, Onno van der Linden and Igor Mandrichenko (1990-1997).
+  Tweaked further by Bryan Burns (1999).
+  Redesigned with full error checks by Alexis Wilke (2015).
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -22,26 +25,25 @@
 */
 
 #include <time.h>
+#include <inttypes.h>
+
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-time_t dos2unixtime(unsigned long dostime);
 
-unsigned long dostime(
-    int y, /* year   */
-    int n, /* month  */
-    int d, /* day    */
-    int h, /* hour   */
-    int m, /* minute */
-    int s  /* second */
-);
+typedef uint32_t  dostime_t;
 
-unsigned long unix2dostime(time_t const *t);
+dostime_t   mindostime();
+dostime_t   maxdostime();
+time_t      dos2unixtime(dostime_t dostime);
+dostime_t   dostime(int year, int month, int day, int hour, int minute, int second);
+dostime_t   unix2dostime(time_t const *unix_time);
 
-// vim: ts=2 sw=2 et
+
 #ifdef __cplusplus
 }
 #endif
+// vim: ts=2 sw=2 et

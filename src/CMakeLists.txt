@@ -31,7 +31,7 @@ project( zipios )
 
 add_library( ${PROJECT_NAME} SHARED
     backbuffer.cpp
-    basicentry.cpp
+    directoryentry.cpp
     collectioncollection.cpp
     deflateoutputstreambuf.cpp
     directorycollection.cpp

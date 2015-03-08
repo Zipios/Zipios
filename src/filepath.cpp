@@ -25,11 +25,44 @@
 
 #include "zipios_common.hpp"
 
-#include <sys/stat.h>
+#include <memory.h>
 
 
 namespace zipios
 {
+
+
+namespace
+{
+
+
+
+
+/** \brief Prune the trailing separator if present.
+ *
+ * This function ensures that the FilePath does NOT end with a separator.
+ *
+ * \warning
+ * At this time the path is not canonicalized properly. We expect path
+ * to not include double separators one after another. However, passing
+ * such a path to the FilePath will keep it as is.
+ */
+std::string pruneTrailingSeparator(std::string path)
+{
+    if(path.size() > 0)
+    {
+        if(path[path.size() - 1] == g_separator)
+        {
+            path.erase(path.size() - 1);
+        }
+    }
+
+    return path;
+}
+
+
+} // no name namespace
+
 
 
 /** \class FilePath
@@ -39,6 +72,12 @@ namespace zipios
  * FilePath has member functions to check if the file path is a valid
  * file system entity, and to check what kind of file system entity
  * it is, e.g. is it a file, a directory, a pipe, etc.
+ *
+ * It also knows of the last modification time and size of the file.
+ *
+ * \warning
+ * The information about a file is cached so at the time it gets used
+ * the file on disk may have changed, it may even have been deleted.
  */
 
 
@@ -53,15 +92,13 @@ namespace zipios
  * \sa exists()
  * \sa pruneTrailingSeparator()
  */
-FilePath::FilePath(std::string const& path, bool check_immediately)
-    : m_checked(false)
-    , m_path(path)
+FilePath::FilePath(std::string const& path)
+    : m_path(pruneTrailingSeparator(path))
+    //, m_stat() -- see below
+    //, m_checked(false) -- auto-init
+    //, m_exists(false) -- auto-init
 {
-    pruneTrailingSeparator();
-    if(check_immediately)
-    {
-        check();
-    }
+    memset(&m_stat, 0, sizeof(m_stat));
 }
 
 
@@ -81,31 +118,15 @@ void FilePath::check() const
     if(!m_checked)
     {
         m_checked     = true;
-        m_exists      = false;
-
-        m_is_reg      = false;
-        m_is_dir      = false;
-        m_is_char     = false;
-        m_is_block    = false;
-        m_is_socket   = false;
-        m_is_fifo     = false;
 
         // TODO: under MS-Windows, we need to use _wstat()
         //       to make it work in Unicode (i.e. UTF-8
         //       to wchar_t then call _wstat()...)
         //       Also we want to use the 64 bit variant
         //       to make sure that we get a valid size
-        struct stat buf;
-        if(stat(m_path.c_str(), &buf) != -1)
-        {
-            m_exists    = true;
-            m_is_reg    = S_ISREG (buf.st_mode);
-            m_is_dir    = S_ISDIR (buf.st_mode);
-            m_is_char   = S_ISCHR (buf.st_mode);
-            m_is_block  = S_ISBLK (buf.st_mode);
-            m_is_socket = S_ISSOCK(buf.st_mode);
-            m_is_fifo   = S_ISFIFO(buf.st_mode);
-        }
+        //
+        memset(&m_stat, 0, sizeof(m_stat));
+        m_exists = stat(m_path.c_str(), &m_stat) == 0;
     }
 }
 
@@ -121,30 +142,8 @@ void FilePath::check() const
  */
 FilePath& FilePath::operator = (std::string const& path)
 {
-    m_path = path;
-    pruneTrailingSeparator();
+    m_path = pruneTrailingSeparator(path);
     return *this;
-}
-
-
-/** \brief Prune the trailing separator if present.
- *
- * This function ensures that the FilePath does NOT end with a separator.
- *
- * \warning
- * At this time the path is not canonicalized properly. We expect path
- * to not include double separators one after another. However, passing
- * such a path to the FilePath will keep it as is.
- */
-void FilePath::pruneTrailingSeparator()
-{
-    if(m_path.size() > 0)
-    {
-        if(m_path[m_path.size() - 1] == g_separator)
-        {
-            m_path.erase(m_path.size() - 1);
-        }
-    }
 }
 
 
@@ -195,6 +194,97 @@ FilePath FilePath::operator + (FilePath const& rhs) const
 }
 
 
+/** \brief Check whether two FilePath represent the same file.
+ *
+ * This function compares a FilePath object (this) and a C-string
+ * to know whether the two are the same.
+ *
+ * A null pointer as the C-string is viewed as an empty string.
+ *
+ * \param[in] rhs  The right hand side to compare with.
+ *
+ * \sa operator == (FilePath const& rhs);
+ */
+bool FilePath::operator == (char const *rhs) const
+{
+    return m_path == rhs;
+}
+
+
+/** \brief Check whether two FilePath represent the same file.
+ *
+ * This function compares a FilePath object (this) and a C-string
+ * to know whether the two are the same.
+ *
+ * A null pointer as the C-string is viewed as an empty string.
+ *
+ * \param[in] lhs  The left hand side to compare with.
+ * \param[in] rhs  The right hand side to compare with.
+ *
+ * \sa operator == (FilePath const& rhs);
+ */
+bool operator == (char const *lhs, FilePath const& rhs)
+{
+    return lhs == rhs.m_path;
+}
+
+
+/** \brief Check whether two FilePath represent the same file.
+ *
+ * This function compares a FilePath object (this) against
+ * a string representing a path to know whether the two are
+ * the equal.
+ *
+ * \param[in] rhs  The right hand side to compare with.
+ *
+ * \sa operator == (FilePath const& rhs);
+ */
+bool FilePath::operator == (std::string const& rhs) const
+{
+    return m_path == rhs;
+}
+
+
+/** \brief Check whether two FilePath represent the same file.
+ *
+ * This function compares a FilePath object (this) against
+ * a string representing a path to know whether the two are
+ * the equal.
+ *
+ * \param[in] lhs  The left hand side to compare with.
+ * \param[in] rhs  The right hand side to compare with.
+ *
+ * \sa operator == (FilePath const& rhs);
+ */
+bool operator == (std::string const& lhs, FilePath const& rhs)
+{
+    return lhs == rhs.m_path;
+}
+
+
+/** \brief Check whether two FilePath represent the same file.
+ *
+ * This function compares two FilePath objects (this and rhs)
+ * to know whether the two are the same.
+ *
+ * \note
+ * It is important to know that the compare is rather primitive.
+ * The two paths must be equal character by character instead
+ * of actually representing exactly the same file. Also relative
+ * paths will likely be equal and these may not represent the
+ * same file at all.
+ *
+ * \param[in] rhs  The right hand side to compare with.
+ *
+ * \sa operator == (char const *rhs);
+ * \sa operator == (std::string const& rhs);
+ */
+bool FilePath::operator == (FilePath const& rhs) const
+{
+    return m_path == rhs.m_path;
+}
+
+
 /** \brief Retrieve the basename.
  *
  * This function returns the filename part of the FilePath
@@ -202,7 +292,7 @@ FilePath FilePath::operator + (FilePath const& rhs) const
  *
  * \return Return the basename of this FilePath filename.
  */
-FilePath FilePath::filename() const
+std::string FilePath::filename() const
 {
     std::string::size_type const pos(m_path.find_last_of(g_separator));
     if(pos != std::string::npos)
@@ -211,6 +301,41 @@ FilePath FilePath::filename() const
     }
 
     return m_path;
+}
+
+
+/** \brief Get the length of the string.
+ *
+ * This function returns the length of the string used to
+ * represent this FilePath path and filename.
+ *
+ * \return The length of the string representing this file path.
+ *
+ * \sa size()
+ */
+size_t FilePath::length() const
+{
+    return m_path.length();
+}
+
+
+/** \brief Get the length of the string.
+ *
+ * This function returns the length of the string used to
+ * represent this FilePath path and filename.
+ *
+ * \note
+ * This is an overloaded function that calls the length() function.
+ * It is defined because the string represents an array of bytes
+ * and as such the size() function may be used.
+ *
+ * \return The length of the string representing this file path.
+ *
+ * \sa length()
+ */
+size_t FilePath::size() const
+{
+    return length();
 }
 
 
@@ -238,7 +363,7 @@ bool FilePath::exists() const
 bool FilePath::isRegular() const
 {
     check();
-    return m_is_reg;
+    return m_exists && S_ISREG(m_stat.st_mode);
 }
 
 
@@ -252,7 +377,7 @@ bool FilePath::isRegular() const
 bool FilePath::isDirectory() const
 {
     check();
-    return m_is_dir;
+    return m_exists && S_ISDIR(m_stat.st_mode);
 }
 
 
@@ -266,7 +391,7 @@ bool FilePath::isDirectory() const
 bool FilePath::isCharSpecial() const
 {
     check();
-    return m_is_char;
+    return m_exists && S_ISCHR(m_stat.st_mode);
 }
 
 
@@ -280,7 +405,7 @@ bool FilePath::isCharSpecial() const
 bool FilePath::isBlockSpecial() const
 {
     check();
-    return m_is_block;
+    return m_exists && S_ISBLK(m_stat.st_mode);
 }
 
 
@@ -294,7 +419,7 @@ bool FilePath::isBlockSpecial() const
 bool FilePath::isSocket() const
 {
     check();
-    return m_is_socket;
+    return m_exists && S_ISSOCK(m_stat.st_mode);
 }
 
 
@@ -308,9 +433,68 @@ bool FilePath::isSocket() const
 bool FilePath::isFifo() const
 {
     check();
-    return m_is_fifo;
+    return m_exists && S_ISFIFO(m_stat.st_mode);
 }
 
+
+/** \brief Get the size of the file.
+ *
+ * This function returns the size of the file. The size may be a 64 bit
+ * size on 64 bit systems.
+ *
+ * \note
+ * If the file represents a directory, the size will be zero.
+ *
+ * \note
+ * If the file is not considered valid, the size returned is zero.
+ *
+ * \warning
+ * There is also a function called size() which actually checks the
+ * length of the path and not the size of the file.
+ *
+ * \return The last modification as a Unix time.
+ *
+ * \sa size()
+ */
+size_t FilePath::fileSize() const
+{
+    check();
+    return m_stat.st_size;
+}
+
+
+/** \brief Get the last modification time of the file.
+ *
+ * This function returns the last modification time of the specified
+ * file.
+ *
+ * \note
+ * If the file is not considered valid, the time returned is zero.
+ *
+ * \return The last modification as a Unix time.
+ */
+std::time_t FilePath::lastModificationTime() const
+{
+    check();
+    return m_stat.st_mtime;
+}
+
+
+/** \brief Print out a FilePath.
+ *
+ * This function prints out the name of the file that this FilePath
+ * represents.
+ *
+ * \param[in,out] os  The output stream.
+ * \param[in] path  The path to print out.
+ *
+ * \return A copy of the \p os stream reference.
+ */
+std::ostream& operator << (std::ostream& os, FilePath const& path)
+{
+    os << static_cast<std::string>(path);
+    return os;
+}
 
 } // namespace
 // vim: ts=4 sw=4 et

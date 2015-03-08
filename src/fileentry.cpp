@@ -70,7 +70,7 @@ namespace zipios
  *
  * \param crc value to set the crc field to.
  */
-FileEntry::FileEntry(std::string const& filename)
+FileEntry::FileEntry(FilePath const& filename)
     : m_filename(filename)
     //, m_uncompressed_size(0) -- auto-init
     //, m_crc_32(0) -- auto-init
@@ -207,8 +207,8 @@ std::string FileEntry::getName() const
  *
  * This function returns the filename only of the entry.
  *
- * The function uses a FilePath object to remove the path from
- * the full filename.
+ * If the filename represents a directory, then the function
+ * returns an empty string.
  *
  * \return The filename of the entry.
  */
@@ -219,7 +219,7 @@ std::string FileEntry::getFileName() const
         return std::string();
     }
 
-    return FilePath(m_filename).filename();
+    return m_filename.filename();
 }
 
 
@@ -277,6 +277,18 @@ std::time_t FileEntry::getUnixTime() const
 }
 
 
+/** \brief Check whether the CRC32 was defined.
+ *
+ * This function returns true if the setCrc() function was called earlier
+ * with a valid CRC32 and the FileEntry implementation supports a CRC (i.e.
+ * a DirectoryEntry does not have a CRC).
+ *
+ * \return true if a CRC32 is defined in this class.
+ */
+bool FileEntry::hasCrc() const
+{
+    return m_has_crc_32;
+}
 
 
 /** \brief Check whether the filename represents a directory.
@@ -289,16 +301,7 @@ std::time_t FileEntry::getUnixTime() const
  */
 bool FileEntry::isDirectory() const
 {
-    // TODO: It seems to me that a FileEntry with an empty filename should
-    //       not be possible; so this test should be in the setName()
-    //       and each constructor to avoid any other problems
-    //
-    if(m_filename.empty())
-    {
-        throw IOException("FileEntry filename cannot be empty if it is to represent a directory.");
-    }
-
-    return m_filename.back() == g_separator;
+    return m_filename.isDirectory();
 }
 
 
@@ -386,20 +389,6 @@ void FileEntry::setExtra(buffer_t const& extra)
 void FileEntry::setMethod(StorageMethod method)
 {
     static_cast<void>(method);
-}
-
-
-/** \brief Sets the name field for the entry.
- *
- * This function is used to change the filename of this entry.
- *
- * The name may include a path.
- *
- * \param[in] name  The name field is set to the specified value.
- */
-void FileEntry::setName(std::string const& name)
-{
-    m_filename = name;
 }
 
 

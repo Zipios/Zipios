@@ -19,6 +19,10 @@
 
 /** \file
  * \brief Implementation of DirectoryCollection.
+ *
+ * This file includes the implementation of the DirectoryCollection
+ * class which is used to read a directory from disk and create
+ * a set of DirectoryEntry objects.
  */
 
 #include "zipios++/directorycollection.hpp"
@@ -116,7 +120,7 @@ FileEntry::pointer_t DirectoryCollection::getEntry(std::string const& name, Matc
     }
 
     // avoid loading entries if possible.
-    FileEntry::pointer_t ent(new BasicEntry(name, "", m_filepath));
+    FileEntry::pointer_t ent(new DirectoryEntry(m_filepath + name, ""));
     if(ent->isValid())
     {
         return ent;
@@ -207,21 +211,17 @@ void DirectoryCollection::load(bool recursive, FilePath const& subdir)
         if(boost::filesystem::get<boost::filesystem::is_directory>(it))
         {
             // FIXME -- should we be adding directories to the collection?
-            //          if so, we probably want the BasicEntry implementation
-            //          to properly support such (right not it marks those
-            //          as invalid entries... probably a bug!)
             //
             if(recursive)
             {
                 load(recursive, subdir + *it);
             }
-            //else -- ignore directories because BasicEntry() does not support them!?
+            //else -- ignore directories because DirectoryEntry() does not support them!?
         }
         else
         {
-            FileEntry::pointer_t ent(new BasicEntry(subdir + *it, "", m_filepath));
+            FileEntry::pointer_t ent(new DirectoryEntry(m_filepath + subdir + *it, ""));
             m_entries.push_back(ent);
-            //ent->setSize(boost::filesystem::get<boost::filesystem::size>(it)); -- FIXME -- to be verified, but from what I can see this is done in the constructor of BasicEntry already
         }
     }
 }

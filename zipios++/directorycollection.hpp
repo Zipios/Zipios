@@ -23,7 +23,7 @@
  */
 
 #include "zipios++/filecollection.hpp"
-#include "zipios++/basicentry.hpp"
+#include "zipios++/directoryentry.hpp"
 
 namespace zipios
 {

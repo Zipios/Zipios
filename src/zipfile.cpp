@@ -197,7 +197,7 @@ bool ZipFile::readCentralDirectory(std::istream& zipfile)
     {
         ZipCDirEntry::pointer_t ent(new ZipCDirEntry);
         m_entries[entry_num] = ent;
-        zipfile >> *static_cast<ZipCDirEntry *>(ent.get());
+        static_cast<ZipCDirEntry *>(ent.get())->read(zipfile);
         if(!zipfile)
         {
             if(zipfile.bad())
@@ -267,7 +267,7 @@ bool ZipFile::confirmLocalHeaders(std::istream& zipfile)
     {
         ZipCDirEntry *ent(static_cast<ZipCDirEntry *>((*it).get()));
         m_vs.vseekg(zipfile, ent->getLocalHeaderOffset(), std::ios::beg);
-        zipfile >> zlh;
+        zlh.read(zipfile);
         if(!zipfile || zlh != *ent)
         {
             inconsistencies++;

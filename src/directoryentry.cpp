@@ -18,10 +18,10 @@
 */
 
 /** \file
- * \brief Implementation of BasicEntry.
+ * \brief Implementation of DirectoryEntry.
  */
 
-#include "zipios++/basicentry.hpp"
+#include "zipios++/directoryentry.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
 
@@ -31,83 +31,79 @@
 namespace zipios
 {
 
-/** \class BasicEntry
+/** \class DirectoryEntry
  * \brief A file entry that does not use compression.
  *
- * BasicEntry is a FileEntry that is suitable as a base class for
- * basic entries, that e.g. do not support any form of compression
+ * DirectoryEntry is a FileEntry that is suitable as a base class for
+ * basic entries, that do not support any form of compression and
+ * in most cadrd represent a file in a directtory.
  */
 
 
-/** Constructor.
+/** \brief Initialize a DirectoryEntry object.
+ *
+ * This constructor initializes a DirectoryEntry which represents a
+ * file on disk. If the basepath + filename does not exist or is
+ * neither a regular file or a directory, then this entry is created
+ * but marked as invalid.
  *
  * \param[in] filename  The filename of the entry.
  * \param[in] comment  A comment for the entry.
  * \param[in] basepath  The base path to file.
  */
-BasicEntry::BasicEntry(std::string const& filename,
-                       std::string const& comment,
-                       FilePath const& basepath)
+DirectoryEntry::DirectoryEntry(FilePath const& filename, std::string const& comment)
     : FileEntry(filename)
     , m_comment(comment)
-    //, m_uncompressed_size(0) -- auto-init
-    //, m_valid(false) -- auto-init
-    , m_basepath(basepath)
 {
-    // TODO: convert this open + close in a stat() instead so we get mtime too
-    std::string const full_path(m_basepath + m_filename);
-    std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
-    if(!is)
+    m_valid = m_filename.isRegular() || m_filename.isDirectory();
+    if(m_valid)
     {
-        m_valid = false;
-    }
-    else
-    {
-        is.seekg(0, std::ios::end);
-        m_uncompressed_size = is.tellg();
-        is.close();
-        m_valid = true;
+        m_uncompressed_size = m_filename.fileSize();
+        m_unix_time = m_filename.lastModificationTime();
     }
 }
 
 
-/** \brief Create a copy of the BasicEntry.
+/** \brief Create a copy of the DirectoryEntry.
  *
- * The clone function creates a copy of this BasicEntry object.
+ * The clone function creates a copy of this DirectoryEntry object.
  *
  * In most cases, when a collection is copied, a clone of each
  * entry is created to avoid potential problems with sharing
  * the same object between various lists.
  *
- * \return A shared pointer of the new BasicEntry object.
+ * \return A shared pointer of the new DirectoryEntry object.
  */
-BasicEntry::pointer_t BasicEntry::clone() const
+DirectoryEntry::pointer_t DirectoryEntry::clone() const
 {
-    return BasicEntry::pointer_t(new BasicEntry(*this));
+    return DirectoryEntry::pointer_t(new DirectoryEntry(*this));
 }
 
 
-BasicEntry::~BasicEntry()
+DirectoryEntry::~DirectoryEntry()
 {
 }
 
 
-std::string BasicEntry::getComment() const
+std::string DirectoryEntry::getComment() const
 {
     return m_comment;
 }
 
 
-void BasicEntry::setComment(std::string const& comment)
+void DirectoryEntry::setComment(std::string const& comment)
 {
     m_comment = comment;
 }
 
 
-std::string BasicEntry::toString() const
+std::string DirectoryEntry::toString() const
 {
     OutputStringStream sout;
-    sout << m_filename << " (" << m_uncompressed_size << " bytes)";
+    // TBD: shall we offer translation support for these?
+    sout << static_cast<std::string>(m_filename) << " ("
+         << m_uncompressed_size << " byte"
+         << (m_uncompressed_size == 1 ? "" : "s") << ")";
     return sout.str();
 }
 

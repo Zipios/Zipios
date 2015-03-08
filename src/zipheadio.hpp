@@ -134,7 +134,7 @@ inline void writeUint16 ( uint16_t const host_val, std::ostream& os )
 }
 
 
-inline void readByteSeq ( std::istream& is, std::string& con, int const count )
+inline void readByteSeq(std::istream& is, std::string& con, int const count)
 {
     std::vector<char> buf;
     buf.resize(count + 1);
@@ -156,14 +156,13 @@ inline void writeByteSeq( std::ostream& os, const std::string& con )
 }
 
 
-inline void readByteSeq ( std::istream& is, unsigned char *buf, int const count )
+inline void readByteSeq(std::istream& is, unsigned char *buf, int const count)
 {
-    int rsf = 0 ;
-
-    while ( rsf < count && is )
+    int rsf(0);
+    while(rsf < count && is)
     {
-        is.read ( reinterpret_cast< char * >( buf ) + rsf, count - rsf ) ;
-        rsf += is.gcount() ;
+        is.read(reinterpret_cast<char *>(buf) + rsf, count - rsf);
+        rsf += is.gcount();
     }
 }
 
@@ -195,14 +194,14 @@ inline void writeByteSeq(std::ostream& os, std::vector <unsigned char> const& ve
 }
 
 
-std::istream& operator >> (std::istream& is, ZipLocalEntry& zlh);
-std::istream& operator >> (std::istream& is, DataDescriptor& dd);
-std::istream& operator >> (std::istream& is, ZipCDirEntry& zcdh);
-//  std::istream& operator >> (std::istream& is, EndOfCentralDirectory& eocd);
+//std::istream& operator >> (std::istream& is, ZipLocalEntry& zlh);
+//std::istream& operator >> (std::istream& is, DataDescriptor& dd);
+//std::istream& operator >> (std::istream& is, ZipCDirEntry& zcdh);
+//std::istream& operator >> (std::istream& is, EndOfCentralDirectory& eocd);
 
-std::ostream &operator << (std::ostream& os, ZipLocalEntry const& zlh);
-std::ostream &operator << (std::ostream& os, ZipCDirEntry const& zcdh);
-std::ostream &operator << (std::ostream& os, EndOfCentralDirectory const& eocd);
+//std::ostream &operator << (std::ostream& os, ZipLocalEntry const& zlh);
+//std::ostream &operator << (std::ostream& os, ZipCDirEntry const& zcdh);
+//std::ostream &operator << (std::ostream& os, EndOfCentralDirectory const& eocd);
 
 
 } // zipios namespace

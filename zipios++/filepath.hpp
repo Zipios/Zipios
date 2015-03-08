@@ -26,6 +26,7 @@
 
 #include "zipios++/zipios-config.hpp"
 
+#include <ctime>
 #include <string>
 
 
@@ -36,37 +37,42 @@ namespace zipios
 class FilePath
 {
 public:
-                    FilePath(std::string const& path = "", bool check_immediately = false);
+                        FilePath(std::string const& path = "");
 
-                    operator std::string () const;
-    FilePath&       operator = (std::string const& path);
-    FilePath        operator + (FilePath const& name) const;
-    FilePath        filename() const;
-    bool            exists() const;
-    bool            isRegular() const;
-    bool            isDirectory() const;
-    bool            isCharSpecial() const;
-    bool            isBlockSpecial() const;
-    bool            isSocket() const;
-    bool            isFifo() const;
+                        operator std::string () const;
+    FilePath&           operator = (std::string const& path);
+    FilePath            operator + (FilePath const& name) const;
+    bool                operator == (char const *rhs) const;
+    friend bool         operator == (char const *lhs, FilePath const& rhs);
+    bool                operator == (std::string const& rhs) const;
+    friend bool         operator == (std::string const& lhs, FilePath const& rhs);
+    bool                operator == (FilePath const& rhs) const;
+    // TBD: add all the other comparison operators for completeness
+    std::string         filename() const;
+    size_t              length() const;
+    size_t              size() const;
+    bool                exists() const;
+    bool                isRegular() const;
+    bool                isDirectory() const;
+    bool                isCharSpecial() const;
+    bool                isBlockSpecial() const;
+    bool                isSocket() const;
+    bool                isFifo() const;
+    size_t              fileSize() const;
+    std::time_t         lastModificationTime() const;
 
 private:
-    /** Prunes the trailing separator of a specified path. */
-    void            pruneTrailingSeparator();
-    void            check() const;
+    void                check() const;
 
-    mutable bool    m_checked;
-    mutable bool    m_exists;
-    mutable bool    m_is_reg;
-    mutable bool    m_is_dir;
-    mutable bool    m_is_char;
-    mutable bool    m_is_block;
-    mutable bool    m_is_socket;
-    mutable bool    m_is_fifo;
-    std::string     m_path;
+    std::string         m_path;
+    mutable os_stat_t   m_stat;
+    mutable bool        m_checked = false;
+    mutable bool        m_exists = false;
 };
 
 
-} // namespace
+std::ostream& operator << (std::ostream& os, FilePath const& path);
 
+
+} // namespace
 // vim: ts=4 sw=4 et

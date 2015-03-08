@@ -47,6 +47,8 @@ include_directories(
 add_executable( ${PROJECT_NAME}
     catch_tests.cpp
 
+    catch_directoryentry.cpp
+    catch_dostime.cpp
     catch_filepath.cpp
 
 # commontest.cpp

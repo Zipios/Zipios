@@ -38,17 +38,12 @@ class ZipCDirEntry;
  */
 class ZipLocalEntry : public FileEntry
 {
-    friend std::istream& operator >> (std::istream& is, ZipLocalEntry& cdh);
-    friend std::ostream& operator << (std::ostream& os, ZipLocalEntry const& zlh);
-    friend bool operator == (ZipLocalEntry const& zlh, const ZipCDirEntry& ze);
-
 public:
     inline ZipLocalEntry(std::string const& filename = "", buffer_t const& extra_field = buffer_t())
         : FileEntry(filename)
         //, m_gp_bitfield(0) -- auto-init
     {
         setDefaultExtract();
-        setName(filename);
         setExtra(extra_field);
     }
 
@@ -56,6 +51,8 @@ public:
     virtual pointer_t           clone() const override;
 
     virtual                     ~ZipLocalEntry() override {}
+
+    bool                        operator == (ZipCDirEntry const& ze) const;
 
     virtual size_t              getCompressedSize() const override;
     virtual buffer_t            getExtra() const override;
@@ -69,6 +66,9 @@ public:
     virtual std::string         toString() const override;
     int                         getLocalHeaderSize() const;
     bool                        trailingDataDescriptor() const;
+
+    void                        read(std::istream& is);
+    void                        write(std::ostream& os);
 
 protected:
     static uint32_t const       g_signature;
@@ -105,10 +105,6 @@ struct DataDescriptor
     central directory and not in the local entry headers. */
 class ZipCDirEntry : public ZipLocalEntry
 {
-    friend std::istream&        operator >> ( std::istream& is, ZipCDirEntry& zcdh ) ;
-    friend std::ostream&        operator << ( std::ostream& os, ZipCDirEntry const& zcdh ) ;
-    friend bool                 operator == ( ZipLocalEntry const& zlh, ZipCDirEntry const& ze ) ;
-
 public:
     typedef std::vector<ZipCDirEntry>   vector_t;
 
@@ -146,6 +142,9 @@ public:
 
     int                         getCDirHeaderSize() const;
 
+    void                        read(std::istream& is);
+    void                        write(std::ostream& os);
+
 private:
     static const uint32_t       g_signature;
 
@@ -165,8 +164,6 @@ private:
     directory. */
 class EndOfCentralDirectory
 {
-    friend std::ostream& operator << (std::ostream& os, EndOfCentralDirectory const& eocd);
-
 public:
     explicit EndOfCentralDirectory(std::string const& zip_comment = "",
                                    uint16_t disk_num = 0, uint16_t cdir_disk_num = 0,
@@ -193,6 +190,9 @@ public:
     int         eocdOffSetFromEnd() const          { return m_eocd_offset_from_end; }
     bool        read(std::vector<unsigned char> const& buf, int pos);
 
+    void                        read(std::istream& is);
+    void                        write(std::ostream& os);
+
 private:
     bool        checkSignature(unsigned char const *buf) const;
     bool        checkSignature(uint32_t sig) const;
@@ -212,7 +212,6 @@ private:
 };
 
 
-bool operator == (ZipLocalEntry const& zlh, ZipCDirEntry const& ze);
 
 
 inline bool operator == (ZipCDirEntry const& ze, ZipLocalEntry const& zlh)

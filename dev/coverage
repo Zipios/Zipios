@@ -7,8 +7,12 @@ then
     echo "Usage: $0 [--opt]"
     echo "where --opt is one of:"
     echo "   --all          run all tests"
-    echo "   --filepath     run the filepath tests"
     echo "   --full         run all tests and publish to the world"
+    echo
+    echo "to run specific tests, use one of these tags (can be used with --full, but probably should not):"
+    echo "   [directoryentry]  run the DirectoryEntry class tests"
+    echo "   [fileentry]       run all the tests that check the FileEntry interface"
+    echo "   [filepath]        run the FilePath class tests"
     exit 1;
 fi
 

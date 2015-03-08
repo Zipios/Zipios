@@ -78,7 +78,7 @@ FileEntry::pointer_t ZipInputStreambuf::getNextEntry()
 
     try
     {
-        is >> m_curr_entry;
+        m_curr_entry.read(is);
         if(m_curr_entry.isValid())
         {
             m_data_start = m_inbuf->pubseekoff(0, std::ios::cur, std::ios::in);

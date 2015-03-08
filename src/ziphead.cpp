@@ -36,12 +36,24 @@
 namespace zipios
 {
 
+
+//friend std::istream& operator >> (std::istream& is, ZipLocalEntry& cdh);
+//friend std::ostream& operator << (std::ostream& os, ZipLocalEntry const& zlh);
+//friend bool operator == (ZipLocalEntry const& zlh, const ZipCDirEntry& ze);
+
+//friend std::istream&        operator >> ( std::istream& is, ZipCDirEntry& zcdh ) ;
+//friend std::ostream&        operator << ( std::ostream& os, ZipCDirEntry const& zcdh ) ;
+//friend bool                 operator == ( ZipLocalEntry const& zlh, ZipCDirEntry const& ze ) ;
+
+//friend std::ostream& operator << (std::ostream& os, EndOfCentralDirectory const& eocd);
+
+
 uint32_t const ZipCDirEntry::g_signature          = 0x02014b50;
 uint32_t const ZipLocalEntry::g_signature         = 0x04034b50;
 uint32_t const EndOfCentralDirectory::g_signature = 0x06054b50;
 
 
-bool operator == (ZipLocalEntry const& zlh, ZipCDirEntry const& ze)
+bool ZipLocalEntry::operator == (ZipCDirEntry const& ze) const
 {
     // Not all fields need to be identical. Some of the information
     // may be put in a data descriptor that trails the compressed
@@ -63,13 +75,13 @@ bool operator == (ZipLocalEntry const& zlh, ZipCDirEntry const& ze)
 //    std::cerr << ( zlh.filename        == ze.filename            ) << std::endl ;
 //    std::cerr << "----- END -----" << std::endl ;
 
-    return zlh.m_extract_version == ze.m_extract_version     &&
-           zlh.m_gp_bitfield     == ze.m_gp_bitfield         &&
-           zlh.m_compress_method == ze.m_compress_method     &&
-           //zlh.m_last_mod_ftime  == ze.m_last_mod_ftime      &&
-           //zlh.m_last_mod_fdate  == ze.m_last_mod_fdate      &&
-           zlh.m_unix_time       == ze.m_unix_time           &&
-           zlh.m_filename        == ze.m_filename;
+    return m_extract_version == ze.m_extract_version     &&
+           m_gp_bitfield     == ze.m_gp_bitfield         &&
+           m_compress_method == ze.m_compress_method     &&
+           //m_last_mod_ftime  == ze.m_last_mod_ftime      &&
+           //m_last_mod_fdate  == ze.m_last_mod_fdate      &&
+           m_unix_time       == ze.m_unix_time           &&
+           m_filename        == ze.m_filename;
 }
 
 //
@@ -154,8 +166,9 @@ void ZipLocalEntry::setMethod(StorageMethod method)
 std::string ZipLocalEntry::toString() const
 {
     OutputStringStream sout;
-    sout << m_filename << " (" << m_uncompressed_size << " bytes, ";
-    sout << m_compressed_size << " bytes compressed)";
+    sout << m_filename
+         << " (" << m_uncompressed_size << " bytes, "
+         << m_compressed_size << " bytes compressed)";
     return sout.str();
 }
 
@@ -173,6 +186,7 @@ bool ZipLocalEntry::trailingDataDescriptor() const
     // fields.
     return (m_gp_bitfield & 4) != 0;
 }
+
 
 FileEntry::pointer_t ZipLocalEntry::clone() const
 {
@@ -281,6 +295,191 @@ bool EndOfCentralDirectory::checkSignature(uint32_t sig) const
 {
     return g_signature == sig;
 }
+
+
+void ZipLocalEntry::read(std::istream& is)
+{
+    m_valid = false ; // set to true upon successful completion.
+    if(is)
+    {
+        //    // Before reading anything we record the position in the stream
+        //    // This is a field in the central directory entry, but not
+        //    // in the local entry. After all, we know where we are, anyway.
+        //    zlh.rel_offset_loc_head  = is.tellg() ;
+
+        if(g_signature != readUint32(is))
+        {
+            // put stream in error state and return
+            is.setstate(std::ios::failbit);
+        }
+        else
+        {
+            m_extract_version   = readUint16(is);
+            m_gp_bitfield       = readUint16(is);
+            m_compress_method   = readUint16(is);
+            uint16_t const last_mod_ftime = readUint16(is);    // FIXME can we use Uint32 instead?
+            uint16_t const last_mod_fdate = readUint16(is);
+            m_unix_time = dos2unixtime((last_mod_fdate << 16) + last_mod_ftime);
+            m_crc_32            = readUint32(is);
+            m_compressed_size   = readUint32(is);
+            m_uncompressed_size = readUint32(is);
+            m_filename_len      = readUint16(is);
+            m_extra_field_len   = readUint16(is);
+
+            // Read filename and extra_field
+            std::string str;
+            readByteSeq(is, str, m_filename_len);
+            m_filename = FilePath(str);
+            readByteSeq(is, m_extra_field, m_extra_field_len);
+
+            if(is)
+            {
+                m_valid = true;
+            }
+        }
+    }
+}
+
+
+//void DataDescriptor::read(std::istream& is)
+//{
+//    static_cast<void>(is);
+//}
+
+
+void ZipCDirEntry::read(std::istream& is)
+{
+    m_valid = false; // set to true upon successful completion.
+    if(!is)
+    {
+        return;
+    }
+
+    if(g_signature != readUint32(is))
+    {
+        // put stream in error state and return
+        is.setstate(std::ios::failbit);
+        return;
+    }
+
+    m_writer_version       = readUint16(is);
+    m_extract_version      = readUint16(is);
+    m_gp_bitfield          = readUint16(is);
+    m_compress_method      = readUint16(is);
+    uint16_t const last_mod_ftime = readUint16(is);    // FIXME can we use Uint32 instead?
+    uint16_t const last_mod_fdate = readUint16(is);
+    m_unix_time = dos2unixtime((last_mod_fdate << 16) + last_mod_ftime);
+    m_crc_32               = readUint32(is);
+    m_compressed_size      = readUint32(is);
+    m_uncompressed_size    = readUint32(is);
+    m_filename_len         = readUint16(is);
+    m_extra_field_len      = readUint16(is);
+    m_file_comment_len     = readUint16(is);
+    m_disk_num_start       = readUint16(is);
+    m_intern_file_attr     = readUint16(is);
+    m_extern_file_attr     = readUint32(is);
+    m_rel_offset_loc_head  = readUint32(is);
+
+    // Read filename and extra_field
+    std::string str;
+    readByteSeq(is, str, m_filename_len);
+    m_filename = FilePath(str);
+    readByteSeq(is, m_extra_field,  m_extra_field_len);
+    readByteSeq(is, m_file_comment, m_file_comment_len);
+
+    if(is)
+    {
+        m_valid = true;
+    }
+}
+
+
+void ZipLocalEntry::write(std::ostream& os)
+{
+    if(os)
+    {
+        if(m_compressed_size >= 0x100000000
+        || m_uncompressed_size >= 0x100000000)
+        {
+            throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
+        }
+
+        uint32_t const dostime(unix2dostime(&m_unix_time));
+
+        writeUint32(g_signature                     , os);
+        writeUint16(m_extract_version               , os);
+        writeUint16(m_gp_bitfield                   , os);
+        writeUint16(m_compress_method               , os);
+        writeUint16(static_cast<uint16_t>(dostime)      , os); // FIXME can we use Uint32 instead?
+        writeUint16(static_cast<uint16_t>(dostime >> 16), os);
+        writeUint32(m_crc_32                        , os);
+        writeUint32(m_compressed_size               , os);
+        writeUint32(m_uncompressed_size             , os);
+        writeUint16(m_filename_len                  , os);
+        writeUint16(m_extra_field_len               , os);
+
+        // Write filename and extra_field
+        writeByteSeq(os, m_filename);
+        writeByteSeq(os, m_extra_field);
+    }
+}
+
+
+void ZipCDirEntry::write(std::ostream& os)
+{
+    if(os)
+    {
+        if(m_compressed_size >= 0x100000000
+        || m_uncompressed_size >= 0x100000000)
+        {
+            throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
+        }
+
+        uint32_t const dostime(unix2dostime(&m_unix_time));
+
+        writeUint32(g_signature                    , os);
+        writeUint16(m_writer_version               , os);
+        writeUint16(m_extract_version              , os);
+        writeUint16(m_gp_bitfield                  , os);
+        writeUint16(m_compress_method              , os);
+        writeUint16(static_cast<uint16_t>(dostime)      , os); // FIXME can we use Uint32 instead?
+        writeUint16(static_cast<uint16_t>(dostime >> 16), os);
+        writeUint32(m_crc_32                       , os);
+        writeUint32(m_compressed_size              , os);
+        writeUint32(m_uncompressed_size            , os);
+        writeUint16(m_filename_len                 , os);
+        writeUint16(m_extra_field_len              , os);
+        writeUint16(m_file_comment_len             , os);
+        writeUint16(m_disk_num_start               , os);
+        writeUint16(m_intern_file_attr             , os);
+        writeUint32(m_extern_file_attr             , os);
+        writeUint32(m_rel_offset_loc_head          , os);
+
+        // Write filename and extra_field
+        writeByteSeq(os, m_filename);
+        writeByteSeq(os, m_extra_field);
+        writeByteSeq(os, m_file_comment);
+    }
+}
+
+
+void EndOfCentralDirectory::write(std::ostream& os)
+{
+    if(os)
+    {
+        writeUint32(g_signature       , os);
+        writeUint16(m_disk_num        , os);
+        writeUint16(m_cdir_disk_num   , os);
+        writeUint16(m_cdir_entries    , os);
+        writeUint16(m_cdir_tot_entries, os);
+        writeUint32(m_cdir_size       , os);
+        writeUint32(m_cdir_offset     , os);
+        writeUint16(m_zip_comment_len , os);
+
+        writeByteSeq(os, m_zip_comment);
+    }
+}
+
 
 
 } // zipios namespace

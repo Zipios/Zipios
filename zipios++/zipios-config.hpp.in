@@ -28,6 +28,8 @@
  * version.
  */
 
+#include <sys/stat.h>
+
 
 #define    ZIPIOS_VERSION_MAJOR   @ZIPIOS_VERSION_MAJOR@
 #define    ZIPIOS_VERSION_MINOR   @ZIPIOS_VERSION_MINOR@
@@ -64,6 +66,13 @@ inline char const *get_version()
 #define S_ISBLK(mode)   0
 #define S_ISSOCK(mode)  0
 #define S_ISFIFO(mode)  (((mode) & _S_IFIFO) == _S_IFIFO)
+
+// TODO: change to _stat64 or whatever is required to get full 64 bit support
+typedef struct stat     os_stat_t;
+
+#else
+
+typedef struct stat     os_stat_t;
 
 #endif
 

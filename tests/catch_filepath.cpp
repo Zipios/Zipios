@@ -18,11 +18,8 @@
 */
 
 /** \file
- * \anchor catch_tests_anchor
  *
- * Zipios++ unit test suite using catch.hpp, see for details:
- *
- *   https://github.com/philsquared/Catch/blob/master/docs/tutorial.md
+ * Zipios++ unit tests used to verify the FilePath class.
  */
 
 #include "catch_tests.h"
@@ -48,8 +45,21 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             std::string const p(fp);
             REQUIRE(p == "/this/file/really/should/not/exist/period.txt");
 
+            REQUIRE(fp == "/this/file/really/should/not/exist/period.txt");
+            REQUIRE("/this/file/really/should/not/exist/period.txt" == fp);
+            REQUIRE(fp == std::string("/this/file/really/should/not/exist/period.txt"));
+            REQUIRE(std::string("/this/file/really/should/not/exist/period.txt") == fp);
+
+            REQUIRE(!(fp == "/this/file/really/should/not/exist/period"));
+            REQUIRE(!("/file/really/should/not/exist/period.txt" == fp));
+            REQUIRE(!(fp == std::string("/this/file/really/should/exist/period.txt")));
+            REQUIRE(!(std::string("/this/file/should/not/exist/period.txt") == fp));
+
             // basename is "period.txt"
             REQUIRE(static_cast<std::string>(fp.filename()) == "period.txt");
+
+            REQUIRE(fp.length() == 45);
+            REQUIRE(fp.size() == 45);
 
             // all flags must be false
             REQUIRE(!fp.exists());
@@ -59,6 +69,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             REQUIRE(!fp.isBlockSpecial());
             REQUIRE(!fp.isSocket());
             REQUIRE(!fp.isFifo());
+
+            std::stringstream ss;
+            ss << fp;
+            REQUIRE(ss.str() == "/this/file/really/should/not/exist/period.txt");
         }
 
         WHEN("and changing the path to something else as unexistant with assignment operator works too")
@@ -71,8 +85,21 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 std::string const p(fp);
                 REQUIRE(p == "/this/is/another/path/changed/with/assignment/operator");
 
+                REQUIRE(fp == "/this/is/another/path/changed/with/assignment/operator");
+                REQUIRE("/this/is/another/path/changed/with/assignment/operator" == fp);
+                REQUIRE(fp == std::string("/this/is/another/path/changed/with/assignment/operator"));
+                REQUIRE(std::string("/this/is/another/path/changed/with/assignment/operator") == fp);
+
+                REQUIRE(!(fp == "this/is/another/path/changed/with/assignment/operator"));
+                REQUIRE(!("/this/is/another/path/chnged/with/assignment/operator" == fp));
+                REQUIRE(!(fp == std::string("/this/is/another/path/changed/with/asignment/operator")));
+                REQUIRE(!(std::string("/this/is/another/path/changed/with/assignment/oprator") == fp));
+
                 // check basename
                 REQUIRE(static_cast<std::string>(fp.filename()) == "operator");
+
+                REQUIRE(fp.length() == 54);
+                REQUIRE(fp.size() == 54);
 
                 // all flags must be false
                 REQUIRE(!fp.exists());
@@ -82,6 +109,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!fp.isBlockSpecial());
                 REQUIRE(!fp.isSocket());
                 REQUIRE(!fp.isFifo());
+
+                std::stringstream ss;
+                ss << fp;
+                REQUIRE(ss.str() == "/this/is/another/path/changed/with/assignment/operator");
             }
         }
 
@@ -97,8 +128,30 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 std::string const p(appended);
                 REQUIRE(p == "/this/file/really/should/not/exist/period.txt/correct/path");
 
+                REQUIRE(appended == "/this/file/really/should/not/exist/period.txt/correct/path");
+                REQUIRE("/this/file/really/should/not/exist/period.txt/correct/path" == appended);
+                REQUIRE(appended == std::string("/this/file/really/should/not/exist/period.txt/correct/path"));
+                REQUIRE(std::string("/this/file/really/should/not/exist/period.txt/correct/path") == appended);
+
+                REQUIRE(!(appended == "/this/file/really/not/exist/period.txt/correct/path"));
+                REQUIRE(!("/this/file/really/should/not/exist/period/correct/path" == appended));
+                REQUIRE(!(appended == std::string("/this/file/really/should/not/exist/period.txt/correct")));
+                REQUIRE(!(std::string("/this/file/should/not/exist/period.txt/correct/path") == appended));
+
+                REQUIRE(!(fp == path));
+                REQUIRE(!(path == fp));
+
+                {
+                    zipios::FilePath equal("/this/file/really/should/not/exist/period.txt");
+                    REQUIRE(fp == equal);
+                    REQUIRE(equal == fp);
+                }
+
                 // still the same basename
                 REQUIRE(static_cast<std::string>(appended.filename()) == "path");
+
+                REQUIRE(appended.length() == 58);
+                REQUIRE(appended.size() == 58);
 
                 // still all flags are false
                 REQUIRE(!appended.exists());
@@ -108,6 +161,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!appended.isBlockSpecial());
                 REQUIRE(!appended.isSocket());
                 REQUIRE(!appended.isFifo());
+
+                std::stringstream ss;
+                ss << appended;
+                REQUIRE(ss.str() == "/this/file/really/should/not/exist/period.txt/correct/path");
             }
         }
 
@@ -127,6 +184,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // check basename
                 REQUIRE(static_cast<std::string>(appended.filename()) == "path.hpp");
 
+                REQUIRE(appended.length() == 63);
+                REQUIRE(appended.size() == 63);
+
                 // still all flags are false
                 REQUIRE(!appended.exists());
                 REQUIRE(!appended.isRegular());
@@ -135,6 +195,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!appended.isBlockSpecial());
                 REQUIRE(!appended.isSocket());
                 REQUIRE(!appended.isFifo());
+
+                std::stringstream ss;
+                ss << appended;
+                REQUIRE(ss.str() == "/this/file/really/should/not/exist/period.txt/relative/path.hpp");
             }
         }
 
@@ -154,6 +218,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // check basename
                 REQUIRE(static_cast<std::string>(appended.filename()) == "period.txt");
 
+                REQUIRE(appended.length() == 45);
+                REQUIRE(appended.size() == 45);
+
                 // still all flags are false
                 REQUIRE(!appended.exists());
                 REQUIRE(!appended.isRegular());
@@ -162,6 +229,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!appended.isBlockSpecial());
                 REQUIRE(!appended.isSocket());
                 REQUIRE(!appended.isFifo());
+
+                std::stringstream ss;
+                ss << appended;
+                REQUIRE(ss.str() == "/this/file/really/should/not/exist/period.txt");
             }
         }
     }
@@ -180,6 +251,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             // check basename
             REQUIRE(static_cast<std::string>(fp.filename()) == "");
 
+            REQUIRE(fp.length() == 0);
+            REQUIRE(fp.size() == 0);
+
             // all flags must be false when empty
             // (because empty does not represent ".")
             REQUIRE(!fp.exists());
@@ -189,6 +263,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             REQUIRE(!fp.isBlockSpecial());
             REQUIRE(!fp.isSocket());
             REQUIRE(!fp.isFifo());
+
+            std::stringstream ss;
+            ss << fp;
+            REQUIRE(ss.str().empty());
         }
 
         WHEN("we can concatenate another empty path to it")
@@ -206,6 +284,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // check basename
                 REQUIRE(static_cast<std::string>(ee.filename()) == "");
 
+                REQUIRE(ee.length() == 0);
+                REQUIRE(ee.size() == 0);
+
                 // all flags must be false when empty
                 // (because empty does not represent ".")
                 REQUIRE(!ee.exists());
@@ -216,6 +297,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!ee.isSocket());
                 REQUIRE(!ee.isFifo());
             }
+
+            std::stringstream ss;
+            ss << ee;
+            REQUIRE(ss.str().empty());
         }
 
         WHEN("we can concatenate a full regular path to it")
@@ -233,6 +318,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // check basename
                 REQUIRE(static_cast<std::string>(ee.filename()) == "path");
 
+                REQUIRE(ee.length() == 23);
+                REQUIRE(ee.size() == 23);
+
                 // all flags must be false
                 REQUIRE(!ee.exists());
                 REQUIRE(!ee.isRegular());
@@ -241,6 +329,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!ee.isBlockSpecial());
                 REQUIRE(!ee.isSocket());
                 REQUIRE(!ee.isFifo());
+
+                std::stringstream ss;
+                ss << ee;
+                REQUIRE(ss.str() == "/this/is/a/regular/path");
             }
         }
 
@@ -259,6 +351,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // check basename
                 REQUIRE(static_cast<std::string>(ee.filename()) == "path.xml");
 
+                REQUIRE(ee.length() == 27);
+                REQUIRE(ee.size() == 27);
+
                 // all flags must be false
                 REQUIRE(!ee.exists());
                 REQUIRE(!ee.isRegular());
@@ -267,6 +362,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!ee.isBlockSpecial());
                 REQUIRE(!ee.isSocket());
                 REQUIRE(!ee.isFifo());
+
+                std::stringstream ss;
+                ss << ee;
+                REQUIRE(ss.str() == "this/is/a/relative/path.xml");
             }
         }
     }
@@ -285,6 +384,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             // check basename
             REQUIRE(static_cast<std::string>(fp.filename()) == "file1.txt");
 
+            REQUIRE(fp.length() == 33);
+            REQUIRE(fp.size() == 33);
+
             // all flags must be false when empty
             // (because empty does not represent ".")
             REQUIRE(!fp.exists());
@@ -294,6 +396,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             REQUIRE(!fp.isBlockSpecial());
             REQUIRE(!fp.isSocket());
             REQUIRE(!fp.isFifo());
+
+            std::stringstream ss;
+            ss << fp;
+            REQUIRE(ss.str() == "this/is/a/relative/path/file1.txt");
         }
 
         WHEN("we can concatenate an empty path to it")
@@ -311,6 +417,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // check basename
                 REQUIRE(static_cast<std::string>(ee.filename()) == "file1.txt");
 
+                REQUIRE(ee.length() == 33);
+                REQUIRE(ee.size() == 33);
+
                 // all flags must be false when empty
                 REQUIRE(!ee.exists());
                 REQUIRE(!ee.isRegular());
@@ -319,6 +428,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!ee.isBlockSpecial());
                 REQUIRE(!ee.isSocket());
                 REQUIRE(!ee.isFifo());
+
+                std::stringstream ss;
+                ss << ee;
+                REQUIRE(ss.str() == "this/is/a/relative/path/file1.txt");
             }
         }
 
@@ -337,6 +450,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // check basename
                 REQUIRE(static_cast<std::string>(ee.filename()) == "path");
 
+                REQUIRE(ee.length() == 56);
+                REQUIRE(ee.size() == 56);
+
                 // all flags must be false
                 REQUIRE(!ee.exists());
                 REQUIRE(!ee.isRegular());
@@ -345,6 +461,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!ee.isBlockSpecial());
                 REQUIRE(!ee.isSocket());
                 REQUIRE(!ee.isFifo());
+
+                std::stringstream ss;
+                ss << ee;
+                REQUIRE(ss.str() == "this/is/a/relative/path/file1.txt/this/is/a/regular/path");
             }
         }
 
@@ -363,6 +483,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // basename is "period.txt"
                 REQUIRE(static_cast<std::string>(ee.filename()) == "path.xml");
 
+                REQUIRE(ee.length() == 61);
+                REQUIRE(ee.size() == 61);
+
                 // all flags must be false
                 REQUIRE(!ee.exists());
                 REQUIRE(!ee.isRegular());
@@ -371,6 +494,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!ee.isBlockSpecial());
                 REQUIRE(!ee.isSocket());
                 REQUIRE(!ee.isFifo());
+
+                std::stringstream ss;
+                ss << ee;
+                REQUIRE(ss.str() == "this/is/a/relative/path/file1.txt/this/is/a/relative/path.xml");
             }
         }
     }
@@ -389,6 +516,9 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             // check basename
             REQUIRE(static_cast<std::string>(fp.filename()) == "path");
 
+            REQUIRE(fp.length() == 23);
+            REQUIRE(fp.size() == 23);
+
             // all flags must be false when empty
             // (because empty does not represent ".")
             REQUIRE(!fp.exists());
@@ -398,6 +528,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             REQUIRE(!fp.isBlockSpecial());
             REQUIRE(!fp.isSocket());
             REQUIRE(!fp.isFifo());
+
+            std::stringstream ss;
+            ss << fp;
+            REQUIRE(ss.str() == "this/is/a/relative/path");
         }
 
         WHEN("we can concatenate another path, it also prune the /")
@@ -415,57 +549,8 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 // check basename
                 REQUIRE(static_cast<std::string>(ee.filename()) == "slash");
 
-                // all flags must be false when empty
-                REQUIRE(!ee.exists());
-                REQUIRE(!ee.isRegular());
-                REQUIRE(!ee.isDirectory());
-                REQUIRE(!ee.isCharSpecial());
-                REQUIRE(!ee.isBlockSpecial());
-                REQUIRE(!ee.isSocket());
-                REQUIRE(!ee.isFifo());
-            }
-        }
-    }
-
-    GIVEN("repeat this last fantom path test that ends with / with 'check_immediately' set")
-    {
-        zipios::FilePath fp("this/is/a/relative/path/", true);
-
-        // first, check that the object is setup as expected
-        SECTION("verify that the object looks as expected")
-        {
-            // retrieve the path
-            std::string const p(fp);
-            REQUIRE(p == "this/is/a/relative/path");
-
-            // check basename
-            REQUIRE(static_cast<std::string>(fp.filename()) == "path");
-
-            // all flags must be false when empty
-            // (because empty does not represent ".")
-            REQUIRE(!fp.exists());
-            REQUIRE(!fp.isRegular());
-            REQUIRE(!fp.isDirectory());
-            REQUIRE(!fp.isCharSpecial());
-            REQUIRE(!fp.isBlockSpecial());
-            REQUIRE(!fp.isSocket());
-            REQUIRE(!fp.isFifo());
-        }
-
-        WHEN("we can concatenate another path, it also prune the /")
-        {
-            zipios::FilePath ep("add/this/with/a/slash/", true);
-
-            zipios::FilePath ee(fp + ep);
-
-            THEN("the result is as expected without the slash")
-            {
-                // retrieve the path
-                std::string const p(ee);
-                REQUIRE(p == "this/is/a/relative/path/add/this/with/a/slash");
-
-                // check basename
-                REQUIRE(static_cast<std::string>(ee.filename()) == "slash");
+                REQUIRE(ee.length() == 45);
+                REQUIRE(ee.size() == 45);
 
                 // all flags must be false when empty
                 REQUIRE(!ee.exists());
@@ -475,6 +560,10 @@ SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
                 REQUIRE(!ee.isBlockSpecial());
                 REQUIRE(!ee.isSocket());
                 REQUIRE(!ee.isFifo());
+
+                std::stringstream ss;
+                ss << ee;
+                REQUIRE(ss.str() == "this/is/a/relative/path/add/this/with/a/slash");
             }
         }
     }
@@ -488,7 +577,7 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
         {
             // create a file
             std::fstream f("filepath-test.txt", std::ios::out | std::ios::binary);
-            f << "This is an existing file." << std::endl;
+            f << "This is a simple test file." << std::endl;
         }
 
         WHEN("creating a FilePath object")
@@ -504,29 +593,13 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
                 // basename is "period.txt"
                 REQUIRE(static_cast<std::string>(fp.filename()) == "filepath-test.txt");
 
-                // all flags must be false
-                REQUIRE(fp.exists());
-                REQUIRE(fp.isRegular());
-                REQUIRE(!fp.isDirectory());
-                REQUIRE(!fp.isCharSpecial());
-                REQUIRE(!fp.isBlockSpecial());
-                REQUIRE(!fp.isSocket());
-                REQUIRE(!fp.isFifo());
-            }
-        }
+                REQUIRE(fp.length() == 17);
+                REQUIRE(fp.size() == 17);
+                REQUIRE(fp.fileSize() == 28);
 
-        WHEN("creating a FilePath object with immediate flag set")
-        {
-            zipios::FilePath fp("filepath-test.txt", false);
-
-            THEN("the file is found too")
-            {
-                // retrieve the path
-                std::string const p(fp);
-                REQUIRE(p == "filepath-test.txt");
-
-                // basename is "period.txt"
-                REQUIRE(static_cast<std::string>(fp.filename()) == "filepath-test.txt");
+                struct stat buf;
+                REQUIRE(stat("filepath-test.txt", &buf) == 0);
+                REQUIRE(fp.lastModificationTime() == buf.st_mtime);
 
                 // all flags must be false
                 REQUIRE(fp.exists());
@@ -536,32 +609,14 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
                 REQUIRE(!fp.isBlockSpecial());
                 REQUIRE(!fp.isSocket());
                 REQUIRE(!fp.isFifo());
+
+                std::stringstream ss;
+                ss << fp;
+                REQUIRE(ss.str() == "filepath-test.txt");
             }
         }
 
-        WHEN("creating a FilePath object with immediate flag set")
-        {
-            zipios::FilePath fp("filepath-test.txt", true);
-
-            THEN("the file is found too")
-            {
-                // retrieve the path
-                std::string const p(fp);
-                REQUIRE(p == "filepath-test.txt");
-
-                // basename is "period.txt"
-                REQUIRE(static_cast<std::string>(fp.filename()) == "filepath-test.txt");
-
-                // all flags must be false
-                REQUIRE(fp.exists());
-                REQUIRE(fp.isRegular());
-                REQUIRE(!fp.isDirectory());
-                REQUIRE(!fp.isCharSpecial());
-                REQUIRE(!fp.isBlockSpecial());
-                REQUIRE(!fp.isSocket());
-                REQUIRE(!fp.isFifo());
-            }
-        }
+        unlink("filepath-test.txt");
     }
 
     GIVEN("an existing directory")
@@ -587,29 +642,8 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
                 // basename is "period.txt"
                 REQUIRE(static_cast<std::string>(fp.filename()) == "filepath-test");
 
-                // all flags must be false
-                REQUIRE(fp.exists());
-                REQUIRE(!fp.isRegular());
-                REQUIRE(fp.isDirectory());
-                REQUIRE(!fp.isCharSpecial());
-                REQUIRE(!fp.isBlockSpecial());
-                REQUIRE(!fp.isSocket());
-                REQUIRE(!fp.isFifo());
-            }
-        }
-
-        WHEN("creating a FilePath object with the immediate flag set")
-        {
-            zipios::FilePath fp("filepath-test", false);
-
-            THEN("is found")
-            {
-                // retrieve the path
-                std::string const p(fp);
-                REQUIRE(p == "filepath-test");
-
-                // basename is "period.txt"
-                REQUIRE(static_cast<std::string>(fp.filename()) == "filepath-test");
+                REQUIRE(fp.length() == 13);
+                REQUIRE(fp.size() == 13);
 
                 // all flags must be false
                 REQUIRE(fp.exists());
@@ -619,30 +653,10 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
                 REQUIRE(!fp.isBlockSpecial());
                 REQUIRE(!fp.isSocket());
                 REQUIRE(!fp.isFifo());
-            }
-        }
 
-        WHEN("creating a FilePath object with the immediate flag set")
-        {
-            zipios::FilePath fp("filepath-test", true);
-
-            THEN("is found")
-            {
-                // retrieve the path
-                std::string const p(fp);
-                REQUIRE(p == "filepath-test");
-
-                // basename is "period.txt"
-                REQUIRE(static_cast<std::string>(fp.filename()) == "filepath-test");
-
-                // all flags must be false
-                REQUIRE(fp.exists());
-                REQUIRE(!fp.isRegular());
-                REQUIRE(fp.isDirectory());
-                REQUIRE(!fp.isCharSpecial());
-                REQUIRE(!fp.isBlockSpecial());
-                REQUIRE(!fp.isSocket());
-                REQUIRE(!fp.isFifo());
+                std::stringstream ss;
+                ss << fp;
+                REQUIRE(ss.str() == "filepath-test");
             }
         }
 
@@ -652,5 +666,59 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
     // TODO: add tests for other files types (not extremely useful
     //       for a small zip library though...)
 }
+
+
+TEST_CASE("Test with regular files of various sizes")
+{
+    for(int i(0); i < 10; ++i)
+    {
+        // create a random file
+        int const file_size(rand() % 100 + 20);
+        {
+            // create a file
+            std::fstream f("filepath-test.txt", std::ios::out | std::ios::binary);
+            for(int j(0); j < file_size; ++j)
+            {
+                char const c(rand());
+                f << c;
+            }
+        }
+
+        {
+            zipios::FilePath fp("filepath-test.txt");
+
+            // retrieve the path
+            std::string const p(fp);
+            REQUIRE(p == "filepath-test.txt");
+
+            // basename is "period.txt"
+            REQUIRE(static_cast<std::string>(fp.filename()) == "filepath-test.txt");
+
+            REQUIRE(fp.length() == 17);
+            REQUIRE(fp.size() == 17);
+            REQUIRE(fp.fileSize() == file_size);
+
+            struct stat buf;
+            REQUIRE(stat("filepath-test.txt", &buf) == 0);
+            REQUIRE(fp.lastModificationTime() == buf.st_mtime);
+
+            // all flags must be false
+            REQUIRE(fp.exists());
+            REQUIRE(fp.isRegular());
+            REQUIRE(!fp.isDirectory());
+            REQUIRE(!fp.isCharSpecial());
+            REQUIRE(!fp.isBlockSpecial());
+            REQUIRE(!fp.isSocket());
+            REQUIRE(!fp.isFifo());
+
+            std::stringstream ss;
+            ss << fp;
+            REQUIRE(ss.str() == "filepath-test.txt");
+        }
+
+        unlink("filepath-test.txt");
+    }
+}
+
 
 // vim: ts=4 sw=4 et
