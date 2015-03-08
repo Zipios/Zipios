@@ -26,6 +26,8 @@
 
 #include "zipios++/directoryentry.hpp"
 
+#include "src/dostime.h"
+
 #include <fstream>
 
 #include <sys/stat.h>
@@ -55,46 +57,1235 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             REQUIRE(!de.isDirectory());
             REQUIRE(!de.isValid());
             REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+            // attempt a clone now, should have the same content
+            zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+            REQUIRE(clone->getComment().empty());
+            REQUIRE(clone->getCompressedSize() == 0);
+            REQUIRE(clone->getCrc() == 0);
+            REQUIRE(clone->getExtra().empty());
+            REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+            REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+            REQUIRE(clone->getFileName() == "period.txt");
+            REQUIRE(clone->getSize() == 0);
+            REQUIRE(clone->getTime() == 0);  // invalid date
+            REQUIRE(clone->getUnixTime() == 0);
+            REQUIRE(!clone->hasCrc());
+            REQUIRE(!clone->isDirectory());
+            REQUIRE(!clone->isValid());
+            REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
         }
 
-        //WHEN("and changing the path to something else as unexistant with assignment operator works too")
-        //{
-        //    fp = "/this/is/another/path/changed/with/assignment/operator";
+        WHEN("setting the comment")
+        {
+            de.setComment("new comment");
 
-        //    THEN("path was replaced")
-        //    {
-        //        // retrieve the path
-        //        std::string const p(fp);
-        //        REQUIRE(p == "/this/is/another/path/changed/with/assignment/operator");
+            THEN("we can read it and nothing else changed")
+            {
+                REQUIRE(de.getComment() == "new comment");
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == 0);  // invalid date
+                REQUIRE(de.getUnixTime() == 0);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(!de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
 
-        //        REQUIRE(fp == "/this/is/another/path/changed/with/assignment/operator");
-        //        REQUIRE("/this/is/another/path/changed/with/assignment/operator" == fp);
-        //        REQUIRE(fp == std::string("/this/is/another/path/changed/with/assignment/operator"));
-        //        REQUIRE(std::string("/this/is/another/path/changed/with/assignment/operator") == fp);
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
 
-        //        REQUIRE(!(fp == "this/is/another/path/changed/with/assignment/operator"));
-        //        REQUIRE(!("/this/is/another/path/chnged/with/assignment/operator" == fp));
-        //        REQUIRE(!(fp == std::string("/this/is/another/path/changed/with/asignment/operator")));
-        //        REQUIRE(!(std::string("/this/is/another/path/changed/with/assignment/oprator") == fp));
+                REQUIRE(clone->getComment() == "new comment");
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == 0);  // invalid date
+                REQUIRE(clone->getUnixTime() == 0);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(!clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+            }
+        }
 
-        //        // check basename
-        //        REQUIRE(static_cast<std::string>(fp.filename()) == "operator");
+        WHEN("setting the compressed size")
+        {
+            // zero would not really prove anything so skip such
+            // (although it may be extremely rare...)
+            size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
+            while(r == 0)
+            {
+                r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+            }
+            de.setCompressedSize(r);
 
-        //        REQUIRE(fp.length() == 54);
-        //        REQUIRE(fp.size() == 54);
+            THEN("we ignore it")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == 0);  // invalid date
+                REQUIRE(de.getUnixTime() == 0);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(!de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
 
-        //        // all flags must be false
-        //        REQUIRE(!fp.exists());
-        //        REQUIRE(!fp.isRegular());
-        //        REQUIRE(!fp.isDirectory());
-        //        REQUIRE(!fp.isCharSpecial());
-        //        REQUIRE(!fp.isBlockSpecial());
-        //        REQUIRE(!fp.isSocket());
-        //        REQUIRE(!fp.isFifo());
-        //    }
-        //}
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == 0);  // invalid date
+                REQUIRE(clone->getUnixTime() == 0);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(!clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+            }
+        }
+
+        WHEN("setting the CRC")
+        {
+            // zero would not really prove anything so skip such
+            uint32_t r(rand());
+            while(r == 0)
+            {
+                r = rand();
+            }
+            de.setCrc(rand());
+
+            THEN("we ignore it")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == 0);  // invalid date
+                REQUIRE(de.getUnixTime() == 0);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(!de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == 0);  // invalid date
+                REQUIRE(clone->getUnixTime() == 0);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(!clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+            }
+        }
+
+        WHEN("setting an extra buffer")
+        {
+            // zero would not really prove anything so skip such
+            zipios::FileEntry::buffer_t b;
+            uint32_t size(rand() + 20);
+            for(uint32_t i(0); i < size; ++i)
+            {
+                b.push_back(rand());
+            }
+            de.setExtra(b);
+
+            THEN("we ignore it")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == 0);  // invalid date
+                REQUIRE(de.getUnixTime() == 0);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(!de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == 0);  // invalid date
+                REQUIRE(clone->getUnixTime() == 0);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(!clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+            }
+        }
+
+        WHEN("setting the method")
+        {
+            // set a method other than STORED, which is 1, so just us % 8 instead of % 9 and do a +1
+            de.setMethod(static_cast<zipios::StorageMethod>(rand() % 8 + 1));
+
+            THEN("we ignore it")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == 0);  // invalid date
+                REQUIRE(de.getUnixTime() == 0);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(!de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == 0);  // invalid date
+                REQUIRE(clone->getUnixTime() == 0);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(!clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+            }
+        }
+
+        WHEN("setting the uncompressed size")
+        {
+            // zero would not really prove anything so skip such
+            // (although it may be extremely rare...)
+            size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
+            while(r == 0)
+            {
+                r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+            }
+            de.setSize(r);
+
+            THEN("we take it as is")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == r);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == r);
+                REQUIRE(de.getTime() == 0);  // invalid date
+                REQUIRE(de.getUnixTime() == 0);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(!de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (" + std::to_string(r) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == r);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == r);
+                REQUIRE(clone->getTime() == 0);  // invalid date
+                REQUIRE(clone->getUnixTime() == 0);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(!clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (" + std::to_string(r) + " bytes)");
+            }
+        }
+
+        WHEN("setting the DOS time")
+        {
+            // DOS time numbers are not linear so we test until we get one
+            // that works...
+            dostime_t r(static_cast<dostime_t>(rand()));
+            while(dos2unixtime(r) == -1)
+            {
+                r = static_cast<dostime_t>(rand());
+            }
+            de.setTime(r);
+
+            THEN("we take it as is")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == r);
+                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(!de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == r);
+                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(!clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+            }
+        }
+
+        WHEN("setting the Unix time")
+        {
+            // DOS time are limited to a smaller range and on every other
+            // second so we get a valid DOS time and convert it to a Unix time
+            dostime_t r(static_cast<dostime_t>(rand()));
+            while(dos2unixtime(r) == -1)
+            {
+                r = static_cast<dostime_t>(rand());
+            }
+            de.setUnixTime(dos2unixtime(r));
+
+            THEN("we take it as is")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == r);
+                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(!de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == r);
+                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(!clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+            }
+        }
     }
 }
+
+
+TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
+{
+    for(int i(0); i < 10; ++i)
+    {
+        // create a random file
+        int const file_size(rand() % 100 + 20);
+        {
+            // create a file
+            std::fstream f("filepath-test.txt", std::ios::out | std::ios::binary);
+            for(int j(0); j < file_size; ++j)
+            {
+                char const c(rand());
+                f << c;
+            }
+        }
+
+        {
+            zipios::DirectoryEntry de(zipios::FilePath("filepath-test.txt"), "");
+
+            struct stat file_stats;
+            REQUIRE(stat("filepath-test.txt", &file_stats) == 0);
+
+            SECTION("verify that the object looks as expected")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == file_size);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == file_size);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == file_size);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == file_size);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
+            }
+
+            SECTION("try setting the comment")
+            {
+                de.setComment("new comment");
+
+                REQUIRE(de.getComment() == "new comment");
+                REQUIRE(de.getCompressedSize() == file_size);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == file_size);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment() == "new comment");
+                REQUIRE(clone->getCompressedSize() == file_size);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == file_size);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+            }
+
+            SECTION("setting the compressed size")
+            {
+                // zero would not really prove anything so skip such
+                // (although it may be extremely rare...)
+                size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
+                while(r == 0)
+                {
+                    r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+                }
+                de.setCompressedSize(r);
+
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == file_size);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == file_size);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == file_size);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == file_size);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+            }
+
+            SECTION("setting the CRC")
+            {
+                // zero would not really prove anything so skip such
+                uint32_t r(rand());
+                while(r == 0)
+                {
+                    r = rand();
+                }
+                de.setCrc(rand());
+
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == file_size);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == file_size);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == file_size);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == file_size);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+            }
+
+            SECTION("setting an extra buffer")
+            {
+                // zero would not really prove anything so skip such
+                zipios::FileEntry::buffer_t b;
+                uint32_t size(rand() + 20);
+                for(uint32_t j(0); j < size; ++j)
+                {
+                    b.push_back(rand());
+                }
+                de.setExtra(b);
+
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == file_size);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == file_size);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == file_size);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == file_size);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+            }
+
+            SECTION("setting the method")
+            {
+                // set a method other than STORED, which is 1, so just us % 8 instead of % 9 and do a +1
+                de.setMethod(static_cast<zipios::StorageMethod>(rand() % 8 + 1));
+
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == file_size);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == file_size);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == file_size);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == file_size);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
+            }
+
+            SECTION("setting the uncompressed size")
+            {
+                // zero would not really prove anything so skip such
+                // (although it may be extremely rare...)
+                size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
+                while(r == 0)
+                {
+                    r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+                }
+                de.setSize(r);
+
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == r);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == r);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(r) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == r);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == r);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(r) + " bytes)");
+            }
+
+            SECTION("setting the DOS time")
+            {
+                // DOS time numbers are not linear so we test until we get one
+                // that works...
+                dostime_t r(static_cast<dostime_t>(rand()));
+                while(dos2unixtime(r) == -1)
+                {
+                    r = static_cast<dostime_t>(rand());
+                }
+                de.setTime(r);
+
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == file_size);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == file_size);
+                REQUIRE(de.getTime() == r);
+                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == file_size);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == file_size);
+                REQUIRE(clone->getTime() == r);
+                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
+            }
+
+            SECTION("setting the Unix time")
+            {
+                // DOS time are limited to a smaller range and on every other
+                // second so we get a valid DOS time and convert it to a Unix time
+                dostime_t r(static_cast<dostime_t>(rand()));
+                while(dos2unixtime(r) == -1)
+                {
+                    r = static_cast<dostime_t>(rand());
+                }
+                de.setUnixTime(dos2unixtime(r));
+
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == file_size);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test.txt");
+                REQUIRE(de.getFileName() == "filepath-test.txt");
+                REQUIRE(de.getSize() == file_size);
+                REQUIRE(de.getTime() == r);
+                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(!de.hasCrc());
+                REQUIRE(!de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == file_size);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test.txt");
+                REQUIRE(clone->getFileName() == "filepath-test.txt");
+                REQUIRE(clone->getSize() == file_size);
+                REQUIRE(clone->getTime() == r);
+                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(!clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
+            }
+        }
+
+        unlink("filepath-test.txt");
+    }
+}
+
+
+SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
+{
+    GIVEN("test an existing directory and no comment")
+    {
+        // make sure the directory is gone before re-creating it
+        static_cast<void>(system("rm -rf filepath-test"));
+
+        // create a directory
+        REQUIRE(mkdir("filepath-test", 0777) == 0);
+
+        zipios::DirectoryEntry de(zipios::FilePath("filepath-test"), "");
+
+        struct stat file_stats;
+        REQUIRE(stat("filepath-test", &file_stats) == 0);
+
+        // first, check that the object is setup as expected
+        SECTION("verify that the object looks as expected")
+        {
+            REQUIRE(de.getComment().empty());
+            REQUIRE(de.getCompressedSize() == 0);
+            REQUIRE(de.getCrc() == 0);
+            REQUIRE(de.getExtra().empty());
+            REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+            REQUIRE(de.getName() == "filepath-test");
+            REQUIRE(de.getFileName() == "");
+            REQUIRE(de.getSize() == 0);
+            REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+            REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+            REQUIRE(!de.hasCrc());
+            REQUIRE(de.isDirectory());
+            REQUIRE(de.isValid());
+            REQUIRE(de.toString() == "filepath-test (directory)");
+
+            // attempt a clone now, should have the same content
+            zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+            REQUIRE(clone->getComment().empty());
+            REQUIRE(clone->getCompressedSize() == 0);
+            REQUIRE(clone->getCrc() == 0);
+            REQUIRE(clone->getExtra().empty());
+            REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+            REQUIRE(clone->getName() == "filepath-test");
+            REQUIRE(clone->getFileName() == "");
+            REQUIRE(clone->getSize() == 0);
+            REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+            REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+            REQUIRE(!clone->hasCrc());
+            REQUIRE(clone->isDirectory());
+            REQUIRE(clone->isValid());
+            REQUIRE(clone->toString() == "filepath-test (directory)");
+        }
+
+        WHEN("setting the comment")
+        {
+            de.setComment("new comment");
+
+            THEN("we can read it and nothing else changed")
+            {
+                REQUIRE(de.getComment() == "new comment");
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test");
+                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test (directory)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment() == "new comment");
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test");
+                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test (directory)");
+            }
+        }
+
+        WHEN("setting the compressed size")
+        {
+            // zero would not really prove anything so skip such
+            // (although it may be extremely rare...)
+            size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
+            while(r == 0)
+            {
+                r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+            }
+            de.setCompressedSize(r);
+
+            THEN("we ignore it")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test");
+                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test (directory)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test");
+                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test (directory)");
+            }
+        }
+
+        WHEN("setting the CRC")
+        {
+            // zero would not really prove anything so skip such
+            uint32_t r(rand());
+            while(r == 0)
+            {
+                r = rand();
+            }
+            de.setCrc(rand());
+
+            THEN("we ignore it")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test");
+                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test (directory)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test");
+                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test (directory)");
+            }
+        }
+
+        WHEN("setting an extra buffer")
+        {
+            // zero would not really prove anything so skip such
+            zipios::FileEntry::buffer_t b;
+            uint32_t size(rand() + 20);
+            for(uint32_t i(0); i < size; ++i)
+            {
+                b.push_back(rand());
+            }
+            de.setExtra(b);
+
+            THEN("we ignore it")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test");
+                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test (directory)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test");
+                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test (directory)");
+            }
+        }
+
+        WHEN("setting the method")
+        {
+            // set a method other than STORED, which is 1, so just us % 8 instead of % 9 and do a +1
+            de.setMethod(static_cast<zipios::StorageMethod>(rand() % 8 + 1));
+
+            THEN("we ignore it")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test");
+                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test (directory)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test");
+                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test (directory)");
+            }
+        }
+
+        WHEN("setting the uncompressed size")
+        {
+            // zero would not really prove anything so skip such
+            // (although it may be extremely rare...)
+            size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
+            while(r == 0)
+            {
+                r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+            }
+            de.setSize(r);
+
+            THEN("we take it as is")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == r);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test");
+                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getSize() == r);
+                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!de.hasCrc());
+                REQUIRE(de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test (directory)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == r);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test");
+                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getSize() == r);
+                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test (directory)");
+            }
+        }
+
+        WHEN("setting the DOS time")
+        {
+            // DOS time numbers are not linear so we test until we get one
+            // that works...
+            dostime_t r(static_cast<dostime_t>(rand()));
+            while(dos2unixtime(r) == -1)
+            {
+                r = static_cast<dostime_t>(rand());
+            }
+            de.setTime(r);
+
+            THEN("we take it as is")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test");
+                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == r);
+                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(!de.hasCrc());
+                REQUIRE(de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test (directory)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test");
+                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == r);
+                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test (directory)");
+            }
+        }
+
+        WHEN("setting the Unix time")
+        {
+            // DOS time are limited to a smaller range and on every other
+            // second so we get a valid DOS time and convert it to a Unix time
+            dostime_t r(static_cast<dostime_t>(rand()));
+            while(dos2unixtime(r) == -1)
+            {
+                r = static_cast<dostime_t>(rand());
+            }
+            de.setUnixTime(dos2unixtime(r));
+
+            THEN("we take it as is")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "filepath-test");
+                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == r);
+                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(!de.hasCrc());
+                REQUIRE(de.isDirectory());
+                REQUIRE(de.isValid());
+                REQUIRE(de.toString() == "filepath-test (directory)");
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "filepath-test");
+                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == r);
+                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->isDirectory());
+                REQUIRE(clone->isValid());
+                REQUIRE(clone->toString() == "filepath-test (directory)");
+            }
+        }
+
+        rmdir("filepath-test");
+    }
+}
+
 
 
 

@@ -26,18 +26,65 @@
  */
 
 // Ask Catch to define the main() function in this file
-#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_RUNNER
 
 #include "catch_tests.h"
+
+#include "zipios++/zipios-config.hpp"
 
 #include <cstring>
 
 
-namespace zipios_test
+
+// static variables
+namespace
 {
 
+char *g_progname;
+
+}
+
+
+int main(int argc, char *argv[])
+{
+    // define program name
+    g_progname = argv[0];
+    char *e(strrchr(g_progname, '/'));
+    if(e)
+    {
+        g_progname = e + 1;
+    }
+    e = strrchr(g_progname, '\\');
+    if(e)
+    {
+        g_progname = e + 1;
+    }
+
+    unsigned int seed(static_cast<unsigned int>(time(nullptr)));
+    for(int i(1); i < argc; ++i)
+    {
+        if(strcmp(argv[i], "--seed") == 0)
+        {
+            if(i + 1 >= argc)
+            {
+                std::cerr << "error: --seed need to be followed by the actual seed." << std::endl;
+                exit(1);
+            }
+            seed = atoll(argv[i + 1]);
+            // remove the --seed and <value>
+            for(int j(i); j + 2 < argc; ++j)
+            {
+                argv[j] = argv[j + 2];
+            }
+            argc -= 2;
+        }
+    }
+    srand(seed);
+    std::cout << g_progname << "[" << getpid() << "]" << ": version " << ZIPIOS_VERSION_STRING << ", seed is " << seed << std::endl;
+
+    return Catch::Session().run(argc, argv);
+}
 
 
 
-} // zipios_test namespace
 // vim: ts=4 sw=4 et

@@ -37,7 +37,6 @@
 
 TEST_CASE("Unix to DOS time conversions and vice versa", "[dostime]")
 {
-    REQUIRE(unix2dostime(nullptr) == 0);
     REQUIRE(mindostime() == dostime(1980, 1, 1, 0, 0, 0));
     REQUIRE(maxdostime() == dostime(2107, 12, 31, 23, 59, 59));
 
@@ -72,7 +71,7 @@ TEST_CASE("Unix to DOS time conversions and vice versa", "[dostime]")
     for(time_t t(minimum_unix - 20); t <= minimum_unix + 20; ++t)
     {
         time_t et((t + 1) & ~1);
-        dostime_t const d(unix2dostime(&t));
+        dostime_t const d(unix2dostime(t));
         time_t const u(dos2unixtime(d));
         if(et < minimum_unix)
         {
@@ -92,7 +91,7 @@ TEST_CASE("Unix to DOS time conversions and vice versa", "[dostime]")
     for(time_t t(maximum_unix - 20); t <= maximum_unix + 20; ++t)
     {
         time_t et((t + 1) & ~1);
-        dostime_t const d(unix2dostime(&t));
+        dostime_t const d(unix2dostime(t));
         time_t const u(dos2unixtime(d));
         if(et > maximum_unix)
         {
@@ -112,7 +111,7 @@ TEST_CASE("Unix to DOS time conversions and vice versa", "[dostime]")
     for(time_t t(0); t <= 0x104000000; t += rand() & 0xFFFF)
     {
         time_t et((t + 1) & ~1);
-        dostime_t const d(unix2dostime(&t));
+        dostime_t const d(unix2dostime(t));
         time_t const u(dos2unixtime(d));
         if(et < minimum_unix)
         {

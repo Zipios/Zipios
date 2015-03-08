@@ -40,7 +40,7 @@ dostime_t   mindostime();
 dostime_t   maxdostime();
 time_t      dos2unixtime(dostime_t dostime);
 dostime_t   dostime(int year, int month, int day, int hour, int minute, int second);
-dostime_t   unix2dostime(time_t const *unix_time);
+dostime_t   unix2dostime(time_t unix_time);
 
 
 #ifdef __cplusplus

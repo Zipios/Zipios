@@ -597,9 +597,9 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
                 REQUIRE(fp.size() == 17);
                 REQUIRE(fp.fileSize() == 28);
 
-                struct stat buf;
-                REQUIRE(stat("filepath-test.txt", &buf) == 0);
-                REQUIRE(fp.lastModificationTime() == buf.st_mtime);
+                struct stat file_stats;
+                REQUIRE(stat("filepath-test.txt", &file_stats) == 0);
+                REQUIRE(fp.lastModificationTime() == file_stats.st_mtime);
 
                 // all flags must be false
                 REQUIRE(fp.exists());
@@ -668,7 +668,7 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
 }
 
 
-TEST_CASE("Test with regular files of various sizes")
+TEST_CASE("Test with regular files of various sizes", "[FilePath]")
 {
     for(int i(0); i < 10; ++i)
     {
@@ -698,9 +698,9 @@ TEST_CASE("Test with regular files of various sizes")
             REQUIRE(fp.size() == 17);
             REQUIRE(fp.fileSize() == file_size);
 
-            struct stat buf;
-            REQUIRE(stat("filepath-test.txt", &buf) == 0);
-            REQUIRE(fp.lastModificationTime() == buf.st_mtime);
+            struct stat file_stats;
+            REQUIRE(stat("filepath-test.txt", &file_stats) == 0);
+            REQUIRE(fp.lastModificationTime() == file_stats.st_mtime);
 
             // all flags must be false
             REQUIRE(fp.exists());

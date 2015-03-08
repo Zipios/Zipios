@@ -60,7 +60,7 @@ enum class func_t
 int main( int argc, char *argv[] )
 {
     // define program name
-    g_progname = argv[ 0 ] ;
+    g_progname = argv[0];
     char *e(strrchr(g_progname, '/'));
     if(e)
     {

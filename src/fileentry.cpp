@@ -248,7 +248,7 @@ size_t FileEntry::getSize() const
  */
 FileEntry::dostime_t FileEntry::getTime() const
 {
-    return unix2dostime(&m_unix_time);
+    return unix2dostime(m_unix_time);
 }
 
 
@@ -327,9 +327,10 @@ bool FileEntry::isValid() const
  *
  * \param[in] comment  A string with the new comment.
  */
-void FileEntry::setComment(std::string const &)
+void FileEntry::setComment(std::string const& comment)
 {
     // By default, no comment!
+    static_cast<void>(comment);
 }
 
 

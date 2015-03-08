@@ -179,29 +179,20 @@ dostime_t dostime(int year, int month, int day, int hour, int minute, int second
  * This function return the Unix time_t converted in DOS format,
  * rounded up to the next even second.
  *
- * \note
- * If the \p unix_time pointer is a NULL pointer, then the function
- * returns zero.
- *
- * \param[in] unix_time  A pointer to a Unix time_t value.
+ * \param[in] unix_time  A Unix time_t value.
  *
  * \return The Unix date in DOS format unless it is out of range for
  *         a DOS time and date in which case zero (0) is returned.
  */
-dostime_t unix2dostime(time_t const *unix_time)
+dostime_t unix2dostime(time_t unix_time)
 {
-    if(unix_time)
-    {
-        time_t even_time;
-        struct tm *s;         /* result of localtime() */
+    time_t even_time;
+    struct tm *s;         /* result of localtime() */
 
-        even_time = (*unix_time + 1) & ~1;         /* Round up to even seconds. */
-        s = localtime(&even_time);         /* Use local time since MSDOS does. */
-        return dostime(s->tm_year + 1900, s->tm_mon + 1, s->tm_mday,
-                       s->tm_hour, s->tm_min, s->tm_sec);
-    }
-
-    return 0;
+    even_time = (unix_time + 1) & ~1;         /* Round up to even seconds. */
+    s = localtime(&even_time);         /* Use local time since MSDOS does. */
+    return dostime(s->tm_year + 1900, s->tm_mon + 1, s->tm_mday,
+                   s->tm_hour, s->tm_min, s->tm_sec);
 }
 
 

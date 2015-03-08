@@ -58,7 +58,7 @@ DirectoryEntry::DirectoryEntry(FilePath const& filename, std::string const& comm
     m_valid = m_filename.isRegular() || m_filename.isDirectory();
     if(m_valid)
     {
-        m_uncompressed_size = m_filename.fileSize();
+        m_uncompressed_size = m_filename.isDirectory() ? 0 : m_filename.fileSize();
         m_unix_time = m_filename.lastModificationTime();
     }
 }
@@ -80,30 +80,71 @@ DirectoryEntry::pointer_t DirectoryEntry::clone() const
 }
 
 
+/** \brief Clean up a DirectoryEntry object.
+ *
+ * The destructor is defined as it has to be virtual.
+ *
+ * It will eventually clean up resources used by the DirectoryEntry class.
+ */
 DirectoryEntry::~DirectoryEntry()
 {
 }
 
 
+/** \brief Retrieve the comment of the file entry.
+ *
+ * This function returns the comment of this entry.
+ *
+ * If the entry was not assigned a comment, this function returns
+ * an empty string.
+ *
+ * This implementation of FileEntry has a comment.
+ *
+ * \return The comment associated with this entry, if there is one.
+ */
 std::string DirectoryEntry::getComment() const
 {
     return m_comment;
 }
 
 
+/** \brief Set the comment field for the DirectoryEntry.
+ *
+ * This function sets the comment of this DirectoryEntry.
+ * This implementation actually keeps track of comments.
+ *
+ * \param[in] comment  A string with the new comment.
+ */
 void DirectoryEntry::setComment(std::string const& comment)
 {
     m_comment = comment;
 }
 
 
+/** \brief Returns a human-readable string representation of the entry.
+ *
+ * This function transforms the basic information of the entry in a
+ * string. Note that most of the information is lost as the function
+ * is likely to only display the filename and the size of the file,
+ * nothing more.
+ *
+ * \return A human-readable string representation of the entry.
+ */
 std::string DirectoryEntry::toString() const
 {
     OutputStringStream sout;
     // TBD: shall we offer translation support for these?
-    sout << static_cast<std::string>(m_filename) << " ("
-         << m_uncompressed_size << " byte"
-         << (m_uncompressed_size == 1 ? "" : "s") << ")";
+    sout << static_cast<std::string>(m_filename) << " (";
+    if(isDirectory())
+    {
+        sout << "directory";
+    }
+    else
+    {
+        sout << m_uncompressed_size << " byte"
+             << (m_uncompressed_size == 1 ? "" : "s");
+    }
+    sout << ")";
     return sout.str();
 }
 

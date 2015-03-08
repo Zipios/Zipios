@@ -404,7 +404,7 @@ void ZipLocalEntry::write(std::ostream& os)
             throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
         }
 
-        uint32_t const dostime(unix2dostime(&m_unix_time));
+        uint32_t const dostime(unix2dostime(m_unix_time));
 
         writeUint32(g_signature                     , os);
         writeUint16(m_extract_version               , os);
@@ -435,7 +435,7 @@ void ZipCDirEntry::write(std::ostream& os)
             throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
         }
 
-        uint32_t const dostime(unix2dostime(&m_unix_time));
+        uint32_t const dostime(unix2dostime(m_unix_time));
 
         writeUint32(g_signature                    , os);
         writeUint16(m_writer_version               , os);
