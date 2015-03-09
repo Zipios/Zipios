@@ -22,7 +22,7 @@
  * \brief Header file that defines GZIPOutputStream.
  */
 
-#include "zipios++/gzipoutputstreambuf.hpp"
+#include "gzipoutputstreambuf.hpp"
 
 #include <memory>
 

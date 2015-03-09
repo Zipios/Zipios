@@ -21,12 +21,138 @@
  * \brief The implementation of ZipFile.
  */
 
+/** \mainpage Zipios++
+ *
+ * \image html   zipios++.jpg
+ *
+ * \section intro Introduction
+ *
+ * Zipios++ is a java.util.zip-like C++ library for reading and
+ * writing Zip files. Access to individual entries is provided through
+ * standard C++ iostreams. A simple read-only virtual file system that
+ * mounts regular directories and zip files is also provided.
+ *
+ * The source code is released under the <a
+ * href="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
+ * License</a>.
+ *
+ * \section status Status
+ *
+ * This was the status of version 1.x. At this point, 2.x is being worked on.
+ *
+ * Spanned archives are not supported, and support is not planned.
+ *
+ * The library v1.x has been tested and appears to be working with
+ *
+ * <ul>
+ * <li><a href="http://www.freebsd.org/ports/archivers.html#zipios++-0.1.5">FreeBSD stable and current / gcc 2.95.3</a></li>
+ * <li>Red Hat Linux release 7.0  / gcc 2.96</li>
+ * <li>Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66</li>
+ * <li>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</li>
+ * <li>SGI IRIX64 6.5 / gcc 2.95.2</li>
+ * <li>SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30</li>
+ * </ul>
+ *
+ * If you make zipios++ work on other platforms, let us know by posting
+ * a message on Sourceforge.net
+ *
+ *   http://sourceforge.net/projects/zipios/
+ *
+ * \section documentation Documentation
+ *
+ * This web page is the front page to the library documentation which
+ * is generated from the source files using <a
+ * href="http://www.stack.nl/~dimitri/doxygen/index.html">Doxygen</a>.
+ * Use the links at the top of the page to browse the API
+ * documentation. Your Doxygen installation may also work be capable
+ * of generating other formats (Latex, PDF, etc.)
+ *
+ * \subsection zipfiles Zip file access
+ *
+ * The two most important classes are ZipFile and ZipInputStream.'
+ * ZipInputStream is an istream for reading zipfiles. It can be
+ * instantiated directly, without the use of ZipFile.
+ *
+ * ZipInputStream::getNextEntry() positions a new ZipInputStream on
+ * the first entry. The following entry can be accessed by calling
+ * ZipInputStream::getNextEntry() again.
+ *
+ * ZipFile scans the central directory of a zipfile and provides an
+ * interface to access that directory. The user may search for entries
+ * with a particular filename using \ref fcoll_getentry_anchor "ZipFile::getEntry()",
+ * or simply get the complete list of entries
+ * with \ref fcoll_entries_anchor "ZipFile::entries()". To get an
+ * istream (ZipInputStream) to a particular entry simply use
+ * \ref fcoll_getinputstream "ZipFile::getInputStream()".
+ *
+ * \ref example_zip_anchor "example_zip.cpp" demonstrates the central
+ * elements of Zipios++.
+ *
+ * A Zip file appended to another file, e.g. a binary program, with the program
+ * \ref appendzip_anchor "appendzip", can be read with
+ * \ref zipfile_openembeddedzipfile "ZipFile::openEmbeddedZipFile()".
+ *
+ * \subsection filecollection FileCollection
+ *
+ * A ZipFile is actually just a special kind of
+ * \ref fcoll_anchor "FileCollection" that
+ * obtains its entries from a .zip Zip archive. Zipios++ also implements
+ * a \ref dircol_anchor "DirectoryCollection" that obtains its entries
+ * from a specified directory, and a \ref collcoll_anchor "CollectionCollection"
+ * that obtains its entries from
+ * other collections. Using a single CollectionCollection any number of
+ * other FileCollections can be placed under its control and accessed
+ * through the same single interface that is used to access a ZipFile or
+ * a DirectoryCollection.
+ *
+ * \section download Download
+ *
+ * Go to Zipios++ project page on SourceForge for tar balls, source code
+ * (CVS for v1.x and GIT for v2.x), and ChangeLog.
+ * <a href="https://sourceforge.net/projects/zipios/" >
+ * https://sourceforge.net/projects/zipios/</a>
+ *
+ * \section links Links
+ *
+ * <a href="http://www.zlib.net/">zlib</a>.
+ * The compression library that Zipios++ uses to perform the actual
+ * compression and decompression.
+ *
+ * <a href="http://www.oracle.com/technetwork/java/index.html">
+ * Java</a>. Zipios++ version 1.0 is heavily inspired by the
+ * java.util.zip package. Version 2.0 is following the same
+ * philosophy without (1) attempting to follow the interface one
+ * to one and (2) without updating to the newer version, if there
+ * were changes...
+ *
+ * You will find a text file in the doc directory named zip-format.txt
+ * with a complete description of the zip file format.
+ *
+ * \section bugs Bugs
+ *
+ * Submit bug reports and patches on:
+ *
+ *   http://sourceforge.net/projects/zipios/
+ *
+ * \htmlonly
+ * Project hosted by <a href="http://sourceforge.net">
+ * <img src="http://sourceforge.net/sflogo.php?group_id=5418&type=1" >
+ * </a><p>
+ * Logo created with <a href="http://www.webgfx.ch/titlepic.htm">
+ * <img src="webgfx.gif" >
+ * </a>
+ * \endhtmlonly
+ */
+
+
 #include "zipios++/zipfile.hpp"
 
-#include "zipios++/zipinputstream.hpp"
 #include "zipios++/zipiosexceptions.hpp"
 
 #include "backbuffer.hpp"
+#include "endofcentraldirectory.hpp"
+#include "ziphead.hpp"
+#include "zipinputstream.hpp"
 
 
 namespace zipios
@@ -79,10 +205,13 @@ ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const& name)
 /** \brief Initialize a ZipFile object.
  *
  * This is the default constructor of the ZipFile object.
+ *
+ * Note that an empty ZipFile is marked as invalid. More or less, such
+ * an object is useless although it is useful if you work with maps or
+ * vectors of ZipFile objects.
  */
 ZipFile::ZipFile()
     //: m_vs(...) -- auto-init
-    //, m_eocd(...) -- auto-init
 {
 }
 
@@ -105,7 +234,7 @@ ZipFile::ZipFile()
  *                   The offset is a positive number, even though the
  *                   offset is towards the beginning of the file.
  */
-ZipFile::ZipFile(std::string const& filename, int s_off, int e_off)
+ZipFile::ZipFile(std::string const& filename, VirtualSeeker::offset_t s_off, VirtualSeeker::offset_t e_off)
     : m_vs(s_off, e_off)
 {
     m_filename = filename;
@@ -129,13 +258,6 @@ ZipFile::~ZipFile()
 void ZipFile::close()
 {
     m_valid = false ;
-}
-
-
-ZipFile::stream_pointer_t ZipFile::getInputStream(FileEntry::pointer_t entry)
-{
-    mustBeValid();
-    return getInputStream(entry->getName());
 }
 
 
@@ -181,19 +303,34 @@ bool ZipFile::init(std::istream& zipfile)
 
 bool ZipFile::readCentralDirectory(std::istream& zipfile)
 {
+    EndOfCentralDirectory eocd;
+
     // Find and read eocd.
-    if(!readEndOfCentralDirectory(zipfile))
+    BackBuffer bb(zipfile, m_vs);
+    int read_p(-1);
+    for(;;)
     {
-        throw FCollException("Unable to find zip structure: End-of-central-directory");
+        if(read_p < 0)
+        {
+            if(!bb.readChunk(read_p))
+            {
+                throw FCollException("Unable to find zip structure: End-of-central-directory");
+            }
+        }
+        if(eocd.read(bb, read_p))
+        {
+            break;
+        }
+        --read_p;
     }
 
     // Position read pointer to start of first entry in central dir.
-    m_vs.vseekg(zipfile, m_eocd.offset(), std::ios::beg);
+    m_vs.vseekg(zipfile, eocd.offset(), std::ios::beg);
 
     int entry_num(0);
     // Giving the default argument in the next line to keep Visual C++ quiet
-    m_entries.resize(m_eocd.totalCount(), 0);
-    while(entry_num < m_eocd.totalCount())
+    m_entries.resize(eocd.totalCount(), 0);
+    while(entry_num < eocd.totalCount())
     {
         ZipCDirEntry::pointer_t ent(new ZipCDirEntry);
         m_entries[entry_num] = ent;
@@ -221,7 +358,7 @@ bool ZipFile::readCentralDirectory(std::istream& zipfile)
     int const pos(m_vs.vtellg(zipfile));
     m_vs.vseekg(zipfile, 0, std::ios::end);
     int const remaining(static_cast< int >(m_vs.vtellg(zipfile)) - pos);
-    if(remaining != m_eocd.eocdOffSetFromEnd())
+    if(remaining != eocd.eocdOffSetFromEnd())
     {
         throw FCollException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout");
     }
@@ -234,28 +371,6 @@ bool ZipFile::readCentralDirectory(std::istream& zipfile)
     }
 
     return true;
-}
-
-
-bool ZipFile::readEndOfCentralDirectory(std::istream& zipfile)
-{
-    BackBuffer bb(zipfile, m_vs);
-    int read_p(-1);
-    for(;;)
-    {
-        if(read_p < 0)
-        {
-            if(!bb.readChunk(read_p))
-            {
-                return false;
-            }
-        }
-        if(m_eocd.read(bb, read_p))
-        {
-            return true;
-        }
-        --read_p;
-    }
 }
 
 

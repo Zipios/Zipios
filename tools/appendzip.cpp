@@ -26,10 +26,10 @@
  * get a helpful usage message.
  */
 
-#include "zipios++/ziphead.hpp"
-
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
+#include <fstream>
 
 
 // static variables
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     exef << static_cast<unsigned char>(zip_start >> 8);
     exef << static_cast<unsigned char>(zip_start >> 16);
     exef << static_cast<unsigned char>(zip_start >> 24);
-    //zipios::writeUint32(zip_start, exef);
+    //zipios::writeUint32(zip_start, exef); -- TODO: delete once verified
 
     return 0;
 }

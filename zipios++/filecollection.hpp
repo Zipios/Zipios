@@ -53,7 +53,6 @@ public:
     virtual void                    close() = 0;
     virtual FileEntry::vector_t     entries() const;
     virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
-    virtual stream_pointer_t        getInputStream(FileEntry::pointer_t entry) = 0;
     virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) = 0;
     virtual std::string             getName() const;
     virtual size_t                  size() const;
@@ -63,7 +62,7 @@ public:
 protected:
     std::string                     m_filename;
     FileEntry::vector_t             m_entries;
-    bool                            m_valid;
+    bool                            m_valid = false;
 };
 
 

@@ -439,12 +439,12 @@ boost::filesystem::dir_it::proxy boost::filesystem::dir_it::operator++ (int)
 
 // --------------------------------------------------------------------------
 
-bool boost::filesystem::dir_it::operator== (boost::filesystem::dir_it const &it) const
+bool boost::filesystem::dir_it::operator == (boost::filesystem::dir_it const &it) const
 {
     return *rep == *(it.rep);
 }
 
-bool boost::filesystem::dir_it::operator!= (boost::filesystem::dir_it const &it) const
+bool boost::filesystem::dir_it::operator != (boost::filesystem::dir_it const &it) const
 {
     return !(*rep == *(it.rep));
 }

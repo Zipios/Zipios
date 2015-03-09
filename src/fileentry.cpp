@@ -138,7 +138,7 @@ size_t FileEntry::getCompressedSize() const
 
 
 
-/** \func uint32_t getCrc() const;
+/** \fn uint32_t getCrc() const;
  * \brief Return the CRC of the entry.
  *
  * This function returns the CRC 32 of this entry, if it has one.
@@ -156,7 +156,7 @@ FileEntry::crc32_t FileEntry::getCrc() const
 }
 
 
-/** \func FileEntry::buffer_t getExtra() const;
+/** \fn FileEntry::buffer_t getExtra() const;
  * \brief Some extra data to be stored along the entry.
  *
  * This function returns a vector of bytes of extra data that are
@@ -437,7 +437,7 @@ void FileEntry::setUnixTime(std::time_t time)
 }
 
 
-/** \func std::string toString() const;
+/** \fn std::string toString() const;
  * \brief Returns a human-readable string representation of the entry.
  *
  * This function transforms the basic information of the entry in a

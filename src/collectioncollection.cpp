@@ -43,6 +43,7 @@ namespace
  *
  * The \p cep parameter is also set to the object found.
  *
+ * \param[in] collections  The collections to search for the specified name.
  * \param[in] name  The name of the entry to search.
  * \param[out] cep  The pointer to the entry found.
  * \param[out] it  The iterator pointing to the entry in this collection.
@@ -219,14 +220,6 @@ FileEntry::pointer_t CollectionCollection::getEntry(std::string const& name, Mat
     matchEntry(m_collections, name, cep, it, matchpath);
 
     return cep;
-}
-
-
-CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(FileEntry::pointer_t entry)
-{
-  mustBeValid();
-
-  return getInputStream(entry->getName());
 }
 
 

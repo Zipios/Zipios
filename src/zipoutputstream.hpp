@@ -22,7 +22,7 @@
  * \brief Header file that defines ZipOutputStream.
  */
 
-#include "zipios++/zipoutputstreambuf.hpp"
+#include "zipoutputstreambuf.hpp"
 
 #include <memory>
 
@@ -30,6 +30,7 @@
 namespace zipios
 {
 
+class ZipOutputStreambuf;
 
 /** \anchor ZipOutputStream_anchor
  * ZipOutputStream is an ostream that writes the output to a zip file. The

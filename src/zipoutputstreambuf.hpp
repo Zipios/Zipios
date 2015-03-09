@@ -22,9 +22,8 @@
  * \brief Header file that defines ZipOutputStreambuf.
  */
 
-#include "zipios++/deflateoutputstreambuf.hpp"
-
-#include "zipios++/ziphead.hpp"
+#include "deflateoutputstreambuf.hpp"
+#include "ziphead.hpp"
 
 
 namespace zipios
@@ -58,9 +57,6 @@ protected:
     virtual int             sync();
     void                    setEntryClosedState();
     void                    updateEntryHeaderInfo();
-
-    // Should/could be moved to zipheadio.h ?!
-    static void             writeCentralDirectory(ZipCDirEntry::vector_t const& entries, EndOfCentralDirectory eocd, std::ostream& os);
 
 private:
     std::string             m_zip_comment;

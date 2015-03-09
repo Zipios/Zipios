@@ -23,6 +23,34 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/** \file
+ * \brief Functions to convert times between Unix and MS-DOS times.
+ *
+ * These functions make use of the old date and time format
+ * defined to implement the FAT file system. This is defined
+ * on the Microsoft website here:
+ *
+ * https://msdn.microsoft.com/en-us/library/windows/desktop/ms724247%28v=vs.85%29.aspx
+ *
+ * As a quick recap, we have:
+ *
+ * Date (actually we view those as bit 16 to 31)
+ *
+ * \code
+ * 0-4    Day of the month (1-31)
+ * 5-8    Month (1 = January, 2 = February, and so on)
+ * 9-15   Year offset from 1980 (add 1980 to get actual year)
+ * \endcode
+ *
+ * Time
+ *
+ * \code
+ * 0-4    Second divided by 2
+ * 5-10   Minute (0-59)
+ * 11-15  Hour (0-23 on a 24-hour clock)
+ * \endcode
+ */
+
 #include "dostime.h"
 
 #include <stdio.h>

@@ -91,12 +91,12 @@ protected:
  descriptor, that trails the compressed data in files that were
  created by streaming, ie where the zip compressor cannot seek back
  to the local header and store the data. */
-struct DataDescriptor
-{
-    uint32_t    crc_32;
-    uint32_t    compressed_size;
-    uint32_t    uncompressed_size;
-};
+//struct DataDescriptor
+//{
+//    uint32_t    crc_32;
+//    uint32_t    compressed_size;
+//    uint32_t    uncompressed_size;
+//};
 
 
 
@@ -155,60 +155,6 @@ private:
     uint32_t                    m_extern_file_attr = 0x81B40000;
     uint32_t                    m_rel_offset_loc_head;
     std::string                 m_file_comment;
-};
-
-
-/** The end of the Central directory structure. This structure is
-    stored in the end of the zipfile, and contains information about
-    the zipfile, including the position of the start of the central
-    directory. */
-class EndOfCentralDirectory
-{
-public:
-    explicit EndOfCentralDirectory(std::string const& zip_comment = "",
-                                   uint16_t disk_num = 0, uint16_t cdir_disk_num = 0,
-                                   uint16_t cdir_entries = 0,
-                                   uint16_t cdir_tot_entries = 0,
-                                   uint32_t cdir_size = 0, uint32_t cdir_offset = 0)
-        : m_disk_num         ( disk_num           )
-        , m_cdir_disk_num    ( cdir_disk_num      )
-        , m_cdir_entries     ( cdir_entries       )
-        , m_cdir_tot_entries ( cdir_tot_entries   )
-        , m_cdir_size        ( cdir_size          )
-        , m_cdir_offset      ( cdir_offset        )
-        , m_zip_comment_len  ( zip_comment.size() )
-        , m_zip_comment      ( zip_comment        )
-    {
-    }
-
-    uint32_t    offset() const              { return m_cdir_offset;          }
-    uint16_t    totalCount() const          { return m_cdir_tot_entries;     }
-    void        setCDirSize(uint32_t size)       { m_cdir_size = size;            }
-    void        setOffset(uint32_t new_offset)   { m_cdir_offset = new_offset;    }
-
-    void        setTotalCount(uint16_t c)          { m_cdir_entries = c; m_cdir_tot_entries = c; }
-    int         eocdOffSetFromEnd() const          { return m_eocd_offset_from_end; }
-    bool        read(std::vector<unsigned char> const& buf, int pos);
-
-    void                        read(std::istream& is);
-    void                        write(std::ostream& os);
-
-private:
-    bool        checkSignature(unsigned char const *buf) const;
-    bool        checkSignature(uint32_t sig) const;
-
-    static uint32_t const     g_signature;
-
-    uint16_t          m_disk_num         ;
-    uint16_t          m_cdir_disk_num    ;
-    uint16_t          m_cdir_entries     ;
-    uint16_t          m_cdir_tot_entries ;
-    uint32_t          m_cdir_size        ;
-    uint32_t          m_cdir_offset      ;
-    uint16_t          m_zip_comment_len  ;
-
-    std::streampos    m_eocd_offset_from_end ; // Not a Zip defined field
-    std::string       m_zip_comment;
 };
 
 

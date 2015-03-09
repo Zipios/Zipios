@@ -22,7 +22,7 @@
  * Header file that defines DeflateOutputStreambuf.
  */
 
-#include "zipios++/filteroutputstreambuf.hpp"
+#include "filteroutputstreambuf.hpp"
 
 #include <cstdint>
 #include <vector>

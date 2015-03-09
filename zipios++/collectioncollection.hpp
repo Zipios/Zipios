@@ -34,18 +34,17 @@ class CollectionCollection : public FileCollection
 public:
     explicit                        CollectionCollection();
                                     CollectionCollection(CollectionCollection const& src);
-    virtual pointer_t               clone() const;
+    virtual pointer_t               clone() const override;
     CollectionCollection const&     operator = (CollectionCollection const& src);
-    virtual                         ~CollectionCollection();
+    virtual                         ~CollectionCollection() override;
 
     bool                            addCollection(FileCollection const& collection);
     bool                            addCollection(FileCollection::pointer_t collection);
-    virtual void                    close();
-    virtual FileEntry::vector_t     entries() const;
-    virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
-    virtual stream_pointer_t        getInputStream(FileEntry::pointer_t entry);
-    virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
-    virtual size_t                  size() const;
+    virtual void                    close() override;
+    virtual FileEntry::vector_t     entries() const override;
+    virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const override;
+    virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+    virtual size_t                  size() const override;
 
 protected:
     vector_t                        m_collections;

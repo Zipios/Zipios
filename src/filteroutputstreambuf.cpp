@@ -21,7 +21,7 @@
  * \brief Implementation of FilterOutputStreambuf.
  */
 
-#include "zipios++/filteroutputstreambuf.hpp"
+#include "filteroutputstreambuf.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
 

@@ -22,7 +22,7 @@
  * \brief Header file that defines ZipInputStream.
  */
 
-#include "zipios++/zipinputstreambuf.hpp"
+#include "zipinputstreambuf.hpp"
 
 #include <memory>
 

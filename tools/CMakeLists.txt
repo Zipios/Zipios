@@ -27,16 +27,28 @@
 #      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 
+
+###
+### ZipIOS Tool
+###
 project( zipios_tool )
 
 add_executable( ${PROJECT_NAME}
     zipios.cpp
 )
 
+target_link_libraries( ${PROJECT_NAME}
+    zipios
+)
+
 install( TARGETS ${PROJECT_NAME}
     DESTINATION bin
 )
 
+
+###
+### Append Zip Tool
+###
 project( appendzip )
 
 add_executable( ${PROJECT_NAME}
@@ -46,5 +58,41 @@ add_executable( ${PROJECT_NAME}
 install( TARGETS ${PROJECT_NAME}
     DESTINATION bin
 )
+
+
+
+###
+### DOS Time Tool
+###
+project( dostime )
+
+add_executable( ${PROJECT_NAME}
+    dostime.cpp
+)
+
+target_link_libraries( ${PROJECT_NAME}
+    zipios
+)
+
+install( TARGETS ${PROJECT_NAME}
+    DESTINATION bin
+)
+
+
+###
+### zipios_example.cpp
+###
+project( zipios_example )
+
+add_executable( ${PROJECT_NAME}
+    zipios_example.cpp
+)
+
+target_link_libraries( ${PROJECT_NAME}
+    zipios
+)
+
+# DO NOT INSTALL THIS ONE, IT IS JUST AN EXAMPLE!
+
 
 # vim: ts=4 sw=4 et

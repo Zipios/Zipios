@@ -23,7 +23,7 @@
     defined in ziphead.h.
 */
 
-#include "zipios++/ziphead.hpp"
+#include "ziphead.hpp"
 
 
 namespace zipios

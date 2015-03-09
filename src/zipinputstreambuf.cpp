@@ -21,7 +21,7 @@
  * \brief Implementation of ZipInputStreambuf.
  */
 
-#include "zipios++/zipinputstreambuf.hpp"
+#include "zipinputstreambuf.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
 

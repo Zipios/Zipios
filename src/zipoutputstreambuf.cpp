@@ -21,13 +21,39 @@
  * \brief Implementation of ZipOutputStreambuf.
  */
 
-#include "zipios++/zipoutputstreambuf.hpp"
+#include "zipoutputstreambuf.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
+
+#include "endofcentraldirectory.hpp"
 
 
 namespace zipios
 {
+
+
+namespace
+{
+
+void writeCentralDirectory(std::vector<ZipCDirEntry> const& entries, std::string const& comment, std::ostream &os)
+{
+    int cdir_start(os.tellp());
+    int cdir_size(0);
+
+    for(auto it = entries.begin(); it != entries.end(); ++it)
+    {
+        os << *it;
+        cdir_size += it->getCDirHeaderSize();
+    }
+    EndOfCentralDirectory eocd(comment);
+    eocd.setOffset(cdir_start);
+    eocd.setCDirSize(cdir_size);
+    eocd.setTotalCount(entries.size());
+    eocd.write(os);
+}
+
+
+} // no name namespace
 
 
 /** \class ZipOutputStreambuf
@@ -125,7 +151,7 @@ void ZipOutputStreambuf::finish()
 
   closeEntry();
   std::ostream os(m_outbuf);
-  writeCentralDirectory(m_entries, EndOfCentralDirectory(m_zip_comment), os);
+  writeCentralDirectory(m_entries, m_zip_comment, os);
   m_open = false;
 }
 
@@ -292,25 +318,6 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
     os.seekp(entry.getLocalHeaderOffset());
     os << static_cast<ZipLocalEntry>(entry);
     os.seekp(curr_pos);
-}
-
-
-void ZipOutputStreambuf::writeCentralDirectory(std::vector<ZipCDirEntry> const& entries,
-                                               EndOfCentralDirectory eocd,
-                                               std::ostream &os)
-{
-    int cdir_start(os.tellp());
-    int cdir_size(0);
-
-    for(auto it = entries.begin(); it != entries.end(); ++it)
-    {
-        os << *it;
-        cdir_size += it->getCDirHeaderSize();
-    }
-    eocd.setOffset(cdir_start);
-    eocd.setCDirSize(cdir_size);
-    eocd.setTotalCount(entries.size());
-    eocd.write(os);
 }
 
 

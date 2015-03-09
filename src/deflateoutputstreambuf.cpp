@@ -21,7 +21,7 @@
  * \brief Implementation of DeflateOutputStreambuf.
  */
 
-#include "zipios++/deflateoutputstreambuf.hpp"
+#include "deflateoutputstreambuf.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
 

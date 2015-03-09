@@ -21,7 +21,7 @@
  * \brief Implementation of InflateInputStreambuf.
  */
 
-#include "zipios++/inflateinputstreambuf.hpp"
+#include "inflateinputstreambuf.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
 

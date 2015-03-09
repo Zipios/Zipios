@@ -21,7 +21,7 @@
  * \brief Implementation of GZIPOutputStream.
  */
 
-#include "zipios++/gzipoutputstream.hpp"
+#include "gzipoutputstream.hpp"
 
 
 namespace zipios

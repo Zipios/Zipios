@@ -18,13 +18,14 @@
 */
 
 /** \file
-    \anchor appendzip_anchor
-    Source code to a small program appendzip that appends a zip
-    archive to another file. Run appendzip without arguments to
-    get a helpful usage message.
-*/
+ * \anchor appendzip_anchor
+ *
+ * A tool to test various things in a zip file.
+ *
+ * Also can be used to determine the version of your zipios++ installation.
+ */
 
-#include "zipios++/ziphead.hpp"
+#include "zipios++/zipfile.hpp"
 
 #include <cstring>
 
@@ -57,7 +58,7 @@ enum class func_t
 };
 
 
-int main( int argc, char *argv[] )
+int main(int argc, char *argv[])
 {
     // define program name
     g_progname = argv[0];

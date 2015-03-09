@@ -24,11 +24,12 @@
  * local headers of a zip archive.
  */
 
-#include "zipios++/ziphead.hpp"
+#include "ziphead.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
 
 #include "dostime.h"
+#include "endofcentraldirectory.hpp"
 #include "zipheadio.hpp"
 #include "zipios_common.hpp"
 
@@ -317,9 +318,7 @@ void ZipLocalEntry::read(std::istream& is)
             m_extract_version   = readUint16(is);
             m_gp_bitfield       = readUint16(is);
             m_compress_method   = readUint16(is);
-            uint16_t const last_mod_ftime = readUint16(is);    // FIXME can we use Uint32 instead?
-            uint16_t const last_mod_fdate = readUint16(is);
-            m_unix_time = dos2unixtime((last_mod_fdate << 16) + last_mod_ftime);
+            m_unix_time         = dos2unixtime(readUint32(is));
             m_crc_32            = readUint32(is);
             m_compressed_size   = readUint32(is);
             m_uncompressed_size = readUint32(is);
@@ -366,9 +365,7 @@ void ZipCDirEntry::read(std::istream& is)
     m_extract_version      = readUint16(is);
     m_gp_bitfield          = readUint16(is);
     m_compress_method      = readUint16(is);
-    uint16_t const last_mod_ftime = readUint16(is);    // FIXME can we use Uint32 instead?
-    uint16_t const last_mod_fdate = readUint16(is);
-    m_unix_time = dos2unixtime((last_mod_fdate << 16) + last_mod_ftime);
+    m_unix_time            = dos2unixtime(readUint32(is));
     m_crc_32               = readUint32(is);
     m_compressed_size      = readUint32(is);
     m_uncompressed_size    = readUint32(is);
@@ -404,14 +401,11 @@ void ZipLocalEntry::write(std::ostream& os)
             throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
         }
 
-        uint32_t const dostime(unix2dostime(m_unix_time));
-
         writeUint32(g_signature                     , os);
         writeUint16(m_extract_version               , os);
         writeUint16(m_gp_bitfield                   , os);
         writeUint16(m_compress_method               , os);
-        writeUint16(static_cast<uint16_t>(dostime)      , os); // FIXME can we use Uint32 instead?
-        writeUint16(static_cast<uint16_t>(dostime >> 16), os);
+        writeUint32(unix2dostime(m_unix_time)       , os);
         writeUint32(m_crc_32                        , os);
         writeUint32(m_compressed_size               , os);
         writeUint32(m_uncompressed_size             , os);
@@ -435,15 +429,12 @@ void ZipCDirEntry::write(std::ostream& os)
             throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
         }
 
-        uint32_t const dostime(unix2dostime(m_unix_time));
-
         writeUint32(g_signature                    , os);
         writeUint16(m_writer_version               , os);
         writeUint16(m_extract_version              , os);
         writeUint16(m_gp_bitfield                  , os);
         writeUint16(m_compress_method              , os);
-        writeUint16(static_cast<uint16_t>(dostime)      , os); // FIXME can we use Uint32 instead?
-        writeUint16(static_cast<uint16_t>(dostime >> 16), os);
+        writeUint32(unix2dostime(m_unix_time)      , os);
         writeUint32(m_crc_32                       , os);
         writeUint32(m_compressed_size              , os);
         writeUint32(m_uncompressed_size            , os);

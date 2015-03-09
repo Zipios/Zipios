@@ -22,9 +22,9 @@
  * \brief Header file that defines ZipInputStreambuf.
  */
 
-#include "zipios++/inflateinputstreambuf.hpp"
+#include "inflateinputstreambuf.hpp"
 
-#include "zipios++/ziphead.hpp"
+#include "ziphead.hpp"
 
 
 namespace zipios

@@ -1,4 +1,4 @@
-#pragma once
+#pragma
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -19,41 +19,44 @@
 */
 
 /** \file
-    Header file that defines ZipOutputStreambuf.
-*/
+ * \brief Header file that defines InflateInputStreambuf.
+ */
 
-#include "zipios++/deflateoutputstreambuf.hpp"
+#include "filterinputstreambuf.hpp"
+
+#include <vector>
+
+#include <zlib.h>
 
 
 namespace zipios
 {
 
 
-class GZIPOutputStreambuf : public DeflateOutputStreambuf
+class InflateInputStreambuf : public FilterInputStreambuf
 {
 public:
-    explicit      GZIPOutputStreambuf(std::streambuf *outbuf);
-    virtual       ~GZIPOutputStreambuf();
+    explicit    InflateInputStreambuf(std::streambuf *inbuf, int s_pos = -1);
+                InflateInputStreambuf(InflateInputStreambuf const& src) = delete;
+                InflateInputStreambuf const& operator = (InflateInputStreambuf const& src) = delete;
+    virtual     ~InflateInputStreambuf();
 
-    void          setFilename(std::string const& filename);
-    void          setComment(std::string const& comment);
-    void          close();
-    void          finish();
+    bool        reset(int stream_position = -1);
 
 protected:
-    virtual int   overflow(int c = EOF);
-    virtual int   sync();
+    virtual int underflow();
+
+    // FIXME: reconsider design?
+    int const           m_outvecsize = 1000; // FIXME: define a ZIPIOS_BUFSIZ
+    std::vector<char>   m_outvec;
 
 private:
-    void          writeHeader();
-    void          writeTrailer();
-    void          writeInt(uint32_t i);
-
-    std::string   m_filename;
-    std::string   m_comment;
-    bool          m_open = false;
+    z_stream            m_zs;
+    bool                m_zs_initialized = false;
+    int const           m_invecsize = 1000; // FIXME: define a ZIPIOS_BUFSIZ
+    std::vector<char>   m_invec;
 };
 
 
-} // zipios namespace
+} // namespace
 // vim: ts=4 sw=4 et
