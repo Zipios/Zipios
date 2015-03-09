@@ -151,8 +151,11 @@
 
 #include "backbuffer.hpp"
 #include "endofcentraldirectory.hpp"
-#include "ziphead.hpp"
+#include "zipcdirentry.hpp"
 #include "zipinputstream.hpp"
+#include "zipios_common.hpp"
+
+#include <fstream>
 
 
 namespace zipios
@@ -196,7 +199,8 @@ ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const& name)
     // create ZipFile object.
     std::ifstream ifs(name.c_str(), std::ios::in | std::ios::binary);
     ifs.seekg(-4, std::ios::end);
-    uint32_t const start_offset(readUint32(ifs));
+    uint32_t start_offset;
+    zipRead(ifs, start_offset);
     ifs.close();
     return ZipFile::pointer_t(new ZipFile(name, start_offset, 4));
 }
@@ -234,7 +238,7 @@ ZipFile::ZipFile()
  *                   The offset is a positive number, even though the
  *                   offset is towards the beginning of the file.
  */
-ZipFile::ZipFile(std::string const& filename, VirtualSeeker::offset_t s_off, VirtualSeeker::offset_t e_off)
+ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     : m_vs(s_off, e_off)
 {
     m_filename = filename;
@@ -271,7 +275,9 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name,
         return 0;
     }
 
-    stream_pointer_t zis(new ZipInputStream(m_filename, static_cast<ZipCDirEntry const *>(ent.get())->getLocalHeaderOffset() + m_vs.startOffset()));
+    // TODO: make sure the entry offset is properly defined by ZipCDirEntry
+    //static_cast<ZipCDirEntry const *>(ent.get())->getLocalHeaderOffset() + m_vs.startOffset()
+    stream_pointer_t zis(new ZipInputStream(m_filename, m_entry_offset + m_vs.startOffset()));
     //
     // Wed Mar 19 18:16:34 PDT 2014 (RDB)
     // This was causing a basic_ios::clear exception.
@@ -307,7 +313,7 @@ bool ZipFile::readCentralDirectory(std::istream& zipfile)
 
     // Find and read eocd.
     BackBuffer bb(zipfile, m_vs);
-    int read_p(-1);
+    ssize_t read_p(-1);
     for(;;)
     {
         if(read_p < 0)
@@ -383,7 +389,7 @@ bool ZipFile::confirmLocalHeaders(std::istream& zipfile)
         ZipCDirEntry *ent(static_cast<ZipCDirEntry *>((*it).get()));
         m_vs.vseekg(zipfile, ent->getLocalHeaderOffset(), std::ios::beg);
         zlh.read(zipfile);
-        if(!zipfile || zlh != *ent)
+        if(!zipfile || !zlh.isEqual(*ent))
         {
             inconsistencies++;
             zipfile.clear();

@@ -47,6 +47,7 @@ include_directories(
 add_executable( ${PROJECT_NAME}
     catch_tests.cpp
 
+    catch_common.cpp
     catch_directoryentry.cpp
     catch_dostime.cpp
     catch_filepath.cpp
@@ -69,6 +70,9 @@ target_link_libraries( ${PROJECT_NAME}
 )
 
 add_custom_target(run_zipios_tests
+    # You can use the --success command line option to see all the tests
+    # as they run; it is a LOT of output though, thus by default we don't
+    # use it
     COMMAND ./zipios_tests
 )
 

@@ -25,6 +25,8 @@
 
 #include "zipios++/zipiosexceptions.hpp"
 
+#include "zipios_common.hpp"
+
 
 namespace zipios
 {
@@ -71,21 +73,31 @@ namespace zipios
  * \param[in] chunk_size   Specifies the size of the chunks to read the
  *                         file into the BackBuffer in.
  */
-BackBuffer::BackBuffer(std::istream& is, VirtualSeeker const& vs, int const chunk_size)
+BackBuffer::BackBuffer(std::istream& is, VirtualSeeker const& vs, ssize_t const chunk_size)
     : m_vs(vs)
     , m_chunk_size(chunk_size)
     , m_is(is)
     , m_file_pos(0)
 {
-    m_vs.vseekg(is, 0, std::ios::end);
-    m_file_pos = m_vs.vtellg(is);
+    if(!m_is)
+    {
+        throw InvalidException("BackBuffer() initialized with an invalid input stream.");
+    }
+    if(m_chunk_size <= 0)
+    {
+        throw InvalidException("Invalid chunk_size parameter, it has to be larger than zero.");
+    }
 
-    // Only happens if m_vs.startOffset() is a position
-    // in the file that lies after m_vs.endOffset(), which
-    // is clearly not a valid situation.
+    m_vs.vseekg(m_is, 0, std::ios::end);
+    m_file_pos = m_vs.vtellg(m_is);
+
+    // The following should only happens when m_vs.startOffset() is a
+    // position in the file that lies after m_vs.endOffset(), which
+    // is clearly not a valid situation. However, vtellg() may just
+    // fail too.
     if(m_file_pos < 0)
     {
-        throw IOException("Invalid virtual file endings");
+        throw IOException("Invalid virtual file endings.");
     }
 }
 
@@ -122,10 +134,10 @@ BackBuffer::BackBuffer(std::istream& is, VirtualSeeker const& vs, int const chun
  * \return The number of bytes read if any, otherwise zero. Note that if
  *         an error occurs, the function also returns zero.
  */
-int BackBuffer::readChunk(int& read_pointer)
+ssize_t BackBuffer::readChunk(ssize_t& read_pointer)
 {
     // Update m_chunk_size and file position
-    m_chunk_size = std::min<int>(static_cast<int>(m_file_pos), m_chunk_size);
+    m_chunk_size = std::min<ssize_t>(static_cast<ssize_t>(m_file_pos), m_chunk_size);
     m_file_pos -= m_chunk_size;
     m_vs.vseekg(m_is, m_file_pos, std::ios::beg);
 
@@ -133,7 +145,7 @@ int BackBuffer::readChunk(int& read_pointer)
     insert(begin(), m_chunk_size, static_cast<char>(0));
 
     // Read in the next m_chunk_size bytes
-    readByteSeq(m_is, &(*this)[0], m_chunk_size);
+    zipRead(m_is, *this, m_chunk_size);
     read_pointer += m_chunk_size;
 
     return m_is.good() ? m_chunk_size : 0;

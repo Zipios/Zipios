@@ -62,6 +62,7 @@ public:
 protected:
     std::string                     m_filename;
     FileEntry::vector_t             m_entries;
+    std::streampos                  m_entry_offset = 0;
     bool                            m_valid = false;
 };
 

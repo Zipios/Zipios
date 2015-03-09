@@ -25,6 +25,7 @@
 #include "zipios++/filecollection.hpp"
 #include "zipios++/directoryentry.hpp"
 
+
 namespace zipios
 {
 
@@ -32,17 +33,16 @@ namespace zipios
 class DirectoryCollection : public FileCollection
 {
 public:
-    explicit                            DirectoryCollection();
-    explicit                            DirectoryCollection(std::string const& path, bool recursive = true, bool load_now = false);
-    virtual FileCollection::pointer_t   clone() const;
-    virtual                             ~DirectoryCollection();
+                                        DirectoryCollection();
+                                        DirectoryCollection(std::string const& path, bool recursive = true, bool load_now = false);
+    virtual FileCollection::pointer_t   clone() const override;
+    virtual                             ~DirectoryCollection() override;
 
-    virtual void                        close();
-    virtual FileEntry::vector_t         entries() const;
-    virtual FileEntry::pointer_t        getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
-    virtual stream_pointer_t            getInputStream(FileEntry::pointer_t entry);
-    virtual stream_pointer_t            getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
-    virtual size_t                      size() const;
+    virtual void                        close() override;
+    virtual FileEntry::vector_t         entries() const override;
+    virtual FileEntry::pointer_t        getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const override;
+    virtual stream_pointer_t            getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+    virtual size_t                      size() const override;
 
 protected:
     void                                loadEntries() const;

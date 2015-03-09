@@ -23,6 +23,8 @@
 
 #include "gzipoutputstream.hpp"
 
+#include <fstream>
+
 
 namespace zipios
 {

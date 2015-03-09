@@ -23,7 +23,7 @@
  */
 
 #include "deflateoutputstreambuf.hpp"
-#include "ziphead.hpp"
+#include "zipcdirentry.hpp"
 
 
 namespace zipios
@@ -47,7 +47,7 @@ public:
     void                    closeEntry();
     void                    close();
     void                    finish();
-    void                    putNextEntry(ZipCDirEntry const& entry);
+    void                    putNextEntry(FileEntry::pointer_t entry);
     void                    setComment(std::string const& comment);
     void                    setLevel(CompressionLevel level);
     void                    setMethod(StorageMethod method);
@@ -60,7 +60,7 @@ protected:
 
 private:
     std::string             m_zip_comment;
-    ZipCDirEntry::vector_t  m_entries;
+    FileEntry::vector_t     m_entries;
     bool                    m_open_entry = false;
     bool                    m_open = true;
     StorageMethod           m_method = StorageMethod::DEFLATED;

@@ -19,28 +19,32 @@
 */
 
 /** \file
-    The header file for BackBuffer
-*/
+ * \brief The header file for BackBuffer
+ *
+ * The BackBuffer class is used to read a file backward.
+ */
 
 #include "zipios++/virtualseeker.hpp"
 
-#include "zipheadio.hpp"
+#include <vector>
+
+#include "zipios_common.hpp"
 
 
 namespace zipios
 {
 
 
-class BackBuffer : public std::vector<unsigned char>
+class BackBuffer : public ::zipios::buffer_t
 {
 public:
-    explicit                BackBuffer(std::istream& is, VirtualSeeker const& vs = VirtualSeeker(), int const chunk_size = 1024 );
+    explicit                BackBuffer(std::istream& is, VirtualSeeker const& vs = VirtualSeeker(), ssize_t const chunk_size = 1024);
 
-    int                     readChunk(int &read_pointer);
+    ssize_t                 readChunk(ssize_t& read_pointer);
 
 private:
     VirtualSeeker           m_vs;
-    int                     m_chunk_size;
+    ssize_t                 m_chunk_size;
     std::istream&           m_is;
     std::streampos          m_file_pos;
 };

@@ -207,6 +207,7 @@ private:
 FileCollection::FileCollection()
     : m_filename("-")
     //, m_entries() -- auto-init
+    //, m_entry_offset(0) -- auto-init
     //, m_valid(false) -- auto-init
 {
 }
@@ -226,6 +227,7 @@ FileCollection::FileCollection()
 FileCollection::FileCollection(FileCollection const& src)
     : m_filename(src.m_filename)
     //, m_entries() -- see below
+    , m_entry_offset(src.m_entry_offset)
     , m_valid(src.m_valid)
 {
     m_entries.reserve(src.m_entries.size());

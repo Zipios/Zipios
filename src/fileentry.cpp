@@ -305,6 +305,26 @@ bool FileEntry::isDirectory() const
 }
 
 
+/** \brief Compare two file entries for equality.
+ *
+ * This function compares most of the fields between two file
+ * entries to see whether they are equal or not.
+ *
+ * \param[in] file_entry  The file entry to compare this against.
+ *
+ * \return true if both FileEntry objects are considered equal.
+ */
+bool FileEntry::isEqual(FileEntry const& file_entry) const
+{
+    return m_filename          == file_entry.m_filename
+        && m_uncompressed_size == file_entry.m_uncompressed_size
+        && m_unix_time         == file_entry.m_unix_time
+        && m_crc_32            == file_entry.m_crc_32
+        && m_has_crc_32        == file_entry.m_has_crc_32
+        && m_valid             == file_entry.m_valid;
+}
+
+
 /** \brief Check whether this entry is valid.
  *
  * Any method or operator that initializes a FileEntry may set a

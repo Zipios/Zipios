@@ -122,11 +122,12 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // zero would not really prove anything so skip such
             // (although it may be extremely rare...)
-            size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
-            while(r == 0)
+            size_t r;
+            do
             {
                 r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
             }
+            while(r == 0);
             de.setCompressedSize(r);
 
             THEN("we ignore it")
@@ -169,11 +170,12 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         WHEN("setting the CRC")
         {
             // zero would not really prove anything so skip such
-            uint32_t r(rand());
-            while(r == 0)
+            uint32_t r;
+            do
             {
                 r = rand();
             }
+            while(r == 0);
             de.setCrc(rand());
 
             THEN("we ignore it")
@@ -307,11 +309,12 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // zero would not really prove anything so skip such
             // (although it may be extremely rare...)
-            size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
-            while(r == 0)
+            size_t r;
+            do
             {
                 r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
             }
+            while(r == 0);
             de.setSize(r);
 
             THEN("we take it as is")
@@ -355,11 +358,12 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time numbers are not linear so we test until we get one
             // that works...
-            dostime_t r(static_cast<dostime_t>(rand()));
-            while(dos2unixtime(r) == -1)
+            dostime_t r;
+            do
             {
                 r = static_cast<dostime_t>(rand());
             }
+            while(dos2unixtime(r) == -1);
             de.setTime(r);
 
             THEN("we take it as is")
@@ -403,11 +407,12 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            dostime_t r(static_cast<dostime_t>(rand()));
-            while(dos2unixtime(r) == -1)
+            dostime_t r;
+            do
             {
                 r = static_cast<dostime_t>(rand());
             }
+            while(dos2unixtime(r) == -1);
             de.setUnixTime(dos2unixtime(r));
 
             THEN("we take it as is")
@@ -550,11 +555,12 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             {
                 // zero would not really prove anything so skip such
                 // (although it may be extremely rare...)
-                size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
-                while(r == 0)
+                size_t r;
+                do
                 {
                     r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
                 }
+                while(r == 0);
                 de.setCompressedSize(r);
 
                 REQUIRE(de.getComment().empty());
@@ -594,11 +600,12 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             SECTION("setting the CRC")
             {
                 // zero would not really prove anything so skip such
-                uint32_t r(rand());
-                while(r == 0)
+                uint32_t r;
+                do
                 {
                     r = rand();
                 }
+                while(r == 0);
                 de.setCrc(rand());
 
                 REQUIRE(de.getComment().empty());
@@ -723,11 +730,11 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             {
                 // zero would not really prove anything so skip such
                 // (although it may be extremely rare...)
-                size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
-                while(r == 0)
+                size_t r;
                 {
                     r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
                 }
+                while(r == 0);
                 de.setSize(r);
 
                 REQUIRE(de.getComment().empty());
@@ -768,11 +775,12 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             {
                 // DOS time numbers are not linear so we test until we get one
                 // that works...
-                dostime_t r(static_cast<dostime_t>(rand()));
-                while(dos2unixtime(r) == -1)
+                dostime_t r;
+                do
                 {
                     r = static_cast<dostime_t>(rand());
                 }
+                while(dos2unixtime(r) == -1);
                 de.setTime(r);
 
                 REQUIRE(de.getComment().empty());
@@ -813,11 +821,11 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             {
                 // DOS time are limited to a smaller range and on every other
                 // second so we get a valid DOS time and convert it to a Unix time
-                dostime_t r(static_cast<dostime_t>(rand()));
-                while(dos2unixtime(r) == -1)
+                dostime_t r;
                 {
                     r = static_cast<dostime_t>(rand());
                 }
+                while(dos2unixtime(r) == -1);
                 de.setUnixTime(dos2unixtime(r));
 
                 REQUIRE(de.getComment().empty());
@@ -957,11 +965,12 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // zero would not really prove anything so skip such
             // (although it may be extremely rare...)
-            size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
-            while(r == 0)
+            size_t r;
+            do
             {
                 r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
             }
+            while(r == 0);
             de.setCompressedSize(r);
 
             THEN("we ignore it")
@@ -1004,11 +1013,12 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         WHEN("setting the CRC")
         {
             // zero would not really prove anything so skip such
-            uint32_t r(rand());
-            while(r == 0)
+            uint32_t r;
+            do
             {
                 r = rand();
             }
+            while(r == 0);
             de.setCrc(rand());
 
             THEN("we ignore it")
@@ -1142,11 +1152,12 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // zero would not really prove anything so skip such
             // (although it may be extremely rare...)
-            size_t r(static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32));
-            while(r == 0)
+            size_t r;
+            do
             {
                 r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
             }
+            while(r == 0);
             de.setSize(r);
 
             THEN("we take it as is")
@@ -1190,11 +1201,12 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time numbers are not linear so we test until we get one
             // that works...
-            dostime_t r(static_cast<dostime_t>(rand()));
-            while(dos2unixtime(r) == -1)
+            dostime_t r;
+            do
             {
                 r = static_cast<dostime_t>(rand());
             }
+            while(dos2unixtime(r) == -1);
             de.setTime(r);
 
             THEN("we take it as is")
@@ -1238,11 +1250,12 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            dostime_t r(static_cast<dostime_t>(rand()));
-            while(dos2unixtime(r) == -1)
+            dostime_t r;
+            do
             {
                 r = static_cast<dostime_t>(rand());
             }
+            while(dos2unixtime(r) == -1);
             de.setUnixTime(dos2unixtime(r));
 
             THEN("we take it as is")

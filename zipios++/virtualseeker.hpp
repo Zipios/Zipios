@@ -22,9 +22,9 @@
  * \brief Header file that defines VirtualSeeker.
  */
 
-#include "zipios++/meta-iostreams.hpp"
+#include "zipios++/zipios-config.hpp"
 
-#include <stdexcept>
+#include <iostream>
 
 
 namespace zipios
@@ -34,8 +34,6 @@ namespace zipios
 class VirtualSeeker
 {
 public:
-    typedef off_t   offset_t;
-
                     VirtualSeeker(offset_t start_offset = 0, offset_t end_offset = 0);
 
     void            setOffsets(offset_t start_offset, offset_t end_offset);

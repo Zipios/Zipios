@@ -35,15 +35,32 @@ namespace zipios
 namespace
 {
 
-void writeCentralDirectory(std::vector<ZipCDirEntry> const& entries, std::string const& comment, std::ostream &os)
+/** \brief Help function used to write the central directory.
+ *
+ * When you create a Zip archive, it includes a central directory where
+ * all the meta data about each file is saved. This function saves an
+ * array of entries in an output stream to generate the Zip file
+ * central directory.
+ *
+ * \param[in] os  The output stream.
+ * \param[in] entries  The array of entries to save in this central directory.
+ * \param[in] comment  The zip archive global comment.
+ */
+void writeCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::string const& comment)
 {
     int cdir_start(os.tellp());
     int cdir_size(0);
 
     for(auto it = entries.begin(); it != entries.end(); ++it)
     {
-        os << *it;
-        cdir_size += it->getCDirHeaderSize();
+        FileEntry::pointer_t ent(*it);
+        ZipCDirEntry *zip_dir(dynamic_cast<ZipCDirEntry *>(ent.get()));
+        if(!zip_dir)
+        {
+            throw FCollException("writeCentralDirectory(): unexpected type of file entry to write the central directory.");
+        }
+        zip_dir->write(os);
+        cdir_size += zip_dir->getCDirHeaderSize();
     }
     EndOfCentralDirectory eocd(comment);
     eocd.setOffset(cdir_start);
@@ -144,15 +161,15 @@ void ZipOutputStreambuf::close()
  */
 void ZipOutputStreambuf::finish()
 {
-  if(!m_open)
-  {
-    return;
-  }
+    if(!m_open)
+    {
+        return;
+    }
 
-  closeEntry();
-  std::ostream os(m_outbuf);
-  writeCentralDirectory(m_entries, m_zip_comment, os);
-  m_open = false;
+    closeEntry();
+    std::ostream os(m_outbuf);
+    writeCentralDirectory(os, m_entries, m_zip_comment);
+    m_open = false;
 }
 
 
@@ -166,7 +183,7 @@ void ZipOutputStreambuf::finish()
  *
  * \param[in] entry  The entry to be saved and made current.
  */
-void ZipOutputStreambuf::putNextEntry(ZipCDirEntry const& entry)
+void ZipOutputStreambuf::putNextEntry(ZipCDirEntry::pointer_t entry)
 {
     closeEntry();
 
@@ -176,15 +193,19 @@ void ZipOutputStreambuf::putNextEntry(ZipCDirEntry const& entry)
     }
 
     m_entries.push_back(entry);
-    ZipCDirEntry& ent(m_entries.back());
+    FileEntry::pointer_t ent(m_entries.back());
+    ZipCDirEntry *zip_dir(dynamic_cast<ZipCDirEntry *>(ent.get()));
+    if(!zip_dir)
+    {
+        throw FCollException("writeCentralDirectory(): unexpected type of file entry to write the central directory.");
+    }
 
     std::ostream os(m_outbuf);
 
     // Update entry header info
-    ent.setLocalHeaderOffset(os.tellp());
-    ent.setMethod(m_method);
-
-    os << static_cast<ZipLocalEntry>(ent);
+    zip_dir->setLocalHeaderOffset(os.tellp());
+    zip_dir->setMethod(m_method);
+    zip_dir->write(os);
 
     m_open_entry = true;
 }
@@ -290,7 +311,7 @@ int ZipOutputStreambuf::sync()
 
 void ZipOutputStreambuf::setEntryClosedState()
 {
-    m_open_entry = false ;
+    m_open_entry = false;
 
     // FIXME: update put pointers to trigger overflow on write. overflow
     //        should then return EOF while _open_entry is false.
@@ -308,15 +329,21 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
     int const curr_pos(os.tellp());
 
     // update fields in m_entries.back()
-    ZipCDirEntry& entry(m_entries.back());
-    entry.setSize(getCount());
-    entry.setCrc(getCrc32());
-    entry.setCompressedSize(curr_pos - entry.getLocalHeaderOffset() - entry.getLocalHeaderSize());
-    entry.setUnixTime(std::time(nullptr));
+    FileEntry::pointer_t ent(m_entries.back());
+    ZipCDirEntry *zip_dir(dynamic_cast<ZipCDirEntry *>(ent.get()));
+    if(!zip_dir)
+    {
+        throw FCollException("writeCentralDirectory(): unexpected type of file entry to write the central directory.");
+    }
+
+    zip_dir->setSize(getCount());
+    zip_dir->setCrc(getCrc32());
+    zip_dir->setCompressedSize(curr_pos - zip_dir->getLocalHeaderOffset() - zip_dir->getLocalHeaderSize());
+    zip_dir->setUnixTime(std::time(nullptr));
 
     // write ZipLocalEntry header to header position
-    os.seekp(entry.getLocalHeaderOffset());
-    os << static_cast<ZipLocalEntry>(entry);
+    os.seekp(zip_dir->getLocalHeaderOffset());
+    zip_dir->write(os);
     os.seekp(curr_pos);
 }
 

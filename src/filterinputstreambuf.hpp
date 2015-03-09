@@ -22,7 +22,7 @@
  * \brief Header file that defines FilterInputStreambuf.
  */
 
-#include "zipios++/meta-iostreams.hpp"
+#include <iostream>
 
 
 namespace zipios

@@ -23,65 +23,43 @@
  * directory and local header fields in a zip archive.
  */
 
-#include "zipios++/meta-iostreams.hpp"
+#include "zipios_common.hpp"
 
 #include <string>
+#include <vector>
 
 
 namespace zipios
 {
 
 
-/** \brief Marker at the end of a Zip archive.
- *
- * The end of the Central directory structure. This structure is
- * stored in the end of the zipfile, and contains information about
- * the zipfile, including the position of the start of the central
- * directory.
- */
 class EndOfCentralDirectory
 {
 public:
-    explicit EndOfCentralDirectory(std::string const& zip_comment = "")
-        //: m_disk_num(0) -- auto-init
-        //, m_cdir_disk_num(0) -- auto-init
-        //, m_cdir_entries(0) -- auto-init
-        //, m_cdir_tot_entries(0) -- auto-init
-        //, m_cdir_size(0) -- auto-init
-        //, m_cdir_offset(0) -- auto-init
-        : m_zip_comment_len(zip_comment.size())
-        , m_zip_comment(zip_comment)
-    {
-    }
+                        EndOfCentralDirectory(std::string const& zip_comment = "");
 
-    uint32_t    offset() const              { return m_cdir_offset;          }
-    uint16_t    totalCount() const          { return m_cdir_tot_entries;     }
-    void        setCDirSize(uint32_t size)       { m_cdir_size = size;            }
-    void        setOffset(uint32_t new_offset)   { m_cdir_offset = new_offset;    }
+    uint32_t            offset() const;
+    uint16_t            totalCount() const;
+    void                setCDirSize(uint32_t size);
+    void                setOffset(uint32_t new_offset);
 
-    void        setTotalCount(uint16_t c)          { m_cdir_entries = c; m_cdir_tot_entries = c; }
-    std::streampos  eocdOffSetFromEnd() const          { return m_eocd_offset_from_end; }
-    bool        read(std::vector<unsigned char> const& buf, int pos);
+    void                setTotalCount(uint16_t c);
+    std::streampos      eocdOffSetFromEnd() const;
+    bool                read(::zipios::buffer_t const& buf, size_t pos);
 
-    void                        read(std::istream& is);
-    void                        write(std::ostream& os);
+    //void                read(std::istream& is);
+    void                write(std::ostream& os);
 
 private:
-    bool        checkSignature(unsigned char const *buf) const;
-    bool        checkSignature(uint32_t sig) const;
+    uint16_t            m_disk_num = 0;
+    uint16_t            m_cdir_disk_num = 0;
+    uint16_t            m_cdir_entries = 0;
+    uint16_t            m_cdir_total_entries = 0;
+    uint32_t            m_cdir_size = 0;
+    uint32_t            m_cdir_offset = 0;
 
-    static uint32_t const     g_signature;
-
-    uint16_t          m_disk_num = 0;
-    uint16_t          m_cdir_disk_num = 0;
-    uint16_t          m_cdir_entries = 0;
-    uint16_t          m_cdir_tot_entries = 0;
-    uint32_t          m_cdir_size = 0;
-    uint32_t          m_cdir_offset = 0;
-    uint16_t          m_zip_comment_len = 0;
-
-    std::streampos    m_eocd_offset_from_end = 0; // Not a Zip defined field
-    std::string       m_zip_comment;
+    std::streampos      m_eocd_offset_from_end = 0; // Not a Zip defined field
+    std::string         m_zip_comment;
 };
 
 

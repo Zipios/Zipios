@@ -23,6 +23,8 @@
 
 #include "zipinputstream.hpp"
 
+#include <fstream>
+
 
 namespace zipios
 {

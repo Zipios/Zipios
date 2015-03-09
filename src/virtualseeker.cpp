@@ -115,7 +115,7 @@ void VirtualSeeker::getOffsets(off_t& start_offset, off_t& end_offset) const
  *
  * \return The start offset.
  */
-VirtualSeeker::offset_t VirtualSeeker::startOffset() const
+offset_t VirtualSeeker::startOffset() const
 {
     return m_start_offset;
 }
@@ -127,7 +127,7 @@ VirtualSeeker::offset_t VirtualSeeker::startOffset() const
  *
  * \return The end offset.
  */
-VirtualSeeker::offset_t VirtualSeeker::endOffset() const
+offset_t VirtualSeeker::endOffset() const
 {
     return m_end_offset;
 }

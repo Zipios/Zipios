@@ -36,6 +36,7 @@ public:
     virtual                 ~DirectoryEntry() override;
 
     virtual std::string     getComment() const override;
+    virtual bool            isEqual(FileEntry const& file_entry) const override;
     virtual void            setComment(std::string const& comment) override;
     virtual std::string     toString() const override;
 

@@ -23,6 +23,8 @@
 
 #include "zipoutputstream.hpp"
 
+#include <fstream>
+
 
 namespace zipios
 {
@@ -73,7 +75,7 @@ void ZipOutputStream::finish()
 }
 
 
-void ZipOutputStream::putNextEntry(ZipCDirEntry const& entry)
+void ZipOutputStream::putNextEntry(FileEntry::pointer_t entry)
 {
     m_ozf->putNextEntry(entry);
 }
@@ -81,7 +83,7 @@ void ZipOutputStream::putNextEntry(ZipCDirEntry const& entry)
 
 void ZipOutputStream::putNextEntry(std::string const& entryName)
 {
-    putNextEntry(ZipCDirEntry(entryName));
+    putNextEntry(FileEntry::pointer_t(new ZipCDirEntry(entryName)));
 }
 
 

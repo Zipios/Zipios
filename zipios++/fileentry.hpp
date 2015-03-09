@@ -27,10 +27,9 @@
  * \sa FileCollection
  */
 
-#include "zipios++/meta-iostreams.hpp"
-
 #include "zipios++/filepath.hpp"
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -64,6 +63,8 @@ public:
     typedef uint32_t                        dostime_t;
 
                                 FileEntry(FilePath const& filename);
+    // TODO: we need an operator = and copy operator because fields
+    //       defined here need to be copied by this class
     virtual pointer_t           clone() const = 0;
     virtual                     ~FileEntry();
 
@@ -79,6 +80,7 @@ public:
     virtual std::time_t         getUnixTime() const;
     bool                        hasCrc() const;
     virtual bool                isDirectory() const;
+    virtual bool                isEqual(FileEntry const& file_entry) const;
     virtual bool                isValid() const;
     virtual void                setComment(std::string const& comment);
     virtual void                setCompressedSize(size_t size);

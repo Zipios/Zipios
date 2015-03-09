@@ -25,6 +25,51 @@
 #include "zipios++/zipios-config.hpp"
 
 #include <vector>
+#include <sstream>
+
+
+/** \brief Contatenate two vectors together.
+ *
+ * This function appends vector v2 to vector v1 using a push_back()
+ * of all the elements of v2.
+ *
+ * Note that the function fails to append anything is you write something
+ * like this:
+ *
+ * \code
+ *      v1 += v1;
+ * \endcode
+ *
+ * Instead, create a new vector and then add the source twice, something
+ * like this:
+ *
+ * \code
+ *      vector<std::string> temp;
+ *      temp += v1;
+ *      v1 += temp;
+ * \endcode
+ *
+ * \warning
+ * This template is not put in the namespace because in some situation
+ * it may not be visible (particularly in tests/catch_common.cpp,
+ * somehow.) If you know of a fix for that then it would be great.
+ * (I tried "using zipios;" but it did not work, maybe a specialization?)
+ *
+ * \param[in,out] v1  The vector which receives a copy of v2.
+ * \param[in]  v2  The vector to concatenate at the end of v1.
+ */
+template<class Type>
+void operator += (std::vector<Type>& v1, std::vector<Type> const& v2)
+{
+    // make sure these are not the same vector or the insert()
+    // is not unlikely to fail badly; it is expected that the
+    // user does not try to duplicate an array...
+    if(&v1 != &v2)
+    {
+        v1.reserve(v1.size() + v2.size());
+        v1.insert(v1.end(), v2.begin(), v2.end());
+    }
+}
 
 
 namespace zipios
@@ -34,29 +79,34 @@ namespace zipios
 extern char const g_separator;
 
 
-/** \brief Contatenate two vectors together.
+/** \brief An output stream using strings.
  *
- * This function appends vector v2 to vector v1 using a push_back()
- * of all the elements of v2.
- *
- * \param[in,out] v1  The vector which receives a copy of v2.
- * \param[in]  v2  The vector to concatenate at the end of v1.
+ * This object is used whenever we want to output a buffer from
+ * a string and convert that to a string.
  */
-template<class Type>
-void operator += (std::vector<Type>& v1, std::vector<Type> const& v2)
-{
-    // make sure these are not the same vector or the insert()
-    // is not unlikely to fail badly
-    if(&v1 != &v2)
-    {
-        v1.reserve(v1.size() + v2.size());
-        v1.insert(v1.end(), v2.begin(), v2.end());
-    }
-    //for ( std::vector< Type >::const_iterator cit = v2.begin() ; cit != v2.end() ; ++cit )
-    //{
-    //  v1.push_back( *cit ) ;
-    //}
-}
+typedef std::ostringstream OutputStringStream;
+
+
+typedef std::vector<unsigned char>      buffer_t;
+
+
+void     zipRead(std::istream& is, uint32_t& value);
+void     zipRead(std::istream& is, uint16_t& value);
+void     zipRead(std::istream& is, uint8_t&  value);
+void     zipRead(std::istream& is, buffer_t& buffer, ssize_t const count);
+void     zipRead(std::istream& is, std::string& str, ssize_t const count);
+
+void     zipRead(buffer_t const& is, size_t& pos, uint32_t& value);
+void     zipRead(buffer_t const& is, size_t& pos, uint16_t& value);
+void     zipRead(buffer_t const& is, size_t& pos, uint8_t&  value);
+void     zipRead(buffer_t const& is, size_t& pos, buffer_t& buffer, ssize_t const count);
+void     zipRead(buffer_t const& is, size_t& pos, std::string& str, ssize_t const count);
+
+void     zipWrite(std::ostream& os, uint32_t const& value);
+void     zipWrite(std::ostream& os, uint16_t const& value);
+void     zipWrite(std::ostream& os, uint8_t const&  value);
+void     zipWrite(std::ostream& os, buffer_t const& buffer);
+void     zipWrite(std::ostream& os, std::string const& str);
 
 
 } // zipios namespace

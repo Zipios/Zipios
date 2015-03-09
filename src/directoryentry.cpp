@@ -108,6 +108,31 @@ std::string DirectoryEntry::getComment() const
 }
 
 
+/** \brief Compare two file entries for equality.
+ *
+ * This function compares most of the fields between two file
+ * entries to see whether they are equal or not.
+ *
+ * \note
+ * This function calls the base class isEqual() and also verifies
+ * that the object comments are equal.
+ *
+ * \param[in] file_entry  The file entry to compare this against.
+ *
+ * \return true if both FileEntry objects are considered equal.
+ */
+bool DirectoryEntry::isEqual(FileEntry const& file_entry) const
+{
+    DirectoryEntry const * const de(dynamic_cast<DirectoryEntry const * const>(&file_entry));
+    if(!de)
+    {
+        return false;
+    }
+    return FileEntry::isEqual(file_entry)
+        && m_comment == de->m_comment;
+}
+
+
 /** \brief Set the comment field for the DirectoryEntry.
  *
  * This function sets the comment of this DirectoryEntry.

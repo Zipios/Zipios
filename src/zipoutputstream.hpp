@@ -77,7 +77,7 @@ public:
     /** \anchor ZipOutputStream_putnextentry_anchor
      * Begins writing the next entry.
      */
-    void putNextEntry(ZipCDirEntry const& entry);
+    void putNextEntry(FileEntry::pointer_t entry);
 
     /** \anchor ZipOutputStream_putnextentry2_anchor
      * Begins writing the next entry.

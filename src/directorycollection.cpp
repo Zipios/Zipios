@@ -31,6 +31,8 @@
 
 #include "directory.hpp"
 
+#include <fstream>
+
 
 namespace zipios
 {
@@ -127,14 +129,6 @@ FileEntry::pointer_t DirectoryCollection::getEntry(std::string const& name, Matc
     }
 
     return FileEntry::pointer_t();
-}
-
-
-DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(FileEntry::pointer_t entry)
-{
-    mustBeValid();
-
-    return getInputStream(entry->getName());
 }
 
 

@@ -24,7 +24,7 @@
 
 #include "inflateinputstreambuf.hpp"
 
-#include "ziphead.hpp"
+#include "ziplocalentry.hpp"
 
 
 namespace zipios

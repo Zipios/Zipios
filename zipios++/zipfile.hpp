@@ -38,7 +38,7 @@ public:
     static pointer_t            openEmbeddedZipFile(std::string const& name);
 
                                 ZipFile();
-    explicit                    ZipFile(std::string const& filename, VirtualSeeker::offset_t s_off = 0, VirtualSeeker::offset_t e_off = 0);
+                                ZipFile(std::string const& filename, offset_t s_off = 0, offset_t e_off = 0);
     virtual pointer_t           clone() const;
     virtual                     ~ZipFile();
 

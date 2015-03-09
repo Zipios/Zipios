@@ -25,6 +25,8 @@
 
 #include "zipios++/zipiosexceptions.hpp"
 
+#include "zipios_common.hpp"
+
 
 namespace zipios
 {

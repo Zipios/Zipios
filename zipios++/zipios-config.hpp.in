@@ -40,10 +40,15 @@
 namespace zipios
 {
 
+
 inline char const *get_version()
 {
     return ZIPIOS_VERSION_STRING;
 }
+
+
+typedef off_t   offset_t;
+
 
 } // zipios namespace
 
