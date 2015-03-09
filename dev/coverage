@@ -65,7 +65,8 @@ then
     # We test the pipe status on exit to detect whether the test failed
     echo "Start running the tests on `date`" >test_log.txt
     echo >>test_log.txt
-    tests/zipios_tests 2>&1 | tee -a test_log.txt; test ${PIPESTATUS[0]} -eq 0
+    # --success generates way too much output for HTML
+    tests/zipios_tests --durations yes 2>&1 | tee -a test_log.txt; test ${PIPESTATUS[0]} -eq 0
     echo >>test_log.txt
     echo "Finished running the tests on `date`" >>test_log.txt
 else
@@ -109,16 +110,16 @@ echo "</pre></body></html>" >>zipios_coverage_html/statistics.html
 
 # Test output (Logs)
 echo "<html><head><title>as2js $VERSION test logs</title></head><body><h3>Logs for the as2js $VERSION tests</h3><p>Tests started on $start_date and finished on $end_date</p><pre>" >zipios_coverage_html/test_log.html
-if test -f test_log.txt
+if test -f zipios_coverage/test_log.txt
 then
     # If test_log.txt does not exist, the user got the logs in the
     # console already
-    cat test_log.txt >>zipios_coverage_html/test_log.html
+    cat zipios_coverage/test_log.txt >>zipios_coverage_html/test_log.html
 fi
 echo "</pre></body></html>" >>zipios_coverage_html/test_log.html
 
 
-if test -f test_log.txt
+if test -f zipios_coverage/test_log.txt
 then
     echo "***"
     echo "*** publication to ... ($end_date)"
@@ -126,13 +127,13 @@ then
 
     # For publication, if that directory does not exist, you probably don't
     # have a website to display this data
-    #if test -d /usr/clients/www/.../public_html
-    #then
-    #        cp $SOURCE_PATH/dev/index.php /usr/clients/www/.../public_html/.
-    #        mkdir -p /usr/clients/www/.../public_html/zipios-$VERSION
-    #        cp -r zipios_coverage_html/* /usr/clients/www/.../public_html/zipios-$VERSION/.
-    #        #cp zipios_coverage_html/statistics.html /usr/clients/www/.../public_html/zipios-$VERSION/.
-    #fi
+    if test -d /usr/clients/www/alexis.m2osw.com/public_html/zipios
+    then
+            cp $SOURCE_PATH/dev/index.php /usr/clients/www/alexis.m2osw.com/public_html/zipios/.
+            mkdir -p /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION
+            cp -r zipios_coverage_html/* /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION/.
+            cp zipios_coverage_html/statistics.html /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION/.
+    fi
 fi
 
 echo "Process started  on $start_date"

@@ -61,8 +61,13 @@ int main(int argc, char *argv[])
     }
 
     unsigned int seed(static_cast<unsigned int>(time(nullptr)));
+    bool help(false);
     for(int i(1); i < argc; ++i)
     {
+        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
+        {
+            help = true;
+        }
         if(strcmp(argv[i], "--seed") == 0)
         {
             if(i + 1 >= argc)
@@ -81,6 +86,14 @@ int main(int argc, char *argv[])
     }
     srand(seed);
     std::cout << g_progname << "[" << getpid() << "]" << ": version " << ZIPIOS_VERSION_STRING << ", seed is " << seed << std::endl;
+
+    if(help)
+    {
+        std::cout << std::endl
+                  << "WARNING: at this point we hack the main() to add the following options:" << std::endl
+                  << "  --seed <seed>    to force the seed at the start of the process to a specific value (i.e. to reproduce the exact same test over and over again)" << std::endl
+                  << std::endl;
+    }
 
     return Catch::Session().run(argc, argv);
 }

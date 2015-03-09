@@ -219,7 +219,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // zero would not really prove anything so skip such
             zipios::FileEntry::buffer_t b;
-            uint32_t size(rand() + 20);
+            uint32_t size(rand() % 100 + 20);
             for(uint32_t i(0); i < size; ++i)
             {
                 b.push_back(rand());
@@ -463,7 +463,7 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
         int const file_size(rand() % 100 + 20);
         {
             // create a file
-            std::fstream f("filepath-test.txt", std::ios::out | std::ios::binary);
+            std::ofstream f("filepath-test.txt", std::ios::out | std::ios::binary);
             for(int j(0); j < file_size; ++j)
             {
                 char const c(rand());
@@ -646,7 +646,7 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             {
                 // zero would not really prove anything so skip such
                 zipios::FileEntry::buffer_t b;
-                uint32_t size(rand() + 20);
+                uint32_t size(rand() % 100 + 20);
                 for(uint32_t j(0); j < size; ++j)
                 {
                     b.push_back(rand());
@@ -773,14 +773,13 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
 
             SECTION("setting the DOS time")
             {
-                // DOS time numbers are not linear so we test until we get one
-                // that works...
-                dostime_t r;
-                do
-                {
-                    r = static_cast<dostime_t>(rand());
-                }
-                while(dos2unixtime(r) == -1);
+                // DOS time numbers are not linear so we use a Unix date and
+                // convert to DOS time (since we know our convertor works)
+                // 
+                // Jan 1, 1980 at 00:00:00  is  315561600   (min)
+                // Dec 31, 2107 at 23:59:59  is 4354847999  (max)
+                time_t t((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+                dostime_t r(unix2dostime(t));
                 de.setTime(r);
 
                 REQUIRE(de.getComment().empty());
@@ -792,7 +791,7 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == r);
-                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(de.getUnixTime() == dos2unixtime(r)); // WARNING: r is not always equal to t because setTime() may use the next even second
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
@@ -821,12 +820,8 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             {
                 // DOS time are limited to a smaller range and on every other
                 // second so we get a valid DOS time and convert it to a Unix time
-                dostime_t r;
-                {
-                    r = static_cast<dostime_t>(rand());
-                }
-                while(dos2unixtime(r) == -1);
-                de.setUnixTime(dos2unixtime(r));
+                time_t r((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+                de.setUnixTime(r);
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
@@ -836,8 +831,8 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == r);
-                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(de.getTime() == unix2dostime(r));
+                REQUIRE(de.getUnixTime() == r);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
@@ -854,8 +849,8 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == r);
-                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(clone->getTime() == unix2dostime(r));
+                REQUIRE(clone->getUnixTime() == r);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
@@ -1062,7 +1057,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // zero would not really prove anything so skip such
             zipios::FileEntry::buffer_t b;
-            uint32_t size(rand() + 20);
+            uint32_t size(rand() % 100 + 20);
             for(uint32_t i(0); i < size; ++i)
             {
                 b.push_back(rand());

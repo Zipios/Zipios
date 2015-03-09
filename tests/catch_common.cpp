@@ -27,10 +27,9 @@
 
 #include "src/zipios_common.hpp"
 
-//#include <fstream>
-//
-//#include <sys/stat.h>
-//#include <unistd.h>
+#include <fstream>
+
+#include <unistd.h>
 
 
 SCENARIO("Vector append", "[zipios_common]")
@@ -106,6 +105,576 @@ SCENARIO("Vector append", "[zipios_common]")
                 REQUIRE(es[5] == "c");
             }
         }
+    }
+}
+
+
+TEST_CASE("Verify the g_separator", "[zipios_common]")
+{
+    // Not too sure why we have that as a variable since it is always
+    // a slash (/) and never a backslash (\) but it is there...
+    REQUIRE(zipios::g_separator == '/');
+}
+
+
+SCENARIO("Read from file", "[zipios_common] [io]")
+{
+    GIVEN("a simple file")
+    {
+        // create a file
+        {
+            std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+            for(int i(0); i < 16; ++i)
+            {
+                os << static_cast<char>(i);
+            }
+        }
+
+        // now open it for reading
+        std::ifstream is("io.bin", std::ios::in | std::ios::binary);
+
+        WHEN("reading two 32 bit values")
+        {
+            uint32_t a, b;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+
+            THEN("we get exactly the value we expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+            }
+        }
+
+        WHEN("reading one 32 bit between two 16 bit values")
+        {
+            uint32_t b;
+            uint16_t a, c;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+            zipios::zipRead(is, c);
+
+            THEN("the result is exactly as expected")
+            {
+                REQUIRE(a == 0x0100);
+                REQUIRE(b == 0x05040302);
+                REQUIRE(c == 0x0706);
+            }
+        }
+
+        WHEN("reading one 16 bit between two 32 bit values")
+        {
+            uint32_t a, c;
+            uint16_t b;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+            zipios::zipRead(is, c);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x0504);
+                REQUIRE(c == 0x09080706);
+            }
+        }
+
+        WHEN("reading three 16 bit values")
+        {
+            uint16_t a, b, c;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+            zipios::zipRead(is, c);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x0100);
+                REQUIRE(b == 0x0302);
+                REQUIRE(c == 0x0504);
+            }
+        }
+
+        WHEN("reading one 32 bit, one 8 bit then one 16 bit value")
+        {
+            uint32_t a;
+            uint8_t  b;
+            uint16_t c;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+            zipios::zipRead(is, c);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x04);
+                REQUIRE(c == 0x0605);
+            }
+        }
+
+        WHEN("reading one 32 bit, one 8 bit then one buffer value")
+        {
+            uint32_t a;
+            uint8_t  b;
+            zipios::buffer_t c;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+            zipios::zipRead(is, c, 8);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x04);
+                REQUIRE(c.size() == 8);
+                REQUIRE(c[0] == 0x05);
+                REQUIRE(c[1] == 0x06);
+                REQUIRE(c[2] == 0x07);
+                REQUIRE(c[3] == 0x08);
+                REQUIRE(c[4] == 0x09);
+                REQUIRE(c[5] == 0x0A);
+                REQUIRE(c[6] == 0x0B);
+                REQUIRE(c[7] == 0x0C);
+            }
+        }
+
+        WHEN("reading one 32 bit, one string and then one 8 bit value")
+        {
+            uint32_t a;
+            std::string b;
+            uint8_t c;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b, 8);
+            zipios::zipRead(is, c);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b.size() == 8);
+                REQUIRE(b[0] == 0x04);
+                REQUIRE(b[1] == 0x05);
+                REQUIRE(b[2] == 0x06);
+                REQUIRE(b[3] == 0x07);
+                REQUIRE(b[4] == 0x08);
+                REQUIRE(b[5] == 0x09);
+                REQUIRE(b[6] == 0x0A);
+                REQUIRE(b[7] == 0x0B);
+                REQUIRE(c == 0x0C);
+            }
+        }
+
+        unlink("io.bin");
+    }
+}
+
+
+SCENARIO("Read from buffer", "[zipios_common] [io]")
+{
+    GIVEN("a simple buffer")
+    {
+        zipios::buffer_t is;
+        for(int i(0); i < 16; ++i)
+        {
+            is.push_back(static_cast<char>(i));
+        }
+
+        WHEN("reading two 32 bit values")
+        {
+            uint32_t a, b;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 8);
+
+            THEN("we get exactly the value we expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+            }
+        }
+
+        WHEN("reading one 32 bit between two 16 bit values")
+        {
+            uint32_t b;
+            uint16_t a, c;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 2);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 6);
+            zipios::zipRead(is, pos, c);
+            REQUIRE(pos == 8);
+
+            THEN("the result is exactly as expected")
+            {
+                REQUIRE(a == 0x0100);
+                REQUIRE(b == 0x05040302);
+                REQUIRE(c == 0x0706);
+            }
+        }
+
+        WHEN("reading one 16 bit between two 32 bit values")
+        {
+            uint32_t a, c;
+            uint16_t b;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 6);
+            zipios::zipRead(is, pos, c);
+            REQUIRE(pos == 10);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x0504);
+                REQUIRE(c == 0x09080706);
+            }
+        }
+
+        WHEN("reading three 16 bit values")
+        {
+            uint16_t a, b, c;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 2);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, c);
+            REQUIRE(pos == 6);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x0100);
+                REQUIRE(b == 0x0302);
+                REQUIRE(c == 0x0504);
+            }
+        }
+
+        WHEN("reading one 32 bit, one 8 bit then one 16 bit value")
+        {
+            uint32_t a;
+            uint8_t  b;
+            uint16_t c;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 5);
+            zipios::zipRead(is, pos, c);
+            REQUIRE(pos == 7);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x04);
+                REQUIRE(c == 0x0605);
+            }
+        }
+
+        WHEN("reading one 32 bit, one 8 bit then one buffer value")
+        {
+            uint32_t a;
+            uint8_t  b;
+            zipios::buffer_t c;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 5);
+            zipios::zipRead(is, pos, c, 8);
+            REQUIRE(pos == 13);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x04);
+                REQUIRE(c.size() == 8);
+                REQUIRE(c[0] == 0x05);
+                REQUIRE(c[1] == 0x06);
+                REQUIRE(c[2] == 0x07);
+                REQUIRE(c[3] == 0x08);
+                REQUIRE(c[4] == 0x09);
+                REQUIRE(c[5] == 0x0A);
+                REQUIRE(c[6] == 0x0B);
+                REQUIRE(c[7] == 0x0C);
+            }
+        }
+
+        WHEN("reading one 32 bit, one string and then one 8 bit value")
+        {
+            uint32_t a;
+            std::string b;
+            uint8_t c;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b, 8);
+            REQUIRE(pos == 12);
+            zipios::zipRead(is, pos, c);
+            REQUIRE(pos == 13);
+
+            THEN("the result is as expected")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b.size() == 8);
+                REQUIRE(b[0] == 0x04);
+                REQUIRE(b[1] == 0x05);
+                REQUIRE(b[2] == 0x06);
+                REQUIRE(b[3] == 0x07);
+                REQUIRE(b[4] == 0x08);
+                REQUIRE(b[5] == 0x09);
+                REQUIRE(b[6] == 0x0A);
+                REQUIRE(b[7] == 0x0B);
+                REQUIRE(c == 0x0C);
+            }
+        }
+    }
+}
+
+
+SCENARIO("Write to file", "[zipios_common] [io]")
+{
+    GIVEN("create an empty file")
+    {
+
+        WHEN("writing two 32 bit values")
+        {
+            uint32_t a(0x03020100), b(0x07060504);
+            {
+                std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+                zipios::zipWrite(os, a);
+                zipios::zipWrite(os, b);
+            }
+
+            THEN("we get exactly the value we expected")
+            {
+                std::ifstream is("io.bin", std::ios::in | std::ios::binary);
+                is.seekg(0, std::ios::end);
+                REQUIRE(is.tellg() == 8);
+                is.seekg(0, std::ios::beg);
+
+                char buf[8];
+                is.read(buf, 8);
+
+                REQUIRE(buf[0] == 0x00);
+                REQUIRE(buf[1] == 0x01);
+                REQUIRE(buf[2] == 0x02);
+                REQUIRE(buf[3] == 0x03);
+                REQUIRE(buf[4] == 0x04);
+                REQUIRE(buf[5] == 0x05);
+                REQUIRE(buf[6] == 0x06);
+                REQUIRE(buf[7] == 0x07);
+            }
+        }
+
+        WHEN("writing one 32 bit between two 16 bit values")
+        {
+            uint32_t b(0x55112288);
+            uint16_t a(0x3344), c(0x6677);
+            {
+                std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+                zipios::zipWrite(os, a);
+                zipios::zipWrite(os, b);
+                zipios::zipWrite(os, c);
+            }
+
+            THEN("the result is exactly as expected")
+            {
+                std::ifstream is("io.bin", std::ios::in | std::ios::binary);
+                is.seekg(0, std::ios::end);
+                REQUIRE(is.tellg() == 8);
+                is.seekg(0, std::ios::beg);
+
+                char buf[8];
+                is.read(buf, 8);
+
+                REQUIRE(buf[0] == 0x44);
+                REQUIRE(buf[1] == 0x33);
+                REQUIRE(buf[2] == static_cast<char>(0x88));
+                REQUIRE(buf[3] == 0x22);
+                REQUIRE(buf[4] == 0x11);
+                REQUIRE(buf[5] == 0x55);
+                REQUIRE(buf[6] == 0x77);
+                REQUIRE(buf[7] == 0x66);
+            }
+        }
+
+        WHEN("writing one 16 bit between two 32 bit values")
+        {
+            uint32_t a(0x01050803), c(0x10508030);
+            uint16_t b(0xFF00);
+            {
+                std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+                zipios::zipWrite(os, a);
+                zipios::zipWrite(os, b);
+                zipios::zipWrite(os, c);
+            }
+
+            THEN("the result is as expected")
+            {
+                std::ifstream is("io.bin", std::ios::in | std::ios::binary);
+                is.seekg(0, std::ios::end);
+                REQUIRE(is.tellg() == 10);
+                is.seekg(0, std::ios::beg);
+
+                char buf[10];
+                is.read(buf, 10);
+
+                REQUIRE(buf[0] == 0x03);
+                REQUIRE(buf[1] == 0x08);
+                REQUIRE(buf[2] == 0x05);
+                REQUIRE(buf[3] == 0x01);
+                REQUIRE(buf[4] == 0x00);
+                REQUIRE(buf[5] == static_cast<char>(0xFF));
+                REQUIRE(buf[6] == 0x30);
+                REQUIRE(buf[7] == static_cast<char>(0x80));
+                REQUIRE(buf[8] == 0x50);
+                REQUIRE(buf[9] == 0x10);
+            }
+        }
+
+        WHEN("writing three 16 bit values")
+        {
+            uint16_t a(0xEECC), b(0xAADD), c(0xFFBB);
+            {
+                std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+                zipios::zipWrite(os, a);
+                zipios::zipWrite(os, b);
+                zipios::zipWrite(os, c);
+            }
+
+            THEN("the result is as expected")
+            {
+                std::ifstream is("io.bin", std::ios::in | std::ios::binary);
+                is.seekg(0, std::ios::end);
+                REQUIRE(is.tellg() == 6);
+                is.seekg(0, std::ios::beg);
+
+                char buf[6];
+                is.read(buf, 6);
+
+                REQUIRE(buf[0] == static_cast<char>(0xCC));
+                REQUIRE(buf[1] == static_cast<char>(0xEE));
+                REQUIRE(buf[2] == static_cast<char>(0xDD));
+                REQUIRE(buf[3] == static_cast<char>(0xAA));
+                REQUIRE(buf[4] == static_cast<char>(0xBB));
+                REQUIRE(buf[5] == static_cast<char>(0xFF));
+            }
+        }
+
+        WHEN("writing one 32 bit, one 8 bit then one 16 bit value")
+        {
+            uint32_t a(0x11223344);
+            uint8_t  b(0xAA);
+            uint16_t c(0x9988);
+            {
+                std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+                zipios::zipWrite(os, a);
+                zipios::zipWrite(os, b);
+                zipios::zipWrite(os, c);
+            }
+
+            THEN("the result is as expected")
+            {
+                std::ifstream is("io.bin", std::ios::in | std::ios::binary);
+                is.seekg(0, std::ios::end);
+                REQUIRE(is.tellg() == 7);
+                is.seekg(0, std::ios::beg);
+
+                char buf[7];
+                is.read(buf, 7);
+
+                REQUIRE(buf[0] == 0x44);
+                REQUIRE(buf[1] == 0x33);
+                REQUIRE(buf[2] == 0x22);
+                REQUIRE(buf[3] == 0x11);
+                REQUIRE(buf[4] == static_cast<char>(0xAA));
+                REQUIRE(buf[5] == static_cast<char>(0x88));
+                REQUIRE(buf[6] == static_cast<char>(0x99));
+            }
+        }
+
+        WHEN("reading one 32 bit, one 8 bit then one buffer value")
+        {
+            uint32_t a(0x01020304);
+            uint8_t  b(0xFF);
+            zipios::buffer_t c;
+            c.push_back(0xA0);
+            c.push_back(0xA1);
+            c.push_back(0xA2);
+            c.push_back(0xA3);
+            c.push_back(0xA4);
+            c.push_back(0xA5);
+            c.push_back(0xA6);
+            c.push_back(0xA7);
+            {
+                std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+                zipios::zipWrite(os, a);
+                zipios::zipWrite(os, b);
+                zipios::zipWrite(os, c);
+            }
+
+            THEN("the result is as expected")
+            {
+                std::ifstream is("io.bin", std::ios::in | std::ios::binary);
+                is.seekg(0, std::ios::end);
+                REQUIRE(is.tellg() == 13);
+                is.seekg(0, std::ios::beg);
+
+                char buf[13];
+                is.read(buf, 13);
+
+                REQUIRE(buf[ 0] == 0x04);
+                REQUIRE(buf[ 1] == 0x03);
+                REQUIRE(buf[ 2] == 0x02);
+                REQUIRE(buf[ 3] == 0x01);
+                REQUIRE(buf[ 4] == static_cast<char>(0xFF));
+                REQUIRE(buf[ 5] == static_cast<char>(0xA0));
+                REQUIRE(buf[ 6] == static_cast<char>(0xA1));
+                REQUIRE(buf[ 7] == static_cast<char>(0xA2));
+                REQUIRE(buf[ 8] == static_cast<char>(0xA3));
+                REQUIRE(buf[ 9] == static_cast<char>(0xA4));
+                REQUIRE(buf[10] == static_cast<char>(0xA5));
+                REQUIRE(buf[11] == static_cast<char>(0xA6));
+                REQUIRE(buf[12] == static_cast<char>(0xA7));
+            }
+        }
+
+        WHEN("reading one 32 bit, one string and then one 8 bit value")
+        {
+            uint32_t a(0x03050709);
+            std::string b("TEST");
+            uint8_t c(0x01);
+            {
+                std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+                zipios::zipWrite(os, a);
+                zipios::zipWrite(os, b);
+                zipios::zipWrite(os, c);
+            }
+
+            THEN("the result is as expected")
+            {
+                std::ifstream is("io.bin", std::ios::in | std::ios::binary);
+                is.seekg(0, std::ios::end);
+                REQUIRE(is.tellg() == 9);
+                is.seekg(0, std::ios::beg);
+
+                char buf[9];
+                is.read(buf, 9);
+
+                REQUIRE(buf[0] == 0x09);
+                REQUIRE(buf[1] == 0x07);
+                REQUIRE(buf[2] == 0x05);
+                REQUIRE(buf[3] == 0x03);
+                REQUIRE(buf[4] == 'T');
+                REQUIRE(buf[5] == 'E');
+                REQUIRE(buf[6] == 'S');
+                REQUIRE(buf[7] == 'T');
+                REQUIRE(buf[8] == 0x01);
+            }
+        }
+
+        unlink("io.bin");
     }
 }
 
