@@ -19,7 +19,9 @@
 */
 
 /** \file
- * \brief Header file that defines ZipOutputStreambuf.
+ * \brief Define the zipios::ZipOutputStreambuf class.
+ *
+ * This class is used to save files in a Zip archive.
  */
 
 #include "deflateoutputstreambuf.hpp"
@@ -33,14 +35,6 @@ namespace zipios
 class ZipOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
-    // zlib does not define a type for its compression level
-    typedef int             CompressionLevel;
-
-    static CompressionLevel const   NO_COMPRESSION      = Z_NO_COMPRESSION;
-    static CompressionLevel const   BEST_SPEED          = Z_BEST_SPEED;
-    static CompressionLevel const   BEST_COMPRESSION    = Z_BEST_COMPRESSION;
-    static CompressionLevel const   DEFAULT_COMPRESSION = Z_DEFAULT_COMPRESSION;
-
     explicit                ZipOutputStreambuf(std::streambuf *outbuf);
     virtual                 ~ZipOutputStreambuf();
 

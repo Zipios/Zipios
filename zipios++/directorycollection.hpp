@@ -19,7 +19,10 @@
 */
 
 /** \file
- * \brief Header file that defines DirectoryCollection.
+ * \brief Define the zipios::DirectoryCollection class.
+ *
+ * The zipios::DirectoryCollection class is used to handle a collection
+ * of files as found in a directory on disk.
  */
 
 #include "zipios++/filecollection.hpp"

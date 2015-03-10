@@ -19,10 +19,16 @@
 */
 
 /** \file
- * \brief Header file that defines InflateInputStreambuf.
+ * \brief Define zipios::InflateInputStreambuf to decompress files.
+ *
+ * The zipios::InflateInputStreambuf class defines a set of functions
+ * that filter the data in the std::streambuf defined in the base
+ * class and which may be compressed using the zlib library.
  */
 
 #include "filterinputstreambuf.hpp"
+
+#include "zipios++/zipios-config.hpp"
 
 #include <vector>
 
@@ -36,25 +42,26 @@ namespace zipios
 class InflateInputStreambuf : public FilterInputStreambuf
 {
 public:
-    explicit    InflateInputStreambuf(std::streambuf *inbuf, int s_pos = -1);
-                InflateInputStreambuf(InflateInputStreambuf const& src) = delete;
-                InflateInputStreambuf const& operator = (InflateInputStreambuf const& src) = delete;
-    virtual     ~InflateInputStreambuf();
+                            InflateInputStreambuf(std::streambuf *inbuf, offset_t s_pos = -1);
+                            InflateInputStreambuf(InflateInputStreambuf const& src) = delete;
+    InflateInputStreambuf&  operator = (InflateInputStreambuf const& src) = delete;
+    virtual                 ~InflateInputStreambuf();
 
-    bool        reset(int stream_position = -1);
+    bool                    reset(offset_t stream_position = -1);
 
 protected:
-    virtual int underflow();
+    virtual std::streambuf::int_type             underflow() override;
 
-    // FIXME: reconsider design?
-    int const           m_outvecsize = 1000; // FIXME: define a ZIPIOS_BUFSIZ
-    std::vector<char>   m_outvec;
+    /** \FIXME Consider design?
+     */
+    offset_t const          m_outvecsize = 1000; /** \FIXME Define a ZIPIOS_BUFSIZ for m_outvecsize */
+    std::vector<char>       m_outvec;
 
 private:
-    z_stream            m_zs;
-    bool                m_zs_initialized = false;
-    int const           m_invecsize = 1000; // FIXME: define a ZIPIOS_BUFSIZ
-    std::vector<char>   m_invec;
+    z_stream                m_zs;
+    bool                    m_zs_initialized = false;
+    offset_t const          m_invecsize = 1000; /** \FIXME Define a ZIPIOS_BUFSIZ for m_invecsize */
+    std::vector<char>       m_invec;
 };
 
 

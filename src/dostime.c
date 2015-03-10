@@ -49,6 +49,9 @@
  * 5-10   Minute (0-59)
  * 11-15  Hour (0-23 on a 24-hour clock)
  * \endcode
+ *
+ * \note
+ * This implementation uses C code.
  */
 
 #include "dostime.h"
@@ -141,7 +144,7 @@ time_t dos2unixtime(dostime_t dostime)
 
     if(t.tm_year < 80 || t.tm_year > 207
     || t.tm_mon  <  0 || t.tm_mon  >  11
-    || t.tm_mday <  1 || t.tm_mday >  31 // FIXME: max. depends on month/year
+    || t.tm_mday <  1 || t.tm_mday >  31 /** \FIXME Maximum for tm_mday depends on month/year. */
     || t.tm_hour <  0 || t.tm_hour >  23
     || t.tm_min  <  0 || t.tm_min  >  59
     || t.tm_sec  <  0 || t.tm_sec  >  59)

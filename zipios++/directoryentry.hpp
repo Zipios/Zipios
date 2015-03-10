@@ -19,7 +19,13 @@
 */
 
 /** \file
- * \brief Header file that defines DirectoryEntry.
+ * \brief Define the zipios::DirectoryEntry class.
+ *
+ * This file declares the zipios::DirectoryEntry class which is used
+ * to handle zipios::FileEntry that are found when reading a directory
+ * on disk.
+ *
+ * \sa zipios::DirectoryCollection
  */
 
 #include "zipios++/fileentry.hpp"

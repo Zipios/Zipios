@@ -18,7 +18,10 @@
 */
 
 /** \file
- * \brief Implementation of ZipOutputStream.
+ * \brief Implementation of the zipios::ZipOutputStream class.
+ *
+ * The zipios::ZipOutputStream class is used as a filter to compress
+ * data being written to a Zip archive.
  */
 
 #include "zipoutputstream.hpp"

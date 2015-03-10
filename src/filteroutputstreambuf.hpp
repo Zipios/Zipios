@@ -19,7 +19,10 @@
 */
 
 /** \file
- * \brief Header file that defines FilterOutputStreambuf.
+ * \brief Declarations of the zipios::FilterOutputStreambuf.
+ *
+ * This file includes the declaration of the zipios::FileterOutputStreambuf
+ * class which is used as a base class to filter output data.
  */
 
 #include <iostream>
@@ -32,11 +35,13 @@ namespace zipios
 class FilterOutputStreambuf : public std::streambuf
 {
 public:
-    explicit            FilterOutputStreambuf(std::streambuf *outbuf);
-    virtual             ~FilterOutputStreambuf();
+                                    FilterOutputStreambuf(std::streambuf *outbuf);
+                                    FilterOutputStreambuf(FilterOutputStreambuf const& src) = delete;
+    FilterOutputStreambuf const&    operator = (FilterOutputStreambuf const& src) = delete;
+    virtual                         ~FilterOutputStreambuf();
 
 protected:
-    std::streambuf *    m_outbuf;
+    std::streambuf *                m_outbuf;
 };
 
 

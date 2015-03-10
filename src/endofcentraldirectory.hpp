@@ -19,8 +19,13 @@
 */
 
 /** \file
- * \brief Header file containing classes and functions for reading the central
- * directory and local header fields in a zip archive.
+ * \brief Declaration of the zipios::EndOfCentralDirectory class.
+ *
+ * This file contains the class used to handle the "end of central directory"
+ * information found in a Zip archive.
+ *
+ * It includes the necessary functions to read and write the central
+ * directory and local header fields in a Zip archive.
  */
 
 #include "zipios_common.hpp"

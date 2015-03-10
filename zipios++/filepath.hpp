@@ -19,9 +19,13 @@
 */
 
 /** \file
- * \brief Header file that defines FilePath.
+ * \brief Define the zipios::FilePath class.
  *
- * FilePath is used to manage paths and filenames to files and directories.
+ * zipios::FilePath is used to manage paths and filenames to files
+ * and directories.
+ *
+ * It is used by the zipios::FileEntry to represent the virtual filename
+ * that the virtual file has.
  */
 
 #include "zipios++/zipios-config.hpp"

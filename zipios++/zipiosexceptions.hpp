@@ -19,10 +19,14 @@
 */
 
 /** \file
- * \brief Various exceptions used throughout the zipios++ library.
+ * \brief Various exceptions used throughout the Zipios++ library, all
+ *        based on zipios::Exception.
  *
- * Header file that defines a number of exceptions used throughout
- * the zipios++ library.
+ * This header file defines a number of exceptions used throughout
+ * the Zipios++ library. The declaration includes the implementation.
+ * We really only offer a what() string along with the exceptions.
+ * We may add some more exceptions to better separate the various
+ * errors we generate.
  */
 
 #include "zipios++/zipios-config.hpp"

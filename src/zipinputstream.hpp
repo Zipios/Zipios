@@ -19,12 +19,15 @@
 */
 
 /** \file
- * \brief Header file that defines ZipInputStream.
+ * \brief Define zipios::ZipInputStream.
+ *
+ * This file declares the zipios::ZipInputStream class.
+ *
+ * The class is used to read data from a Zip archive, data that may
+ * have been compressed using the zlib library.
  */
 
 #include "zipinputstreambuf.hpp"
-
-#include <memory>
 
 
 namespace zipios
@@ -32,7 +35,8 @@ namespace zipios
 
 
 
-/** \anchor ZipInputStream_anchor
+/** \brief The ZipInputStream to read data from a Zip archive.
+ *
  * ZipInputStream is an istream that gets it's input from a zip file. The
  * interface approximates the interface of the Java
  * ZipInputStream.
@@ -84,10 +88,12 @@ public:
 
     //ZipLocalEntry *createZipCDirEntry(const string &name);
 
-    /** \anchor ZipInputStream_getnextentry_anchor
-     * Opens the next entry in the zip archive and returns a const pointer to a
-     * FileEntry object for the entry. For new instances this method has to be
-     * called once before you can read from the first entry.
+    /** \brief Get the next entry from a Zip archive.
+     *
+     * This function opens the next entry in the zip archive and returns
+     * a pointer to a FileEntry object for the entry. For new instances
+     * this method has to be called once before you can read from the
+     * first entry.
      *
      * \return A list constant FileEntry pointers containing information
      *         about the (now) current entry.

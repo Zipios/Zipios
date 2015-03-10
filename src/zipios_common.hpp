@@ -19,7 +19,10 @@
 */
 
 /** \file
- * Header file containing miscellaneous small functions and variables.
+ * \brief Various functions used throughout the library.
+ *
+ * This file defines a small set of functions that do not really have
+ * another place to live.
  */
 
 #include "zipios++/zipios-config.hpp"
@@ -79,11 +82,6 @@ namespace zipios
 extern char const g_separator;
 
 
-/** \brief An output stream using strings.
- *
- * This object is used whenever we want to output a buffer from
- * a string and convert that to a string.
- */
 typedef std::ostringstream OutputStringStream;
 
 

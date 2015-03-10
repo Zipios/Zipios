@@ -18,7 +18,11 @@
 */
 
 /** \file
- * \brief Implementation file containing miscellaneous small functions.
+ * \brief Various functions used throughout the library.
+ *
+ * This fiel defines the Zipios++ common functions that are used
+ * throughout the zipios library. At this point it is mainly the
+ * low level I/O function to read and write to files or buffers.
  */
 
 #include "zipios_common.hpp"
@@ -30,7 +34,39 @@ namespace zipios
 {
 
 
+/** \brief The character used as the filename separator.
+ *
+ * This character is used to separate filename segments in a path
+ * in a Zip archive.
+ *
+ * \todo
+ * It is "inadvertendly" also used as the separator
+ * between filename segments of the file system. We
+ * certainly want to support both "/" and "\\" to
+ * make sure MS-Windows is fully supported. The FilePath
+ * should take care of that work though.
+ */
 char const g_separator = '/';
+
+
+/** \typedef std::ostringstream OutputStringStream;
+ * \brief An output stream using strings.
+ *
+ * This object is used whenever we want to output a buffer from
+ * a string and convert that to a string.
+ */
+
+
+/** \typedef std::vector<unsigned char> buffer_t;
+ * \brief A buffer of characters.
+ *
+ * This type is used to declare a buffer of characters. It is used in many
+ * places.
+ *
+ * \todo
+ * Move to the zipios-config.hpp file so we can also use it in our public
+ * definitions?
+ */
 
 
 void zipRead(std::istream& is, uint32_t& value)

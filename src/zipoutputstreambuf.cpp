@@ -18,7 +18,10 @@
 */
 
 /** \file
- * \brief Implementation of ZipOutputStreambuf.
+ * \brief Implementation of the zipios::ZipOutputStreambuf class.
+ *
+ * This file includes the functions necessary to write data to a Zip
+ * archive.
  */
 
 #include "zipoutputstreambuf.hpp"
@@ -48,24 +51,18 @@ namespace
  */
 void writeCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::string const& comment)
 {
-    int cdir_start(os.tellp());
-    int cdir_size(0);
+    EndOfCentralDirectory eocd(comment);
+    eocd.setOffset(os.tellp());  // start position
+    eocd.setTotalCount(entries.size());
 
+    size_t cdir_size(0);
     for(auto it = entries.begin(); it != entries.end(); ++it)
     {
-        FileEntry::pointer_t ent(*it);
-        ZipCDirEntry *zip_dir(dynamic_cast<ZipCDirEntry *>(ent.get()));
-        if(!zip_dir)
-        {
-            throw FCollException("writeCentralDirectory(): unexpected type of file entry to write the central directory.");
-        }
-        zip_dir->write(os);
-        cdir_size += zip_dir->getCDirHeaderSize();
+        (*it)->write(os);
+        cdir_size += (*it)->getHeaderSize();
     }
-    EndOfCentralDirectory eocd(comment);
-    eocd.setOffset(cdir_start);
+
     eocd.setCDirSize(cdir_size);
-    eocd.setTotalCount(entries.size());
     eocd.write(os);
 }
 
@@ -81,9 +78,11 @@ void writeCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::
  */
 
 
-/** \typedef CompressionLevel
+/** \typedef int ZipOutputStreambuf::CompressionLevel;
+ * \brief The compression level to be used to save an entry.
  *
- * The compression level to be used to save an entry.
+ * Values defined using this time represent the compression level to
+ * be used when compressing an entry.
  *
  * If unchanged, use the DEFAULT_COMPRESSION value.
  *
@@ -91,6 +90,11 @@ void writeCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::
  * to NO_COMPRESSION or use the setMethod() with
  * STORED to avoid any compression (i.e. create
  * a zip file which awfully looks like a tarball).
+ *
+ * \todo
+ * These values are one to one mapped to zlib compression values. This
+ * is likely to change once we start offering other compression scheme
+ * for a number defined between 0 and 100 instead.
  */
 
 
@@ -183,7 +187,7 @@ void ZipOutputStreambuf::finish()
  *
  * \param[in] entry  The entry to be saved and made current.
  */
-void ZipOutputStreambuf::putNextEntry(ZipCDirEntry::pointer_t entry)
+void ZipOutputStreambuf::putNextEntry(FileEntry::pointer_t entry)
 {
     closeEntry();
 
@@ -194,18 +198,13 @@ void ZipOutputStreambuf::putNextEntry(ZipCDirEntry::pointer_t entry)
 
     m_entries.push_back(entry);
     FileEntry::pointer_t ent(m_entries.back());
-    ZipCDirEntry *zip_dir(dynamic_cast<ZipCDirEntry *>(ent.get()));
-    if(!zip_dir)
-    {
-        throw FCollException("writeCentralDirectory(): unexpected type of file entry to write the central directory.");
-    }
 
     std::ostream os(m_outbuf);
 
     // Update entry header info
-    zip_dir->setLocalHeaderOffset(os.tellp());
-    zip_dir->setMethod(m_method);
-    zip_dir->write(os);
+    ent->setEntryOffset(os.tellp());
+    ent->setMethod(m_method);
+    ent->write(os);
 
     m_open_entry = true;
 }
@@ -291,7 +290,8 @@ int ZipOutputStreambuf::overflow(int c)
 {
     return DeflateOutputStreambuf::overflow(c);
 
-    // FIXME: implement
+    /** \FIXME Actually implement this function for real?
+     */
     //cout << "ZipOutputStreambuf::overflow() not implemented yet!\n";
     //return EOF ;
 }
@@ -302,7 +302,8 @@ int ZipOutputStreambuf::sync()
 {
     return DeflateOutputStreambuf::sync();
 
-    // FIXME: implement
+    /** \FIXME Actually implement this function for real?
+     */
     //cout << "ZipOutputStreambuf::sync() not implemented yet!\n";
     //return EOF ;
 }
@@ -313,8 +314,10 @@ void ZipOutputStreambuf::setEntryClosedState()
 {
     m_open_entry = false;
 
-    // FIXME: update put pointers to trigger overflow on write. overflow
-    //        should then return EOF while _open_entry is false.
+    /** \FIXME
+     * Update put pointers to trigger overflow on write. Overflow
+     * should then return EOF while m_open_entry is false.
+     */
 }
 
 
@@ -330,20 +333,24 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
 
     // update fields in m_entries.back()
     FileEntry::pointer_t ent(m_entries.back());
+    /** \TODO
+     * We should be able to get rid of the dynamic_cast<>(), what's an
+     * interface for if we have to cast pointers?!
+     */
     ZipCDirEntry *zip_dir(dynamic_cast<ZipCDirEntry *>(ent.get()));
     if(!zip_dir)
     {
         throw FCollException("writeCentralDirectory(): unexpected type of file entry to write the central directory.");
     }
 
-    zip_dir->setSize(getCount());
-    zip_dir->setCrc(getCrc32());
-    zip_dir->setCompressedSize(curr_pos - zip_dir->getLocalHeaderOffset() - zip_dir->getLocalHeaderSize());
-    zip_dir->setUnixTime(std::time(nullptr));
+    ent->setSize(getCount());
+    ent->setCrc(getCrc32());
+    ent->setCompressedSize(curr_pos - ent->getEntryOffset() - ent->getHeaderSize());
+    ent->setUnixTime(std::time(nullptr));
 
     // write ZipLocalEntry header to header position
-    os.seekp(zip_dir->getLocalHeaderOffset());
-    zip_dir->write(os);
+    os.seekp(ent->getEntryOffset());
+    ent->write(os);
     os.seekp(curr_pos);
 }
 

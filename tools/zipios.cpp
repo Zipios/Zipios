@@ -18,11 +18,10 @@
 */
 
 /** \file
- * \anchor appendzip_anchor
+ * \brief A tool to test various things in a zip file.
  *
- * A tool to test various things in a zip file.
- *
- * Also can be used to determine the version of your zipios++ installation.
+ * Also zipios can be used to determine the version of your zipios++
+ * installation (this tool version, the libzipios++.so/dll version, etc.)
  */
 
 #include "zipios++/zipfile.hpp"

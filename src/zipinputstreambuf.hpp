@@ -19,7 +19,10 @@
 */
 
 /** \file
- * \brief Header file that defines ZipInputStreambuf.
+ * \brief Define the zipios::ZipInputStreambuf class.
+ *
+ * This file defines the zipios::ZipInputStreambuf class which is
+ * used to read the data of files found in a Zip archive.
  */
 
 #include "inflateinputstreambuf.hpp"
@@ -36,48 +39,24 @@ namespace zipios
 class ZipInputStreambuf : public InflateInputStreambuf
 {
 public:
-    /** ZipInputStreambuf constructor.
-      @param inbuf the streambuf to use for input.
-      @param s_pos a position to reset the inbuf to before reading. Specify
-      -1 to read from the current position.
-      @param del_inbuf if true is specified inbuf will be deleted, when
-      the ZipInputStreambuf is destructed.
-     */
-    explicit ZipInputStreambuf(std::streambuf *inbuf, int s_pos = -1);
+                            ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos = -1);
+                            ZipInputStreambuf(ZipInputStreambuf const& src) = delete;
+    ZipInputStreambuf&      operator = (ZipInputStreambuf const& src) = delete;
+    virtual                 ~ZipInputStreambuf() override;
 
-    /** Copy-constructor is private to prevent copying. */
-    ZipInputStreambuf(ZipInputStreambuf const& src) = delete;
-
-    /** Copy-assignment operator is private to prevent copying.  */
-    ZipInputStreambuf const& operator = (ZipInputStreambuf const& src) = delete;
-
-    /** Destructor. */
-    virtual ~ZipInputStreambuf();
-
-    /** Closes the current entry, and positions the stream read pointer at
-      the beginning of the next entry (if there is one). */
-    void closeEntry();
-
-    /** Closes the streambuf. */
-    void close();
-
-    /** Opens the next entry in the zip archive and returns a const pointer to a
-      FileEntry object for the entry.
-      @return a const FileEntry * containing information about the (now) current
-      entry.
-     */
+    void                    closeEntry();
+    void                    close();
     FileEntry::pointer_t    getNextEntry();
 
 protected:
-    virtual int             underflow();
+    virtual std::streambuf::int_type             underflow() override;
 
 private:
     bool                    m_open_entry = false;
     ZipLocalEntry           m_curr_entry;
-    // TODO: require initialization
-    int                     m_data_start; // Do not forget entry header has a length too.
-    int                     m_remain;     // For STORED entry only. the number of bytes that
-                                          // has not been put in the m_outvec yet.
+    offset_t                m_data_start = 0; // Do not forget entry header has a length too.
+    offset_t                m_remain = 0;     // For STORED entry only. the number of bytes that
+                                              // has not been put in the m_outvec yet.
 };
 
 

@@ -18,7 +18,9 @@
 */
 
 /** \file
- * \brief Implementation of FilterInputStreambuf.
+ * \brief Implementation of zipios::FilterInputStreambuf.
+ *
+ * This file implements the filter used to parse Zip archives.
  */
 
 #include "filterinputstreambuf.hpp"
@@ -28,6 +30,16 @@
 
 namespace zipios
 {
+
+/** \class FilterInputStreambuf
+ * \brief A base class to develop input stream filters.
+ *
+ * An input stream buffer filter is an std::streambuf that filters the
+ * input it gets from the std::streambuf it is attached to.
+ *
+ * zipios::FilterInputStreambuf is a base class to derive input streambuf
+ * filters from.
+ */
 
 
 /** \brief Initialize a filter input stream buffer.

@@ -19,12 +19,14 @@
 */
 
 /** \file
- * \brief Header file that defines FileEntry.
+ * \brief Define the zipios::FileEntry class.
  *
- * The FileEntry class is an interface defining a virtual representation
- * to a file. File entries are found in various file collections.
+ * The zipios::FileEntry class is an interface defining a virtual
+ * representation to a file in a Zip archive or on disk.
  *
- * \sa FileCollection
+ * File entries are found in various file collections.
+ *
+ * \sa zipios::FileCollection
  */
 
 #include "zipios++/filepath.hpp"
@@ -63,15 +65,15 @@ public:
     typedef uint32_t                        dostime_t;
 
                                 FileEntry(FilePath const& filename);
-    // TODO: we need an operator = and copy operator because fields
-    //       defined here need to be copied by this class
     virtual pointer_t           clone() const = 0;
     virtual                     ~FileEntry();
 
     virtual std::string         getComment() const;
     virtual size_t              getCompressedSize() const;
     virtual crc32_t             getCrc() const;
+    std::streampos              getEntryOffset() const;
     virtual buffer_t            getExtra() const;
+    virtual size_t              getHeaderSize() const;
     virtual StorageMethod       getMethod() const;
     virtual std::string         getName() const;
     virtual std::string         getFileName() const;
@@ -85,6 +87,7 @@ public:
     virtual void                setComment(std::string const& comment);
     virtual void                setCompressedSize(size_t size);
     virtual void                setCrc(crc32_t crc);
+    void                        setEntryOffset(std::streampos offset);
     virtual void                setExtra(buffer_t const& extra);
     virtual void                setMethod(StorageMethod method);
     virtual void                setSize(size_t size);
@@ -92,10 +95,14 @@ public:
     virtual void                setUnixTime(std::time_t time);
     virtual std::string         toString() const = 0;
 
+    virtual void                read(std::istream& is);
+    virtual void                write(std::ostream& os);
+
 protected:
     FilePath                    m_filename;
     size_t                      m_uncompressed_size = 0;
     time_t                      m_unix_time = 0;
+    std::streampos              m_entry_offset = 0;
     uint32_t                    m_crc_32 = 0;
     bool                        m_has_crc_32 = false;
     bool                        m_valid = false;

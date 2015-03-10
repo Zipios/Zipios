@@ -18,8 +18,38 @@
 */
 
 /** \file
- * \brief The implementation of ZipFile.
+ * \brief The implementation of zipios::ZipFile.
+ *
+ * This file contrains the high level functions used to read or write
+ * a Zip archive file.
  */
+
+#include "zipios++/zipfile.hpp"
+
+#include "zipios++/zipiosexceptions.hpp"
+
+#include "backbuffer.hpp"
+#include "endofcentraldirectory.hpp"
+#include "zipcdirentry.hpp"
+#include "zipinputstream.hpp"
+
+#include <fstream>
+
+
+/** \brief The zipios namespace includes the Zipios++ library definitions.
+ *
+ * This namespace is used to clearly separate all the Zipios++ definitions.
+ * Note that a very few definitions are found outside of the namespace.
+ * Some of those are hidden in the source of the library, a very few
+ * appear in the zipios-config.hpp file as they are used to support
+ * zipios++ on any platform.
+ *
+ * Note that to ensure secure development, we do not make use of the
+ * C++ "using ..." keyword. That way we can guarantee what's what.
+ */
+namespace zipios
+{
+
 
 /** \mainpage Zipios++
  *
@@ -79,27 +109,23 @@
  *
  * ZipFile scans the central directory of a zipfile and provides an
  * interface to access that directory. The user may search for entries
- * with a particular filename using \ref fcoll_getentry_anchor "ZipFile::getEntry()",
+ * with a particular filename using ZipFile::getEntry(),
  * or simply get the complete list of entries
- * with \ref fcoll_entries_anchor "ZipFile::entries()". To get an
+ * with ZipFile::entries(). To get an
  * istream (ZipInputStream) to a particular entry simply use
- * \ref fcoll_getinputstream "ZipFile::getInputStream()".
+ * ZipFile::getInputStream().
  *
- * \ref example_zip_anchor "example_zip.cpp" demonstrates the central
- * elements of Zipios++.
+ * zipios_example.cpp demonstrates the central elements of Zipios++.
  *
  * A Zip file appended to another file, e.g. a binary program, with the program
- * \ref appendzip_anchor "appendzip", can be read with
- * \ref zipfile_openembeddedzipfile "ZipFile::openEmbeddedZipFile()".
+ * appendzip.cpp, can be read with ZipFile::openEmbeddedZipFile().
  *
  * \subsection filecollection FileCollection
  *
- * A ZipFile is actually just a special kind of
- * \ref fcoll_anchor "FileCollection" that
+ * A ZipFile is actually just a special kind of FileCollection that
  * obtains its entries from a .zip Zip archive. Zipios++ also implements
- * a \ref dircol_anchor "DirectoryCollection" that obtains its entries
- * from a specified directory, and a \ref collcoll_anchor "CollectionCollection"
- * that obtains its entries from
+ * a DirectoryCollection that obtains its entries from a specified directory,
+ * and a CollectionCollection that obtains its entries from
  * other collections. Using a single CollectionCollection any number of
  * other FileCollections can be placed under its control and accessed
  * through the same single interface that is used to access a ZipFile or
@@ -134,32 +160,16 @@
  *
  *   http://sourceforge.net/projects/zipios/
  *
+ * \htmlonly
  * Project hosted by <a href="http://sourceforge.net">
- * <img src="http://sourceforge.net/sflogo.php?group_id=5418&type=1"/>
+ * <img style="vertical-align: middle;" src="http://sourceforge.net/sflogo.php?group_id=5418&type=1">
  * </a>
+ * \endhtmlonly
  */
-
-
-#include "zipios++/zipfile.hpp"
-
-#include "zipios++/zipiosexceptions.hpp"
-
-#include "backbuffer.hpp"
-#include "endofcentraldirectory.hpp"
-#include "zipcdirentry.hpp"
-#include "zipinputstream.hpp"
-#include "zipios_common.hpp"
-
-#include <fstream>
-
-
-namespace zipios
-{
 
 
 /** \class ZipFile
  * \brief The ZipFile class represents a collection of files.
- * \anchor zipfile_anchor
  *
  * ZipFile is a FileCollection, where the files are stored
  * in a .zip file.
@@ -167,8 +177,7 @@ namespace zipios
 
 
 
-/** \anchor zipfile_openembeddedzipfile
- * \brief Open a zip archive that was previously appened to another file.
+/** \brief Open a zip archive that was previously appened to another file.
  *
  * Opens a Zip archive embedded in another file, by writing the zip
  * archive to the end of the file followed by the start offset of
@@ -242,12 +251,23 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
 }
 
 
+/** \brief Create a clone of this ZipFile.
+ *
+ * This function creates a heap allocated clone of the ZipFile object.
+ *
+ * \return A shared pointer to a copy of this ZipFile object.
+ */
 FileCollection::pointer_t ZipFile::clone() const
 {
     return FileCollection::pointer_t(new ZipFile(*this));
 }
 
 
+/** \brief Clean up the ZipFile object.
+ *
+ * The destructor ensures that any ZipFile data gets flushed
+ * out before returning.
+ */
 ZipFile::~ZipFile()
 {
     close();
@@ -270,9 +290,10 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name,
         return 0;
     }
 
-    // TODO: make sure the entry offset is properly defined by ZipCDirEntry
+    /** \TODO make sure the entry offset is properly defined by ZipCDirEntry
+     */
     //static_cast<ZipCDirEntry const *>(ent.get())->getLocalHeaderOffset() + m_vs.startOffset()
-    stream_pointer_t zis(new ZipInputStream(m_filename, m_entry_offset + m_vs.startOffset()));
+    stream_pointer_t zis(new ZipInputStream(m_filename, ent->getEntryOffset() + m_vs.startOffset()));
     //
     // Wed Mar 19 18:16:34 PDT 2014 (RDB)
     // This was causing a basic_ios::clear exception.
@@ -361,39 +382,60 @@ bool ZipFile::readCentralDirectory(std::istream& zipfile)
     int const remaining(static_cast< int >(m_vs.vtellg(zipfile)) - pos);
     if(remaining != eocd.eocdOffSetFromEnd())
     {
-        throw FCollException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout");
+        throw FCollException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
     }
 
     // Consistency check 2, are local headers consistent with
     // cd headers
     if(!confirmLocalHeaders(zipfile))
     {
-        throw FCollException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout");
+        throw FCollException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
     }
 
     return true;
 }
 
 
+/** \brief Verify central directory validity.
+ *
+ * This function reads the list of headers of each file found in the
+ * Zip archive. These have to closely match the data we found in the
+ * Central Directory. If not, then a flag is raised and the function
+ * returns false meaning that it is not consistent.
+ *
+ * For clarity:
+ *
+ * \li (1) The Zip format has one header for each FileEntry
+ * \li (2) The Zip format repeats all the FileEntry headers in a Central
+ *     Directory
+ *
+ * Both headers must be consistent, meaning that they have to be equal.
+ *
+ * \param[in,out] zipfile  The input stream pointing to the Zip archive.
+ *
+ * \return true if the Zip archive file is considered valid.
+ */
 bool ZipFile::confirmLocalHeaders(std::istream& zipfile)
 {
-    int inconsistencies(0);
-    ZipLocalEntry zlh ;
-    for(auto it = m_entries.begin(); it != m_entries.end(); it++)
+    bool valid(true);
+    for(auto it = m_entries.begin(); it != m_entries.end(); ++it)
     {
-        ZipCDirEntry *ent(static_cast<ZipCDirEntry *>((*it).get()));
-        m_vs.vseekg(zipfile, ent->getLocalHeaderOffset(), std::ios::beg);
+        /** \TODO
+         * Make sure the entry offset is properly defined by ZipCDirEntry.
+         * Also the isEqual() is a quite advance test here!
+         */
+        m_vs.vseekg(zipfile, (*it)->getEntryOffset(), std::ios::beg);
+        ZipLocalEntry zlh;
         zlh.read(zipfile);
-        if(!zipfile || !zlh.isEqual(*ent))
+        if(!zipfile || !zlh.isEqual(**it))
         {
-            inconsistencies++;
+            valid = false;
             zipfile.clear();
         }
     }
 
-    return !inconsistencies;
+    return valid;
 }
-
 
 
 } // zipios namespace

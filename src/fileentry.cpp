@@ -18,18 +18,18 @@
 */
 
 /** \file
- * \brief Implementation of FileEntry.
+ * \brief Implementation of zipios::FileEntry.
  *
- * This file includes the implementation of the FileEntry. Many of
- * the functions in FileEntry are pure virtual so they do not appear
- * here. Yet their documentation is here to avoid clutering the
- * header file.
+ * This file includes the implementation of the Fzipios::ileEntry.
+ * Many of the functions in zipios::FileEntry are pure virtual so
+ * only their documentation appears here.
+ *
+ * zipios::FileEntry is used to build collections of files.
  */
 
 #include "zipios++/fileentry.hpp"
 
 #include "dostime.h"
-#include "zipios++/filepath.hpp"
 #include "zipios++/zipiosexceptions.hpp"
 
 #include "zipios_common.hpp"
@@ -64,15 +64,22 @@ namespace zipios
  */
 
 
-/** \brief Save the CRC of the entry.
+/** \brief Initialize a FileEntry object.
  *
- * This funciton savees the CRC field in this FileEntry field.
+ * This funciton initializes a FileEntry object. By default you may define
+ * the filename of the FileEntry object.
  *
- * \param crc value to set the crc field to.
+ * In case of an on disk directory, the filename should be the path to the
+ * file that can be read from disk, otherwise the FileEntry object will be
+ * viewed as invalid. There is, otherwise, no restriction to the filename.
+ *
+ * \param[in] filename  The file entry filename.
  */
 FileEntry::FileEntry(FilePath const& filename)
     : m_filename(filename)
     //, m_uncompressed_size(0) -- auto-init
+    //, m_unix_time(0) -- auto-init
+    //, m_entry_offset(0) -- auto-init
     //, m_crc_32(0) -- auto-init
     //, m_has_crc_32(false) -- auto-init
     //, m_valid(false) -- auto-init
@@ -80,7 +87,8 @@ FileEntry::FileEntry(FilePath const& filename)
 }
 
 
-/** \brief Create a clone of a file entry.
+/** \fn FileEntry::pointer_t FileEntry::clone() const;
+ * \brief Create a clone of a file entry.
  *
  * This function creates a heap allocated clone of the object
  * this method is called for.
@@ -88,7 +96,7 @@ FileEntry::FileEntry(FilePath const& filename)
  * Note that the object is expected to overload this function in
  * order to create a clone of the correct type.
  *
- * \return A heap allocated copy of the object this method is called for.
+ * \return A smart pointer to the clone.
  */
 
 
@@ -138,8 +146,7 @@ size_t FileEntry::getCompressedSize() const
 
 
 
-/** \fn uint32_t getCrc() const;
- * \brief Return the CRC of the entry.
+/** \brief Return the CRC of the entry.
  *
  * This function returns the CRC 32 of this entry, if it has one.
  *
@@ -151,13 +158,31 @@ size_t FileEntry::getCompressedSize() const
  */
 FileEntry::crc32_t FileEntry::getCrc() const
 {
-    // FIXME: should we throw if m_has_crc_32 is false?
+    /** \FIXME
+     * Should we throw if m_has_crc_32 is false?
+     */
     return m_crc_32;
 }
 
 
-/** \fn FileEntry::buffer_t getExtra() const;
- * \brief Some extra data to be stored along the entry.
+/** \brief Get the offset of this entry in a Zip archive.
+ *
+ * This function retrieves the offset at which this FileEntry
+ * resides in the Zip archive it is attached to.
+ *
+ * Note that in case of a Zip archive embedded in another file,
+ * the offset is virtual (relative to the start of the Zip archive
+ * in the larger file.)
+ *
+ * \return The position in the Zip archive.
+ */
+std::streampos FileEntry::getEntryOffset() const
+{
+    return m_entry_offset;
+}
+
+
+/** \brief Some extra data to be stored along the entry.
  *
  * This function returns a vector of bytes of extra data that are
  * stored with the entry.
@@ -170,6 +195,19 @@ FileEntry::buffer_t FileEntry::getExtra() const
 }
 
 
+/** \brief Retrieve the size of the header.
+ *
+ * This function determines the size of the Zip archive header necessary
+ * for that file.
+ *
+ * By default the function returns zero meaning that no header is defined.
+ *
+ * \return The size of the header in bytes.
+ */
+size_t FileEntry::getHeaderSize() const
+{
+    return 0;
+}
 
 
 /** \brief Return the method used to create this entry.
@@ -382,6 +420,26 @@ void FileEntry::setCrc(crc32_t crc)
 }
 
 
+/** \brief Defines the position of the entry in a Zip archive.
+ *
+ * This function defines the position of the FileEntry in a
+ * Zip archive. By default the position is set to zero.
+ *
+ * The offset is generally read from a Zip directory entry.
+ *
+ * When used to seek in a file, the FileCollection will add
+ * the start offset defined in the VirtualSeeker. In other words
+ * this is the position in the Zip archive itself, not the final
+ * position in the file you are reading the archive from.
+ *
+ * \param[in] offset  The new archive entry offset.
+ */
+void FileEntry::setEntryOffset(std::streampos offset)
+{
+    m_entry_offset = offset;
+}
+
+
 /** \brief Set the extra field buffer.
  *
  * This function is used to set the extra field.
@@ -457,7 +515,7 @@ void FileEntry::setUnixTime(std::time_t time)
 }
 
 
-/** \fn std::string toString() const;
+/** \fn std::string FileEntry::toString() const;
  * \brief Returns a human-readable string representation of the entry.
  *
  * This function transforms the basic information of the entry in a
@@ -467,6 +525,42 @@ void FileEntry::setUnixTime(std::time_t time)
  *
  * \return A human-readable string representation of the entry.
  */
+
+
+/** \brief Read this FileEntry from the input stream.
+ *
+ * This function is called when the FileEntry should be initialized from
+ * the specified input stream.
+ *
+ * \exception IOException
+ * The default implementation raise an IOException error because there is
+ * no reading the FileEntry from anywhere.
+ *
+ * \param[in,out] is  The input stream.
+ */
+void FileEntry::read(std::istream& is)
+{
+    static_cast<void>(is);
+    throw IOException("FileEntry::read(): read not available with this type of FileEntry.");
+}
+
+
+/** \brief Write this FileEntry to the output stream.
+ *
+ * This function is called when the FileEntry should be saved in the
+ * specified output stream.
+ *
+ * \exception IOException
+ * The default implementation raise an IOException error because there is
+ * no writing the FileEntry anywhere.
+ *
+ * \param[in,out] os  The output stream.
+ */
+void FileEntry::write(std::ostream& os)
+{
+    static_cast<void>(os);
+    throw IOException("FileEntry::write(): write not available with this type of FileEntry.");
+}
 
 
 /** \brief Output an entry as a string to a stream.

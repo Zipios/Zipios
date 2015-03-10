@@ -134,9 +134,10 @@ struct boost::filesystem::dir_it::representation
 
     struct stat& get_stat()
     {
-        // TODO: fix so it works under MS-Windows with Unicode
-        //       (i.e. use _wstat() instead) and if we want
-        //       the correct size, use _wstati64() instead)
+        /** \TODO: fix so it works under MS-Windows with Unicode
+         *         (i.e. use _wstat() instead) and if we want
+         *         the correct size, use _wstati64() instead.
+         */
         stat((m_directory + m_current).c_str(), &m_stat);
         return m_stat;
     }

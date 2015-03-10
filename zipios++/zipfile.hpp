@@ -19,9 +19,16 @@
 */
 
 /** \file
- * \brief Header file that defines ZipFile.
+ * \brief Define the zipios::ZipFile class.
  *
- * This file defines the main class to use to read or write a Zip archive.
+ * This file defines the main class of the Zipios++ library. The
+ * zipios::ZipFile class is the one used to read or write
+ * Zip archives.
+ *
+ * Note that a Zip archive is a zipios::FileCollection. When reading,
+ * you get zipios::FileEntry objects that are defined internally
+ * such as the zipios::ZipCDirEntry. When writing, you get
+ * zipios::FileEntry objects from a zipios::DirectoryCollection.
  */
 
 #include "zipios++/filecollection.hpp"

@@ -18,7 +18,11 @@
 */
 
 /** \file
- * \brief Implementation of FileCollection.
+ * \brief Implementation of zipios::FileCollection.
+ *
+ * This file defines all the FileCollection functions that are not
+ * pure virtual. The file also includes documentation for all those
+ * functions.
  */
 
 #include "zipios++/filecollection.hpp"
@@ -88,8 +92,6 @@ private:
 
 
 /** \class FileCollection
- * \anchor fcoll_anchor
- *
  * \brief Base class for various file collections.
  *
  * FileCollection is an abstract baseclass that represents a
@@ -99,7 +101,7 @@ private:
  */
 
 
-/** \typedef std::shared_ptr<std::istream> stream_pointer_t; 
+/** \typedef std::shared_ptr<std::istream> FileCollection::stream_pointer_t; 
  * \brief A shared pointer to an input stream.
  *
  * This type of pointer is used whenever you retrieve an input stream
@@ -109,15 +111,15 @@ private:
  */
 
 
-/** \fn void close();
+/** \fn void FileCollection::close();
  * \brief Close the current FileEntry of this FileCollection.
  *
  * This function closes the current file entry.
  */
 
 
-/** \fn stream_pointer_t getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
- * \brief Retrieve pointer to istream.
+/** \fn stream_pointer_t FileCollection::getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
+ * \brief Retrieve pointer to an istream.
  *
  * This function returns a shared pointer to an istream defined from the
  * named entry which is expected to be available in this collection.
@@ -183,7 +185,7 @@ private:
  */
 
 
-/** \fn FileCollection::pointer_t clone() const;
+/** \fn FileCollection::pointer_t FileCollection::clone() const;
  * \brief Create a clone of this object.
  *
  * This function creates a heap allocated clone of the object this
@@ -207,7 +209,6 @@ private:
 FileCollection::FileCollection()
     : m_filename("-")
     //, m_entries() -- auto-init
-    //, m_entry_offset(0) -- auto-init
     //, m_valid(false) -- auto-init
 {
 }
@@ -227,7 +228,6 @@ FileCollection::FileCollection()
 FileCollection::FileCollection(FileCollection const& src)
     : m_filename(src.m_filename)
     //, m_entries() -- see below
-    , m_entry_offset(src.m_entry_offset)
     , m_valid(src.m_valid)
 {
     m_entries.reserve(src.m_entries.size());
@@ -252,7 +252,7 @@ FileCollection::FileCollection(FileCollection const& src)
  *
  * \return A reference to this FileCollection object.
  */
-FileCollection const& FileCollection::operator = (FileCollection const& src)
+FileCollection& FileCollection::operator = (FileCollection const& src)
 {
     if(this != &src)
     {
@@ -292,7 +292,6 @@ FileCollection::~FileCollection()
 
 
 /** \brief Retrieve the array of entries.
- * \anchor fcoll_entries_anchor
  *
  * This function returns a copy of the file collection vector of entries.
  * Note that the vector is copied but not the entries, so modifications
@@ -311,7 +310,6 @@ FileEntry::vector_t FileCollection::entries() const
 
 
 /** \brief Get an entry from this collection.
- * \anchor fcoll_getentry_anchor
  *
  * This function returns a ConstEntryPointer to a FileEntry object for
  * the entry with the specified name. To ignore the path part of the

@@ -19,7 +19,10 @@
 */
 
 /** \file
- * \brief Header file that defines ZipOutputStream.
+ * \brief Define the zipios::ZipOutputStream class.
+ *
+ * This file includes the class declaration of the zipios::ZipOutputStream
+ * which is used to compress data being saved in a Zip archive.
  */
 
 #include "zipoutputstreambuf.hpp"
@@ -32,7 +35,8 @@ namespace zipios
 
 class ZipOutputStreambuf;
 
-/** \anchor ZipOutputStream_anchor
+/** \brief A ZipOutputStream to allow for data to be compressed zlib.
+ *
  * ZipOutputStream is an ostream that writes the output to a zip file. The
  * interface approximates the interface of the Java ZipOutputStream.
  */
@@ -40,9 +44,13 @@ class ZipOutputStream : public std::ostream
 {
 public:
 
-    /** ZipOutputStream constructor.
-      @param os ostream to which the compressed zip archive is written.
-      @param pos position to reposition the ostream to before reading.  */
+    /** \brief Initialize a ZipOutputStream object.
+     *
+     * This constructor saves the specified output stream internally and
+     * makes use of it to write any data that is saved in the Zip archive.
+     *
+     * \param[in,out] os  The stream where the compressed data is written.
+     */
     explicit ZipOutputStream(std::ostream& os);
 
     /** \brief ZipOutputStream constructor.
@@ -74,13 +82,11 @@ public:
       closed. */
     void finish();
 
-    /** \anchor ZipOutputStream_putnextentry_anchor
-     * Begins writing the next entry.
+    /** \brief Begins writing the next entry.
      */
     void putNextEntry(FileEntry::pointer_t entry);
 
-    /** \anchor ZipOutputStream_putnextentry2_anchor
-     * Begins writing the next entry.
+    /** \brief Begins writing the next entry.
      */
     void putNextEntry(std::string const& entryName);
 

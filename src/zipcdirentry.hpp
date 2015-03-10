@@ -19,11 +19,13 @@
 */
 
 /** \file
- * \brief Declaration of the ZipCDirEntry, a directory Zip archive entry.
+ * \brief Declaration of the zipios::ZipCDirEntry, which represents a
+ *        directory Zip archive entry.
  *
- * This header file contains the ZipCDirEntry class used to read the central
- * directory fields found in a zip archive. It can also be used to write
- * a central directory to an output zip archive.
+ * This header file contains the zipios::ZipCDirEntry class used
+ * to read the central directory fields found in a zip archive.
+ * It can also be used to write a central directory to an output
+ * Zip archive.
  */
 
 #include "ziplocalentry.hpp"
@@ -37,31 +39,24 @@ class ZipCDirEntry : public ZipLocalEntry
 {
 public:
                                 ZipCDirEntry(std::string const& filename = "", std::string const& file_comment = "", buffer_t const& extra_field = buffer_t());
-    ZipCDirEntry&               operator = (ZipCDirEntry const& rhs);
     virtual pointer_t           clone() const override;
-    virtual                     ~ZipCDirEntry() override {}
+    virtual                     ~ZipCDirEntry() override;
 
     void                        setDefaultWriter();
 
+    virtual std::string         getComment() const override;
+    virtual size_t              getHeaderSize() const override;
+    virtual void                setComment(std::string const& comment) override;
     virtual std::string         toString() const override;
 
-    virtual std::string         getComment() const override;
-    virtual void                setComment(std::string const& comment) override;
-
-    virtual offset_t            getLocalHeaderOffset() const;
-    virtual void                setLocalHeaderOffset(offset_t offset);
-
-    int                         getCDirHeaderSize() const;
-
-    void                        read(std::istream& is);
-    void                        write(std::ostream& os);
+    virtual void                read(std::istream& is) override;
+    virtual void                write(std::ostream& os) override;
 
 private:
     uint16_t                    m_writer_version;
     uint16_t                    m_disk_num_start = 0;
     uint16_t                    m_intern_file_attr = 0;
     uint32_t                    m_extern_file_attr = 0x81B40000;
-    offset_t                    m_rel_offset_loc_head;
     std::string                 m_file_comment;
 };
 

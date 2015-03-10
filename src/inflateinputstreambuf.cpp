@@ -18,7 +18,11 @@
 */
 
 /** \file
- * \brief Implementation of InflateInputStreambuf.
+ * \brief Implementation of zipios::InflateInputStreambuf.
+ *
+ * This file defines the various functions found in the
+ * zipios::InflateInputStreambuf class. It filters a stream buffer
+ * to decompress data that was compressed using the zlib library.
  */
 
 #include "inflateinputstreambuf.hpp"
@@ -60,7 +64,7 @@ namespace zipios
  * \param[in] start_pos  A position to reset the inbuf to before reading. Specify
  *                       -1 to not change the position.
  */
-InflateInputStreambuf::InflateInputStreambuf(std::streambuf *inbuf, int start_pos)
+InflateInputStreambuf::InflateInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
     : FilterInputStreambuf(inbuf)
     //, m_outvecsize(1000) -- auto-init
     , m_outvec(m_outvecsize)
@@ -96,21 +100,31 @@ InflateInputStreambuf::~InflateInputStreambuf()
     int const err(inflateEnd(&m_zs));
     if(err != Z_OK)
     {
-        std::cerr << "~inflatebuf: inflateEnd failed";
-#ifdef HAVE_ZERROR
-        std::cerr << ": " << zError(err);
-#endif
-        std::cerr << std::endl;
+        std::cerr << "InflateInputStreambuf::~InflateInputStreambuf(): inflateEnd() failed"
+                  << ": " << zError(err)
+                  << std::endl;
     }
 }
 
 
-int InflateInputStreambuf::underflow()
+/** \brief Called when more data is required.
+ *
+ * The function ensures that at least one byte is available
+ * in the input area by updating the pointers to the input area
+ * and reading more data in from the input sequence if required.
+ *
+ * This function actually passes the data through the zlib library
+ * to decompress it.
+ *
+ * \return The value of that character on success or
+ *         std::streambuf::traits_type::eof() on failure.
+ */
+std::streambuf::int_type InflateInputStreambuf::underflow()
 {
     // If not underflow don't fill buffer
     if(gptr() < egptr())
     {
-        return static_cast<unsigned char>(*gptr());
+        return traits_type::to_int_type(*gptr());
     }
 
     // Prepare _outvec and get array pointers
@@ -119,14 +133,16 @@ int InflateInputStreambuf::underflow()
 
     // Inflate until _outvec is full
     // eof (or I/O prob) on _inbuf will break out of loop too.
-    int err = Z_OK;
+    int err(Z_OK);
     while(m_zs.avail_out > 0 && err == Z_OK)
     {
         if(m_zs.avail_in == 0)
         {
             // fill m_invec
-            int const bc = m_inbuf->sgetn(&m_invec[0], m_invecsize);
-            // FIXME: handle i/o problems.
+            std::streamsize const bc(m_inbuf->sgetn(&m_invec[0], m_invecsize));
+            /** \FIXME
+             * Add I/O error handling while inflating data from a file.
+             */
             m_zs.next_in = reinterpret_cast<unsigned char *>(&m_invec[0]);
             m_zs.avail_in = bc;
             // If we could not read any new data (bc == 0) and inflate is not
@@ -141,17 +157,19 @@ int InflateInputStreambuf::underflow()
     // full length of the output buffer, but if we can't read
     // more input from the _inbuf streambuf, we end up with
     // less.
-    int const inflated_bytes = m_outvecsize - m_zs.avail_out;
+    offset_t const inflated_bytes = m_outvecsize - m_zs.avail_out;
     setg(&m_outvec[0], &m_outvec[0], &m_outvec[0] + inflated_bytes);
 
-    // FIXME: look at the error returned from inflate here, if there is
-    // some way to report it to the InflateInputStreambuf user.
-    // Until I find out I'll just print a warning to stdout.
-    // This at least throws, we probably want to create a log mechanism
-    // that the end user can connect to with a callback.
+    /** \FIXME
+     * Look at the error returned from inflate here, if there is
+     * some way to report it to the InflateInputStreambuf user.
+     * Until I find out I'll just print a warning to stdout.
+     * This at least throws, we probably want to create a log
+     * mechanism that the end user can connect to with a callback.
+     */
     if(err != Z_OK && err != Z_STREAM_END)
     {
-        OutputStringStream msgs ;
+        OutputStringStream msgs;
         msgs << "InflateInputStreambuf: inflate failed";
 #if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM) && defined (HAVE_ZERROR)
         msgs << ": " << zError(err);
@@ -162,10 +180,10 @@ int InflateInputStreambuf::underflow()
 
     if(inflated_bytes > 0)
     {
-        return static_cast<unsigned char>(*gptr());
+        return traits_type::to_int_type(*gptr());
     }
 
-    return EOF; // traits_type::eof() ;
+    return traits_type::eof();
 }
 
 
@@ -180,7 +198,7 @@ int InflateInputStreambuf::underflow()
  * This method is called in the constructor, so it must not
  * read anything from the input streambuf _inbuf (see notice in constructor)
  */
-bool InflateInputStreambuf::reset(int stream_position)
+bool InflateInputStreambuf::reset(offset_t stream_position)
 {
     if(stream_position >= 0)
     {

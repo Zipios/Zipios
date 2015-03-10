@@ -18,7 +18,10 @@
 */
 
 /** \file
- * \brief Implementation of GZIPOutputStreambuf.
+ * \brief This file is the implementation of zipios::GZIPOutputStreambuf class.
+ *
+ * This class is an output stream filter which knows how to compress data
+ * using the zlib library.
  */
 
 #include "gzipoutputstreambuf.hpp"
@@ -33,9 +36,6 @@ namespace zipios
  * A newly constructed GZIPOutputStreambuf is ready to accept data.
  *
  * \param[in,out] outbuf  The streambuf to use for output.
- * \param[in] del_outbuf  If true then we become responsible of outbuf
- *                        which will be deleted, when the
- *                        GZIPOutputStreambuf is destructed.
  */
 GZIPOutputStreambuf::GZIPOutputStreambuf(std::streambuf *outbuf)
     : DeflateOutputStreambuf(outbuf, true)

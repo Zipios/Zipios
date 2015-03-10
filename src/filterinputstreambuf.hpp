@@ -19,7 +19,7 @@
 */
 
 /** \file
- * \brief Header file that defines FilterInputStreambuf.
+ * \brief Header file that defines zipios::FilterInputStreambuf.
  */
 
 #include <iostream>
@@ -29,13 +29,10 @@ namespace zipios
 {
 
 
-/** An input streambuf filter is a streambuf that filters the input it
- gets from the streambuf it is attached to. FilterInputStreambuf is a base class to
- derive input streambuf filters from. */
 class FilterInputStreambuf : public std::streambuf
 {
 public:
-    explicit                    FilterInputStreambuf(std::streambuf *inbuf);
+                                FilterInputStreambuf(std::streambuf *inbuf);
                                 FilterInputStreambuf(FilterInputStreambuf const& src) = delete;
     FilterInputStreambuf const& operator = (FilterInputStreambuf const& src) = delete;
     virtual                     ~FilterInputStreambuf();

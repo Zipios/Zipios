@@ -24,6 +24,16 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/** \file
+ * \brief Definitions for the MS-DOS to Unix time conversions.
+ *
+ * This header defines a few functions helping in converting MS-DOS
+ * to Unix time and vice versa.
+ *
+ * \note
+ * This uses C code.
+ */
+
 #include <time.h>
 #include <inttypes.h>
 

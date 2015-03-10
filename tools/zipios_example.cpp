@@ -18,14 +18,16 @@
 */
 
 /** \file
-    \anchor example_zip_anchor
-    source code to a small program that demonstrates the central elements
-    of Zipios++.
-*/
+ * \brief Implementation of a very simple zipios++ example.
+ * \anchor zipios_example_anchor
+ *
+ * This source code is a small program that demonstrates the central
+ * elements of Zipios++.
+ *
+ * \include zipios_example.cpp
+ */
 
 #include "zipios++/zipfile.hpp"
-
-//#include <memory>
 
 
 int main(int argc, char *argv[])
@@ -33,6 +35,8 @@ int main(int argc, char *argv[])
     if(argc != 3)
     {
         std::cerr << "error: usage: zipios_example <path to test.zip> <filename to extract and print>" << std::endl;
+        std::cerr << "       from the source directory, try as:" << std::endl;
+        std::cerr << "              zipios_example tests/test.zip test2.txt" << std::endl;
         return 1;
     }
 

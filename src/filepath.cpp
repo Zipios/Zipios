@@ -18,7 +18,11 @@
 */
 
 /** \file
- * \brief Implementation of FilePath.
+ * \brief Implementation of zipios::FilePath.
+ *
+ * This file includes the zipios::FilePath implementation which makes it
+ * a little easier to handle the stat() system call on any file for any
+ * system.
  */
 
 #include "zipios++/filepath.hpp"
@@ -36,16 +40,19 @@ namespace
 {
 
 
-
-
 /** \brief Prune the trailing separator if present.
  *
- * This function ensures that the FilePath does NOT end with a separator.
+ * This function is used to ensure that the FilePath does NOT end
+ * with a separator.
  *
  * \warning
- * At this time the path is not canonicalized properly. We expect path
+ * At this time the path is not canonicalized properly. We expect \p path
  * to not include double separators one after another. However, passing
  * such a path to the FilePath will keep it as is.
+ *
+ * \param[in] path  The path to prune of one trailing separator.
+ *
+ * \return The path as is or without the last '/'.
  */
 std::string pruneTrailingSeparator(std::string path)
 {
@@ -87,7 +94,6 @@ std::string pruneTrailingSeparator(std::string path)
  * the file statistics, especially the st_mode.
  *
  * \param[in] path  A string representation of the path.
- * \param[in] check_immediately  If call exists() as well.
  *
  * \sa exists()
  * \sa pruneTrailingSeparator()
@@ -119,12 +125,13 @@ void FilePath::check() const
     {
         m_checked     = true;
 
-        // TODO: under MS-Windows, we need to use _wstat()
-        //       to make it work in Unicode (i.e. UTF-8
-        //       to wchar_t then call _wstat()...)
-        //       Also we want to use the 64 bit variant
-        //       to make sure that we get a valid size
-        //
+        /** \TODO
+         * Under MS-Windows, we need to use _wstat() to make it work in
+         * Unicode (i.e. UTF-8 to wchar_t then call _wstat()...) Also we
+         * want to use the 64 bit variant to make sure that we get a
+         * valid size. Any other reference to the stat() command should
+         * be replace by using a FilePath().
+         */
         memset(&m_stat, 0, sizeof(m_stat));
         m_exists = stat(m_path.c_str(), &m_stat) == 0;
     }

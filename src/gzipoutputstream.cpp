@@ -18,7 +18,11 @@
 */
 
 /** \file
- * \brief Implementation of GZIPOutputStream.
+ * \brief Implementation of zipios::GZIPOutputStream.
+ *
+ * The zipios::GZipOutputStream defines functions which handle the
+ * saving of Zip archive content file in compressed form using
+ * the zlib library.
  */
 
 #include "gzipoutputstream.hpp"

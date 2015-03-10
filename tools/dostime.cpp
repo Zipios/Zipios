@@ -18,7 +18,7 @@
 */
 
 /** \file
- * \anchor appendzip_anchor
+ * \brief Define a command line tool to convert Unix/DOS times.
  *
  * A small utility to offer a command line tool that converts Unix to
  * DOS time and vice versa.

@@ -19,14 +19,12 @@
 */
 
 /** \file
- * \brief The header file for BackBuffer
+ * \brief The header file for zipios::BackBuffer
  *
- * The BackBuffer class is used to read a file backward.
+ * The zipios::BackBuffer class is used to read a file backward.
  */
 
 #include "zipios++/virtualseeker.hpp"
-
-#include <vector>
 
 #include "zipios_common.hpp"
 

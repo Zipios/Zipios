@@ -19,8 +19,12 @@
 */
 
 /** \file
-    Header file that defines ZipOutputStreambuf.
-*/
+ * \brief File defining zipios::GZIPOutputStreambuf.
+ *
+ * This file includes the declaration of the zipios::GZIPOutputStreambuf
+ * class which is used to output a file in a Zip archive when we want to
+ * compress it with the zlib library.
+ */
 
 #include "deflateoutputstreambuf.hpp"
 
@@ -33,7 +37,7 @@ class GZIPOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
     explicit      GZIPOutputStreambuf(std::streambuf *outbuf);
-    virtual       ~GZIPOutputStreambuf();
+    virtual       ~GZIPOutputStreambuf() override;
 
     void          setFilename(std::string const& filename);
     void          setComment(std::string const& comment);
@@ -41,8 +45,8 @@ public:
     void          finish();
 
 protected:
-    virtual int   overflow(int c = EOF);
-    virtual int   sync();
+    virtual int   overflow(int c = EOF) override;
+    virtual int   sync() override;
 
 private:
     void          writeHeader();

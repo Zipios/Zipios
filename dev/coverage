@@ -129,10 +129,12 @@ then
     # have a website to display this data
     if test -d /usr/clients/www/alexis.m2osw.com/public_html/zipios
     then
-            cp $SOURCE_PATH/dev/index.php /usr/clients/www/alexis.m2osw.com/public_html/zipios/.
-            mkdir -p /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION
-            cp -r zipios_coverage_html/* /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION/.
-            cp zipios_coverage_html/statistics.html /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION/.
+        mkdir -p /usr/clients/www/alexis.m2osw.com/public_html/zipios/documentation
+        cp -r zipios_coverage/doc/zipios-doc-*/* /usr/clients/www/alexis.m2osw.com/public_html/zipios/documentation/.
+        cp $SOURCE_PATH/dev/index.php /usr/clients/www/alexis.m2osw.com/public_html/zipios/.
+        mkdir -p /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION
+        cp -r zipios_coverage_html/* /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION/.
+        cp zipios_coverage_html/statistics.html /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION/.
     fi
 fi
 

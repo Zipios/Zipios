@@ -18,7 +18,10 @@
 */
 
 /** \file
- * \brief Implementation of DirectoryEntry.
+ * \brief Implementation of zipios::DirectoryEntry.
+ *
+ * The declaration of a simple zipios::FileEntry used when reading
+ * a directory from disk.
  */
 
 #include "zipios++/directoryentry.hpp"
@@ -49,7 +52,6 @@ namespace zipios
  *
  * \param[in] filename  The filename of the entry.
  * \param[in] comment  A comment for the entry.
- * \param[in] basepath  The base path to file.
  */
 DirectoryEntry::DirectoryEntry(FilePath const& filename, std::string const& comment)
     : FileEntry(filename)

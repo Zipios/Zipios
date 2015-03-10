@@ -18,7 +18,9 @@
 */
 
 /** \file
- * \brief Implementation of DeflateOutputStreambuf.
+ * \brief Implementation of zipios::DeflateOutputStreambuf.
+ *
+ * This is the counterpart of the zipios::InflateInputStreambuf.
  */
 
 #include "deflateoutputstreambuf.hpp"
@@ -68,7 +70,7 @@ DeflateOutputStreambuf::~DeflateOutputStreambuf()
 // This method is called in the constructor, so it must not write
 // anything to the output streambuf _outbuf (see notice in
 // constructor)
-bool DeflateOutputStreambuf::init(int comp_level)
+bool DeflateOutputStreambuf::init(CompressionLevel comp_level)
 {
     static const int default_mem_level = 8;
 
@@ -86,7 +88,9 @@ bool DeflateOutputStreambuf::init(int comp_level)
         // just reset it
         endDeflation();
         err = deflateReset(&m_zs);
-        // FIXME: bug, for deflateReset we do not update the compression level
+        /** \FIXME
+         * For deflateReset we do not update the compression level
+         */
     }
     else
     {
@@ -181,10 +185,13 @@ int DeflateOutputStreambuf::overflow(int c)
     return 0 ;
 }
 
+
 int DeflateOutputStreambuf::sync()
 {
-    // FIXME: Do something
-    //    return overflow() ;
+    /** \FIXME
+     * Do something in the sync() function?
+     */
+    //return overflow();
     return 0;
 }
 

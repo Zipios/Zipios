@@ -22,10 +22,10 @@
  * \brief zipios configuration header.
  *
  * Various configuration parameters, all of which are defined using
- * system specific \#ifdef and similar preprocessor.
+ * system specific \#ifdef and similar preprocessor tests.
  *
  * This file also includes some general information such as the library
- * version.
+ * version and common functions and types that are public.
  */
 
 #include <sys/stat.h>

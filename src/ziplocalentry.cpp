@@ -18,10 +18,10 @@
 */
 
 /** \file
- * \brief Implementation of zip header handling.
+ * \brief Implementation of the zipios::ZipLocalEntry class.
  *
- * Implementation of routines for reading the central directory and
- * local headers of a zip archive.
+ * This file is the implementation of the zipios::ZipLocalEntry class
+ * which handles zipios::FileEntry's found in Zip archives.
  */
 
 #include "ziplocalentry.hpp"
@@ -39,9 +39,47 @@ namespace zipios
 namespace
 {
 
+/** \brief The signature of a local entry.
+ *
+ * This value represents the signature of a Zip archive block defining
+ * a ZipLocalEntry.
+ *
+ * \code
+ * "PK 3.4"
+ * \endcode
+ */
+uint32_t const      g_signature = 0x04034b50;
 
-// "PK 3.4"
-uint32_t const g_signature = 0x04034b50;
+
+/** \brief ZipLocalEntry Header
+ *
+ * This structure shows how the header of the ZipLocalEntry is defined.
+ * Note that the file name and extra field have a variable size which
+ * is defined in two 16 bit values just before they appear.
+ *
+ * The filename cannot be empty, however, the extra field can (and
+ * usually is).
+ *
+ * \note
+ * This structure is NOT used directly only for its sizeof() and
+ * documentation because that way zipios can work on little and big
+ * endians without the need to know the endianess of your computer.
+ */
+struct ZipLocalEntryHeader
+{
+    uint32_t            m_signature;
+    uint16_t            m_extract_version;
+    uint16_t            m_gp_bitfield;
+    uint16_t            m_compress_method;
+    uint32_t            m_dostime;
+    uint32_t            m_crc_32;
+    uint32_t            m_compressed_size;
+    uint32_t            m_uncompressed_size;
+    uint16_t            m_filename_len;
+    uint16_t            m_extra_field_len;
+    //uint8_t             m_filename[m_filename_len];
+    //uint8_t             m_extra_field[m_extra_field_len];
+};
 
 
 } // no name namespace
@@ -66,6 +104,28 @@ ZipLocalEntry::ZipLocalEntry(std::string const& filename, buffer_t const& extra_
     //, m_extra_field() -- see below, beneficiate from the size check by using the setExtra() function
 {
     setExtra(extra_field);
+}
+
+
+/** \brief Create a clone of a ZipLocalEntry object.
+ *
+ * This function allocates a new ZipLocalEntry on the heap and returns
+ * a copy of this ZipLocalEntry object in it.
+ *
+ * \return A new ZipLocalEntry which is a clone of this ZipLocalEntry object.
+ */
+FileEntry::pointer_t ZipLocalEntry::clone() const
+{
+    return FileEntry::pointer_t(new ZipLocalEntry(*this));
+}
+
+
+/** \brief Clean up a ZipLocalEntry object.
+ *
+ * This function ensures proper clean up of a ZipLocationEntry object.
+ */
+ZipLocalEntry::~ZipLocalEntry()
+{
 }
 
 
@@ -111,6 +171,21 @@ size_t ZipLocalEntry::getCompressedSize() const
 ZipLocalEntry::buffer_t ZipLocalEntry::getExtra() const
 {
     return m_extra_field;
+}
+
+
+/** \brief Retrieve the size of the header.
+ *
+ * This function dynamically determines the size of the Zip archive
+ * header necessary for this FileEntry.
+ *
+ * This function returns the size of the Zip archive header.
+ *
+ * \return The size of the header in bytes.
+ */
+size_t ZipLocalEntry::getHeaderSize() const
+{
+    return sizeof(ZipLocalEntryHeader) + m_filename.length() + m_extra_field.size();
 }
 
 
@@ -160,12 +235,6 @@ std::string ZipLocalEntry::toString() const
 }
 
 
-int ZipLocalEntry::getLocalHeaderSize() const
-{
-    return 30 + m_filename.size() + m_extra_field.size();
-}
-
-
 bool ZipLocalEntry::trailingDataDescriptor() const
 {
     // gp_bitfield bit 3 is one, if this entry uses a trailing data
@@ -175,15 +244,9 @@ bool ZipLocalEntry::trailingDataDescriptor() const
 }
 
 
-FileEntry::pointer_t ZipLocalEntry::clone() const
-{
-    return FileEntry::pointer_t(new ZipLocalEntry(*this));
-}
-
-
 void ZipLocalEntry::read(std::istream& is)
 {
-    m_valid = false ; // set to true upon successful completion.
+    m_valid = false; // set to true upon successful completion.
     if(is)
     {
         //    // Before reading anything we record the position in the stream
@@ -208,6 +271,7 @@ void ZipLocalEntry::read(std::istream& is)
             uint16_t extra_field_len(0);
             std::string filename;
 
+            // See the ZipLocalEntryHeader for more details
             zipRead(is, m_extract_version);                 // 16
             zipRead(is, m_gp_bitfield);                     // 16
             zipRead(is, compress_method);                   // 16
@@ -219,9 +283,10 @@ void ZipLocalEntry::read(std::istream& is)
             zipRead(is, extra_field_len);                   // 16
             zipRead(is, filename, filename_len);            // string
             zipRead(is, m_extra_field, extra_field_len);    // buffer
-            // TODO: add support for zip64, some of those parameters
-            //       may be 0xFFFFF...FFFF in which case the 64 bit
-            //       header should be read
+            /** \TODO add support for zip64, some of those parameters
+             *        may be 0xFFFFF...FFFF in which case the 64 bit
+             *        header should be read
+             */
 
             m_compress_method = static_cast<StorageMethod>(compress_method);
             m_unix_time = dos2unixtime(dostime);
@@ -239,14 +304,30 @@ void ZipLocalEntry::read(std::istream& is)
 }
 
 
-
-
+/** \brief Write a ZipLocalEntry to \p os.
+ *
+ * This function writes this ZipLocalEntry header to the specified
+ * output stream.
+ *
+ * \exception IOException
+ * If an error occurs while writing to the output stream, the function
+ * throws an IOException.
+ *
+ * \param[in] os  The output stream where the ZipLocalEntry is written.
+ */
 void ZipLocalEntry::write(std::ostream& os)
 {
     if(os)
     {
-        // TODO: add support for 64 bit zip archive
-        if(m_compressed_size >= 0x100000000
+        if(m_filename.length()  > 0x10000
+        || m_extra_field.size() > 0x10000)
+        {
+            throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
+        }
+
+        /** TODO: add support for 64 bit zip archive
+         */
+        if(m_compressed_size   >= 0x100000000
         || m_uncompressed_size >= 0x100000000)
         {
             throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
@@ -259,6 +340,7 @@ void ZipLocalEntry::write(std::ostream& os)
         uint16_t filename_len(m_filename.length());
         uint16_t extra_field_len(m_extra_field.size());
 
+        // See the ZipLocalEntryHeader for more details
         zipWrite(os, g_signature       );   // 32
         zipWrite(os, m_extract_version );   // 16
         zipWrite(os, m_gp_bitfield     );   // 16

@@ -18,11 +18,11 @@
 */
 
 /** \file
- * \brief Implementation of DirectoryCollection.
+ * \brief Implementation of zipios::DirectoryCollection.
  *
- * This file includes the implementation of the DirectoryCollection
- * class which is used to read a directory from disk and create
- * a set of DirectoryEntry objects.
+ * This file includes the implementation of the zipios::DirectoryCollection
+ * class, which is used to read a directory from disk and create
+ * a set of zipios::DirectoryEntry objects.
  */
 
 #include "zipios++/directorycollection.hpp"
@@ -39,10 +39,9 @@ namespace zipios
 
 /** \class DirectoryCollection
  * \brief A collection generated from reading a directory.
- * \anchor dircol_anchor
  *
- * The DirectoryCollection is a FileCollection that obtains its entries
- * from a directory.
+ * The DirectoryCollection class is a FileCollection that obtains
+ * its entries from a directory on disk.
  */
 
 
@@ -132,16 +131,35 @@ FileEntry::pointer_t DirectoryCollection::getEntry(std::string const& name, Matc
 }
 
 
+/** \brief Retrieve pointer to an istream.
+ *
+ * This function returns a shared pointer to an istream defined from
+ * the named entry, which is expected to be available in this collection.
+ *
+ * The function returns a NULL pointer if no FileEntry can be found from
+ * the specified name or the FileEntry is marked as invalid.
+ *
+ * The returned istream represents a file on disk, although the filename
+ * must exist in the collection or it will be ignored. A filename that
+ * represents a directory cannot return an input stream and thus an error
+ * is returned in that case.
+ *
+ * \param[in] entry_name  The name of the file to search in the collection.
+ * \param[in] matchpath  Whether the full path or just the filename is matched.
+ *
+ * \return A shared pointer to an open istream for the specified entry.
+ */
 DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::string const& entry_name, MatchPath matchpath)
 {
     mustBeValid();
 
+    // avoid loading entries if possible.
     if(matchpath != MatchPath::MATCH || m_entries_loaded)
     {
         loadEntries();
 
         FileEntry::pointer_t ent(getEntry(entry_name, matchpath));
-        if(!ent)
+        if(!ent || ent->isDirectory())
         {
             return DirectoryCollection::stream_pointer_t();
         }
@@ -151,8 +169,7 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::s
         return p;
     }
 
-    // avoid loading entries if possible.
-    std::string real_path(m_filepath + entry_name);
+    std::string const real_path(m_filepath + entry_name);
     DirectoryCollection::stream_pointer_t ifs(new std::ifstream(real_path.c_str(), std::ios::in | std::ios::binary));
     if(!*ifs)
     {
@@ -196,16 +213,16 @@ void DirectoryCollection::load(bool recursive, FilePath const& subdir)
 {
     for(boost::filesystem::dir_it it(m_filepath + subdir); it != boost::filesystem::dir_it(); ++it)
     {
-        // TBD: skipping "..." ?!?
-        if(*it == "." || *it == ".." || *it == "...")
+        if(*it == "." || *it == "..")
         {
             continue;
         }
 
         if(boost::filesystem::get<boost::filesystem::is_directory>(it))
         {
-            // FIXME -- should we be adding directories to the collection?
-            //
+            /** \TODO
+             * Should we be adding directories to the collection?
+             */
             if(recursive)
             {
                 load(recursive, subdir + *it);

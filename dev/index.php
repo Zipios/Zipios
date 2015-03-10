@@ -5,7 +5,9 @@
 $dir = glob("zipios*");
 
 echo "<html><head><title>Zipios++ coverage, statistics, and test log information</title></head>";
-echo "<body><h1>Zipios++ coverage</h1><table border=\"1\" cellpadding=\"10\" cellspacing=\"0\"><tbody><tr><th>Coverage</th><th>Statistics</th><th>Test Logs</th></tr>";
+echo "<body><h1>Zipios++ coverage</h1>";
+echo "<p><a href=\"documentation\">Zipios++ Doxygen Documention</a><p>";
+echo "<table border=\"1\" cellpadding=\"10\" cellspacing=\"0\"><tbody><tr><th>Coverage</th><th>Statistics</th><th>Test Logs</th></tr>";
 foreach($dir as $d)
 {
 	echo "<tr>";

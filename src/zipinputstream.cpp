@@ -18,7 +18,11 @@
 */
 
 /** \file
- * \brief Implementation of ZipInputStream.
+ * \brief Implementation of zipios::ZipInputStream.
+ *
+ * This file includes the implementation of the zipios::ZipInputStream
+ * class which is a filter used to read files from Zip archives, files
+ * that can be compressed using the zlib library.
  */
 
 #include "zipinputstream.hpp"

@@ -18,14 +18,15 @@
 */
 
 /** \file
- * \brief The implementation file of BackBuffer.
+ * \brief The implementation file of zipios::BackBuffer.
+ *
+ * This class implements the functions necessary to read a file
+ * backward.
  */
 
 #include "backbuffer.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
-
-#include "zipios_common.hpp"
 
 
 namespace zipios

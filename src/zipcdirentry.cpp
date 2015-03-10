@@ -18,10 +18,11 @@
 */
 
 /** \file
- * \brief Implementation of zip header handling.
+ * \brief Implementation of zipios::ZipCDirEntry.
  *
- * Implementation of routines for reading the central directory and
- * local headers of a zip archive.
+ * This file includes the implementation of the zipios::ZipCDirEntry
+ * which is a zipios::FileEntry used when reading the central
+ * directory of a Zip archive.
  */
 
 #include "zipcdirentry.hpp"
@@ -41,10 +42,20 @@ namespace
 {
 
 
-// "PK 1.2"
+/** \brief The signature of a ZipCDirEntry.
+ *
+ * This value represents the signature of a Zip Central Directory Entry.
+ *
+ * The signature represents:
+ *
+ * \code
+ * "PK 1.2"
+ * \endcode
+ */
 uint32_t const  g_signature = 0x02014b50;
 
-// The zip codes
+
+// The zip codes (values are pre-shifted)
 uint16_t const   g_msdos         = 0x0000;
 uint16_t const   g_amiga         = 0x0100;
 uint16_t const   g_open_vms      = 0x0200;
@@ -67,6 +78,44 @@ uint16_t const   g_os400         = 0x1200;
 uint16_t const   g_osx           = 0x1300;
 
 
+/** \brief The header of a ZipCDirEntry in a Zip archive.
+ *
+ * This structure shows how the header of the ZipCDirEntry is defined.
+ * Note that the file name, file comment, and extra field have a
+ * variable size which is defined in three 16 bit values before
+ * they appear.
+ *
+ * The filename cannot be empty, however, the file comment and the
+ * extra field can (and usually are.)
+ *
+ * \note
+ * This structure is NOT used directly only for its sizeof() and
+ * documentation because that way zipios can work on little and big
+ * endians without the need to know the endianess of your computer.
+ */
+struct ZipCDirEntryHeader
+{
+    uint32_t        m_signature;
+    uint16_t        m_writer_version;
+    uint16_t        m_extract_version;
+    uint16_t        m_gp_bitfield;
+    uint16_t        m_compress_method;
+    uint32_t        m_dostime;
+    uint32_t        m_crc_32;
+    uint32_t        m_compressed_size;
+    uint32_t        m_uncompressed_size;
+    uint16_t        m_filename_len;
+    uint16_t        m_extra_field_len;
+    uint16_t        m_file_comment_len;
+    uint16_t        m_disk_num_start;
+    uint16_t        m_intern_file_attr;
+    uint32_t        m_extern_file_attr;
+    uint32_t        m_rel_offset_loc_head;
+    //uint8_t       m_filename[m_filename_len];
+    //uint8_t       m_extra_field[m_extra_field_len];
+    //uint8_t       m_file_comment[m_file_comment_len];
+};
+
 
 } // no name namespace
 
@@ -82,44 +131,25 @@ uint16_t const   g_osx           = 0x1300;
 
 ZipCDirEntry::ZipCDirEntry(std::string const& filename, std::string const& file_comment, buffer_t const& extra_field)
     : ZipLocalEntry(filename, extra_field)
-    // TODO -- missing initialization of many member variables
+    /** \TODO -- missing initialization of many member variables */
     //, m_disk_num_start(0) -- auto-init
     //, m_intern_file_attr(0) -- auto-init
     //, m_extern_file_attr(0x81B40000) -- auto-init
 
-    // FIXME: I do not understand the external mapping, simply
-    //        copied value for a file with -rw-rw-r-- permissions
-    //        compressed with info-zip
+    /** \FIXME
+     * I do not understand the external mapping, simply
+     * copied value for a file with -rw-rw-r-- permissions
+     * compressed with info-zip
+     */
 {
     setComment(file_comment);
     setDefaultWriter();
 }
 
 
-ZipCDirEntry& ZipCDirEntry::operator = (ZipCDirEntry const& src)
+ZipCDirEntry::~ZipCDirEntry()
 {
-    m_filename            = src.m_filename            ;
-    m_uncompressed_size   = src.m_uncompressed_size   ;
-    m_unix_time           = src.m_unix_time           ;
-    m_crc_32              = src.m_crc_32              ;
-
-    m_writer_version      = src.m_writer_version      ;
-    m_extract_version     = src.m_extract_version     ;
-    m_gp_bitfield         = src.m_gp_bitfield         ;
-    m_compress_method     = src.m_compress_method     ;
-    m_compressed_size     = src.m_compressed_size     ;
-    m_disk_num_start      = src.m_disk_num_start      ;
-    m_intern_file_attr    = src.m_intern_file_attr    ;
-    m_extern_file_attr    = src.m_extern_file_attr    ;
-    m_rel_offset_loc_head = src.m_rel_offset_loc_head ;
-    m_extra_field         = src.m_extra_field         ;
-    m_file_comment        = src.m_file_comment        ;
-
-    return *this;
 }
-
-
-
 
 
 void ZipCDirEntry::setDefaultWriter()
@@ -129,7 +159,9 @@ void ZipCDirEntry::setDefaultWriter()
 
     // then add "compatibility" code
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
-    // MS-Windows (TODO: should we use g_msdos instead?)
+    // MS-Windows
+    /** \TODO should we use g_msdos instead?
+     */
     m_writer_version |= g_windows;
 #elif defined(__APPLE__) && defined(__MACH__)
     // OS/X
@@ -144,17 +176,6 @@ void ZipCDirEntry::setDefaultWriter()
 std::string ZipCDirEntry::getComment() const
 {
     return m_file_comment;
-}
-
-
-offset_t ZipCDirEntry::getLocalHeaderOffset() const
-{
-    return m_rel_offset_loc_head;
-}
-
-void ZipCDirEntry::setLocalHeaderOffset(offset_t offset)
-{
-    m_rel_offset_loc_head = offset;
 }
 
 
@@ -173,7 +194,7 @@ std::string ZipCDirEntry::toString() const
 }
 
 
-int ZipCDirEntry::getCDirHeaderSize() const
+size_t ZipCDirEntry::getHeaderSize() const
 {
     return 46 + m_filename.size() + m_extra_field.size() + m_file_comment.size() ;
 }
@@ -233,14 +254,15 @@ void ZipCDirEntry::read(std::istream& is)
     zipRead(is, filename, filename_len);            // string
     zipRead(is, m_extra_field, extra_field_len);    // buffer
     zipRead(is, m_file_comment, file_comment_len);  // string
-    // TODO: check whether this was a 64 bit header and make sure
-    //       to read the 64 bit header  too
+    /** \TODO check whether this was a 64 bit header and make sure
+     *        to read the 64 bit header  too
+     */
 
     m_compress_method = static_cast<StorageMethod>(compress_method);
     m_unix_time = dos2unixtime(dostime);
     m_compressed_size = compressed_size;
     m_uncompressed_size = uncompressed_size;
-    m_rel_offset_loc_head = rel_offset_loc_head;
+    m_entry_offset = rel_offset_loc_head;
     m_filename = FilePath(filename);
 
     // the zipRead() should throw if is is false...
@@ -255,10 +277,19 @@ void ZipCDirEntry::write(std::ostream& os)
 {
     if(os)
     {
-        // TODO: add support for 64 bit entries
-        //       (zip64 is available, just need to add a 64 bit header)
-        if(m_compressed_size >= 0x100000000
-        || m_uncompressed_size >= 0x100000000)
+        if(m_filename.length()     > 0x10000
+        || m_extra_field.size()    > 0x10000
+        || m_file_comment.length() > 0x10000)
+        {
+            throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
+        }
+
+        /** \TODO add support for 64 bit entries
+         *        (zip64 is available, just need to add a 64 bit header)
+         */
+        if(m_compressed_size   >= 0x100000000
+        || m_uncompressed_size >= 0x100000000
+        || m_entry_offset      >= 0x100000000)
         {
             throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
         }
@@ -270,7 +301,7 @@ void ZipCDirEntry::write(std::ostream& os)
         uint16_t filename_len(m_filename.length());
         uint16_t extra_field_len(m_extra_field.size());
         uint16_t file_comment_len(m_file_comment.length());
-        uint32_t rel_offset_loc_head(m_rel_offset_loc_head);
+        uint32_t rel_offset_loc_head(m_entry_offset);
 
         zipWrite(os, g_signature           );       // 32
         zipWrite(os, m_writer_version      );       // 16
@@ -289,7 +320,7 @@ void ZipCDirEntry::write(std::ostream& os)
         zipWrite(os, m_extern_file_attr    );       // 32
         zipWrite(os, rel_offset_loc_head   );       // 32
         zipWrite(os, m_filename            );       // string
-        zipWrite(os, m_extra_field         );       // string
+        zipWrite(os, m_extra_field         );       // buffer
         zipWrite(os, m_file_comment        );       // string
     }
 }

@@ -19,9 +19,10 @@
 */
 
 /** \file
- * \brief Header file that defines FileCollection.
+ * \brief Define the zipios::FileCollection class.
  *
- * This object holds a vector of FileEntry objects.
+ * This object holds a vector of zipios::FileEntry objects representing
+ * a Zip archive or an on disk directory of files.
  */
 
 #include "zipios++/fileentry.hpp"
@@ -46,7 +47,7 @@ public:
 
     explicit                        FileCollection();
                                     FileCollection(FileCollection const& src);
-    const FileCollection&           operator = (FileCollection const& src);
+    FileCollection&                 operator = (FileCollection const& src);
     virtual pointer_t               clone() const = 0;
     virtual                         ~FileCollection();
 
@@ -62,7 +63,6 @@ public:
 protected:
     std::string                     m_filename;
     FileEntry::vector_t             m_entries;
-    std::streampos                  m_entry_offset = 0;
     bool                            m_valid = false;
 };
 

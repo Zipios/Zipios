@@ -18,7 +18,10 @@
 */
 
 /** \file
- * \brief Implementation of CollectionCollection.
+ * \brief Implementation of zipios::CollectionCollection.
+ *
+ * This class derives from zipios::FileCollection. It allows to many
+ * any number of collections within one collection.
  */
 
 #include "zipios++/collectioncollection.hpp"
@@ -65,7 +68,7 @@ void matchEntry(CollectionCollection::vector_t collections, std::string const& n
 } // no name namespace
 
 
-/** \anchor collcoll_anchor
+/** \class CollectionCollection
  * \brief A collection of collections.
  *
  * CollectionCollection is a FileCollection that consists of an
@@ -118,7 +121,7 @@ CollectionCollection::CollectionCollection(CollectionCollection const& src)
  *
  * \param[in] rhs  The source to copy in this collection.
  */
-CollectionCollection const& CollectionCollection::operator = (CollectionCollection const& rhs)
+CollectionCollection& CollectionCollection::operator = (CollectionCollection const& rhs)
 {
     FileCollection::operator = (rhs);
 
@@ -147,20 +150,29 @@ CollectionCollection::~CollectionCollection()
 }
 
 
-/** \anchor collcoll_addcoll_anchor
- * Adds a collection.
- * @param collection The collection to add.
- * @return true if the collection was added succesfully and
- * the added collection is valid.
+/** \brief Add a FileCollection to this CollectionCollection.
+ *
+ * This function adds a collection in this CollectionCollection.
+ * Since a CollectionCollection is itself a FileCollection, you
+ * may add a CollectionCollection to another CollectionCollection.
+ *
+ * \note
+ * The FileCollection to be added must be valid or it will be ignored.
+ *
+ * \param[in] collection  The collection to add.
+ *
+ * \return true if the collection was added succesfully.
  */
 bool CollectionCollection::addCollection(FileCollection const& collection)
 {
     mustBeValid();
 
-    // TODO: the first test below is to avoid adding ourselves to
-    //       ourselves; the current test is quite weak since A
-    //       could include B which itself includes A and we
-    //       would not know...
+    /** \TODO
+     * At this time the function verifies that you are not trying to add
+     * a CollectionCollection to itself. However, this test is currently
+     * really weak. We need to check whether any collection in the
+     * input \p collection represents this collection.
+     */
     if(this == &collection || !collection.isValid())
     {
         return false;

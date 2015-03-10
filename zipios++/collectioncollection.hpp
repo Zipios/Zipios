@@ -19,7 +19,10 @@
 */
 
 /** \file
- * \brief Header file that defines CollectionCollection.
+ * \brief Define the zipios::CollectionCollection class.
+ *
+ * This zipios::CollectionCollection class can be used to manage
+ * a collection of collections with a simple interface.
  */
 
 #include "zipios++/filecollection.hpp"
@@ -35,7 +38,7 @@ public:
     explicit                        CollectionCollection();
                                     CollectionCollection(CollectionCollection const& src);
     virtual pointer_t               clone() const override;
-    CollectionCollection const&     operator = (CollectionCollection const& src);
+    CollectionCollection&           operator = (CollectionCollection const& src);
     virtual                         ~CollectionCollection() override;
 
     bool                            addCollection(FileCollection const& collection);

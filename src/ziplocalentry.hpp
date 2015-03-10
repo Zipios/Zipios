@@ -19,10 +19,12 @@
 */
 
 /** \file
- * \brief Declare a class to handle Zip entries.
+ * \brief Declare the zipios::ZipLocalEntry class used to handle Zip entries.
  *
- * This header file contains the ZipLocalEntry which is used to handle
- * entries in a Zip archive.
+ * This header file contains the zipios::ZipLocalEntry, which is used
+ * to handle entries in a Zip archive.
+ *
+ * \sa zipios::ZipCDirEntry
  */
 
 #include "zipios++/fileentry.hpp"
@@ -32,8 +34,6 @@ namespace zipios
 {
 
 
-class ZipCDirEntry;
-
 class ZipLocalEntry : public FileEntry
 {
 public:
@@ -41,12 +41,12 @@ public:
     static uint16_t const       g_zip_format_version = 20; // 2.0
 
                                 ZipLocalEntry(std::string const& filename = "", buffer_t const& extra_field = buffer_t());
-    inline ZipLocalEntry&       operator = (ZipLocalEntry const& src);
     virtual pointer_t           clone() const override;
-    virtual                     ~ZipLocalEntry() override {}
+    virtual                     ~ZipLocalEntry() override;
 
     virtual size_t              getCompressedSize() const override;
     virtual buffer_t            getExtra() const override;
+    virtual size_t              getHeaderSize() const override;
     virtual StorageMethod       getMethod() const override;
     virtual bool                isEqual(FileEntry const& file_entry) const override;
     virtual void                setCompressedSize(size_t size) override;
@@ -55,11 +55,10 @@ public:
     virtual void                setMethod(StorageMethod method) override;
     virtual std::string         toString() const override;
 
-    int                         getLocalHeaderSize() const;
     bool                        trailingDataDescriptor() const;
 
-    void                        read(std::istream& is);
-    void                        write(std::ostream& os);
+    virtual void                read(std::istream& is) override;
+    virtual void                write(std::ostream& os) override;
 
 protected:
     uint16_t                    m_extract_version = g_zip_format_version;

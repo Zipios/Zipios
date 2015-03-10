@@ -19,7 +19,12 @@
 */
 
 /** \file
- * Header file that defines DeflateOutputStreambuf.
+ * \brief Header file that defines zipios::DeflateOutputStreambuf.
+ *
+ * This file is used to declare the zipios::DeflateOutputStreambuf class which
+ * is used to compress data using zlib.
+ *
+ * The counter part is the class zipios::InflateInputStreambuf.
  */
 
 #include "filteroutputstreambuf.hpp"
@@ -33,31 +38,37 @@
 namespace zipios
 {
 
-
-/** DeflateOutputStreambuf is an output stream filter, that deflates
-    the data that is written to it before it passes it on to the
-    output stream it is attached to. Deflation/Inflation is a
-    compression/decompression method used in gzip and zip. The zlib
-    library is used to perform the actual deflation, this class only
-    wraps the functionality in an output stream filter. */
+/** \brief A class to handle stream deflate on the fly.
+ *
+ * DeflateOutputStreambuf is an output stream filter, that deflates
+ * the data that is written to it before it passes it on to the
+ * output stream it is attached to. Deflation/Inflation is a
+ * compression/decompression method used in gzip and zip. The zlib
+ * library is used to perform the actual deflation, this class only
+ * wraps the functionality in an output stream filter.
+ */
 class DeflateOutputStreambuf : public FilterOutputStreambuf
 {
 public:
+    // zlib does not define a type for its compression level
+    typedef int             CompressionLevel;
+
+    static CompressionLevel const   NO_COMPRESSION      = Z_NO_COMPRESSION;
+    static CompressionLevel const   BEST_SPEED          = Z_BEST_SPEED;
+    static CompressionLevel const   BEST_COMPRESSION    = Z_BEST_COMPRESSION;
+    static CompressionLevel const   DEFAULT_COMPRESSION = Z_DEFAULT_COMPRESSION;
 
     /** DeflateOutputStreambuf constructor.
      * @param outbuf the streambuf to use for output.
      * @param user_init If false user must invoke init() before writing any data.
      * (ZipOutputStreambuf needs to do this)
-     * @param del_outbuf if true is specified outbuf will be deleted, when
-     * the DeflateOutputStreambuf is destructed.
      */
-    explicit DeflateOutputStreambuf(std::streambuf *outbuf,
-                                    bool user_init = false);
+    explicit DeflateOutputStreambuf(std::streambuf *outbuf, bool user_init = false);
 
     /** Destructor. */
     virtual ~DeflateOutputStreambuf();
 
-    bool init(int comp_level = 6);
+    bool init(CompressionLevel comp_level = DEFAULT_COMPRESSION);
 
     bool closeStream();
 
@@ -96,7 +107,7 @@ private:
     z_stream                m_zs;
     bool                    m_zs_initialized = false;
 
-protected: // FIXME: reconsider design?
+protected: /** FIXME: consider design? Also the size of 1,000 ... hmmm.... */
     int const               m_invecsize = 1000;
     std::vector<char>       m_invec;
     int const               m_outvecsize = 1000;

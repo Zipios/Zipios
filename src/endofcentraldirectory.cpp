@@ -18,15 +18,14 @@
 */
 
 /** \file
- * \brief Declare a class to handle Zip entries.
+ * \brief Declare zipios::EndOfCentralDirectory whichs handles entries found
+ *        in a Zip archive directory.
  *
- * This header file contains the ZipLocalEntry which is used to handle
- * entries in a Zip archive.
+ * This header file contains the zipios::ZipLocalEntry, which is used
+ * to handle entries found in a Zip archive.
  */
 
 #include "endofcentraldirectory.hpp"
-
-#include "zipios_common.hpp"
 
 
 namespace zipios

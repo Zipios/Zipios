@@ -19,7 +19,16 @@
 */
 
 /** \file
- * \brief Header file that defines VirtualSeeker.
+ * \brief Define the zipios::VirtualSeeker class.
+ *
+ * The zipios::VirtualSeeker class defines a start offset and end offset
+ * that are used to represent a Zip archive in a larger file.
+ *
+ * This can be used as a file that include resources useful to your
+ * software.
+ *
+ * \sa zipios::openEmbeddedZipFile()
+ * \sa appendzip.cpp
  */
 
 #include "zipios++/zipios-config.hpp"

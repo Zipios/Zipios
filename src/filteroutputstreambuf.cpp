@@ -18,7 +18,10 @@
 */
 
 /** \file
- * \brief Implementation of FilterOutputStreambuf.
+ * \brief Implementation of zipios::FilterOutputStreambuf.
+ *
+ * This file includes the functions of the output stream buffer
+ * filter.
  */
 
 #include "filteroutputstreambuf.hpp"
@@ -30,17 +33,16 @@ namespace zipios
 {
 
 
-/** \class GZIPOutputStreambuf
- * \brief GZIPOutputStreambuf is a zip output streambuf filter.
- */
-
-
 /** \class FilterOutputStreambuf
- * \brief The buffer for the output filter.
+ * \brief A base class to develop output stream filters.
  *
- * A FilterOutputStreambuf is a streambuf that filters the data that is written
- * to it before it passes it on to the output streambuf it is connected to.
+ * An output stream buffer filter is an std::streambuf that filters the
+ * output it gets from the std::streambuf it is attached to.
+ *
+ * FilterOutputStreambuf is a base class to derive input streambuf
+ * filters from.
  */
+
 
 /** \brief Initialize your filter output stream buffer.
  *

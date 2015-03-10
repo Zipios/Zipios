@@ -18,7 +18,15 @@
 */
 
 /** \file
- * \brief Implementation file that defines VirtualSeeker.
+ * \brief Implementation file that defines zipios::VirtualSeeker.
+ *
+ * The zipios::VirtualSeeker is used to handle offsets of a Zip archive
+ * defined within a larger file. See the
+ * zipios::ZipFile::openEmbeddedZipFile() function and the appendzip
+ * tool for additional information.
+ *
+ * \sa appendzip.cpp
+ * \sa zipios::ZipFile::openEmbeddedZipFile()
  */
 
 #include "zipios++/virtualseeker.hpp"

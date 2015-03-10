@@ -19,7 +19,10 @@
 */
 
 /** \file
- * \brief Header file that defines GZIPOutputStream.
+ * \brief This file defines zipios::GZIPOutputStream.
+ *
+ * This file declares the zipios::GZipOutputStream class which handles
+ * Zip archive content while saving to file.
  */
 
 #include "gzipoutputstreambuf.hpp"
