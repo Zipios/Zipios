@@ -134,14 +134,9 @@
  *
  *   http://sourceforge.net/projects/zipios/
  *
- * \htmlonly
  * Project hosted by <a href="http://sourceforge.net">
- * <img src="http://sourceforge.net/sflogo.php?group_id=5418&type=1" >
- * </a><p>
- * Logo created with <a href="http://www.webgfx.ch/titlepic.htm">
- * <img src="webgfx.gif" >
+ * <img src="http://sourceforge.net/sflogo.php?group_id=5418&type=1"/>
  * </a>
- * \endhtmlonly
  */
 
 
