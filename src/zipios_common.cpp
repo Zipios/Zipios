@@ -43,7 +43,7 @@ void zipRead(std::istream& is, uint32_t& value)
     }
     if(is.gcount() != sizeof(value))
     {
-        throw IOException("EOF or an I/O error while reading zip archive data from file.");
+        throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
     }
 
     // zip data is always in little endian
@@ -64,7 +64,7 @@ void zipRead(std::istream& is, uint16_t& value)
     }
     if(is.gcount() != sizeof(value))
     {
-        throw IOException("EOF or an I/O error while reading zip archive data from file.");
+        throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
     }
 
     // zip data is always in little endian
@@ -83,7 +83,7 @@ void zipRead(std::istream& is, uint8_t&  value)
     }
     if(is.gcount() != sizeof(value))
     {
-        throw IOException("EOF or an I/O error while reading zip archive data from file.");
+        throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
     }
 
     // zip data is always in little endian
@@ -100,7 +100,7 @@ void zipRead(std::istream& is, buffer_t& buffer, ssize_t const count)
     }
     if(is.gcount() != count)
     {
-        throw IOException("EOF or an I/O error while reading zip archive data from file.");
+        throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
     }
 }
 
@@ -114,7 +114,7 @@ void zipRead(std::istream& is, std::string& str, ssize_t const count)
     }
     if(is.gcount() != count)
     {
-        throw IOException("EOF or an I/O error while reading zip archive data from file.");
+        throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
     }
 }
 

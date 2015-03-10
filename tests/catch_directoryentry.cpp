@@ -358,12 +358,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time numbers are not linear so we test until we get one
             // that works...
-            dostime_t r;
-            do
-            {
-                r = static_cast<dostime_t>(rand());
-            }
-            while(dos2unixtime(r) == -1);
+            time_t t((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+            dostime_t r(unix2dostime(t));
             de.setTime(r);
 
             THEN("we take it as is")
@@ -407,13 +403,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            dostime_t r;
-            do
-            {
-                r = static_cast<dostime_t>(rand());
-            }
-            while(dos2unixtime(r) == -1);
-            de.setUnixTime(dos2unixtime(r));
+            time_t r((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+            de.setUnixTime(r);
 
             THEN("we take it as is")
             {
@@ -425,8 +416,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == r);
-                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(de.getTime() == unix2dostime(r));
+                REQUIRE(de.getUnixTime() == r);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(!de.isValid());
@@ -443,8 +434,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == r);
-                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(clone->getTime() == unix2dostime(r));
+                REQUIRE(clone->getUnixTime() == r);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(!clone->isValid());
@@ -1196,12 +1187,8 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time numbers are not linear so we test until we get one
             // that works...
-            dostime_t r;
-            do
-            {
-                r = static_cast<dostime_t>(rand());
-            }
-            while(dos2unixtime(r) == -1);
+            time_t t((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+            dostime_t r(unix2dostime(t));
             de.setTime(r);
 
             THEN("we take it as is")
@@ -1245,13 +1232,8 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            dostime_t r;
-            do
-            {
-                r = static_cast<dostime_t>(rand());
-            }
-            while(dos2unixtime(r) == -1);
-            de.setUnixTime(dos2unixtime(r));
+            time_t r((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+            de.setUnixTime(r);
 
             THEN("we take it as is")
             {
@@ -1263,8 +1245,8 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == r);
-                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(de.getTime() == unix2dostime(r));
+                REQUIRE(de.getUnixTime() == r);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
@@ -1281,8 +1263,8 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == r);
-                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(clone->getTime() == unix2dostime(r));
+                REQUIRE(clone->getUnixTime() == r);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());

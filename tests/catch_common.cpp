@@ -26,6 +26,7 @@
 #include "catch_tests.h"
 
 #include "src/zipios_common.hpp"
+#include "zipios++/zipiosexceptions.hpp"
 
 #include <fstream>
 
@@ -260,6 +261,100 @@ SCENARIO("Read from file", "[zipios_common] [io]")
             }
         }
 
+        WHEN("reading four 32 bit values")
+        {
+            uint32_t a, b, c, d;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+            zipios::zipRead(is, c);
+            zipios::zipRead(is, d);
+
+            THEN("another 8 bit value")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+                REQUIRE(c == 0x0B0A0908);
+                REQUIRE(d == 0x0F0E0D0C);
+
+                uint8_t e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException);
+            }
+        }
+
+        WHEN("reading four 32 bit values")
+        {
+            uint32_t a, b, c, d;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+            zipios::zipRead(is, c);
+            zipios::zipRead(is, d);
+
+            THEN("another 16 bit value")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+                REQUIRE(c == 0x0B0A0908);
+                REQUIRE(d == 0x0F0E0D0C);
+
+                uint16_t e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException);
+            }
+        }
+
+        WHEN("reading four 32 bit values")
+        {
+            uint32_t a, b, c, d;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+            zipios::zipRead(is, c);
+            zipios::zipRead(is, d);
+
+            THEN("another 32 bit value")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+                REQUIRE(c == 0x0B0A0908);
+                REQUIRE(d == 0x0F0E0D0C);
+
+                uint32_t e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException);
+            }
+        }
+
+        WHEN("reading two 32 bit values")
+        {
+            uint32_t a, b;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+
+            THEN("then a string that's too long")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+
+                // we have 8 bytes left, trying to read 12 fails
+                std::string e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, e, 12), zipios::IOException);
+            }
+        }
+
+        WHEN("reading two 32 bit values")
+        {
+            uint32_t a, b;
+            zipios::zipRead(is, a);
+            zipios::zipRead(is, b);
+
+            THEN("then a buffer that's too long")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+
+                // we have 8 bytes left, trying to read 12 fails
+                zipios::buffer_t e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, e, 12), zipios::IOException);
+            }
+        }
+
         unlink("io.bin");
     }
 }
@@ -428,6 +523,121 @@ SCENARIO("Read from buffer", "[zipios_common] [io]")
                 REQUIRE(c == 0x0C);
             }
         }
+
+        WHEN("reading four 32 bit values")
+        {
+            uint32_t a, b, c, d;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 8);
+            zipios::zipRead(is, pos, c);
+            REQUIRE(pos == 12);
+            zipios::zipRead(is, pos, d);
+            REQUIRE(pos == 16);
+
+            THEN("another 8 bit value")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+                REQUIRE(c == 0x0B0A0908);
+                REQUIRE(d == 0x0F0E0D0C);
+
+                uint8_t e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException);
+            }
+        }
+
+        WHEN("reading four 32 bit values")
+        {
+            uint32_t a, b, c, d;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 8);
+            zipios::zipRead(is, pos, c);
+            REQUIRE(pos == 12);
+            zipios::zipRead(is, pos, d);
+            REQUIRE(pos == 16);
+
+            THEN("another 16 bit value")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+                REQUIRE(c == 0x0B0A0908);
+                REQUIRE(d == 0x0F0E0D0C);
+
+                uint16_t e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException);
+            }
+        }
+
+        WHEN("reading four 32 bit values")
+        {
+            uint32_t a, b, c, d;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 8);
+            zipios::zipRead(is, pos, c);
+            REQUIRE(pos == 12);
+            zipios::zipRead(is, pos, d);
+            REQUIRE(pos == 16);
+
+            THEN("another 32 bit value")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+                REQUIRE(c == 0x0B0A0908);
+                REQUIRE(d == 0x0F0E0D0C);
+
+                uint32_t e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException);
+            }
+        }
+
+        WHEN("reading two 32 bit values")
+        {
+            uint32_t a, b;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 8);
+
+            THEN("then a string that's too long")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+
+                // we have 8 bytes left, trying to read 12 fails
+                std::string e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e, 12), zipios::IOException);
+            }
+        }
+
+        WHEN("reading two 32 bit values")
+        {
+            uint32_t a, b;
+            size_t pos(0);
+            zipios::zipRead(is, pos, a);
+            REQUIRE(pos == 4);
+            zipios::zipRead(is, pos, b);
+            REQUIRE(pos == 8);
+
+            THEN("then a buffer that's too long")
+            {
+                REQUIRE(a == 0x03020100);
+                REQUIRE(b == 0x07060504);
+
+                // we have 8 bytes left, trying to read 12 fails
+                zipios::buffer_t e;
+                REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e, 12), zipios::IOException);
+            }
+        }
     }
 }
 
@@ -594,7 +804,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             }
         }
 
-        WHEN("reading one 32 bit, one 8 bit then one buffer value")
+        WHEN("writing one 32 bit, one 8 bit then one buffer value")
         {
             uint32_t a(0x01020304);
             uint8_t  b(0xFF);
@@ -640,7 +850,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             }
         }
 
-        WHEN("reading one 32 bit, one string and then one 8 bit value")
+        WHEN("writing one 32 bit, one string and then one 8 bit value")
         {
             uint32_t a(0x03050709);
             std::string b("TEST");
@@ -671,6 +881,90 @@ SCENARIO("Write to file", "[zipios_common] [io]")
                 REQUIRE(buf[6] == 'S');
                 REQUIRE(buf[7] == 'T');
                 REQUIRE(buf[8] == 0x01);
+            }
+        }
+
+        WHEN("writing some data and mark the output as invalid")
+        {
+            uint32_t a(0x03050709);
+            std::string b("TEST");
+            std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+            zipios::zipWrite(os, a);
+            zipios::zipWrite(os, b);
+            os.setstate(std::ios::failbit);
+
+            THEN("writing a 8 bit value fails")
+            {
+                uint8_t c(0xFF);
+                REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
+            }
+        }
+
+        WHEN("writing some data and mark the output as invalid")
+        {
+            uint32_t a(0x03050709);
+            std::string b("TEST");
+            std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+            zipios::zipWrite(os, a);
+            zipios::zipWrite(os, b);
+            os.setstate(std::ios::failbit);
+
+            THEN("writing a 16 bit value fails")
+            {
+                uint16_t c(0xFFEE);
+                REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
+            }
+        }
+
+        WHEN("writing some data and mark the output as invalid")
+        {
+            uint32_t a(0x03050709);
+            std::string b("TEST");
+            std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+            zipios::zipWrite(os, a);
+            zipios::zipWrite(os, b);
+            os.setstate(std::ios::failbit);
+
+            THEN("writing a 32 bit value fails")
+            {
+                uint32_t c(0xFFEEDDCC);
+                REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
+            }
+        }
+
+        WHEN("writing some data and mark the output as invalid")
+        {
+            uint32_t a(0x03050709);
+            std::string b("TEST");
+            std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+            zipios::zipWrite(os, a);
+            zipios::zipWrite(os, b);
+            os.setstate(std::ios::failbit);
+
+            THEN("writing a string fails")
+            {
+                std::string c("TEST");
+                REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
+            }
+        }
+
+        WHEN("writing some data and mark the output as invalid")
+        {
+            uint32_t a(0x03050709);
+            std::string b("TEST");
+            std::ofstream os("io.bin", std::ios::out | std::ios::binary);
+            zipios::zipWrite(os, a);
+            zipios::zipWrite(os, b);
+            os.setstate(std::ios::failbit);
+
+            THEN("writing a buffer fails")
+            {
+                zipios::buffer_t c;
+                c.push_back('F');
+                c.push_back('A');
+                c.push_back('I');
+                c.push_back('L');
+                REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
             }
         }
 
