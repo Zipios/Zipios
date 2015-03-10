@@ -25,6 +25,7 @@
 #include "catch_tests.h"
 
 #include "zipios++/directoryentry.hpp"
+#include "zipios++/zipiosexceptions.hpp"
 
 #include "src/dostime.h"
 
@@ -43,20 +44,34 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         // first, check that the object is setup as expected
         SECTION("verify that the object looks as expected")
         {
+            REQUIRE(de.isEqual(de));
             REQUIRE(de.getComment().empty());
             REQUIRE(de.getCompressedSize() == 0);
             REQUIRE(de.getCrc() == 0);
+            REQUIRE(de.getEntryOffset() == 0);
             REQUIRE(de.getExtra().empty());
+            REQUIRE(de.getHeaderSize() == 0);
             REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
             REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
             REQUIRE(de.getFileName() == "period.txt");
             REQUIRE(de.getSize() == 0);
             REQUIRE(de.getTime() == 0);  // invalid date
             REQUIRE(de.getUnixTime() == 0);
-            REQUIRE(!de.hasCrc());
-            REQUIRE(!de.isDirectory());
-            REQUIRE(!de.isValid());
+            REQUIRE_FALSE(de.hasCrc());
+            REQUIRE_FALSE(de.isDirectory());
+            REQUIRE_FALSE(de.isValid());
             REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+            REQUIRE_THROWS_AS(de.read(std::cin), zipios::IOException);
+            REQUIRE_THROWS_AS(de.write(std::cout), zipios::IOException);
+
+            zipios::FileEntry::pointer_t null_entry;
+            REQUIRE_FALSE(de.isEqual(*null_entry));  // here we are passing a NULL reference which most people think is something impossible to do...
+            //REQUIRE_FALSE(null_entry->isEqual(de)); -- that would obviously crash!
+
+            zipios::DirectoryEntry empty(zipios::FilePath(""), "");
+            REQUIRE_FALSE(de.isEqual(empty));
+            REQUIRE_FALSE(empty.isEqual(de));
 
             // attempt a clone now, should have the same content
             zipios::DirectoryEntry::pointer_t clone(de.clone());
@@ -64,17 +79,21 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             REQUIRE(clone->getComment().empty());
             REQUIRE(clone->getCompressedSize() == 0);
             REQUIRE(clone->getCrc() == 0);
+            REQUIRE(clone->getEntryOffset() == 0);
             REQUIRE(clone->getExtra().empty());
+            REQUIRE(clone->getHeaderSize() == 0);
             REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
             REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
             REQUIRE(clone->getFileName() == "period.txt");
             REQUIRE(clone->getSize() == 0);
             REQUIRE(clone->getTime() == 0);  // invalid date
             REQUIRE(clone->getUnixTime() == 0);
-            REQUIRE(!clone->hasCrc());
-            REQUIRE(!clone->isDirectory());
-            REQUIRE(!clone->isValid());
+            REQUIRE_FALSE(clone->hasCrc());
+            REQUIRE_FALSE(clone->isDirectory());
+            REQUIRE_FALSE(clone->isValid());
             REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+            REQUIRE(clone->isEqual(de));
+            REQUIRE(de.isEqual(*clone));
         }
 
         WHEN("setting the comment")
@@ -86,17 +105,23 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment() == "new comment");
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == 0);  // invalid date
                 REQUIRE(de.getUnixTime() == 0);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
-                REQUIRE(!de.isValid());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                zipios::DirectoryEntry other(zipios::FilePath("another/path"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
 
                 // attempt a clone now, should have the same content
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
@@ -104,17 +129,21 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment() == "new comment");
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == 0);  // invalid date
                 REQUIRE(clone->getUnixTime() == 0);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
-                REQUIRE(!clone->isValid());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
             }
         }
 
@@ -135,17 +164,27 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == 0);  // invalid date
                 REQUIRE(de.getUnixTime() == 0);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
-                REQUIRE(!de.isValid());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                zipios::DirectoryEntry same(zipios::FilePath("/this/file/really/should/not/exist/period.txt"), "");
+                REQUIRE(de.isEqual(same));
+                REQUIRE(same.isEqual(de));
+
+                zipios::DirectoryEntry other(zipios::FilePath("this/file/really/should/not/exist/period.txt"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
 
                 // attempt a clone now, should have the same content
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
@@ -153,17 +192,21 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == 0);  // invalid date
                 REQUIRE(clone->getUnixTime() == 0);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
-                REQUIRE(!clone->isValid());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
             }
         }
 
@@ -183,17 +226,23 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == 0);  // invalid date
                 REQUIRE(de.getUnixTime() == 0);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
-                REQUIRE(!de.isValid());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                zipios::DirectoryEntry other(zipios::FilePath("/this/file/really/should/not/exist/period"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
 
                 // attempt a clone now, should have the same content
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
@@ -201,17 +250,21 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == 0);  // invalid date
                 REQUIRE(clone->getUnixTime() == 0);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
-                REQUIRE(!clone->isValid());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
             }
         }
 
@@ -231,17 +284,23 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == 0);  // invalid date
                 REQUIRE(de.getUnixTime() == 0);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
-                REQUIRE(!de.isValid());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                zipios::DirectoryEntry other(zipios::FilePath("period.txt"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
 
                 // attempt a clone now, should have the same content
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
@@ -249,17 +308,21 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == 0);  // invalid date
                 REQUIRE(clone->getUnixTime() == 0);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
-                REQUIRE(!clone->isValid());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
             }
         }
 
@@ -273,17 +336,23 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == 0);  // invalid date
                 REQUIRE(de.getUnixTime() == 0);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
-                REQUIRE(!de.isValid());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                zipios::DirectoryEntry other(zipios::FilePath("/file/really/should/not/exist/period.txt"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
 
                 // attempt a clone now, should have the same content
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
@@ -291,17 +360,21 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == 0);  // invalid date
                 REQUIRE(clone->getUnixTime() == 0);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
-                REQUIRE(!clone->isValid());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
             }
         }
 
@@ -322,7 +395,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == r);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
@@ -334,13 +409,19 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(!de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (" + std::to_string(r) + " bytes)");
 
+                zipios::DirectoryEntry other(zipios::FilePath("really/.should"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
+
                 // attempt a clone now, should have the same content
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == r);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
@@ -351,6 +432,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(!clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (" + std::to_string(r) + " bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
             }
         }
 
@@ -367,7 +450,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
@@ -379,13 +464,19 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(!de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
 
+                zipios::DirectoryEntry other(zipios::FilePath("other-name.txt"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
+
                 // attempt a clone now, should have the same content
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
@@ -396,6 +487,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(!clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
             }
         }
 
@@ -411,7 +504,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
@@ -423,13 +518,19 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(!de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
 
+                zipios::DirectoryEntry other(zipios::FilePath("path/incorrect"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
+
                 // attempt a clone now, should have the same content
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
@@ -440,6 +541,62 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(!clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
+            }
+        }
+
+        WHEN("setting the entry offset")
+        {
+            // DOS time are limited to a smaller range and on every other
+            // second so we get a valid DOS time and convert it to a Unix time
+            std::streampos r(static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32));
+            de.setEntryOffset(r);
+
+            THEN("we retrive the same value")
+            {
+                REQUIRE(de.getComment().empty());
+                REQUIRE(de.getCompressedSize() == 0);
+                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == r);
+                REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
+                REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(de.getFileName() == "period.txt");
+                REQUIRE(de.getSize() == 0);
+                REQUIRE(de.getTime() == 0);
+                REQUIRE(de.getUnixTime() == 0);
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
+                REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+
+                zipios::DirectoryEntry other(zipios::FilePath("path/incorrect"), "");
+                REQUIRE_FALSE(de.isEqual(other));
+                REQUIRE_FALSE(other.isEqual(de));
+
+                // attempt a clone now, should have the same content
+                zipios::DirectoryEntry::pointer_t clone(de.clone());
+
+                REQUIRE(clone->getComment().empty());
+                REQUIRE(clone->getCompressedSize() == 0);
+                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == r);
+                REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
+                REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
+                REQUIRE(clone->getFileName() == "period.txt");
+                REQUIRE(clone->getSize() == 0);
+                REQUIRE(clone->getTime() == 0);
+                REQUIRE(clone->getUnixTime() == 0);
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
+                REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
+                REQUIRE(clone->isEqual(de));
+                REQUIRE(de.isEqual(*clone));
             }
         }
     }
@@ -473,7 +630,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -491,7 +650,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -511,7 +672,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment() == "new comment");
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -529,7 +692,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment() == "new comment");
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -557,7 +722,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -575,7 +742,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -602,7 +771,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -620,7 +791,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -647,7 +820,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -665,7 +840,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -686,7 +863,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -704,7 +883,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -731,7 +912,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == r);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -749,7 +932,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == r);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -776,7 +961,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -794,7 +981,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -817,7 +1006,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
@@ -835,7 +1026,9 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
@@ -875,7 +1068,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(de.getComment().empty());
             REQUIRE(de.getCompressedSize() == 0);
             REQUIRE(de.getCrc() == 0);
+            REQUIRE(de.getEntryOffset() == 0);
             REQUIRE(de.getExtra().empty());
+            REQUIRE(de.getHeaderSize() == 0);
             REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
             REQUIRE(de.getName() == "filepath-test");
             REQUIRE(de.getFileName() == "");
@@ -893,7 +1088,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(clone->getComment().empty());
             REQUIRE(clone->getCompressedSize() == 0);
             REQUIRE(clone->getCrc() == 0);
+            REQUIRE(clone->getEntryOffset() == 0);
             REQUIRE(clone->getExtra().empty());
+            REQUIRE(clone->getHeaderSize() == 0);
             REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
             REQUIRE(clone->getName() == "filepath-test");
             REQUIRE(clone->getFileName() == "");
@@ -915,7 +1112,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment() == "new comment");
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
@@ -933,7 +1132,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment() == "new comment");
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");
@@ -964,7 +1165,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
@@ -982,7 +1185,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");
@@ -1012,7 +1217,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
@@ -1030,7 +1237,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");
@@ -1060,7 +1269,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
@@ -1078,7 +1289,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");
@@ -1102,7 +1315,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
@@ -1120,7 +1335,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");
@@ -1151,7 +1368,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == r);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
@@ -1169,7 +1388,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == r);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");
@@ -1196,7 +1417,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
@@ -1214,7 +1437,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");
@@ -1240,7 +1465,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
+                REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "");
@@ -1258,7 +1485,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
+                REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "");

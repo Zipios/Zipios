@@ -438,5 +438,21 @@ bool ZipFile::confirmLocalHeaders(std::istream& zipfile)
 }
 
 
+/** \brief Create a Zip archive from the specified FileCollection.
+ *
+ * This function is expected to be used with a DirectoryCollection
+ * that you created to save the collection in an archive.
+ *
+ * \param[in,out] os  The output stream where the Zip archive is saed.
+ * \param[in] collection  The collection to save in this output stream.
+ */
+void ZipFile::saveCollectionToArchive(std::ostream& os, FileCollection const& collection)
+{
+    static_cast<void>(os);
+    static_cast<void>(collection);
+    /** \TODO Write implementation! */
+}
+
+
 } // zipios namespace
 // vim: ts=4 sw=4 et

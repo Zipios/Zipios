@@ -52,7 +52,7 @@ public:
     virtual void                close();
     virtual stream_pointer_t    getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
 
-    static void                 saveCollectionToArchive(std::string const& filename, FileCollection const& collection);
+    static void                 saveCollectionToArchive(std::ostream& os, FileCollection const& collection);
 
 private:
     bool                        init(std::istream& zipfile);
