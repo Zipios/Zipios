@@ -25,13 +25,21 @@
  * a set of zipios::DirectoryEntry objects.
  */
 
+#if defined(_WINDOWS) || defined(WIN32) || defined(_WIN32) || defined(__WIN32)
+#define ZIPIOS_WINDOWS
+#endif
+
 #include "zipios++/directorycollection.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
 
-#include "directory.hpp"
-
 #include <fstream>
+
+#ifdef ZIPIOS_WINDOWS
+#include <io.h>
+#else
+#include <dirent.h>
+#endif
 
 
 namespace zipios
@@ -270,18 +278,121 @@ void DirectoryCollection::loadEntries() const
  */
 void DirectoryCollection::load(FilePath const& subdir)
 {
-    for(boost::filesystem::dir_it it(m_filepath + subdir); it != boost::filesystem::dir_it(); ++it)
+#ifdef ZIPIOS_WINDOWS
+    struct read_dir_t
     {
+        read_dir_t(FilePath const& path)
+            //: m_handle(0) -- auto-init
+            //, m_fileinfo() -- initialized below
+            //, m_read_first(false) -- auto-init
+        {
+            /** \TODO
+             * Make necessary changes to support 64 bit and Unicode
+             * (require utf8 -> wchar_t, then use _wfindfirsti64().)
+             * We'll have to update the next() function too, of course.
+             */
+            m_handle = _findfirsti64(path.getName().c_str(), &m_findinfo);
+            if(m_handle == 0 && errno == ENOENT)
+            {
+                // this can happen, the directory is empty and thus has
+                // absolutely no information
+                f_read_first = true;
+            }
+        }
+
+        ~read_dir_t()
+        {
+            // a completely empty directory may give us a "null pointer"
+            // when calling _[w]findfirst[i64]()
+            if(m_handle != 0)
+            {
+                _findclose(m_handle);
+            }
+        }
+
+        std::string next()
+        {
+            if(m_read_first)
+            {
+                __int64 const r(_findnexti64(m_handle, &m_fileinfo));
+                if(r != 0)
+                {
+                    if(errno != ENOENT)
+                    {
+                        throw IOException("an I/O error occured while reading a directory");
+                    }
+                    return std::string();
+                }
+            }
+            else
+            {
+                // the _findfirst() includes a response, use it!
+                m_read_first = true;
+            }
+
+            return m_fileinfo.name;
+        }
+
+    private:
+        long                    m_handle = 0;
+        struct _finddata_t      m_fileinfo;
+        bool                    m_read_first = 0;
+    };
+#else
+    struct read_dir_t
+    {
+        read_dir_t(FilePath const& path)
+            : m_dir(nullptr)
+        {
+            m_dir = opendir(static_cast<std::string>(path).c_str());
+        }
+
+        ~read_dir_t()
+        {
+            closedir(m_dir);
+        }
+
+        std::string next()
+        {
+            errno = 0;
+            struct dirent *entry, e;
+            int const r(readdir_r(m_dir, &e, &entry));
+            if(r != 0)
+            {
+                throw IOException("an I/O error occured while reading a directory");
+            }
+            if(entry == NULL)
+            {
+                return std::string();
+            }
+
+            return entry->d_name;
+        }
+
+    private:
+        DIR *   m_dir;
+    };
+#endif
+
+    read_dir_t dir(m_filepath + subdir);
+    for(;;)
+    {
+        std::string const& name(dir.next());
+        if(name.empty())
+        {
+            break;
+        }
+
         // skip the "." and ".." directories, they are never added to
         // a Zip archive
-        if(*it != "." && *it != "..")
+        if(name != "." && name != "..")
         {
-            FileEntry::pointer_t ent(new DirectoryEntry(m_filepath + subdir + *it, ""));
+            FileEntry::pointer_t ent(new DirectoryEntry(m_filepath + subdir + name, ""));
             m_entries.push_back(ent);
 
             if(m_recursive && ent->isDirectory())
             {
-                load(subdir + *it);
+                load(subdir + name);
             }
         }
     }
