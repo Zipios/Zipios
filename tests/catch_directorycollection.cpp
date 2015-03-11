@@ -133,15 +133,15 @@ public:
             }
             if(!os)
             {
-                unlink(m_filename.c_str());
-                throw std::runtime_error("failed creating regular file");
+                unlink(m_filename.c_str()); // LCOV_EXCL_LINE
+                throw std::runtime_error("failed creating regular file"); // LCOV_EXCL_LINE
             }
         }
         else if(t == type_t::DIRECTORY)
         {
             if(mkdir(m_filename.c_str(), 0777) != 0)
             {
-                throw std::runtime_error("failed creating directory");
+                throw std::runtime_error("failed creating directory"); // LCOV_EXCL_LINE
             }
             chdir(m_filename.c_str());
             for(int i(0); i < children_count; ++i)
@@ -162,7 +162,7 @@ public:
         }
         else
         {
-            throw std::logic_error("unknown type of file");
+            throw std::logic_error("unknown type of file"); // LCOV_EXCL_LINE
         }
     }
 
@@ -191,7 +191,7 @@ public:
         else
         {
             // throw in destructor?!
-            throw std::logic_error("unknown type of file");
+            throw std::logic_error("unknown type of file"); // LCOV_EXCL_LINE
         }
     }
 
@@ -846,7 +846,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         std::string::size_type pos(name.rfind('/'));
                         if(pos == std::string::npos)
                         {
-                            pos = 0;
+                            pos = 0; // LCOV_EXCL_LINE
                         }
                         else
                         {
