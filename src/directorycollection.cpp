@@ -257,12 +257,23 @@ void DirectoryCollection::loadEntries() const
     {
         m_entries_loaded = true;
 
-        // include the root directory
-        FileEntry::pointer_t ent(new DirectoryEntry(m_filepath, ""));
-        const_cast<DirectoryCollection *>(this)->m_entries.push_back(ent);
+        // if the read fails then the directory may have been deleted
+        // in which case we want to invalidate this DirectoryCollection
+        // object
+        try
+        {
+            // include the root directory
+            FileEntry::pointer_t entry(new DirectoryEntry(m_filepath, ""));
+            const_cast<DirectoryCollection *>(this)->m_entries.push_back(entry);
 
-        // now read the data inside that directory
-        const_cast<DirectoryCollection *>(this)->load(FilePath());
+            // now read the data inside that directory
+            const_cast<DirectoryCollection *>(this)->load(FilePath());
+        }
+        catch(...)
+        {
+            const_cast<DirectoryCollection *>(this)->close();
+            throw;
+        }
     }
 }
 
@@ -292,11 +303,18 @@ void DirectoryCollection::load(FilePath const& subdir)
              * We'll have to update the next() function too, of course.
              */
             m_handle = _findfirsti64(path.getName().c_str(), &m_findinfo);
-            if(m_handle == 0 && errno == ENOENT)
+            if(m_handle == 0)
             {
-                // this can happen, the directory is empty and thus has
-                // absolutely no information
-                f_read_first = true;
+                if(errno == ENOENT)
+                {
+                    // this can happen, the directory is empty and thus has
+                    // absolutely no information
+                    f_read_first = true;
+                }
+                else
+                {
+                    throw IOException("an I/O error occured while reading a directory");
+                }
             }
         }
 
@@ -342,9 +360,12 @@ void DirectoryCollection::load(FilePath const& subdir)
     struct read_dir_t
     {
         read_dir_t(FilePath const& path)
-            : m_dir(nullptr)
+            : m_dir(opendir(static_cast<std::string>(path).c_str()))
         {
-            m_dir = opendir(static_cast<std::string>(path).c_str());
+            if(!m_dir)
+            {
+                throw IOException("an I/O error occured while trying to access directory");
+            }
         }
 
         ~read_dir_t()
@@ -359,7 +380,7 @@ void DirectoryCollection::load(FilePath const& subdir)
             int const r(readdir_r(m_dir, &e, &entry));
             if(r != 0)
             {
-                throw IOException("an I/O error occured while reading a directory");
+                throw IOException("an I/O error occured while reading a directory"); // LCOV_EXCL_LINE
             }
             if(entry == NULL)
             {

@@ -1181,4 +1181,83 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 }
 
 
+TEST_CASE("DirectoryCollection with an existing directory that gets deleted", "[DirectoryCollection] [FileCollection]")
+{
+    // create a directory
+    system("rm -rf tree"); // clean up, just in case
+    REQUIRE(mkdir("tree", 0777) == 0);
+
+    // the initialization works as expected!
+    zipios::DirectoryCollection dc(zipios::DirectoryCollection("tree", false));
+    REQUIRE(dc.isValid());
+
+    // now we delete that directory!
+    REQUIRE(rmdir("tree") == 0);
+
+    // attempt the get the size, it throws
+    REQUIRE_THROWS_AS(dc.size() == 1, zipios::IOException);
+    REQUIRE_FALSE(dc.isValid());
+}
+
+
+TEST_CASE("DirectoryCollection with an empty directory", "[DirectoryCollection] [FileCollection]")
+{
+    // create a directory
+    system("rm -rf tree"); // clean up, just in case
+    REQUIRE(mkdir("tree", 0777) == 0);
+
+    SECTION("verify that the object looks as expected")
+    {
+        zipios::DirectoryCollection dc(zipios::DirectoryCollection("tree", true));
+
+        REQUIRE(dc.isValid());
+        REQUIRE_FALSE(dc.entries().empty());
+        REQUIRE(dc.entries().size() == 1);
+        REQUIRE_FALSE(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
+        REQUIRE_FALSE(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+        REQUIRE_FALSE(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
+        REQUIRE_FALSE(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+        REQUIRE(dc.getName() == "tree");
+        REQUIRE(dc.size() == 1);
+        dc.mustBeValid(); // not throwing
+
+        {
+            zipios::FileEntry::vector_t v(dc.entries());
+            for(auto it(v.begin()); it != v.end(); ++it)
+            {
+                zipios::FileEntry::pointer_t entry(*it);
+
+                // verify that our tree knows about this file
+                REQUIRE(entry->getName() == "tree");
+
+                struct stat file_stats;
+                REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
+
+                REQUIRE((*it)->getComment().empty());
+                REQUIRE((*it)->getCompressedSize() == 0);
+                REQUIRE((*it)->getCrc() == 0);
+                REQUIRE((*it)->getEntryOffset() == 0);
+                REQUIRE((*it)->getExtra().empty());
+                REQUIRE((*it)->getHeaderSize() == 0);
+                REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
+                REQUIRE((*it)->getName() == "tree");
+                REQUIRE((*it)->getFileName() == "tree");
+                REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
+                REQUIRE_FALSE((*it)->hasCrc());
+                REQUIRE((*it)->isDirectory());
+                REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                REQUIRE((*it)->isValid());
+                REQUIRE((*it)->toString() == "tree (directory)");
+
+                REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+            }
+        }
+    }
+
+    rmdir("tree");
+}
+
+
 // vim: ts=4 sw=4 et
