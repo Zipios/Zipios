@@ -48,6 +48,7 @@ add_executable( ${PROJECT_NAME}
     catch_tests.cpp
 
     catch_common.cpp
+    catch_directorycollection.cpp
     catch_directoryentry.cpp
     catch_dostime.cpp
     catch_filepath.cpp

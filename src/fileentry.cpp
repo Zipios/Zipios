@@ -245,18 +245,15 @@ std::string FileEntry::getName() const
  *
  * This function returns the filename only of the entry.
  *
- * If the filename represents a directory, then the function
- * returns an empty string.
+ * \warning
+ * The function returns the last segment of the filename whether it is
+ * a regular file or a directory so one can search for a directory with
+ * the MATCH or IGNORE search options.
  *
  * \return The filename of the entry.
  */
 std::string FileEntry::getFileName() const
 {
-    if(isDirectory())
-    {
-        return std::string();
-    }
-
     return m_filename.filename();
 }
 

@@ -1073,7 +1073,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(de.getHeaderSize() == 0);
             REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
             REQUIRE(de.getName() == "filepath-test");
-            REQUIRE(de.getFileName() == "");
+            REQUIRE(de.getFileName() == "filepath-test");
             REQUIRE(de.getSize() == 0);
             REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
             REQUIRE(de.getUnixTime() == file_stats.st_mtime);
@@ -1093,7 +1093,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(clone->getHeaderSize() == 0);
             REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
             REQUIRE(clone->getName() == "filepath-test");
-            REQUIRE(clone->getFileName() == "");
+            REQUIRE(clone->getFileName() == "filepath-test");
             REQUIRE(clone->getSize() == 0);
             REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
             REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
@@ -1117,7 +1117,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
-                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
@@ -1137,7 +1137,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
-                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
@@ -1170,7 +1170,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
-                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
@@ -1190,7 +1190,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
-                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
@@ -1222,7 +1222,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
-                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
@@ -1242,7 +1242,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
-                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
@@ -1274,7 +1274,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
-                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
@@ -1294,7 +1294,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
-                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
@@ -1320,7 +1320,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
-                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
@@ -1340,7 +1340,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
-                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
@@ -1373,7 +1373,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
-                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == r);
                 REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
@@ -1393,7 +1393,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
-                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == r);
                 REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
@@ -1422,7 +1422,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
-                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == r);
                 REQUIRE(de.getUnixTime() == dos2unixtime(r));
@@ -1442,7 +1442,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
-                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == r);
                 REQUIRE(clone->getUnixTime() == dos2unixtime(r));
@@ -1470,7 +1470,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(de.getName() == "filepath-test");
-                REQUIRE(de.getFileName() == "");
+                REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == unix2dostime(r));
                 REQUIRE(de.getUnixTime() == r);
@@ -1490,7 +1490,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE(clone->getName() == "filepath-test");
-                REQUIRE(clone->getFileName() == "");
+                REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == unix2dostime(r));
                 REQUIRE(clone->getUnixTime() == r);

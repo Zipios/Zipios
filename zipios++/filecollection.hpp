@@ -45,7 +45,7 @@ public:
         MATCH
     };
 
-    explicit                        FileCollection();
+                                    FileCollection();
                                     FileCollection(FileCollection const& src);
     FileCollection&                 operator = (FileCollection const& src);
     virtual pointer_t               clone() const = 0;

@@ -41,7 +41,9 @@ namespace
 {
 
 
-/** Function object to be used with the STL find_if algorithm to
+/** \brief Class object used with the std::find_if() function.
+ *
+ * This function object is used with the STL find_if algorithm to
  * find a FileEntry in a container, which name (as obtained with
  * FileEntry::getName()) is identical to the name specified in the
  * MatchName constructor.
@@ -49,11 +51,33 @@ namespace
 class MatchName
 {
 public:
+    /** \brief Initialize a MatchName object.
+     *
+     * This function saves the name to search in the FileCollection.
+     *
+     * This class expect the name to be a full path and file name
+     * with extension. The full name has to match.
+     *
+     * \param[in] name  The name of the file being searched.
+     */
     explicit MatchName(std::string const& name)
         : m_name(name)
     {
     }
 
+    /** \brief Compare an entry to this MatchName.
+     *
+     * This function compares the full name of the entry with the
+     * saved full name. If equal, then it returns true. It is used
+     * with the std::find_if() function.
+     *
+     * \todo
+     * We could transform that with lambda at some point.
+     *
+     * \param[in] entry  The entry to compare with the MatchName.
+     *
+     * \return true if the name of the entry matches the MatchName.
+     */
     bool operator() (FileEntry::pointer_t entry) const
     {
         return entry->getName() == m_name;
@@ -64,19 +88,49 @@ private:
 };
 
 
-/** Function object to be used with the STL find_if algorithm to
+/** \brief Class object used with the std::find_if() function.
+ *
+ * This function object is used with the STL find_if algorithm to
  * find a FileEntry in a container, which name (as obtained with
  * FileEntry::getFileName()) is identical to the name specified in the
- * MatchName constructor.
+ * MatchFileName constructor.
+ *
+ * \warning
+ * The file name cannot include a '/' in this case or the search will
+ * always fail.
  */
 class MatchFileName
 {
 public:
+    /** \brief Initialize a MatchFileName object.
+     *
+     * This function saves the base name to search in the
+     * FileCollection.
+     *
+     * This class expect the name to be a base file name, eventually with
+     * an extension. If the name includes a slash then the search will
+     * always fail.
+     *
+     * \param[in] name  The name of the file being searched.
+     */
     explicit MatchFileName(std::string const& name)
         : m_name(name)
     {
     }
 
+    /** \brief Compare an entry to this MatchFileName.
+     *
+     * This function compares the base name of the entry with the
+     * saved base name. If equal, then it returns true. It is used
+     * with the std::find_if() function.
+     *
+     * \todo
+     * We could transform that with lambda at some point.
+     *
+     * \param[in] entry  The entry to compare with the MatchFileName.
+     *
+     * \return true if the name of the entry matches the MatchFileName.
+     */
     bool operator() (FileEntry::pointer_t entry) const
     {
         return entry->getFileName() == m_name;
@@ -204,7 +258,7 @@ private:
  *
  * By default the FileCollection is given the special filename "-".
  *
- * The collection is empty.
+ * The collection is empty and marked as invalid.
  */
 FileCollection::FileCollection()
     : m_filename("-")
@@ -311,18 +365,18 @@ FileEntry::vector_t FileCollection::entries() const
 
 /** \brief Get an entry from this collection.
  *
- * This function returns a ConstEntryPointer to a FileEntry object for
+ * This function returns a shared pointer to a FileEntry object for
  * the entry with the specified name. To ignore the path part of the
- * filename in search of a match, specify FileCollection::IGNORE as
- * the second argument.
+ * filename while searching for a match, specify FileCollection::IGNORE
+ * as the second argument.
  *
  * \note
- * The collection my be valid.
+ * The collection must be valid or the function raises an exception.
  *
- * \param name  A string containing the name of the entry to get.
- * \param matchpath  Speficy MatchPath::MATCH, if the path should match
- *                   as well, specify MatchPath::IGNORE, if the path
- *                   should be ignored.
+ * \param[in] name  A string containing the name of the entry to get.
+ * \param[in] matchpath  Speficy MatchPath::MATCH, if the path should match
+ *                       as well, specify MatchPath::IGNORE, if the path
+ *                       should be ignored.
  *
  * \return A ConstEntryPointer to the found entry. The returned pointer
  *         equals zero if no entry is found.
@@ -417,6 +471,16 @@ void FileCollection::mustBeValid() const
 }
 
 
+/** \brief Write a FileCollection to the output stream.
+ *
+ * This function writes a simple textual representation of this
+ * FileCollection to the output stream.
+ *
+ * \param[in,out] os  The output stream.
+ * \param[in] collection  The collection to print out.
+ *
+ * \return A reference to the \p os output stream.
+ */
 std::ostream& operator << (std::ostream& os, FileCollection const& collection)
 {
     os << "collection '" << collection.getName() << "' {" ;

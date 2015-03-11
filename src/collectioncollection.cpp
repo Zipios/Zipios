@@ -54,7 +54,7 @@ namespace
  */
 void matchEntry(CollectionCollection::vector_t collections, std::string const& name, FileEntry::pointer_t& cep, FileCollection::vector_t::const_iterator& it, CollectionCollection::MatchPath matchpath)
 {
-    for(it = collections.begin(); it != collections.end(); it++)
+    for(it = collections.begin(); it != collections.end(); ++it)
     {
         cep = (*it)->getEntry(name, matchpath);
         if(cep)
@@ -212,7 +212,7 @@ FileEntry::vector_t CollectionCollection::entries() const
     mustBeValid();
 
     FileEntry::vector_t all_entries;
-    for(auto it = m_collections.begin(); it != m_collections.end(); it++)
+    for(auto it = m_collections.begin(); it != m_collections.end(); ++it)
     {
         all_entries += (*it)->entries();
     }

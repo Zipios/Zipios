@@ -8,5 +8,11 @@ set -e
 make -C ../BUILD/zipios
 
 # Go in the tests directory
-make -C ../BUILD/zipios run_zipios_tests
+if test -z "$1"
+then
+	make -C ../BUILD/zipios run_zipios_tests
+else
+	echo ../BUILD/zipios/tests/zipios_tests "$*"
+	../BUILD/zipios/tests/zipios_tests "$*"
+fi
 

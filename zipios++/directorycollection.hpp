@@ -36,24 +36,24 @@ namespace zipios
 class DirectoryCollection : public FileCollection
 {
 public:
-                                        DirectoryCollection();
-                                        DirectoryCollection(std::string const& path, bool recursive = true, bool load_now = false);
-    virtual FileCollection::pointer_t   clone() const override;
-    virtual                             ~DirectoryCollection() override;
+                                    DirectoryCollection();
+                                    DirectoryCollection(std::string const& path, bool recursive = true);
+    virtual pointer_t               clone() const override;
+    virtual                         ~DirectoryCollection() override;
 
-    virtual void                        close() override;
-    virtual FileEntry::vector_t         entries() const override;
-    virtual FileEntry::pointer_t        getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const override;
-    virtual stream_pointer_t            getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
-    virtual size_t                      size() const override;
+    virtual void                    close() override;
+    virtual FileEntry::vector_t     entries() const override;
+    virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const override;
+    virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+    virtual size_t                  size() const override;
 
 protected:
-    void                                loadEntries() const;
-    void                                load(bool recursive, FilePath const& subdir = FilePath());
+    void                            loadEntries() const;
+    void                            load(FilePath const& subdir);
 
-    mutable bool                        m_entries_loaded = false;
-    bool                                m_recursive = true;
-    FilePath                            m_filepath;
+    mutable bool                    m_entries_loaded = false;
+    bool                            m_recursive = true;
+    FilePath                        m_filepath;
 };
 
 

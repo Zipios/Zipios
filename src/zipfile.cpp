@@ -349,14 +349,13 @@ bool ZipFile::readCentralDirectory(std::istream& zipfile)
     // Position read pointer to start of first entry in central dir.
     m_vs.vseekg(zipfile, eocd.offset(), std::ios::beg);
 
-    int entry_num(0);
     // Giving the default argument in the next line to keep Visual C++ quiet
     m_entries.resize(eocd.totalCount(), 0);
-    while(entry_num < eocd.totalCount())
+    for(size_t entry_num(0); entry_num < eocd.totalCount(); ++entry_num)
     {
         ZipCDirEntry::pointer_t ent(new ZipCDirEntry);
         m_entries[entry_num] = ent;
-        static_cast<ZipCDirEntry *>(ent.get())->read(zipfile);
+        ent.get()->read(zipfile);
         if(!zipfile)
         {
             if(zipfile.bad())
@@ -372,7 +371,6 @@ bool ZipFile::readCentralDirectory(std::istream& zipfile)
                 throw IOException("Premature end of file while reading zip file central directory");
             }
         }
-        ++entry_num ;
     }
 
     // Consistency check. eocd should start here
