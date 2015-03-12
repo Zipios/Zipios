@@ -139,7 +139,7 @@ void DirectoryCollection::close()
  * entries defined in its children. It is also cleaner (albeit slower)
  * in case one wants to use the library in a thread environment.
  *
- * \return A reference to the internal FileEntry vector.
+ * \return A copy of the internal FileEntry vector.
  */
 FileEntry::vector_t DirectoryCollection::entries() const
 {
@@ -164,8 +164,8 @@ FileEntry::vector_t DirectoryCollection::entries() const
  *                       as well, specify MatchPath::IGNORE, if the path
  *                       should be ignored.
  *
- * \return A ConstEntryPointer to the found entry. The returned pointer
- *         equals zero if no entry is found.
+ * \return A shared pointer to the found entry. The returned pointer
+ *         is null if no entry is found.
  *
  * \sa mustBeValid()
  */
@@ -197,6 +197,10 @@ FileEntry::pointer_t DirectoryCollection::getEntry(std::string const& name, Matc
  * \param[in] matchpath  Whether the full path or just the filename is matched.
  *
  * \return A shared pointer to an open istream for the specified entry.
+ *
+ * \sa CollectionCollection
+ * \sa FileCollection
+ * \sa ZipFile
  */
 DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::string const& entry_name, MatchPath matchpath)
 {

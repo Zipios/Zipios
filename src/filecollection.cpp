@@ -236,6 +236,10 @@ private:
  * \param[in] matchpath  Whether the full path or just the filename is matched.
  *
  * \return A shared pointer to an open istream for the specified entry.
+ *
+ * \sa CollectionCollection
+ * \sa DirectoryCollection
+ * \sa ZipFile
  */
 
 
@@ -378,8 +382,8 @@ FileEntry::vector_t FileCollection::entries() const
  *                       as well, specify MatchPath::IGNORE, if the path
  *                       should be ignored.
  *
- * \return A ConstEntryPointer to the found entry. The returned pointer
- *         equals zero if no entry is found.
+ * \return A shared pointer to the found entry. The returned pointer
+ *         is null if no entry is found.
  *
  * \sa mustBeValid()
  */
@@ -466,7 +470,7 @@ void FileCollection::mustBeValid() const
 {
     if(!m_valid)
     {
-        throw InvalidStateException("Attempted to access an invalid CollectionCollection");
+        throw InvalidStateException("Attempted to access an invalid FileCollection");
     }
 }
 

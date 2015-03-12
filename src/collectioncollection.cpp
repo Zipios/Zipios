@@ -84,7 +84,10 @@ void matchEntry(CollectionCollection::vector_t collections, std::string const& n
 
 
 
-/** Constructor.
+/** \brief Initialize a CollectionCollection object.
+ *
+ * The constructor initializes the CollectionCollection as a valid
+ * collection.
  */
 CollectionCollection::CollectionCollection()
 {
@@ -96,7 +99,7 @@ CollectionCollection::CollectionCollection()
  *
  * This function copies a collection of collections in another. Note
  * that all the children get cloned so the copy can be edited without
- * modify the source.
+ * modify the source and vice versa.
  *
  * \param[in] src  The source to copy in the new CollectionCollection.
  */
@@ -135,16 +138,30 @@ CollectionCollection& CollectionCollection::operator = (CollectionCollection con
         }
     }
 
-    return *this ;
+    return *this;
 }
 
 
+/** \brief Create a clone of this object.
+ *
+ * This function creates a heap allocated clone of the CollectionCollection.
+ *
+ * Note that all the collections that this CollectionCollection points
+ * to are all going to get cloned.
+ *
+ * \return A shared pointer to a copy of this CollectionCollection.
+ */
 FileCollection::pointer_t CollectionCollection::clone() const
 {
     return FileCollection::pointer_t(new CollectionCollection(*this));
 }
 
 
+/** \brief Clean up this CollectionCollection object.
+ *
+ * This function ensures that the CollectionCollection object
+ * is cleaned up before deallcoating the memory.
+ */
 CollectionCollection::~CollectionCollection()
 {
 }
@@ -162,6 +179,8 @@ CollectionCollection::~CollectionCollection()
  * \param[in] collection  The collection to add.
  *
  * \return true if the collection was added succesfully.
+ *
+ * \sa addCollection(FileCollection::pointer_t collection);
  */
 bool CollectionCollection::addCollection(FileCollection const& collection)
 {
@@ -184,29 +203,68 @@ bool CollectionCollection::addCollection(FileCollection const& collection)
 }
 
 
-/** Adds the collection pointed to by collection. The CollectionCollection
-  will call delete on the pointer when it is destructed, so the caller
-  should make absolutely sure to only pass in a collection created with new
-  and be sure to leave it alone after adding it. If the collection is not
-  added false is returned and the caller remains responsible for the
-  collection pointed to by collection.
-  @param collection A pointer to the collection to add.
-  @return true if the collection was added succesfully and
-  the added collection is valid. */
+/** \brief Add a collection to this CollectionCollection.
+ *
+ * This function adds the collection pointed to by \p collection to
+ * this CollectionCollection.
+ *
+ * The CollectionCollection makes a clone of the specified \p collection
+ * to make sure management of the child collection works as expected.
+ *
+ * If the collection does not get added, the function returns false.
+ * This happens when the \p collection parameter represents an invalid
+ * collection.
+ *
+ * \exception InvalidException
+ * The function raises InvalidException if the \p collection parameter
+ * is a null pointer.
+ *
+ * \param[in] collection  A pointer to the collection to add.
+ *
+ * \return true if the collection was added succesfully.
+ *
+ * \sa addCollection(FileCollection const& collection);
+ */
 bool CollectionCollection::addCollection(FileCollection::pointer_t collection)
 {
-    mustBeValid();
+    if(!collection)
+    {
+        // TBD: should we return false instead?
+        throw InvalidException("CollectionCollection::addCollection(): called with a null collection pointer");
+    }
 
     return addCollection(*collection);
 }
 
 
+/** \brief Close the CollectionCollection object.
+ *
+ * This function marks the collection as invalid in effect rendering
+ * the collection unusable.
+ *
+ * \note
+ * This is different from creating an empty CollectionCollection
+ * which is empty and valid.
+ */
 void CollectionCollection::close()
 {
     m_valid = false;
 }
 
 
+/** \brief Retrieve a vector to all the collection entries.
+ *
+ * This function gathers the entries of all the children collections
+ * and add them to a vector that it then returns.
+ *
+ * The CollectionCollection itself has no entries.
+ *
+ * It is possible to define a CollectionCollection as a child of
+ * another CollectionCollection. The process repeats infinitum
+ * as required.
+ *
+ * \return A copy of all the entries found in the child Collections.
+ */
 FileEntry::vector_t CollectionCollection::entries() const
 {
     mustBeValid();
@@ -221,6 +279,40 @@ FileEntry::vector_t CollectionCollection::entries() const
 }
 
 
+/** \brief Get an entry from the collection.
+ *
+ * This function returns a shared pointer to a FileEntry object for
+ * the entry with the specified name. To ignore the path part of the
+ * filename while searching for a match, specify
+ * FileCollection::MatchPath::IGNORE as the second argument.
+ * (the default is FileCollection::MatchPath::MATCH.
+ *
+ * \warning
+ * In case of the CollectionCollection, the matching goes from child
+ * collection to child collection in the order they were added to
+ * the CollectionCollection. The first match is returned and at this
+ * point there is nothing linking a FileEntry to its collection so
+ * you will NOT be able to retrieve an istream to access that
+ * FileEntry data. To do that, you must directly call the
+ * getInputStream() function. We may fix that problem at a later
+ * time and offer the getInputStream directly on the FileEntry
+ * instead of the collection. This is problematic at this point
+ * since, as we can see in the zipfile.cpp, we need to have
+ * access to the m_zs offset.
+ *
+ * \note
+ * The collection must be valid or the function raises an exception.
+ *
+ * \param[in] name  A string containing the name of the entry to get.
+ * \param[in] matchpath  Speficy MatchPath::MATCH, if the path should match
+ *                       as well, specify MatchPath::IGNORE, if the path
+ *                       should be ignored.
+ *
+ * \return A shared pointer to the found entry. The returned pointer
+ *         is null if no entry is found.
+ *
+ * \sa mustBeValid()
+ */
 FileEntry::pointer_t CollectionCollection::getEntry(std::string const& name, MatchPath matchpath) const
 {
     mustBeValid();
@@ -235,6 +327,35 @@ FileEntry::pointer_t CollectionCollection::getEntry(std::string const& name, Mat
 }
 
 
+/** \brief Retrieve pointer to an istream.
+ *
+ * This function returns a shared pointer to an istream defined from the
+ * named entry, which is expected to be available in this collection.
+ *
+ * The function returns a NULL pointer if there is no entry with the
+ * specified name in this CollectionCollection. Note that the name is
+ * searched in all the child collections of the CollectionCollection.
+ *
+ * Note that the function returns a smart pointer to an istream. In
+ * general the CollectionCollection will not hold a copy of that pointer
+ * meaning that if you call getInputStream() multiple times with the same
+ * \p entry_name parameter, you get distinct istream instances each
+ * time.
+ *
+ * By default the \p entry_name parameter is expected to match the full
+ * path and filename (MatchPath::MATCH). If you are looking for a file
+ * and want to ignore the directory name, set the matchpath parameter
+ * to MatchPath::IGNORE.
+ *
+ * \param[in] entry_name  The name of the file to search in the collection.
+ * \param[in] matchpath  Whether the full path or just the filename is matched.
+ *
+ * \return A shared pointer to an open istream for the specified entry.
+ *
+ * \sa FileCollection
+ * \sa DirectoryCollection
+ * \sa ZipFile
+ */
 CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(std::string const& entry_name, MatchPath matchpath)
 {
     mustBeValid();
@@ -250,8 +371,8 @@ CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(std:
 
 /** \brief Return the size of the of this collection.
  *
- * This function computes the total size of this collection and its
- * children collections.
+ * This function computes the total size of this collection which
+ * is to sum of the size of its child collections.
  *
  * \return The total size of the collection.
  */
