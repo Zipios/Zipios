@@ -22,7 +22,7 @@
  * Zipios++ unit tests used to verify the FilePath class.
  */
 
-#include "catch_tests.h"
+#include "catch_tests.hpp"
 
 #include "zipios++/filepath.hpp"
 

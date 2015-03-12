@@ -19,10 +19,10 @@
 
 /** \file
  *
- * Zipios++ unit tests for the DirectoryEntry class.
+ * Zipios++ unit tests for the DirectoryCollection class.
  */
 
-#include "catch_tests.h"
+#include "catch_tests.hpp"
 
 #include "zipios++/directorycollection.hpp"
 #include "zipios++/zipiosexceptions.hpp"
@@ -37,315 +37,7 @@
 #include <string.h>
 
 
-namespace
-{
 
-
-char const g_letters[66]{
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
-    '.', '-', '_', '+'
-};
-
-
-} // no name namespace
-
-
-/** \brief Class used to build a regular file.
- *
- * This file class creates a regular file in a directory.
- */
-class file_t
-{
-public:
-    typedef std::shared_ptr<file_t>     pointer_t;
-    typedef std::vector<pointer_t>      vector_t;
-    typedef std::vector<std::string>    filenames_t;
-
-    /** \brief The type of file to create.
-     *
-     * The file_t() constructor expects one of those types to create
-     * a new file. In most cases REGULAR is used.
-     */
-    enum class type_t
-    {
-        UNKNOWN,
-        REGULAR,
-        DIRECTORY
-    };
-
-    /** \brief Create a file.
-     *
-     * This function creates a file. If the creation fails, then an error
-     * is thrown and the process attempts to clean up all the files
-     * created so far.
-     *
-     * The children parameter is used whenever a DIRECTORY is created.
-     * It determines the number of children that get created inside
-     * that directory. Sub-directories (since the creation is recursive)
-     * are given 1/3rd of that number. Also the function creates a new
-     * sub-directory in about 1 in 10 files it creates.
-     *
-     * \param[in] t  The type of file (REGULAR or DIRECTORY).
-     * \param[in] children_count  The number of children to create.
-     */
-    file_t(type_t t, int children_count, std::string const& new_filename = "")
-        : m_filename(new_filename) // see below also
-        , m_children() // see below
-        , m_type(t)
-    {
-        // generate a random filename
-        if(m_filename.empty())
-        {
-            for(;;)
-            {
-                size_t const l(rand() % 100 + 1);
-                for(size_t idx(0); idx < l; ++idx)
-                {
-                    m_filename += g_letters[rand() % sizeof(g_letters)];
-                }
-                struct stat buf;
-                if(m_filename != "inexistant" // very unlikely, but just in case...
-                && stat(m_filename.c_str(), &buf) != 0)
-                {
-                    // file does not exist, return safely
-                    break;
-                }
-            }
-        }
-
-        // This is only to test the validity of the exception handling
-        //if(children_count < 20)
-        //{
-        //    throw std::logic_error("Ooops!");
-        //}
-
-        if(t == type_t::REGULAR)
-        {
-            // create a regular file
-            // (the STL is expected to throw if the create fails from the constructor)
-            std::ofstream os(m_filename, std::ios::out | std::ios::binary);
-            size_t count(rand() % (100 * 1024 + 1)); // 0 to 100Kb
-            for(size_t sz(0); sz < count; ++sz)
-            {
-                os << static_cast<unsigned char>(rand());
-            }
-            if(!os)
-            {
-                unlink(m_filename.c_str()); // LCOV_EXCL_LINE
-                throw std::runtime_error("failed creating regular file"); // LCOV_EXCL_LINE
-            }
-        }
-        else if(t == type_t::DIRECTORY)
-        {
-            if(mkdir(m_filename.c_str(), 0777) != 0)
-            {
-                throw std::runtime_error("failed creating directory"); // LCOV_EXCL_LINE
-            }
-            chdir(m_filename.c_str());
-            for(int i(0); i < children_count; ++i)
-            {
-                try
-                {
-                    m_children.push_back(pointer_t(new file_t(rand() % 10 == 0 ? type_t::DIRECTORY : type_t::REGULAR, children_count / 3)));
-                }
-                catch(...)
-                {
-                    m_children.clear();
-                    chdir("..");
-                    rmdir(m_filename.c_str());
-                    throw;
-                }
-            }
-            chdir("..");
-        }
-        else
-        {
-            throw std::logic_error("unknown type of file"); // LCOV_EXCL_LINE
-        }
-    }
-
-    /** \brief Clean up the file.
-     *
-     * This function ensures that this file or directory gets deleted
-     * before deleting the object from memory.
-     *
-     * This function is recursive. When deleting a directory, all of
-     * its children get deleted first.
-     */
-    ~file_t()
-    {
-        if(m_type == type_t::REGULAR)
-        {
-            unlink(m_filename.c_str());
-        }
-        else if(m_type == type_t::DIRECTORY)
-        {
-            // make sure to delete all the children first
-            chdir(m_filename.c_str());
-            m_children.clear();
-            chdir("..");
-            rmdir(m_filename.c_str());
-        }
-        else
-        {
-            // throw in destructor?!
-            throw std::logic_error("unknown type of file"); // LCOV_EXCL_LINE
-        }
-    }
-
-    /** \brief Retrieve the type of this file_t object.
-     *
-     * This function tells you whether this file_t object is a regular
-     * file or a directory.
-     *
-     * \return REGULAR or DIRECTORY.
-     */
-    type_t type() const
-    {
-        return m_type;
-    }
-
-    /** \brief Return the filename.
-     *
-     * This function returns the filename of the file_t object.
-     *
-     * Since most filenames are generated, it is imperative to have a
-     * way to retrieve the filename of a file_t.
-     *
-     * \note
-     * Filenames are ASCII only (0-9, a-z, A-Z, and a few other characters.)
-     *
-     * \return The filename as a standard string.
-     *
-     * \sa g_letters
-     */
-    std::string const& filename() const
-    {
-        return m_filename;
-    }
-
-    /** \brief Retrieve the children of this file_t object.
-     *
-     * This function retrieves a vector of children. If the file is
-     * a REGULAR file, then the list of children is always empty.
-     *
-     * To get the size of a certain directory, use children().size().
-     */
-    vector_t const& children() const
-    {
-        return m_children;
-    }
-
-    /** \brief Calculate the size of the tree starting at this file.
-     *
-     * This function is the total number of files this item represents,
-     * including itself.
-     *
-     * The zip includes the directories since these are expected to
-     * appear in the final Zip archive.
-     *
-     * \warning
-     * This function returns a count that includes the root directory.
-     * In other words, you have to use the result minus one to compare
-     * with the total count of a DirectoryCollection.
-     *
-     * \return The total size.
-     */
-    size_t size()
-    {
-        size_t sz(1); // start with self
-        for(size_t idx(0); idx < m_children.size(); ++idx)
-        {
-            sz += m_children[idx]->size();
-        }
-        return sz;
-    }
-
-    /** \brief Search a file in the tree.
-     *
-     * This function is used to search for a file in the tree. It is
-     * rather slow, that being said, it is used to verify that we get
-     * exactly the same list in the DirectoryCollection.
-     *
-     * \param[in] name  The fullname of the file to search.
-     *
-     * \return true if the file is found, false otherwise.
-     */
-    type_t find(std::string const& name)
-    {
-        std::string::size_type const pos(name.find('/'));
-
-        std::string const segment(pos == std::string::npos ? name : name.substr(0, pos));
-
-//std::cerr << "segment = [" << segment << "] vs filename [" << m_filename << "]\n";
-
-        if(segment != m_filename)
-        {
-            // not a match...
-            return type_t::UNKNOWN;
-        }
-
-        if(pos == std::string::npos)
-        {
-            // end of 'name' so we got a match
-            return type();
-        }
-
-        std::string const remainder(name.substr(pos + 1));
-
-        // this was a folder name, search for child
-        for(auto it(m_children.begin()); it != m_children.end(); ++it)
-        {
-            type_t t((*it)->find(remainder));
-            if(t != type_t::UNKNOWN)
-            {
-                return t;
-            }
-        }
-
-        return type_t::UNKNOWN;
-    }
-
-    /** \brief Retrieve all the filenames.
-     *
-     * This function builds a vector of all the filenames defined in this
-     * tree. The sub-folders get their path added as expected.
-     *
-     * \return An array with all the filenames defined in this tree.
-     */
-    filenames_t get_all_filenames() const
-    {
-        filenames_t names;
-        get_filenames(names, m_filename);
-        return names;
-    }
-
-private:
-    void get_filenames(filenames_t& names, std::string const& parent) const
-    {
-        if(m_type == type_t::DIRECTORY)
-        {
-            // mark directories as such
-            names.push_back(parent + "/");
-        }
-        else
-        {
-            names.push_back(parent);
-        }
-        for(auto it(m_children.begin()); it != m_children.end(); ++it)
-        {
-            file_t::pointer_t f(*it);
-            std::string p(parent + "/" + f->filename());
-            f->get_filenames(names, p);
-        }
-    }
-
-    std::string     m_filename;
-    vector_t        m_children;
-    type_t          m_type;
-};
 
 
 SCENARIO("DirectoryCollection with invalid paths", "[DirectoryCollection] [FileCollection]")
@@ -542,7 +234,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
         // create a directory tree starting in "tree"
         system("rm -rf tree"); // clean up, just in case
         size_t start_count(rand() % 40 + 80);
-        file_t tree(file_t::type_t::DIRECTORY, start_count, "tree");
+        zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
 
         {
             zipios::DirectoryCollection dc(zipios::DirectoryCollection("tree", true));
@@ -566,8 +258,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry(*it);
 
                         // verify that our tree knows about this file
-                        file_t::type_t t(tree.find(entry->getName()));
-                        REQUIRE(t != file_t::type_t::UNKNOWN);
+                        zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                        REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
                         struct stat file_stats;
                         REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
@@ -584,7 +276,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
-                        if(t == file_t::type_t::DIRECTORY)
+                        if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
@@ -623,8 +315,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry(*it);
 
                         // verify that our tree knows about this file
-                        file_t::type_t t(tree.find(entry->getName()));
-                        REQUIRE(t != file_t::type_t::UNKNOWN);
+                        zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                        REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
                         struct stat file_stats;
                         REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
@@ -641,7 +333,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
-                        if(t == file_t::type_t::DIRECTORY)
+                        if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
@@ -681,8 +373,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry(*it);
 
                         // verify that our tree knows about this file
-                        file_t::type_t t(tree.find(entry->getName()));
-                        REQUIRE(t != file_t::type_t::UNKNOWN);
+                        zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                        REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
                         struct stat file_stats;
                         REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
@@ -699,7 +391,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
-                        if(t == file_t::type_t::DIRECTORY)
+                        if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
@@ -738,8 +430,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry(*it);
 
                         // verify that our tree knows about this file
-                        file_t::type_t t(tree.find(entry->getName()));
-                        REQUIRE(t != file_t::type_t::UNKNOWN);
+                        zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                        REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
                         struct stat file_stats;
                         REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
@@ -756,7 +448,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
-                        if(t == file_t::type_t::DIRECTORY)
+                        if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
@@ -779,7 +471,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
             {
                 // this one is recursive so we get ALL the files in
                 // the collection
-                file_t::filenames_t all_files(tree.get_all_filenames());
+                zipios_test::file_t::filenames_t all_files(tree.get_all_filenames());
 
                 for(auto it(all_files.begin()); it != all_files.end(); ++it)
                 {
@@ -897,8 +589,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry(*it);
 
                         // verify that our tree knows about this file
-                        file_t::type_t t(tree.find(entry->getName()));
-                        REQUIRE(t != file_t::type_t::UNKNOWN);
+                        zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                        REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
                         struct stat file_stats;
                         REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
@@ -915,7 +607,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
-                        if(t == file_t::type_t::DIRECTORY)
+                        if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
@@ -951,8 +643,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry(*it);
 
                         // verify that our tree knows about this file
-                        file_t::type_t t(tree.find(entry->getName()));
-                        REQUIRE(t != file_t::type_t::UNKNOWN);
+                        zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                        REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
                         struct stat file_stats;
                         REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
@@ -969,7 +661,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
-                        if(t == file_t::type_t::DIRECTORY)
+                        if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
@@ -1006,8 +698,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry(*it);
 
                         // verify that our tree knows about this file
-                        file_t::type_t t(tree.find(entry->getName()));
-                        REQUIRE(t != file_t::type_t::UNKNOWN);
+                        zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                        REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
                         struct stat file_stats;
                         REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
@@ -1024,7 +716,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
-                        if(t == file_t::type_t::DIRECTORY)
+                        if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
@@ -1060,8 +752,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry(*it);
 
                         // verify that our tree knows about this file
-                        file_t::type_t t(tree.find(entry->getName()));
-                        REQUIRE(t != file_t::type_t::UNKNOWN);
+                        zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                        REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
                         struct stat file_stats;
                         REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
@@ -1078,7 +770,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
-                        if(t == file_t::type_t::DIRECTORY)
+                        if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
@@ -1101,13 +793,13 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
             {
                 // in this case the DirectoryCollection is not recursive
                 // so only the top children are available
-                file_t::vector_t all_files(tree.children());
+                zipios_test::file_t::vector_t all_files(tree.children());
 
                 for(auto it(all_files.begin()); it != all_files.end(); ++it)
                 {
-                    file_t::pointer_t f(*it);
+                    zipios_test::file_t::pointer_t f(*it);
 
-                    if(f->type() == file_t::type_t::DIRECTORY)  // Directory?
+                    if(f->type() == zipios_test::file_t::type_t::DIRECTORY)  // Directory?
                     {
                         // directories cannot be attached to an istream
                         zipios::DirectoryCollection::stream_pointer_t is1(dc.getInputStream(f->filename()));

@@ -28,7 +28,7 @@
 // Ask Catch to define the main() function in this file
 #define CATCH_CONFIG_RUNNER
 
-#include "catch_tests.h"
+#include "catch_tests.hpp"
 
 #include "zipios++/zipios-config.hpp"
 

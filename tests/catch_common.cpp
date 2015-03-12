@@ -23,7 +23,7 @@
  * zipios_common.hpp.
  */
 
-#include "catch_tests.h"
+#include "catch_tests.hpp"
 
 #include "src/zipios_common.hpp"
 #include "zipios++/zipiosexceptions.hpp"

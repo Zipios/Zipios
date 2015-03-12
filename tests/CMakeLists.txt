@@ -47,11 +47,14 @@ include_directories(
 add_executable( ${PROJECT_NAME}
     catch_tests.cpp
 
+    catch_collectioncollection.cpp
     catch_common.cpp
     catch_directorycollection.cpp
     catch_directoryentry.cpp
     catch_dostime.cpp
     catch_filepath.cpp
+
+    catch_directory_helper.cpp
 
 # commontest.cpp
 # zipfiletest.cpp

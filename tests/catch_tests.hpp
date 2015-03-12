@@ -32,6 +32,36 @@ namespace zipios_test
 {
 
 
+class file_t
+{
+public:
+    typedef std::shared_ptr<file_t>     pointer_t;
+    typedef std::vector<pointer_t>      vector_t;
+    typedef std::vector<std::string>    filenames_t;
+
+    enum class type_t
+    {
+        UNKNOWN,
+        REGULAR,
+        DIRECTORY
+    };
+
+    file_t(type_t t, int children_count, std::string const& new_filename = "");
+    ~file_t();
+    type_t type() const;
+    std::string const& filename() const;
+    vector_t const& children() const;
+    size_t size();
+    type_t find(std::string const& name);
+    filenames_t get_all_filenames() const;
+
+private:
+    void get_filenames(filenames_t& names, std::string const& parent) const;
+
+    std::string     m_filename;
+    vector_t        m_children;
+    type_t          m_type;
+};
 
 
 } // zipios_test namespace 
