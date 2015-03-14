@@ -625,7 +625,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             struct stat file_stats;
             REQUIRE(stat("filepath-test.txt", &file_stats) == 0);
 
-            SECTION("verify that the object looks as expected")
             {
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
@@ -665,7 +664,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
             }
 
-            SECTION("try setting the comment")
             {
                 de.setComment("new comment");
 
@@ -707,7 +705,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
             }
 
-            SECTION("setting the compressed size")
             {
                 // zero would not really prove anything so skip such
                 // (although it may be extremely rare...)
@@ -757,7 +754,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
             }
 
-            SECTION("setting the CRC")
             {
                 // zero would not really prove anything so skip such
                 uint32_t r;
@@ -806,7 +802,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
             }
 
-            SECTION("setting an extra buffer")
             {
                 // zero would not really prove anything so skip such
                 zipios::FileEntry::buffer_t b;
@@ -855,7 +850,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
             }
 
-            SECTION("setting the method")
             {
                 // set a method other than STORED, which is 1, so just us % 8 instead of % 9 and do a +1
                 de.setMethod(static_cast<zipios::StorageMethod>(rand() % 8 + 1));
@@ -898,7 +892,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
             }
 
-            SECTION("setting the uncompressed size")
             {
                 // zero would not really prove anything so skip such
                 // (although it may be extremely rare...)
@@ -947,7 +940,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(r) + " bytes)");
             }
 
-            SECTION("setting the DOS time")
             {
                 // DOS time numbers are not linear so we use a Unix date and
                 // convert to DOS time (since we know our convertor works)
@@ -996,7 +988,6 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
             }
 
-            SECTION("setting the Unix time")
             {
                 // DOS time are limited to a smaller range and on every other
                 // second so we get a valid DOS time and convert it to a Unix time

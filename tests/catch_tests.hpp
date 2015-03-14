@@ -32,6 +32,17 @@ namespace zipios_test
 {
 
 
+class auto_unlink_t
+{
+public:
+                            auto_unlink_t(std::string const& filename);
+                            ~auto_unlink_t();
+
+private:
+    std::string const       m_filename;
+};
+
+
 class file_t
 {
 public:

@@ -1,4 +1,3 @@
-#pragma
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -19,34 +18,29 @@
 */
 
 /** \file
- * \brief The header file for zipios::BackBuffer
  *
- * The zipios::BackBuffer class is used to read a file backward.
+ * Zipios++ RAII objects used in various unit tests.
  */
 
-#include "zipios++/virtualseeker.hpp"
+#include "catch_tests.hpp"
 
-#include "zipios_common.hpp"
+#include <unistd.h>
 
 
-namespace zipios
+namespace zipios_test
 {
 
 
-class BackBuffer : public ::zipios::buffer_t
+auto_unlink_t::auto_unlink_t(std::string const& filename)
+    : m_filename(filename)
 {
-public:
-                            BackBuffer(std::istream& is, VirtualSeeker const& vs = VirtualSeeker(), ssize_t const chunk_size = 1024);
+}
 
-    ssize_t                 readChunk(ssize_t& read_pointer);
-
-private:
-    VirtualSeeker           m_vs;
-    ssize_t                 m_chunk_size;
-    std::istream&           m_is;
-    std::streampos          m_file_pos;
-};
+auto_unlink_t::~auto_unlink_t()
+{
+    unlink(m_filename.c_str());
+}
 
 
-} // zipios namespace
+} // zipios_tests namespace
 // vim: ts=4 sw=4 et

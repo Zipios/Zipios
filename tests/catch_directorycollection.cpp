@@ -241,7 +241,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
         {
             zipios::DirectoryCollection dc(zipios::DirectoryCollection("tree", true));
 
-            SECTION("verify that the object looks as expected")
             {
                 REQUIRE(dc.isValid());
                 REQUIRE_FALSE(dc.entries().empty());
@@ -297,7 +296,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 }
             }
 
-            SECTION("verify that the copy constructor works as expected")
             {
                 zipios::DirectoryCollection copy_constructor(dc);
                 REQUIRE(copy_constructor.isValid());
@@ -354,7 +352,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 }
             }
 
-            SECTION("verify that the copy assignment works as expected")
             {
                 zipios::DirectoryCollection copy_assignment;
                 copy_assignment = dc;
@@ -412,7 +409,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 }
             }
 
-            SECTION("verify that clone() works as expected")
             {
                 zipios::FileCollection::pointer_t clone(dc.clone());
                 REQUIRE(dynamic_cast<zipios::DirectoryCollection *>(clone.get()));
@@ -470,7 +466,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 }
             }
 
-            SECTION("test the getInputStream() for each file")
             {
                 // this one is recursive so we get ALL the files in
                 // the collection
@@ -553,7 +548,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 }
             }
 
-            SECTION("test the close() function for each file")
             {
                 dc.close();
 
@@ -573,7 +567,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
         {
             zipios::DirectoryCollection dc(zipios::DirectoryCollection("tree", false));
 
-            SECTION("verify that the object looks as expected")
             {
                 REQUIRE(dc.isValid());
                 REQUIRE_FALSE(dc.entries().empty());
@@ -793,7 +786,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 }
             }
 
-            SECTION("test the getInputStream() for each file")
             {
                 // in this case the DirectoryCollection is not recursive
                 // so only the top children are available
@@ -857,7 +849,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 }
             }
 
-            SECTION("verify that the object looks invalid after a close")
             {
                 dc.close();
 

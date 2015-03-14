@@ -112,9 +112,10 @@ VirtualSeeker::VirtualSeeker(offset_t start_offset, offset_t end_offset)
  */
 void VirtualSeeker::setOffsets(off_t start_offset, off_t end_offset)
 {
-    if(start_offset > end_offset)
+    if(start_offset < 0
+    || end_offset < 0)
     {
-        throw InvalidException("VirtualSeeker::VirtualSeeker(): the start offset cannot be larged than the end offset.");
+        throw InvalidException("VirtualSeeker::VirtualSeeker(): the start and end offsets cannot be negative.");
     }
 
     m_start_offset = start_offset;
@@ -214,15 +215,14 @@ void VirtualSeeker::vseekg(std::istream &is, offset_t offset, std::ios::seekdir 
  */
 std::streampos VirtualSeeker::vtellg(std::istream& is) const
 {
-    //return static_cast<off_t>(is.tellg()) - m_start_offset;
-    std::streampos pos(is.tellg() - m_start_offset);
-    if(pos < 0
-    || (m_end_offset > m_start_offset && m_end_offset != 0 && pos > m_end_offset - m_start_offset))
-    {
-        // position is out of range
-        pos = -1;
-    }
-    return pos;
+    /** \TODO
+     * We may want to get the size of the file and verify that the
+     * resulting position is valid. The m_end_offset does not really
+     * mean anything at this point that we could use to verify the
+     * position boundaries (since it is a positive size from the
+     * end of the file.)
+     */
+    return is.tellg() - m_start_offset;
 }
 
 
