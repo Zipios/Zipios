@@ -48,6 +48,7 @@ public:
     virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const override;
     virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
     virtual size_t                  size() const override;
+    virtual void                    mustBeValid() const;
 
 protected:
     vector_t                        m_collections;

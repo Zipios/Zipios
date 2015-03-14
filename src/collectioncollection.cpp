@@ -52,17 +52,19 @@ namespace
  * \param[out] it  The iterator pointing to the entry in this collection.
  * \param[in] matchpath  How the name of the entry is compared with \p name.
  */
-void matchEntry(CollectionCollection::vector_t collections, std::string const& name, FileEntry::pointer_t& cep, FileCollection::vector_t::const_iterator& it, CollectionCollection::MatchPath matchpath)
+void matchEntry(CollectionCollection::vector_t collections, std::string const& name, FileEntry::pointer_t& cep, FileCollection::pointer_t& file_collection, CollectionCollection::MatchPath matchpath)
 {
-    for(it = collections.begin(); it != collections.end(); ++it)
+    for(auto it = collections.begin(); it != collections.end(); ++it)
     {
         cep = (*it)->getEntry(name, matchpath);
         if(cep)
         {
-            break;
+            file_collection = *it;
+            return;
         }
     }
-    cep = nullptr;
+    cep.reset();
+    file_collection.reset();
 }
 
 } // no name namespace
@@ -131,7 +133,9 @@ CollectionCollection& CollectionCollection::operator = (CollectionCollection con
     if(this != &rhs)
     {
         m_collections.clear();
-        m_collections.reserve(rhs.m_collections.size());
+        // A call to the CollectionCollection::size() function has side
+        // effects, try to avoid them at this time
+        //m_collections.reserve(rhs.m_collections.size());
         for(auto it = rhs.m_collections.begin(); it != rhs.m_collections.end(); ++it)
         {
             m_collections.push_back((*it)->clone());
@@ -240,7 +244,10 @@ bool CollectionCollection::addCollection(FileCollection::pointer_t collection)
 /** \brief Close the CollectionCollection object.
  *
  * This function marks the collection as invalid in effect rendering
- * the collection unusable.
+ * the collection unusable. Note that all the collections that you
+ * previously added to this collection all get marked as invalid
+ * (i.e. their close() function gets called.) This has the nice side
+ * effect to release memory immediately.
  *
  * \note
  * This is different from creating an empty CollectionCollection
@@ -248,7 +255,24 @@ bool CollectionCollection::addCollection(FileCollection::pointer_t collection)
  */
 void CollectionCollection::close()
 {
+    // make sure to close all the children first
+    // (although I would imagine that the m_collections.clear() should
+    // be enough, unless someone else has a refenrence to another one
+    // of the sub-collections--but I do not think one can get such as
+    // reference at this point, remember that the addCollection()
+    // creates a clone of the collection being added.)
+    for(auto it = m_collections.begin(); it != m_collections.end(); ++it)
+    {
+        // each collection in the collection must be valid since we
+        // may hit any one of them
+        (*it)->close();
+    }
+
     m_valid = false;
+
+    // for cleanliness, not really required although we will eventually
+    // save some memory that way
+    m_collections.clear();
 }
 
 
@@ -318,10 +342,10 @@ FileEntry::pointer_t CollectionCollection::getEntry(std::string const& name, Mat
     mustBeValid();
 
     // Returns the first matching entry.
-    FileCollection::vector_t::const_iterator it;
+    FileCollection::pointer_t file_colection;
     FileEntry::pointer_t cep;
 
-    matchEntry(m_collections, name, cep, it, matchpath);
+    matchEntry(m_collections, name, cep, file_colection, matchpath);
 
     return cep;
 }
@@ -360,12 +384,12 @@ CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(std:
 {
     mustBeValid();
 
-    FileCollection::vector_t::const_iterator it;
+    FileCollection::pointer_t file_collection;
     FileEntry::pointer_t cep;
 
-    matchEntry(m_collections, entry_name, cep, it, matchpath);
+    matchEntry(m_collections, entry_name, cep, file_collection, matchpath);
 
-    return cep ? (*it)->getInputStream(entry_name) : nullptr;
+    return cep ? file_collection->getInputStream(entry_name) : nullptr;
 }
 
 
@@ -373,6 +397,10 @@ CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(std:
  *
  * This function computes the total size of this collection which
  * is to sum of the size of its child collections.
+ *
+ * \warning
+ * This function has the side effect of loading all the data from
+ * DirectoryCollection objects.
  *
  * \return The total size of the collection.
  */
@@ -387,6 +415,30 @@ size_t CollectionCollection::size() const
     }
 
     return sz;
+}
+
+
+/** \brief Check whether the collection is valid.
+ *
+ * This function verifies that the collection is valid. If not, an
+ * exception is raised. Many other functions from the various collection
+ * functions are calling this function before accessing data.
+ *
+ * \exception InvalidStateException
+ * This exception is raised if the m_valid field is currently false and
+ * thus most of the collection data is considered invalid.
+ */
+void CollectionCollection::mustBeValid() const
+{
+    // self must be valid
+    FileCollection::mustBeValid();
+
+    for(auto it = m_collections.begin(); it != m_collections.end(); ++it)
+    {
+        // each collection in the collection must be valid since we
+        // may hit any one of them
+        (*it)->mustBeValid();
+    }
 }
 
 

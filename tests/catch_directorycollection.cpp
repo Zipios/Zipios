@@ -83,6 +83,7 @@ SCENARIO("DirectoryCollection with invalid paths", "[DirectoryCollection] [FileC
             REQUIRE_THROWS_AS(copy_assignment.mustBeValid(), zipios::InvalidStateException);
 
             zipios::FileCollection::pointer_t clone(dc.clone());
+            REQUIRE(dynamic_cast<zipios::DirectoryCollection *>(clone.get()));
             REQUIRE_FALSE(clone->isValid());
             REQUIRE_THROWS_AS(clone->entries().empty(), zipios::InvalidStateException);
             REQUIRE_THROWS_AS(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
@@ -134,6 +135,7 @@ SCENARIO("DirectoryCollection with invalid paths", "[DirectoryCollection] [FileC
                 REQUIRE_THROWS_AS(copy_assignment.mustBeValid(), zipios::InvalidStateException);
 
                 zipios::FileCollection::pointer_t clone(dc.clone());
+                REQUIRE(dynamic_cast<zipios::DirectoryCollection *>(clone.get()));
                 REQUIRE_FALSE(clone->isValid());
                 REQUIRE_THROWS_AS(clone->entries().empty(), zipios::InvalidStateException);
                 REQUIRE_THROWS_AS(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
@@ -413,6 +415,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
             SECTION("verify that clone() works as expected")
             {
                 zipios::FileCollection::pointer_t clone(dc.clone());
+                REQUIRE(dynamic_cast<zipios::DirectoryCollection *>(clone.get()));
                 REQUIRE(clone->isValid());
                 REQUIRE_FALSE(clone->entries().empty());
                 REQUIRE_FALSE(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
@@ -483,7 +486,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::DirectoryCollection::stream_pointer_t is1(dc.getInputStream(name));
                         REQUIRE(!is1);
 
-                        // also test with the ending '/', just in case
+                        // also test without the ending '/', just in case
                         zipios::DirectoryCollection::stream_pointer_t is2(dc.getInputStream(name.substr(0, name.length() - 1)));
                         REQUIRE(!is2);
 
@@ -735,6 +738,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 }
 
                 zipios::FileCollection::pointer_t clone(dc.clone());
+                REQUIRE(dynamic_cast<zipios::DirectoryCollection *>(clone.get()));
                 REQUIRE(clone->isValid());
                 REQUIRE_FALSE(clone->entries().empty());
                 REQUIRE_FALSE(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));

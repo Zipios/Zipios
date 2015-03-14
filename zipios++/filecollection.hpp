@@ -58,7 +58,7 @@ public:
     virtual std::string             getName() const;
     virtual size_t                  size() const;
     bool                            isValid() const;
-    void                            mustBeValid() const;
+    virtual void                    mustBeValid() const;
 
 protected:
     std::string                     m_filename;

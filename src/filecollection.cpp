@@ -298,32 +298,32 @@ FileCollection::FileCollection(FileCollection const& src)
 
 /** \brief Replace the content of a collection with a copy of another collection.
  *
- * This function copies the \p src collection in this collection.
+ * This function copies the \p rhs collection in this collection.
  *
  * Note that the entries in the this collection get released. If you still
  * have a reference to them in a shared pointer, they will not be deleted.
  *
- * The entries in \p src get cloned so modifying the entries in the source
+ * The entries in \p rhs get cloned so modifying the entries in the source
  * or the destination has no effect on the entries of the other collection.
  *
- * \param[in] src  The source FileCollection to copy.
+ * \param[in] rhs  The source FileCollection to copy.
  *
  * \return A reference to this FileCollection object.
  */
-FileCollection& FileCollection::operator = (FileCollection const& src)
+FileCollection& FileCollection::operator = (FileCollection const& rhs)
 {
-    if(this != &src)
+    if(this != &rhs)
     {
-        m_filename = src.m_filename;
+        m_filename = rhs.m_filename;
 
         m_entries.clear();
-        m_entries.reserve(src.m_entries.size());
-        for(auto it(src.m_entries.begin()); it != src.m_entries.end(); ++it)
+        m_entries.reserve(rhs.m_entries.size());
+        for(auto it(rhs.m_entries.begin()); it != rhs.m_entries.end(); ++it)
         {
             m_entries.push_back((*it)->clone());
         }
 
-        m_valid = src.m_valid;
+        m_valid = rhs.m_valid;
     }
 
     return *this;
@@ -499,7 +499,6 @@ std::ostream& operator << (std::ostream& os, FileCollection const& collection)
     os << "}";
     return os;
 }
-
 
 
 } // zipios namespace
