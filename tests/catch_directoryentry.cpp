@@ -703,6 +703,8 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
+
+                de.setComment("");
             }
 
             {
@@ -938,6 +940,8 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(r) + " bytes)");
+
+                de.setSize(file_size);
             }
 
             {

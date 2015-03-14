@@ -235,7 +235,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
     {
         // create a directory tree starting in "tree"
         system("rm -rf tree"); // clean up, just in case
-        size_t start_count(rand() % 40 + 80);
+        size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
 
         {

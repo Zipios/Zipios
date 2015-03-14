@@ -50,9 +50,8 @@ public:
 
     void                setTotalCount(uint16_t c);
     std::streampos      eocdOffSetFromEnd() const;
-    bool                read(::zipios::buffer_t const& buf, size_t pos);
 
-    //void                read(std::istream& is);
+    bool                read(::zipios::buffer_t const& buf, size_t pos);
     void                write(std::ostream& os);
 
 private:
