@@ -40,32 +40,50 @@
 
 
 
-SCENARIO("ZipFile with invalid paths", "[ZipFile] [FileCollection]")
+TEST_CASE("An Empty ZipFile", "[ZipFile] [FileCollection]")
 {
-    system("rm -rf tree"); // clean up, just in case
-    size_t const start_count(rand() % 40 + 80);
-    zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
-    zipios_test::auto_unlink_t remove_zip("tree.zip");
-    system("zip -r tree.zip tree >/dev/null");
+    zipios::ZipFile zf;
 
-    GIVEN("an empty directory collection")
+    REQUIRE_FALSE(zf.isValid());
+    REQUIRE_THROWS_AS(zf.entries().empty(), zipios::InvalidStateException);
+    REQUIRE_THROWS_AS(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+    REQUIRE_THROWS_AS(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+    REQUIRE_THROWS_AS(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+    REQUIRE_THROWS_AS(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+    REQUIRE_THROWS_AS(zf.getName() == "-", zipios::InvalidStateException);
+    REQUIRE_THROWS_AS(zf.size() == 0, zipios::InvalidStateException);
+    REQUIRE_THROWS_AS(zf.mustBeValid(), zipios::InvalidStateException); // not throwing
+}
+
+
+SCENARIO("ZipFile with a working", "[ZipFile] [FileCollection]")
+{
+    GIVEN("a tree directory")
     {
-        zipios::ZipFile zf("tree.zip");
+        system("rm -rf tree"); // clean up, just in case
+        size_t const start_count(rand() % 40 + 80);
+        zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
+        zipios_test::auto_unlink_t remove_zip("tree.zip");
+        system("zip -r tree.zip tree >/dev/null");
+
 
         // first, check that the object is setup as expected
-        SECTION("verify that the object looks as expected")
+        WHEN("we load the zip file")
         {
-            REQUIRE(zf.isValid());
-            REQUIRE_FALSE(zf.entries().empty());
-            REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
-            REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
-            REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
-            REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
-            REQUIRE(zf.getName() == "tree.zip");
-            REQUIRE(zf.size() == tree.size());
-            zf.mustBeValid(); // not throwing
+            zipios::ZipFile zf("tree.zip");
 
+            THEN("it is valid and includes all the files in the tree")
             {
+                REQUIRE(zf.isValid());
+                REQUIRE_FALSE(zf.entries().empty());
+                REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE(zf.getName() == "tree.zip");
+                REQUIRE(zf.size() == tree.size());
+                zf.mustBeValid(); // not throwing
+
                 zipios::FileEntry::vector_t v(zf.entries());
                 for(auto it(v.begin()); it != v.end(); ++it)
                 {
