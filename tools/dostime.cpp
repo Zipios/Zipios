@@ -70,7 +70,7 @@ enum class time_mode_t
 };
 
 
-}
+} // no name namespace
 
 
 int main(int argc, char *argv[])

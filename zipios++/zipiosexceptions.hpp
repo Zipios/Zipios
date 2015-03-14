@@ -81,15 +81,15 @@ public:
 };
 
 
-/** \brief An FCollException is used to signal a FileCollection problem.
+/** \brief FileCollectionException is used to signal a FileCollection problem.
  *
  * A process dealing with a collection of files will use this exception
- * if a problem arise while dealing with the collection.
+ * if a problem arise while dealing with that collection.
  */
-class FCollException : public Exception
+class FileCollectionException : public Exception
 {
 public:
-    FCollException(std::string const& msg) : Exception(msg) {}
+    FileCollectionException(std::string const& msg) : Exception(msg) {}
 };
 
 

@@ -46,19 +46,13 @@ public:
 
                                 ZipFile();
                                 ZipFile(std::string const& filename, offset_t s_off = 0, offset_t e_off = 0);
-    virtual pointer_t           clone() const;
-    virtual                     ~ZipFile();
+    virtual pointer_t           clone() const override;
+    virtual                     ~ZipFile() override;
 
-    virtual void                close();
-    virtual stream_pointer_t    getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
-
+    virtual stream_pointer_t    getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
     static void                 saveCollectionToArchive(std::ostream& os, FileCollection const& collection);
 
 private:
-    bool                        init(std::istream& zipfile);
-    bool                        readCentralDirectory(std::istream& zipfile);
-    bool                        confirmLocalHeaders(std::istream& zipfile);
-
     VirtualSeeker           	m_vs;
 };
 

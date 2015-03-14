@@ -105,6 +105,7 @@ DirectoryCollection::DirectoryCollection(std::string const& path, bool recursive
  */
 DirectoryCollection::~DirectoryCollection()
 {
+    close();
 }
 
 
@@ -115,14 +116,10 @@ DirectoryCollection::~DirectoryCollection()
  */
 void DirectoryCollection::close()
 {
-    m_valid = false;
-
-    // for cleanliness, not really required although we will eventually
-    // save some memory that way
     m_entries_loaded = false;
-    m_entries.clear();
-    m_filename = "-";
     m_filepath = "";
+
+    FileCollection::close();
 }
 
 

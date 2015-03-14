@@ -35,8 +35,6 @@ namespace
 
 char *g_progname;
 
-}
-
 
 void usage()
 {
@@ -55,6 +53,8 @@ enum class func_t
     UNDEFINED,
     COUNT
 };
+
+} // no name namespace
 
 
 int main(int argc, char *argv[])

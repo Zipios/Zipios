@@ -38,8 +38,6 @@ namespace
 
 char *g_progname;
 
-}
-
 
 void usage()
 {
@@ -49,6 +47,8 @@ void usage()
     std::cout << "The openEmbeddedZipFile() function can then be used to read the file." << std::endl;
     exit(1);
 }
+
+} // no name namespace
 
 
 int main(int argc, char *argv[])

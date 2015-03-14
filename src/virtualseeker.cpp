@@ -39,6 +39,7 @@ namespace zipios
 
 
 /** \class VirtualSeeker
+ * \brief A virtual class used to see in a file embedded in another.
  *
  * The virtual seeker class is a simple definition of an object
  * that keeps track of a set of specified (virtual) file pointers
@@ -46,24 +47,42 @@ namespace zipios
  *
  * An example of its use (and its reason for existence) is to
  * keep track of the file endings of a Zip file embedded in another
- * file (see the appendzip tool and the ZipFile::openEmbeddedZipFile()
- * function).
+ * file (see the \ref appendzip_anchor "appendzip tool" and
+ * the ZipFile::openEmbeddedZipFile() function).
+ *
+ * \bug
+ * The class is not linked to an input stream when created or
+ * the offsets get modified. This means the seek and tell functions
+ * cannot be sure that the offsets are valid of the specified
+ * input buffer.
  */
 
 
 /** \brief Create a virtual seeker.
  *
- * This constructor defines a virtual seeker start and end offset
- * on initialization.
+ * This constructor defines a virtual seeker start and end offsets
+ * on initialization. By default it is initialized to a transparent
+ * seeker since the start and end are set to zero.
  *
- * \warning
+ * \node
  * If the offsets are left undefined (both set to zero) then the virtual
  * seeker is viewed as a transparent seeker, meaning that it seeks in
  * the input streams as if it did not exist.
  *
+ * \warning
+ * The virtual seek end offset is quite peculiar in that it is defined
+ * as a POSITIVE number from the end of the file, going backward. The
+ * normal seekg() command expects a negative number of an offset to be
+ * applied from the end of the file.
+ *
+ * \warning
+ * The class is not attached to one specific input stream so there is no
+ * way to verify that the offsets are valid (i.e. not representing an
+ * empty virtual file or having offsets completely outside of the available
+ * range.)
+ *
  * \exception InvalidException
- * The start offset must be before or equal to the end offset or
- * this exception is raised.
+ * The two offsets must be positive.
  *
  * \param[in] start_offset  The start offset of the embedded file.
  * \param[in] end_offset  The end offset of the embedded file.
@@ -72,9 +91,10 @@ VirtualSeeker::VirtualSeeker(offset_t start_offset, offset_t end_offset)
     : m_start_offset(start_offset)
     , m_end_offset(end_offset)
 {
-    if(m_start_offset > m_end_offset)
+    if(m_start_offset < 0
+    || m_end_offset < 0)
     {
-        throw InvalidException("VirtualSeeker::VirtualSeeker(): the start offset cannot be larged than the end offset.");
+        throw InvalidException("VirtualSeeker::VirtualSeeker(): the start and end offsets cannot be negative.");
     }
 }
 
@@ -149,32 +169,34 @@ offset_t VirtualSeeker::endOffset() const
  * The direction can be indicated by \p sd.
  *
  * \param[in,out] is  The stream which pointer is to be changed.
- * \param[in] offset  The offset represent the exact position, or
- *                    a relative position (depending on \p sd).
- * \param[in] sd  The stream direction to use.
+ * \param[in] offset  Relative position to set the input pointer to.
+ * \param[in] sd  The stream direction to use to apply offset.
  */
 void VirtualSeeker::vseekg(std::istream &is, offset_t offset, std::ios::seekdir sd) const
 {
     switch(sd)
     {
     case std::ios::cur:
-        is.seekg(offset, sd);
         break;
 
     case std::ios::beg:
-        is.seekg(offset + m_start_offset,  sd);
+        offset += m_start_offset;
         break;
 
     case std::ios::end:
-        // TBD: is that really correct?
-        //      should it not be "m_end_offset - offset" instead?
-        is.seekg(offset - m_end_offset, sd);
+        // This definitively looks weird because this class makes use
+        // of a POSITIVE offset from the end of the file as the end
+        // offset. The parameter 'offset' is expected to be negative
+        // or zero in this case.
+        offset -= m_end_offset;
         break;
 
     default:
         throw std::logic_error("VirtualSeekManager::vseekg(): error - unknown seekdir");
 
     }
+
+    is.seekg(offset, sd);
 }
 
 
@@ -182,6 +204,9 @@ void VirtualSeeker::vseekg(std::istream &is, offset_t offset, std::ios::seekdir 
  *
  * This function calculates the position (file current pointer) within
  * the embedded file in the specified stream.
+ *
+ * If the position in the existing file is too large or too small, then
+ * the function returns -1.
  *
  * \param[in] is  The stream to get the position from.
  *

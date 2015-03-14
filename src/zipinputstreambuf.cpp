@@ -168,7 +168,7 @@ FileEntry::pointer_t ZipInputStreambuf::getNextEntry()
             else
             {
                 m_open_entry = false; // Unsupported compression format.
-                throw FCollException("Unsupported compression format");
+                throw FileCollectionException("Unsupported compression format");
             }
         }
     }
@@ -180,7 +180,7 @@ FileEntry::pointer_t ZipInputStreambuf::getNextEntry()
 
     if(m_curr_entry.isValid() && m_curr_entry.trailingDataDescriptor())
     {
-        throw FCollException("Trailing data descriptor in zip file not supported");
+        throw FileCollectionException("Trailing data descriptor in zip file not supported");
     }
 
     return m_curr_entry.clone();

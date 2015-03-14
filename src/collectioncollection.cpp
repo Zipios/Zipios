@@ -168,6 +168,7 @@ FileCollection::pointer_t CollectionCollection::clone() const
  */
 CollectionCollection::~CollectionCollection()
 {
+    close();
 }
 
 
@@ -267,12 +268,9 @@ void CollectionCollection::close()
         // may hit any one of them
         (*it)->close();
     }
-
-    m_valid = false;
-
-    // for cleanliness, not really required although we will eventually
-    // save some memory that way
     m_collections.clear();
+
+    FileCollection::close();
 }
 
 

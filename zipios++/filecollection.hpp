@@ -51,7 +51,7 @@ public:
     virtual pointer_t               clone() const = 0;
     virtual                         ~FileCollection();
 
-    virtual void                    close() = 0;
+    virtual void                    close();
     virtual FileEntry::vector_t     entries() const;
     virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
     virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) = 0;

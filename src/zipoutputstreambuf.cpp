@@ -278,7 +278,7 @@ void ZipOutputStreambuf::setMethod(StorageMethod method)
     }
     else
     {
-        throw FCollException("Specified compression method not supported");
+        throw FileCollectionException("Specified compression method not supported");
     }
 }
 
@@ -332,25 +332,15 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
     int const curr_pos(os.tellp());
 
     // update fields in m_entries.back()
-    FileEntry::pointer_t ent(m_entries.back());
-    /** \TODO
-     * We should be able to get rid of the dynamic_cast<>(), what's an
-     * interface for if we have to cast pointers?!
-     */
-    ZipCDirEntry *zip_dir(dynamic_cast<ZipCDirEntry *>(ent.get()));
-    if(!zip_dir)
-    {
-        throw FCollException("writeCentralDirectory(): unexpected type of file entry to write the central directory.");
-    }
-
-    ent->setSize(getCount());
-    ent->setCrc(getCrc32());
-    ent->setCompressedSize(curr_pos - ent->getEntryOffset() - ent->getHeaderSize());
-    ent->setUnixTime(std::time(nullptr));
+    FileEntry::pointer_t entry(m_entries.back());
+    entry->setSize(getCount());
+    entry->setCrc(getCrc32());
+    entry->setCompressedSize(curr_pos - entry->getEntryOffset() - entry->getHeaderSize());
+    entry->setUnixTime(std::time(nullptr));
 
     // write ZipLocalEntry header to header position
-    os.seekp(ent->getEntryOffset());
-    ent->write(os);
+    os.seekp(entry->getEntryOffset());
+    entry->write(os);
     os.seekp(curr_pos);
 }
 

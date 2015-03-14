@@ -201,11 +201,13 @@ ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const& name)
 {
     // open zipfile, read 4 last bytes close file
     // create ZipFile object.
-    std::ifstream ifs(name.c_str(), std::ios::in | std::ios::binary);
-    ifs.seekg(-4, std::ios::end);
     uint32_t start_offset;
-    zipRead(ifs, start_offset);
-    ifs.close();
+    {
+        std::ifstream ifs(name, std::ios::in | std::ios::binary);
+        ifs.seekg(-4, std::ios::end);
+        zipRead(ifs, start_offset);
+        // TODO: add support for 64 bit (files of more than 4Gb)
+    }
     return ZipFile::pointer_t(new ZipFile(name, start_offset, 4));
 }
 
@@ -215,8 +217,8 @@ ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const& name)
  * This is the default constructor of the ZipFile object.
  *
  * Note that an empty ZipFile is marked as invalid. More or less, such
- * an object is useless although it is useful if you work with maps or
- * vectors of ZipFile objects.
+ * an object is useless although it is useful to have this constructor
+ * if you want to work with maps or vectors of ZipFile objects.
  */
 ZipFile::ZipFile()
     //: m_vs(...) -- auto-init
@@ -245,9 +247,103 @@ ZipFile::ZipFile()
 ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     : m_vs(s_off, e_off)
 {
+    // TBD: we may want the FileCollection() constructor to accept a filename
+    //      as a parameter instead of changing it here?
     m_filename = filename;
-    std::ifstream zipfile(m_filename.c_str(), std::ios::in | std::ios::binary);
-    init(zipfile);
+
+    std::ifstream zipfile(m_filename, std::ios::in | std::ios::binary);
+    if(!zipfile)
+    {
+        throw IOException("Error opening Zip archive file for reading in binary mode.");
+    }
+
+    // Find and read the End of Central Directory.
+    EndOfCentralDirectory eocd;
+    {
+        BackBuffer bb(zipfile, m_vs);
+        ssize_t read_p(-1);
+        for(;;)
+        {
+            if(read_p < 0)
+            {
+                if(!bb.readChunk(read_p))
+                {
+                    throw FileCollectionException("Unable to find zip structure: End-of-central-directory");
+                }
+            }
+            // Note: this is pretty fast since it reads from 'bb' which
+            //       caches the buffer the readChunk() function just read.
+            //
+            if(eocd.read(bb, read_p))
+            {
+                // found it!
+                break;
+            }
+            --read_p;
+        }
+    }
+
+    // Position read pointer to start of first entry in central dir.
+    m_vs.vseekg(zipfile, eocd.offset(), std::ios::beg);
+
+    // TBD -- is that ", 0" still necessary? (With VC2012 and better)
+    // Give the second argument in the next line to keep Visual C++ quiet
+    //m_entries.resize(eocd.totalCount(), 0);
+    m_entries.resize(eocd.totalCount());
+
+    for(size_t entry_num(0); entry_num < eocd.totalCount(); ++entry_num)
+    {
+        ZipCDirEntry::pointer_t entry(new ZipCDirEntry);
+        m_entries[entry_num] = entry;
+        entry.get()->read(zipfile);
+        if(!zipfile)
+        {
+            if(zipfile.bad())
+            {
+                throw IOException("Error reading zip file while reading zip file central directory");
+            }
+            else if(zipfile.fail())
+            {
+                throw FileCollectionException("Zip file consistency problem. Failure while reading zip file central directory");
+            }
+            else if(zipfile.eof())
+            {
+                throw IOException("Premature end of file while reading zip file central directory");
+            }
+        }
+    }
+
+    // Consistency check #1:
+    // The virtual seeker end and end of EOCD are the same?
+    //
+    offset_t const pos(m_vs.vtellg(zipfile));
+    m_vs.vseekg(zipfile, 0, std::ios::end);
+    offset_t const remaining(static_cast<offset_t>(m_vs.vtellg(zipfile)) - pos);
+    if(remaining != eocd.eocdOffSetFromEnd())
+    {
+        throw FileCollectionException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
+    }
+
+    // Consistency check #2:
+    // Are local headers consistent with CD headers?
+    //
+    for(auto it = m_entries.begin(); it != m_entries.end(); ++it)
+    {
+        /** \TODO
+         * Make sure the entry offset is properly defined by ZipCDirEntry.
+         * Also the isEqual() is a quite advance test here!
+         */
+        m_vs.vseekg(zipfile, (*it)->getEntryOffset(), std::ios::beg);
+        ZipLocalEntry zlh;
+        zlh.read(zipfile);
+        if(!zipfile || !zlh.isEqual(**it))
+        {
+            throw FileCollectionException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
+        }
+    }
+
+    // we are all good!
+    m_valid = true;
 }
 
 
@@ -274,11 +370,6 @@ ZipFile::~ZipFile()
 }
 
 
-void ZipFile::close()
-{
-    m_valid = false ;
-}
-
 
 ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name, MatchPath matchpath)
 {
@@ -303,139 +394,6 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name,
 }
 
 
-//
-// Private
-//
-
-bool ZipFile::init(std::istream& zipfile)
-{
-    // Check stream error state
-    if(!zipfile)
-    {
-        m_valid = false;
-        // was returning false in previous versions...
-        throw IOException("Error reading from file.");
-    }
-
-    m_valid = readCentralDirectory(zipfile);
-
-    return m_valid;
-}
-
-
-bool ZipFile::readCentralDirectory(std::istream& zipfile)
-{
-    EndOfCentralDirectory eocd;
-
-    // Find and read eocd.
-    BackBuffer bb(zipfile, m_vs);
-    ssize_t read_p(-1);
-    for(;;)
-    {
-        if(read_p < 0)
-        {
-            if(!bb.readChunk(read_p))
-            {
-                throw FCollException("Unable to find zip structure: End-of-central-directory");
-            }
-        }
-        if(eocd.read(bb, read_p))
-        {
-            break;
-        }
-        --read_p;
-    }
-
-    // Position read pointer to start of first entry in central dir.
-    m_vs.vseekg(zipfile, eocd.offset(), std::ios::beg);
-
-    // Giving the default argument in the next line to keep Visual C++ quiet
-    m_entries.resize(eocd.totalCount(), 0);
-    for(size_t entry_num(0); entry_num < eocd.totalCount(); ++entry_num)
-    {
-        ZipCDirEntry::pointer_t ent(new ZipCDirEntry);
-        m_entries[entry_num] = ent;
-        ent.get()->read(zipfile);
-        if(!zipfile)
-        {
-            if(zipfile.bad())
-            {
-                throw IOException("Error reading zip file while reading zip file central directory");
-            }
-            else if(zipfile.fail())
-            {
-                throw FCollException("Zip file consistency problem. Failure while reading zip file central directory");
-            }
-            else if(zipfile.eof())
-            {
-                throw IOException("Premature end of file while reading zip file central directory");
-            }
-        }
-    }
-
-    // Consistency check. eocd should start here
-
-    int const pos(m_vs.vtellg(zipfile));
-    m_vs.vseekg(zipfile, 0, std::ios::end);
-    int const remaining(static_cast< int >(m_vs.vtellg(zipfile)) - pos);
-    if(remaining != eocd.eocdOffSetFromEnd())
-    {
-        throw FCollException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
-    }
-
-    // Consistency check 2, are local headers consistent with
-    // cd headers
-    if(!confirmLocalHeaders(zipfile))
-    {
-        throw FCollException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
-    }
-
-    return true;
-}
-
-
-/** \brief Verify central directory validity.
- *
- * This function reads the list of headers of each file found in the
- * Zip archive. These have to closely match the data we found in the
- * Central Directory. If not, then a flag is raised and the function
- * returns false meaning that it is not consistent.
- *
- * For clarity:
- *
- * \li (1) The Zip format has one header for each FileEntry
- * \li (2) The Zip format repeats all the FileEntry headers in a Central
- *     Directory
- *
- * Both headers must be consistent, meaning that they have to be equal.
- *
- * \param[in,out] zipfile  The input stream pointing to the Zip archive.
- *
- * \return true if the Zip archive file is considered valid.
- */
-bool ZipFile::confirmLocalHeaders(std::istream& zipfile)
-{
-    bool valid(true);
-    for(auto it = m_entries.begin(); it != m_entries.end(); ++it)
-    {
-        /** \TODO
-         * Make sure the entry offset is properly defined by ZipCDirEntry.
-         * Also the isEqual() is a quite advance test here!
-         */
-        m_vs.vseekg(zipfile, (*it)->getEntryOffset(), std::ios::beg);
-        ZipLocalEntry zlh;
-        zlh.read(zipfile);
-        if(!zipfile || !zlh.isEqual(**it))
-        {
-            valid = false;
-            zipfile.clear();
-        }
-    }
-
-    return valid;
-}
-
-
 /** \brief Create a Zip archive from the specified FileCollection.
  *
  * This function is expected to be used with a DirectoryCollection
@@ -449,6 +407,8 @@ void ZipFile::saveCollectionToArchive(std::ostream& os, FileCollection const& co
     static_cast<void>(os);
     static_cast<void>(collection);
     /** \TODO Write implementation! */
+
+    throw IOException("not implemented!");
 }
 
 

@@ -165,11 +165,16 @@ private:
  */
 
 
-/** \fn void FileCollection::close();
- * \brief Close the current FileEntry of this FileCollection.
+/** \brief Close the current FileEntry of this FileCollection.
  *
  * This function closes the current file entry.
  */
+void FileCollection::close()
+{
+    m_entries.clear();
+    m_filename = "-";
+    m_valid = false;
+}
 
 
 /** \fn stream_pointer_t FileCollection::getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
