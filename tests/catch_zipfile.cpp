@@ -29,7 +29,7 @@
 
 #include "src/dostime.h"
 
-//#include <fstream>
+#include <fstream>
 //#include <memory>
 //#include <vector>
 //
@@ -53,6 +53,72 @@ TEST_CASE("An Empty ZipFile", "[ZipFile] [FileCollection]")
     REQUIRE_THROWS_AS(zf.getName() == "-", zipios::InvalidStateException);
     REQUIRE_THROWS_AS(zf.size() == 0, zipios::InvalidStateException);
     REQUIRE_THROWS_AS(zf.mustBeValid(), zipios::InvalidStateException); // not throwing
+}
+
+
+TEST_CASE("A ZipFile with an invalid name", "[ZipFile] [FileCollection]")
+{
+    REQUIRE_THROWS_AS(zipios::ZipFile zf("this/file/does/not/exists/so/the/constructor/throws"), zipios::IOException);
+}
+
+
+TEST_CASE("A ZipFile with an invalid file", "[ZipFile] [FileCollection]")
+{
+    // create a totally random file which means there is still a very slight
+    // chance that it represents a valid ZipFile, but frankly... no.
+    {
+        std::ofstream os("invalid.zip", std::ios::out | std::ios::binary);
+        size_t const max_size(rand() % 1024 + 1024);
+        for(size_t i(0); i < max_size; ++i)
+        {
+            os << static_cast<char>(rand());
+        }
+    }
+    REQUIRE_THROWS_AS(zipios::ZipFile zf("invalid.zip"), zipios::FileCollectionException);
+}
+
+
+TEST_CASE("An empty ZipFile", "[ZipFile] [FileCollection]")
+{
+    // this is a special case where the file is composed of one
+    // End of Central Directory with 0 entries
+    zipios_test::auto_unlink_t auto_unlink("empty.zip");
+    {
+        std::ofstream os("empty.zip", std::ios::out | std::ios::binary);
+        os << static_cast<char>(0x50);
+        os << static_cast<char>(0x4B);
+        os << static_cast<char>(0x05);
+        os << static_cast<char>(0x06);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+        os << static_cast<char>(0x00);
+    }
+    zipios::ZipFile zf("empty.zip");
+
+    REQUIRE(zf.isValid());
+    REQUIRE(zf.entries().empty());
+    REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
+    REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+    REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
+    REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+    REQUIRE(zf.getName() == "empty.zip");
+    REQUIRE(zf.size() == 0);
+    zf.mustBeValid(); // not throwing
 }
 
 
@@ -134,6 +200,104 @@ SCENARIO("ZipFile with a working", "[ZipFile] [FileCollection]")
                 }
             }
         }
+    }
+}
+
+
+// For this one we have a set of structures and we "manually"
+// create Zip archive files that we can thus tweak with totally
+// invalid parameters
+struct local_header_t
+{
+    typedef std::vector<unsigned char>      buffer_t;
+
+    uint32_t            m_signature;            // "PK 3.4"
+    uint16_t            m_version;              // 10 or 20
+    uint16_t            m_flags;                // generally zero
+    uint16_t            m_compression_method;   // zipios++ only supports STORED and DEFLATE
+    uint32_t            m_time_and_date;        // MS-DOS date and time
+    uint32_t            m_crc32;                // CRC-32 of the file data
+    uint32_t            m_compressed_size;      // size of data once compressed
+    uint32_t            m_uncompressed_size;    // size of data uncompressed
+    //uint16_t            m_filename_length;     // length name of this file
+    //uint16_t            m_extra_field_length;   // length of extra buffer, zipios++ ignore those
+    //uint8_t             m_filename[m_filename_length];
+    std::string         m_filename;
+    //uint8_t             m_extra_field[m_extra_field_length];
+    buffer_t            m_extra_field;
+
+    local_header_t()
+        : m_signature(0x04034B50)
+        , m_version(10)
+        , m_flags(0)
+        , m_compression_method(0)   // 0 == STORED
+        , m_time_and_date(unix2dostime(time(nullptr)))
+        , m_crc32(0)
+        , m_compressed_size(0)      // undefined is compression method is 0
+        , m_uncompressed_size(0)
+        //, m_filename("") -- auto-init
+        //, m_extra_field() -- auto-init
+    {
+    }
+
+    void write(std::ostream& os)
+    {
+        if(m_filename.empty())
+        {
+            std::cerr << "bug: local_header_t::write() called without a filename." << std::endl;
+            exit(1);
+        }
+
+        // IMPORTANT NOTE:
+        // We do not verify any of the values on purpose, we want to be
+        // able to use this class to create anything (i.e. including invalid
+        // headers.)
+
+        os << static_cast<unsigned char>(m_signature >>  0);
+        os << static_cast<unsigned char>(m_signature >>  8);
+        os << static_cast<unsigned char>(m_signature >> 16);
+        os << static_cast<unsigned char>(m_signature >> 24);
+        os << static_cast<unsigned char>(m_version >> 0);
+        os << static_cast<unsigned char>(m_version >> 8);
+        os << static_cast<unsigned char>(m_flags >> 0);
+        os << static_cast<unsigned char>(m_flags >> 8);
+        os << static_cast<unsigned char>(m_compression_method >> 0);
+        os << static_cast<unsigned char>(m_compression_method >> 8);
+        os << static_cast<unsigned char>(m_time_and_date >>  0);
+        os << static_cast<unsigned char>(m_time_and_date >>  8);
+        os << static_cast<unsigned char>(m_time_and_date >> 16);
+        os << static_cast<unsigned char>(m_time_and_date >> 24);
+        os << static_cast<unsigned char>(m_crc32 >>  0);
+        os << static_cast<unsigned char>(m_crc32 >>  8);
+        os << static_cast<unsigned char>(m_crc32 >> 16);
+        os << static_cast<unsigned char>(m_crc32 >> 24);
+        os << static_cast<unsigned char>(m_compressed_size >>  0);
+        os << static_cast<unsigned char>(m_compressed_size >>  8);
+        os << static_cast<unsigned char>(m_compressed_size >> 16);
+        os << static_cast<unsigned char>(m_compressed_size >> 24);
+        os << static_cast<unsigned char>(m_uncompressed_size >>  0);
+        os << static_cast<unsigned char>(m_uncompressed_size >>  8);
+        os << static_cast<unsigned char>(m_uncompressed_size >> 16);
+        os << static_cast<unsigned char>(m_uncompressed_size >> 24);
+        uint16_t filename_length(m_filename.length());
+        os << static_cast<unsigned char>(filename_length >> 0);
+        os << static_cast<unsigned char>(filename_length >> 8);
+        uint16_t extra_field_length(m_extra_field.size());
+        os << static_cast<unsigned char>(extra_field_length >> 0);
+        os << static_cast<unsigned char>(extra_field_length >> 8);
+    }
+};
+
+
+TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
+{
+    // this is a special case where the file is composed of one
+    // End of Central Directory with 0 entries
+    zipios_test::auto_unlink_t auto_unlink("file.zip");
+
+    {
+        std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
     }
 }
 

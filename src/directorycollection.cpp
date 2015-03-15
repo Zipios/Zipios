@@ -39,6 +39,7 @@
 #include <io.h>
 #else
 #include <dirent.h>
+#include <errno.h>
 #endif
 
 
