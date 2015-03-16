@@ -66,7 +66,7 @@ namespace zipios_test
 inline size_t rand_size_t()
 {
     return static_cast<size_t>(rand())
-#ifndef _ILD32
+#if !defined(_ILP32)
          | (static_cast<size_t>(rand()) << 32)
 #endif
         ;
