@@ -19,6 +19,7 @@ To run the automatic unit test suite you need Catch ([https://github.com/philsqu
 This version of the software uses cmake to generate the necessary make files or solutions under MS-Windows.
 
 Once you have cmake installed, you should be able to run the following:
+
 <pre>
   tar xf zipios.tar.gz
   mkdir BUILD
@@ -31,6 +32,7 @@ Once you have cmake installed, you should be able to run the following:
 The project comes with a build script (see "dev/build") that can be used to run those steps. It will assume that you do not mind to have your BUILD directory blown away and rebuilds everything. It also may setup various flags on the command line to build the DEBUG version, for example.
 
 If you make changes to the source tree, you may re-run the make from the source tree with something like:
+
 <pre>
   make -C ../BUILD
 </pre>
@@ -38,6 +40,7 @@ If you make changes to the source tree, you may re-run the make from the source 
 For details about available installation configurations of cmake packages refer to the CMake documentation online [http://www.cmake.org/](http://www.cmake.org/)
 
 By default, 'make install' installs the Zipios++ header files under /usr/include/zipios++/ and the library libzipios.so under /usr/lib/. You can choose another base path than /usr/ using the following option on the 'cmake' command line:
+
 <pre>
   -DCMAKE_INSTALL_PREFIX=/home/alexis/zipios
 </pre>
