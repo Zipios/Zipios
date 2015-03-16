@@ -28,6 +28,8 @@
 
 #include <cstring>
 
+#include <stdlib.h>
+
 
 // static variables
 namespace
