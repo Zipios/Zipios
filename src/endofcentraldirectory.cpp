@@ -35,79 +35,199 @@ namespace zipios
 
 
 /** \class EndOfCentralDirectory
- * \brief Marker at the end of a Zip archive.
+ * \brief Marker at the end of a Zip archive file.
  *
- * The end of the Central directory structure. This structure is
- * stored in the end of the zipfile, and contains information about
- * the zipfile, including the position of the start of the central
- * directory.
+ * This class is used to read and write the end of the Central Directory
+ * structure. In most cases, this structure is stored at the end of the
+ * zip archive file, and contains some global information about the file,
+ * including the position of the start of the Central Directory.
  */
 
 
+/** \brief Private definitions of the EndOfCentralDirectory class.
+ *
+ * This name space includes definitions exclusively used by the
+ * EndOfCentralDirectory class.
+ */
 namespace
 {
 
 
-// "PK 5.6" -- End of Central Directory
+/** \brief Signature of the EndOfCentralDirectory structure block.
+ *
+ * This variable is used to define the signature of the
+ * EndOfCentralDirectory structure on disk. It is used to
+ * create such a block or to detect that such a block exists.
+ *
+ * The four byte signature represents the following value:
+ *
+ * "PK 5.6" -- End of Central Directory
+ */
 uint32_t const g_signature = 0x06054b50;
 
 
 } // no name namespace
 
 
+/** \brief Initialize an EndOfCentralDirectory object.
+ *
+ * This function initializes an EndOfCentralDirectory object. By default,
+ * all the numbers are set to zero and the global Zip file comment is
+ * set to the empty string.
+ *
+ * \param[in] zip_comment  The global comment of a Zip archive.
+ */
 EndOfCentralDirectory::EndOfCentralDirectory(std::string const& zip_comment)
-    //: m_disk_num(0) -- auto-init
-    //, m_central_directory_disk_num(0) -- auto-init
-    //, m_central_directory_entries(0) -- auto-init
+    //: m_central_directory_entries(0) -- auto-init
     //, m_central_directory_size(0) -- auto-init
     //, m_central_directory_offset(0) -- auto-init
     : m_zip_comment(zip_comment)
 {
 }
 
-size_t EndOfCentralDirectory::getOffset() const
+
+/** \brief Retrieve the size of the Central Directory in bytes.
+ *
+ * This function returns the size of the Central Directory
+ * structure in the file. This size varies because each entry
+ * includes data that change in size (i.e. filename, comment,
+ * extra data.)
+ *
+ * \return The size, in bytes, of the Central Directory.
+ *
+ * \sa setCentralDirectorySize()
+ */
+size_t EndOfCentralDirectory::getCentralDirectorySize() const
 {
-    return m_central_directory_offset;
+    return m_central_directory_size;
 }
 
 
+/** \brief Retrieve the number of entries.
+ *
+ * This function returns the number of entries that will be found
+ * in the Central Directory.
+ *
+ * Since Zipios++ has no support for split Zip archive files (i.e. one
+ * large archive written on multiple disks), the total number of entries,
+ * or the number of entries in this archive is always exactly the same.
+ *
+ * \return The total number of entries archived in this Zip file.
+ *
+ * \sa setCount()
+ */
 size_t EndOfCentralDirectory::getCount() const
 {
     return m_central_directory_entries;
 }
 
 
+/** \brief Retrieve the offset of the Central Directory.
+ *
+ * This function is expected to be called after a call to read().
+ * It includes the offset of the central directory, which in most
+ * cases appears before the EndOfCentralDirectory block.
+ *
+ * \warning
+ * There is getOffsetFromEnd() which returns the offset of the
+ * EndOfCentralDirectory itself and not the Central Directory.
+ *
+ * \return The offset in the Zip archive of the Central Directory.
+ *
+ * \sa getOffsetFromEnd()
+ * \sa setOffset()
+ */
+offset_t EndOfCentralDirectory::getOffset() const
+{
+    return m_central_directory_offset;
+}
+
+
+/** \brief Define the size of the central directory.
+ *
+ * When creating a Zip archive, it is necessary to call this function
+ * to define the size of the Central Directory block. This size
+ * cannot be inferred or calculated without wasting a lot of time
+ * re-reading the Central Directory, hence the function to avoid
+ * doing such.
+ *
+ * \param[in] size  The size of the Central Directory.
+ *
+ * \sa getCentralDirectorySize()
+ */
 void EndOfCentralDirectory::setCentralDirectorySize(size_t size)
 {
     m_central_directory_size = size;
 }
 
 
-void EndOfCentralDirectory::setOffset(offset_t start_offset)
-{
-    m_central_directory_offset = start_offset;
-}
-
-
+/** \brief Set the number of entries.
+ *
+ * This function is used to define the number of entries one will find
+ * in the central directory.
+ *
+ * \note
+ * The maximum number of entries is 65535. (until we add support for
+ * 64 bit Zip archives.)
+ *
+ * \param[in] count  The number of entries in the Central Directory.
+ *
+ * \sa getCount()
+ */
 void EndOfCentralDirectory::setCount(size_t count)
 {
     m_central_directory_entries = count;
 }
 
 
-std::streampos EndOfCentralDirectory::getOffsetFromEnd() const
+/** \brief Offset of the Central Directory.
+ *
+ * This function defines the offset at which the Central Directory
+ * starts. Before writing the Central Directory, we expect the user
+ * to call tell() and save the value using this function. This is
+ * important when creating a Zip archive.
+ *
+ * \note
+ * Only the offset of the Central Directory can be changed by
+ * this function.
+ *
+ * \param[in] start_offset  The start offset of the Central Directory.
+ *
+ * \sa getOffset();
+ */
+void EndOfCentralDirectory::setOffset(offset_t start_offset)
 {
-    return m_eocd_offset_from_end;
+    m_central_directory_offset = start_offset;
 }
 
 
+/** \brief Attempt to read an EndOfCentralDirectory structure.
+ *
+ * This function tries to read an EndOfCentralDirectory structure from the
+ * specified buffer. This function expects a BackBuffer, which is used
+ * because that is generally the fastest way to read the data (instead of
+ * scanning the entire file).
+ *
+ * \note
+ * If a read from the buffer fails, then an exception is raised. Since
+ * we are reading from a buffer, it should not happen except if the
+ * EndOfCentralDirectory indicates that there is a comment and the comment
+ * is not there or some characters are missing.
+ *
+ * \exception FileCollectionException
+ * This exception is raised if the number of entries is not equal to
+ * the total number of entries, as expected.
+ *
+ * \param[in] buf  The buffer with the file data.
+ * \param[in] pos  The position at which we are expected to check.
+ *
+ * \return true if the EndOfCentralDirectory was found, false otherwise.
+ */
 bool EndOfCentralDirectory::read(::zipios::buffer_t const& buf, size_t pos)
 {
     // the number of bytes we are going to read in the buffer
     // (including the signature)
     ssize_t const HEADER_SIZE(static_cast<ssize_t>(sizeof(uint32_t) * 3 + sizeof(uint16_t) * 5));
-
-    m_eocd_offset_from_end = buf.size() - pos;
 
     // enough data in the buffer?
     //
@@ -160,66 +280,69 @@ bool EndOfCentralDirectory::read(::zipios::buffer_t const& buf, size_t pos)
 }
 
 
-/** \brief Write the End of Central Directory to a stream.
+/** \brief Write the EndOfCentralDirectory structure to a stream.
  *
  * This function writes the currently defined end of central
  * directory to disk. This entry is expected to be written at
  * the very end of a Zip archive file.
  *
  * \note
- * The function does not change the put pointer of the stream
- * before writing to it.
+ * If the output pointer is not valid, the function will throw
+ * via the various zipWrite() it uses.
  *
  * \note
- * If the output stream is not currently valid, the function
- * does nothing and returns immediately.
+ * The function does not change the output pointer of the stream
+ * before writing to it.
+ *
+ * \exception FileCollectionException
+ * This function throws this exception if the data cannot be saved. In
+ * general this means there are too many entries, the size is too large
+ * or the comment is more than 64Kb (some of which will be resolved with
+ * Zip64 support.)
  *
  * \param[in] os  The output stream where the data is to be saved.
  */
 void EndOfCentralDirectory::write(std::ostream& os)
 {
-    if(os)
+    /** \TODO
+     * Add support for 64 bit Zip archive. This would allow for pretty
+     * much all the following conditions to be dropped out.
+     */
+    if(m_zip_comment.length() > 65535)
     {
-        /** \TODO
-         * Add support for 64 bit Zip archive. This would allow for pretty
-         * much all the following conditions to be dropped out.
-         */
-        if(m_zip_comment.length() > 65535)
-        {
-            throw IOException("the Zip archive comment is too large");
-        }
-        if(m_central_directory_entries > 65535)
-        {
-            throw IOException("the number of entries in the Zip archive is too large");
-        }
+        throw FileCollectionException("the Zip archive comment is too large");
+    }
+    if(m_central_directory_entries > 65535)
+    {
+        throw FileCollectionException("the number of entries in the Zip archive is too large");
+    }
 // Solaris defines _ILP32 for 32 bit platforms
 #if !defined(_ILP32)
-        if(m_central_directory_size   >= 0x100000000UL
-        || m_central_directory_offset >= 0x100000000L)
-        {
-            throw IOException("the Zip archive size or offset are too large");
-        }
+    if(m_central_directory_size   >= 0x100000000UL
+    || m_central_directory_offset >= 0x100000000L)
+    {
+        throw FileCollectionException("the Zip archive size or offset are too large");
+    }
 #endif
 
-        uint16_t const disk_number(0);
-        uint16_t const central_directory_entries(m_central_directory_entries);
-        uint32_t const central_directory_size(m_central_directory_size);
-        uint32_t const central_directory_offset(m_central_directory_offset);
-        uint16_t const comment_len(m_zip_comment.length());
+    uint16_t const disk_number(0);
+    uint16_t const central_directory_entries(m_central_directory_entries);
+    uint32_t const central_directory_size(m_central_directory_size);
+    uint32_t const central_directory_offset(m_central_directory_offset);
+    uint16_t const comment_len(m_zip_comment.length());
 
-        // the total number of entries, across all disks is the same in our
-        // case so we use one number for both fields
+    // the total number of entries, across all disks is the same in our
+    // case so we use one number for both fields
 
-        zipWrite(os, g_signature                  );    // 32
-        zipWrite(os, disk_number                  );    // 16
-        zipWrite(os, disk_number                  );    // 16
-        zipWrite(os, central_directory_entries    );    // 16
-        zipWrite(os, central_directory_entries    );    // 16
-        zipWrite(os, central_directory_size       );    // 32
-        zipWrite(os, central_directory_offset     );    // 32
-        zipWrite(os, comment_len                  );    // 16
-        zipWrite(os, m_zip_comment                );    // string
-    }
+    zipWrite(os, g_signature                  );    // 32
+    zipWrite(os, disk_number                  );    // 16
+    zipWrite(os, disk_number                  );    // 16
+    zipWrite(os, central_directory_entries    );    // 16
+    zipWrite(os, central_directory_entries    );    // 16
+    zipWrite(os, central_directory_size       );    // 32
+    zipWrite(os, central_directory_offset     );    // 32
+    zipWrite(os, comment_len                  );    // 16
+    zipWrite(os, m_zip_comment                );    // string
 }
 
 

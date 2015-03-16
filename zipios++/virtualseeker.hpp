@@ -33,8 +33,6 @@
 
 #include "zipios++/zipios-config.hpp"
 
-#include <iostream>
-
 
 namespace zipios
 {

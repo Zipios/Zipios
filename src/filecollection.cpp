@@ -40,6 +40,13 @@ namespace zipios
 namespace
 {
 
+/** \brief A default filename for unnamed collections.
+ *
+ * This string represents the default m_filename value when a collection
+ * is created without a filename.
+ */
+char const *g_default_filename = "-";
+
 
 /** \brief Class object used with the std::find_if() function.
  *
@@ -165,18 +172,6 @@ private:
  */
 
 
-/** \brief Close the current FileEntry of this FileCollection.
- *
- * This function closes the current file entry.
- */
-void FileCollection::close()
-{
-    m_entries.clear();
-    m_filename = "-";
-    m_valid = false;
-}
-
-
 /** \fn stream_pointer_t FileCollection::getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
  * \brief Retrieve pointer to an istream.
  *
@@ -269,8 +264,8 @@ void FileCollection::close()
  *
  * The collection is empty and marked as invalid.
  */
-FileCollection::FileCollection()
-    : m_filename("-")
+FileCollection::FileCollection(std::string const& filename)
+    : m_filename(filename.empty() ? g_default_filename : filename)
     //, m_entries() -- auto-init
     //, m_valid(false) -- auto-init
 {
@@ -351,6 +346,18 @@ FileCollection& FileCollection::operator = (FileCollection const& rhs)
  */
 FileCollection::~FileCollection()
 {
+}
+
+
+/** \brief Close the current FileEntry of this FileCollection.
+ *
+ * This function closes the current file entry.
+ */
+void FileCollection::close()
+{
+    m_entries.clear();
+    m_filename = g_default_filename;
+    m_valid = false;
 }
 
 

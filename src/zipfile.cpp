@@ -245,12 +245,9 @@ ZipFile::ZipFile()
  *                   offset is towards the beginning of the file.
  */
 ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
-    : m_vs(s_off, e_off)
+    : FileCollection(filename)
+    , m_vs(s_off, e_off)
 {
-    // TBD: we may want the FileCollection() constructor to accept a filename
-    //      as a parameter instead of changing it here?
-    m_filename = filename;
-
     std::ifstream zipfile(m_filename, std::ios::in | std::ios::binary);
     if(!zipfile)
     {
@@ -315,12 +312,11 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     }
 
     // Consistency check #1:
-    // The virtual seeker end and end of EOCD are the same?
+    // The virtual seeker position is exactly the start offset of the
+    // Central Directory plus the Central Directory size
     //
     offset_t const pos(m_vs.vtellg(zipfile));
-    m_vs.vseekg(zipfile, 0, std::ios::end);
-    offset_t const remaining(static_cast<offset_t>(m_vs.vtellg(zipfile)) - pos);
-    if(remaining != eocd.getOffsetFromEnd())
+    if(static_cast<offset_t>(eocd.getOffset() + eocd.getCentralDirectorySize()) != pos)
     {
         throw FileCollectionException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
     }

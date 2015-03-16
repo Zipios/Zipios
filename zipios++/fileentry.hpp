@@ -31,7 +31,6 @@
 
 #include "zipios++/filepath.hpp"
 
-#include <iostream>
 #include <memory>
 #include <vector>
 

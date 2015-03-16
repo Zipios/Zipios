@@ -27,8 +27,6 @@
 
 #include "zipoutputstreambuf.hpp"
 
-#include <memory>
-
 
 namespace zipios
 {

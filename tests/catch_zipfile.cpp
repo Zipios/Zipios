@@ -378,7 +378,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            //zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
             size_t const comment_len(rand() % 20 + 5);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);

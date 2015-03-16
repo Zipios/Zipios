@@ -31,7 +31,6 @@
 #include "zipios_common.hpp"
 
 #include <string>
-#include <vector>
 
 
 namespace zipios
@@ -43,12 +42,12 @@ class EndOfCentralDirectory
 public:
                         EndOfCentralDirectory(std::string const& zip_comment = "");
 
-    size_t              getOffset() const;
+    size_t              getCentralDirectorySize() const;
     size_t              getCount() const;
-    std::streampos      getOffsetFromEnd() const;
+    offset_t            getOffset() const;
     void                setCentralDirectorySize(size_t size);
-    void                setOffset(offset_t new_offset);
     void                setCount(size_t c);
+    void                setOffset(offset_t new_offset);
 
     bool                read(::zipios::buffer_t const& buf, size_t pos);
     void                write(std::ostream& os);
@@ -59,8 +58,6 @@ private:
     size_t              m_central_directory_size = 0;
     offset_t            m_central_directory_offset = 0;
     std::string         m_zip_comment;
-
-    std::streampos      m_eocd_offset_from_end = 0; // Not a Zip defined field
 };
 
 
