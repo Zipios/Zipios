@@ -72,5 +72,4 @@ If you have Doxygen installed, then the documentation will automatically be gene
 
 # Bugs
 
-Submit bug reports and patches via
-[http://sourceforge.net/projects/zipios](http://sourceforge.net/projects/zipios)
+Submit bug reports and patches via [http://sourceforge.net/projects/zipios](http://sourceforge.net/projects/zipios)
