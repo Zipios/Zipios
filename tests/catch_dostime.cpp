@@ -108,7 +108,11 @@ TEST_CASE("Unix to DOS time conversions and vice versa", "[dostime]")
     }
 
     // we verified that time_t is at least a 64 bit type
+#if defined(_ILP32)
+    for(time_t t(0); t <=  0x7FFFFFFF; t += rand() & 0x7FFF)
+#else
     for(time_t t(0); t <= 0x104000000; t += rand() & 0xFFFF)
+#endif
     {
         time_t et((t + 1) & ~1);
         dostime_t const d(unix2dostime(t));
