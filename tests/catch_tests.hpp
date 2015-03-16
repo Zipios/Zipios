@@ -35,7 +35,7 @@ namespace std
 {
 
 // somehow they have g++ 4.8.2 but to_string() is missing
-template<type T>
+template<typename T>
 std::string to_string(T v)
 {
     std::ostringstream ss;
