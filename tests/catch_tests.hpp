@@ -27,6 +27,25 @@
 
 #include <catch.hpp>
 
+#include <sstream>
+
+
+#if defined(__sun) || defined(__sun__) || defined(__SunOS)
+namespace std
+{
+
+// somehow they have g++ 4.8.2 but to_string() is missing
+template<type T>
+std::string to_string(T v)
+{
+    std::ostringstream ss;
+    ss << v;
+    return ss.str();
+}
+
+}
+#endif
+
 
 namespace zipios_test
 {
