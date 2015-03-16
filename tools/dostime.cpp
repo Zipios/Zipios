@@ -29,6 +29,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <stdlib.h>
 
 
 // static variables
