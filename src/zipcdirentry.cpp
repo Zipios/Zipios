@@ -287,12 +287,15 @@ void ZipCDirEntry::write(std::ostream& os)
         /** \TODO add support for 64 bit entries
          *        (zip64 is available, just need to add a 64 bit header)
          */
-        if(m_compressed_size   >= 0x100000000
-        || m_uncompressed_size >= 0x100000000
-        || m_entry_offset      >= 0x100000000)
+// Solaris defines _ILP32 for 32 bit platforms
+#if !defined(_ILP32)
+        if(m_compressed_size   >= 0x100000000ULL
+        || m_uncompressed_size >= 0x100000000ULL
+        || m_entry_offset      >= 0x100000000LL)
         {
             throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
         }
+#endif
 
         uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
         uint32_t dostime(unix2dostime(m_unix_time));
