@@ -66,6 +66,7 @@ TEST_CASE("A ZipFile with an invalid file", "[ZipFile] [FileCollection]")
 {
     // create a totally random file which means there is still a very slight
     // chance that it represents a valid ZipFile, but frankly... no.
+    zipios_test::auto_unlink_t auto_unlink("invalid.zip");
     {
         std::ofstream os("invalid.zip", std::ios::out | std::ios::binary);
         size_t const max_size(rand() % 1024 + 1024);
@@ -397,6 +398,32 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
             truncate("file.zip", (22 + comment_len) - (rand() % std::min(five, comment_len) + 1));
 
             REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::IOException);
+        }
+    }
+
+    SECTION("create files with End of Central Directory using counts that differ")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            size_t const size1(rand() & 0xFFFF);
+            size_t size2;
+            do
+            {
+                size2 = rand() & 0xFFFF;
+            }
+            while(size1 == size2);
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                end_of_central_directory_t eocd;
+                eocd.m_file_count = size1;
+                eocd.m_total_count = size2;
+                eocd.write(os);
+            }
+
+            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
         }
     }
 }

@@ -30,7 +30,7 @@
 
 #include "backbuffer.hpp"
 #include "endofcentraldirectory.hpp"
-#include "zipcdirentry.hpp"
+#include "zipcentraldirectoryentry.hpp"
 #include "zipinputstream.hpp"
 
 #include <fstream>
@@ -291,7 +291,7 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     size_t const max_entry(eocd.getCount());
     for(size_t entry_num(0); entry_num < max_entry; ++entry_num)
     {
-        ZipCDirEntry::pointer_t entry(new ZipCDirEntry);
+        ZipCentralDirectoryEntry::pointer_t entry(new ZipCentralDirectoryEntry);
         m_entries[entry_num] = entry;
         entry.get()->read(zipfile);
         if(!zipfile)
@@ -327,7 +327,7 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     for(auto it = m_entries.begin(); it != m_entries.end(); ++it)
     {
         /** \TODO
-         * Make sure the entry offset is properly defined by ZipCDirEntry.
+         * Make sure the entry offset is properly defined by ZipCentralDirectoryEntry.
          * Also the isEqual() is a quite advance test here!
          */
         m_vs.vseekg(zipfile, (*it)->getEntryOffset(), std::ios::beg);
@@ -378,9 +378,9 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name,
         return 0;
     }
 
-    /** \TODO make sure the entry offset is properly defined by ZipCDirEntry
+    /** \TODO make sure the entry offset is properly defined by ZipCentralDirectoryEntry
      */
-    //static_cast<ZipCDirEntry const *>(ent.get())->getLocalHeaderOffset() + m_vs.startOffset()
+    //static_cast<ZipCentralDirectoryEntry const *>(ent.get())->getLocalHeaderOffset() + m_vs.startOffset()
     stream_pointer_t zis(new ZipInputStream(m_filename, ent->getEntryOffset() + m_vs.startOffset()));
     //
     // Wed Mar 19 18:16:34 PDT 2014 (RDB)

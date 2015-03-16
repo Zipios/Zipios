@@ -19,10 +19,10 @@
 */
 
 /** \file
- * \brief Declaration of the zipios::ZipCDirEntry, which represents a
+ * \brief Declaration of the zipios::ZipCentralDirectoryEntry, which represents a
  *        directory Zip archive entry.
  *
- * This header file contains the zipios::ZipCDirEntry class used
+ * This header file contains the zipios::ZipCentralDirectoryEntry class used
  * to read the central directory fields found in a zip archive.
  * It can also be used to write a central directory to an output
  * Zip archive.
@@ -35,12 +35,12 @@ namespace zipios
 {
 
 
-class ZipCDirEntry : public ZipLocalEntry
+class ZipCentralDirectoryEntry : public ZipLocalEntry
 {
 public:
-                                ZipCDirEntry(std::string const& filename = "", std::string const& file_comment = "", buffer_t const& extra_field = buffer_t());
+                                ZipCentralDirectoryEntry(std::string const& filename = "", std::string const& file_comment = "", buffer_t const& extra_field = buffer_t());
     virtual pointer_t           clone() const override;
-    virtual                     ~ZipCDirEntry() override;
+    virtual                     ~ZipCentralDirectoryEntry() override;
 
     void                        setDefaultWriter();
 

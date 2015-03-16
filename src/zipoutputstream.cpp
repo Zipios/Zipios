@@ -25,6 +25,7 @@
  */
 
 #include "zipoutputstream.hpp"
+#include "zipcentraldirectoryentry.hpp"
 
 #include <fstream>
 
@@ -86,7 +87,7 @@ void ZipOutputStream::putNextEntry(FileEntry::pointer_t entry)
 
 void ZipOutputStream::putNextEntry(std::string const& entryName)
 {
-    putNextEntry(FileEntry::pointer_t(new ZipCDirEntry(entryName)));
+    putNextEntry(FileEntry::pointer_t(new ZipCentralDirectoryEntry(entryName)));
 }
 
 

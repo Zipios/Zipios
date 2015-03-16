@@ -46,7 +46,7 @@ add_library( ${PROJECT_NAME} SHARED
     gzipoutputstreambuf.cpp
     inflateinputstreambuf.cpp
     virtualseeker.cpp
-    zipcdirentry.cpp
+    zipcentraldirectoryentry.cpp
     zipfile.cpp
     zipinputstream.cpp
     zipinputstreambuf.cpp

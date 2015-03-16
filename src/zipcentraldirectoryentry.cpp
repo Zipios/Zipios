@@ -18,14 +18,14 @@
 */
 
 /** \file
- * \brief Implementation of zipios::ZipCDirEntry.
+ * \brief Implementation of zipios::ZipCentralDirectoryEntry.
  *
- * This file includes the implementation of the zipios::ZipCDirEntry
+ * This file includes the implementation of the zipios::ZipCentralDirectoryEntry
  * which is a zipios::FileEntry used when reading the central
  * directory of a Zip archive.
  */
 
-#include "zipcdirentry.hpp"
+#include "zipcentraldirectoryentry.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
 
@@ -42,7 +42,7 @@ namespace
 {
 
 
-/** \brief The signature of a ZipCDirEntry.
+/** \brief The signature of a ZipCentralDirectoryEntry.
  *
  * This value represents the signature of a Zip Central Directory Entry.
  *
@@ -78,9 +78,9 @@ uint16_t const   g_os400         = 0x1200;
 uint16_t const   g_osx           = 0x1300;
 
 
-/** \brief The header of a ZipCDirEntry in a Zip archive.
+/** \brief The header of a ZipCentralDirectoryEntry in a Zip archive.
  *
- * This structure shows how the header of the ZipCDirEntry is defined.
+ * This structure shows how the header of the ZipCentralDirectoryEntry is defined.
  * Note that the file name, file comment, and extra field have a
  * variable size which is defined in three 16 bit values before
  * they appear.
@@ -93,7 +93,7 @@ uint16_t const   g_osx           = 0x1300;
  * documentation because that way zipios can work on little and big
  * endians without the need to know the endianess of your computer.
  */
-struct ZipCDirEntryHeader
+struct ZipCentralDirectoryEntryHeader
 {
     uint32_t        m_signature;
     uint16_t        m_writer_version;
@@ -120,7 +120,7 @@ struct ZipCDirEntryHeader
 } // no name namespace
 
 
-/** \class ZipCDirEntry
+/** \class ZipCentralDirectoryEntry
  * \brief A specialization of ZipLocalEntry for
  *
  * Specialization of ZipLocalEntry, that add fields for storing the
@@ -129,7 +129,7 @@ struct ZipCDirEntryHeader
  */
 
 
-ZipCDirEntry::ZipCDirEntry(std::string const& filename, std::string const& file_comment, buffer_t const& extra_field)
+ZipCentralDirectoryEntry::ZipCentralDirectoryEntry(std::string const& filename, std::string const& file_comment, buffer_t const& extra_field)
     : ZipLocalEntry(filename, extra_field)
     /** \TODO -- missing initialization of many member variables */
     //, m_disk_num_start(0) -- auto-init
@@ -147,12 +147,12 @@ ZipCDirEntry::ZipCDirEntry(std::string const& filename, std::string const& file_
 }
 
 
-ZipCDirEntry::~ZipCDirEntry()
+ZipCentralDirectoryEntry::~ZipCentralDirectoryEntry()
 {
 }
 
 
-void ZipCDirEntry::setDefaultWriter()
+void ZipCentralDirectoryEntry::setDefaultWriter()
 {
     // reset version
     m_writer_version = g_zip_format_version;
@@ -173,19 +173,19 @@ void ZipCDirEntry::setDefaultWriter()
 }
 
 
-std::string ZipCDirEntry::getComment() const
+std::string ZipCentralDirectoryEntry::getComment() const
 {
     return m_file_comment;
 }
 
 
-void ZipCDirEntry::setComment(std::string const& comment)
+void ZipCentralDirectoryEntry::setComment(std::string const& comment)
 {
     m_file_comment = comment;
 }
 
 
-std::string ZipCDirEntry::toString() const
+std::string ZipCentralDirectoryEntry::toString() const
 {
     OutputStringStream sout;
     sout << m_filename << " (" << m_uncompressed_size << " bytes, ";
@@ -194,20 +194,20 @@ std::string ZipCDirEntry::toString() const
 }
 
 
-size_t ZipCDirEntry::getHeaderSize() const
+size_t ZipCentralDirectoryEntry::getHeaderSize() const
 {
     return 46 + m_filename.size() + m_extra_field.size() + m_file_comment.size() ;
 }
 
 
-FileEntry::pointer_t ZipCDirEntry::clone() const
+FileEntry::pointer_t ZipCentralDirectoryEntry::clone() const
 {
-    return FileEntry::pointer_t(new ZipCDirEntry(*this));
+    return FileEntry::pointer_t(new ZipCentralDirectoryEntry(*this));
 }
 
 
 
-void ZipCDirEntry::read(std::istream& is)
+void ZipCentralDirectoryEntry::read(std::istream& is)
 {
     m_valid = false; // set to true upon successful completion.
     if(!is)
@@ -273,7 +273,7 @@ void ZipCDirEntry::read(std::istream& is)
 }
 
 
-void ZipCDirEntry::write(std::ostream& os)
+void ZipCentralDirectoryEntry::write(std::ostream& os)
 {
     if(os)
     {

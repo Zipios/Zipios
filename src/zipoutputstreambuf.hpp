@@ -25,7 +25,8 @@
  */
 
 #include "deflateoutputstreambuf.hpp"
-#include "zipcdirentry.hpp"
+
+#include "zipios++/fileentry.hpp"
 
 
 namespace zipios
