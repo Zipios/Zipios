@@ -32,6 +32,16 @@
 #include <unistd.h>
 
 
+namespace
+{
+
+
+size_t const FOUR(4);
+
+
+} // no name namespace
+
+
 TEST_CASE("VirtualSeeker tests", "[zipios_common]")
 {
     // create a file of 256 bytes
@@ -87,7 +97,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             REQUIRE(is.tellg() == start_offset);
             REQUIRE(vs.vtellg(is) == 0);
 
-            size_t const sz(std::min(max_read, 4UL));
+            size_t const sz(std::min(max_read, FOUR));
             is.read(buf, sz);
             REQUIRE(is.tellg() == start_offset + sz);
             REQUIRE(is);
@@ -138,7 +148,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         }
 
         {
-            size_t const sz(std::min(max_read, 4UL));
+            size_t const sz(std::min(max_read, FOUR));
 
             vs.vseekg(is, -sz, std::ios::end);
             std::streampos const expected_absolute_pos(end_offset - sz);
@@ -248,7 +258,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             vs.vseekg(is, 0, std::ios::beg);
             REQUIRE(vs.vtellg(is) == 0);
 
-            size_t const sz(std::min(max_read2, 4UL));
+            size_t const sz(std::min(max_read2, FOUR));
             is.read(buf, sz);
             REQUIRE(is);
             if(sz > 0)
@@ -270,7 +280,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         }
 
         {
-            size_t const sz(std::min(max_read2, 4UL));
+            size_t const sz(std::min(max_read2, FOUR));
 
             vs.vseekg(is, -sz, std::ios::end);
             std::streampos const expected_absolute_pos(end_offset2 - sz);
