@@ -53,16 +53,16 @@ void writeCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::
 {
     EndOfCentralDirectory eocd(comment);
     eocd.setOffset(os.tellp());  // start position
-    eocd.setTotalCount(entries.size());
+    eocd.setCount(entries.size());
 
-    size_t cdir_size(0);
+    size_t central_directory_size(0);
     for(auto it = entries.begin(); it != entries.end(); ++it)
     {
         (*it)->write(os);
-        cdir_size += (*it)->getHeaderSize();
+        central_directory_size += (*it)->getHeaderSize();
     }
 
-    eocd.setCDirSize(cdir_size);
+    eocd.setCentralDirectorySize(central_directory_size);
     eocd.write(os);
 }
 

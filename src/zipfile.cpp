@@ -284,14 +284,15 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     }
 
     // Position read pointer to start of first entry in central dir.
-    m_vs.vseekg(zipfile, eocd.offset(), std::ios::beg);
+    m_vs.vseekg(zipfile, eocd.getOffset(), std::ios::beg);
 
     // TBD -- is that ", 0" still necessary? (With VC2012 and better)
     // Give the second argument in the next line to keep Visual C++ quiet
     //m_entries.resize(eocd.totalCount(), 0);
-    m_entries.resize(eocd.totalCount());
+    m_entries.resize(eocd.getCount());
 
-    for(size_t entry_num(0); entry_num < eocd.totalCount(); ++entry_num)
+    size_t const max_entry(eocd.getCount());
+    for(size_t entry_num(0); entry_num < max_entry; ++entry_num)
     {
         ZipCDirEntry::pointer_t entry(new ZipCDirEntry);
         m_entries[entry_num] = entry;
@@ -319,7 +320,7 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     offset_t const pos(m_vs.vtellg(zipfile));
     m_vs.vseekg(zipfile, 0, std::ios::end);
     offset_t const remaining(static_cast<offset_t>(m_vs.vtellg(zipfile)) - pos);
-    if(remaining != eocd.eocdOffSetFromEnd())
+    if(remaining != eocd.getOffsetFromEnd())
     {
         throw FileCollectionException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
     }

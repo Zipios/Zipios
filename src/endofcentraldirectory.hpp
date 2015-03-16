@@ -43,27 +43,24 @@ class EndOfCentralDirectory
 public:
                         EndOfCentralDirectory(std::string const& zip_comment = "");
 
-    uint32_t            offset() const;
-    uint16_t            totalCount() const;
-    void                setCDirSize(uint32_t size);
-    void                setOffset(uint32_t new_offset);
-
-    void                setTotalCount(uint16_t c);
-    std::streampos      eocdOffSetFromEnd() const;
+    size_t              getOffset() const;
+    size_t              getCount() const;
+    std::streampos      getOffsetFromEnd() const;
+    void                setCentralDirectorySize(size_t size);
+    void                setOffset(offset_t new_offset);
+    void                setCount(size_t c);
 
     bool                read(::zipios::buffer_t const& buf, size_t pos);
     void                write(std::ostream& os);
 
 private:
-    uint16_t            m_disk_num = 0;
-    uint16_t            m_cdir_disk_num = 0;
-    uint16_t            m_cdir_entries = 0;
-    uint16_t            m_cdir_total_entries = 0;
-    uint32_t            m_cdir_size = 0;
-    uint32_t            m_cdir_offset = 0;
+    // some of the fields found in a Zip archive EndOfCentralDirectory
+    size_t              m_central_directory_entries = 0;
+    size_t              m_central_directory_size = 0;
+    offset_t            m_central_directory_offset = 0;
+    std::string         m_zip_comment;
 
     std::streampos      m_eocd_offset_from_end = 0; // Not a Zip defined field
-    std::string         m_zip_comment;
 };
 
 

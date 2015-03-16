@@ -32,8 +32,8 @@
 #include <fstream>
 //#include <memory>
 //#include <vector>
-//
-//#include <unistd.h>
+
+#include <unistd.h>
 //#include <string.h>
 
 
@@ -131,7 +131,6 @@ SCENARIO("ZipFile with a working", "[ZipFile] [FileCollection]")
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
         zipios_test::auto_unlink_t remove_zip("tree.zip");
         system("zip -r tree.zip tree >/dev/null");
-
 
         // first, check that the object is setup as expected
         WHEN("we load the zip file")
@@ -249,9 +248,9 @@ struct local_header_t
         }
 
         // IMPORTANT NOTE:
-        // We do not verify any of the values on purpose, we want to be
-        // able to use this class to create anything (i.e. including invalid
-        // headers.)
+        // We do not verify any field other than the filename because
+        // we want to be able to use this class to create anything
+        // (i.e. including invalid headers.)
 
         os << static_cast<unsigned char>(m_signature >>  0);
         os << static_cast<unsigned char>(m_signature >>  8);
@@ -285,19 +284,120 @@ struct local_header_t
         uint16_t extra_field_length(m_extra_field.size());
         os << static_cast<unsigned char>(extra_field_length >> 0);
         os << static_cast<unsigned char>(extra_field_length >> 8);
+        os << m_filename;
+        os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+    }
+};
+
+
+struct end_of_central_directory_t
+{
+    uint32_t            m_signature;        // "PK 5.6"
+    uint16_t            m_disk_number;
+    uint16_t            m_disk_start;
+    uint16_t            m_file_count;       // number of files in this archive
+    uint16_t            m_total_count;      // total number across all split files
+    uint32_t            m_central_directory_size;
+    uint32_t            m_central_directory_offset;
+    //uint16_t            m_comment_length;
+    //unsigned char       m_comment[m_comment_length];
+    std::string         m_comment;
+
+    end_of_central_directory_t()
+        : m_signature(0x06054B50)
+        , m_disk_number(0)
+        , m_disk_start(0)
+        , m_file_count(0)
+        , m_total_count(0)
+        , m_central_directory_size(0)
+        , m_central_directory_offset(0)
+        //, m_comment_length(0)
+        //, m_comment("") -- auto-init
+    {
+    }
+
+    void write(std::ostream& os)
+    {
+        // IMPORTANT NOTE:
+        // We do not verify any of the values on purpose, we want to be
+        // able to use this class to create anything (i.e. including invalid
+        // headers.)
+
+        os << static_cast<unsigned char>(m_signature >>  0);
+        os << static_cast<unsigned char>(m_signature >>  8);
+        os << static_cast<unsigned char>(m_signature >> 16);
+        os << static_cast<unsigned char>(m_signature >> 24);
+        os << static_cast<unsigned char>(m_disk_number >> 0);
+        os << static_cast<unsigned char>(m_disk_number >> 8);
+        os << static_cast<unsigned char>(m_disk_start >> 0);
+        os << static_cast<unsigned char>(m_disk_start >> 8);
+        os << static_cast<unsigned char>(m_file_count >> 0);
+        os << static_cast<unsigned char>(m_file_count >> 8);
+        os << static_cast<unsigned char>(m_total_count >>  0);
+        os << static_cast<unsigned char>(m_total_count >>  8);
+        os << static_cast<unsigned char>(m_central_directory_size >>  0);
+        os << static_cast<unsigned char>(m_central_directory_size >>  8);
+        os << static_cast<unsigned char>(m_central_directory_size >> 16);
+        os << static_cast<unsigned char>(m_central_directory_size >> 24);
+        os << static_cast<unsigned char>(m_central_directory_offset >>  0);
+        os << static_cast<unsigned char>(m_central_directory_offset >>  8);
+        os << static_cast<unsigned char>(m_central_directory_offset >> 16);
+        os << static_cast<unsigned char>(m_central_directory_offset >> 24);
+        uint16_t comment_length(m_comment.length());
+        os << static_cast<unsigned char>(comment_length >>  0);
+        os << static_cast<unsigned char>(comment_length >>  8);
+        os << m_comment;
     }
 };
 
 
 TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 {
-    // this is a special case where the file is composed of one
-    // End of Central Directory with 0 entries
-    zipios_test::auto_unlink_t auto_unlink("file.zip");
-
+    SECTION("create files with End of Central Directory that are tool small")
     {
-        std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+        for(ssize_t i(22 - 1); i >= 0; --i)
+        {
+            // create an empty header in the file
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
 
+                end_of_central_directory_t eocd;
+                eocd.write(os);
+            }
+
+            // truncate the file to 'i' size
+            truncate("file.zip", i);
+
+            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
+        }
+    }
+
+    SECTION("create files with End of Central Directory file except for the comment")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            //zipios_test::auto_unlink_t auto_unlink("file.zip");
+            size_t const comment_len(rand() % 20 + 5);
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                end_of_central_directory_t eocd;
+                for(size_t j(0); j < comment_len; ++j)
+                {
+                    eocd.m_comment += static_cast<char>('A' + rand() % 26);
+                }
+                eocd.write(os);
+            }
+
+            // truncate the file to not include the whole comment
+            // (truncate at least one character though)
+            size_t const five(5);
+            truncate("file.zip", (22 + comment_len) - (rand() % std::min(five, comment_len) + 1));
+
+            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::IOException);
+        }
     }
 }
 

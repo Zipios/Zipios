@@ -27,6 +27,8 @@
 
 #include "endofcentraldirectory.hpp"
 
+#include "zipios++/zipiosexceptions.hpp"
+
 
 namespace zipios
 {
@@ -46,7 +48,7 @@ namespace
 {
 
 
-// "PK 5.6"
+// "PK 5.6" -- End of Central Directory
 uint32_t const g_signature = 0x06054b50;
 
 
@@ -55,47 +57,45 @@ uint32_t const g_signature = 0x06054b50;
 
 EndOfCentralDirectory::EndOfCentralDirectory(std::string const& zip_comment)
     //: m_disk_num(0) -- auto-init
-    //, m_cdir_disk_num(0) -- auto-init
-    //, m_cdir_entries(0) -- auto-init
-    //, m_cdir_tot_entries(0) -- auto-init
-    //, m_cdir_size(0) -- auto-init
-    //, m_cdir_offset(0) -- auto-init
+    //, m_central_directory_disk_num(0) -- auto-init
+    //, m_central_directory_entries(0) -- auto-init
+    //, m_central_directory_size(0) -- auto-init
+    //, m_central_directory_offset(0) -- auto-init
     : m_zip_comment(zip_comment)
 {
 }
 
-uint32_t EndOfCentralDirectory::offset() const
+size_t EndOfCentralDirectory::getOffset() const
 {
-    return m_cdir_offset;
+    return m_central_directory_offset;
 }
 
 
-uint16_t EndOfCentralDirectory::totalCount() const
+size_t EndOfCentralDirectory::getCount() const
 {
-    return m_cdir_total_entries;
+    return m_central_directory_entries;
 }
 
 
-void EndOfCentralDirectory::setCDirSize(uint32_t size)
+void EndOfCentralDirectory::setCentralDirectorySize(size_t size)
 {
-    m_cdir_size = size;
+    m_central_directory_size = size;
 }
 
 
-void EndOfCentralDirectory::setOffset(uint32_t new_offset)
+void EndOfCentralDirectory::setOffset(offset_t start_offset)
 {
-    m_cdir_offset = new_offset;
+    m_central_directory_offset = start_offset;
 }
 
 
-void EndOfCentralDirectory::setTotalCount(uint16_t c)
+void EndOfCentralDirectory::setCount(size_t count)
 {
-    m_cdir_entries = c;
-    m_cdir_total_entries = c;
+    m_central_directory_entries = count;
 }
 
 
-std::streampos EndOfCentralDirectory::eocdOffSetFromEnd() const
+std::streampos EndOfCentralDirectory::getOffsetFromEnd() const
 {
     return m_eocd_offset_from_end;
 }
@@ -105,12 +105,17 @@ bool EndOfCentralDirectory::read(::zipios::buffer_t const& buf, size_t pos)
 {
     // the number of bytes we are going to read in the buffer
     // (including the signature)
-    ssize_t const size(static_cast<ssize_t>(sizeof(uint32_t) * 3 + sizeof(uint16_t) * 5));
+    ssize_t const HEADER_SIZE(static_cast<ssize_t>(sizeof(uint32_t) * 3 + sizeof(uint16_t) * 5));
 
     m_eocd_offset_from_end = buf.size() - pos;
 
-    // enough data?
-    if(static_cast<ssize_t>(buf.size() - pos) < size)
+    // enough data in the buffer?
+    //
+    // Note: this quick check assumes a 0 length comment which is possible;
+    //       if there is a comment and we find the signature too early, then
+    //       it will throw
+    //
+    if(static_cast<ssize_t>(buf.size() - pos) < HEADER_SIZE)
     {
         return false;
     }
@@ -124,45 +129,96 @@ bool EndOfCentralDirectory::read(::zipios::buffer_t const& buf, size_t pos)
     }
 
     // next we read the other parameters
-    zipRead(buf, pos, m_disk_num);              // 16
-    zipRead(buf, pos, m_cdir_disk_num);         // 16
-    zipRead(buf, pos, m_cdir_entries);          // 16
-    zipRead(buf, pos, m_cdir_total_entries);    // 16
-    zipRead(buf, pos, m_cdir_size);             // 32
-    zipRead(buf, pos, m_cdir_offset);           // 32
+    uint16_t disk_number;
+    uint16_t central_directory_entries;
+    uint16_t central_directory_total_entries;
+    uint32_t central_directory_size;
+    uint32_t central_directory_offset;
     uint16_t comment_len;
-    zipRead(buf, pos, comment_len);             // 16
 
-    // WARNING: we do not read the comment at this point because
-    //          we did not check the size "properly" for it...
-    //
-    //buffer_t comment;
-    //zipRead(buf, pos, comment, comment_len);    // string
-    //m_zip_comment = std::string(reinterpret_cast<char *>(&comment[0]), comment_len);
+    zipRead(buf, pos, disk_number                       );  // 16
+    zipRead(buf, pos, disk_number                       );  // 16
+    zipRead(buf, pos, central_directory_entries         );  // 16
+    zipRead(buf, pos, central_directory_total_entries   );  // 16
+    zipRead(buf, pos, central_directory_size            );  // 32
+    zipRead(buf, pos, central_directory_offset          );  // 32
+    zipRead(buf, pos, comment_len                       );  // 16
+    zipRead(buf, pos, m_zip_comment, comment_len        );  // string
 
-//cerr << "Zip comment length = " << zip_comment_len << endl ;
-//cerr << "Length of remaining file = " << buf.size() - pos << endl ;
+    // note that if disk_number is defined, then these following two
+    // numbers should differ too
+    if(central_directory_entries != central_directory_total_entries)
+    {
+        throw FileCollectionException("EndOfCentralDirectory with a number of entries and total entries that differ is not supported, spanned zip files are not supported");
+    }
+
+    m_central_directory_entries = central_directory_entries;
+    m_central_directory_size    = central_directory_size;
+    m_central_directory_offset  = central_directory_offset;
 
     return true;
 }
 
 
+/** \brief Write the End of Central Directory to a stream.
+ *
+ * This function writes the currently defined end of central
+ * directory to disk. This entry is expected to be written at
+ * the very end of a Zip archive file.
+ *
+ * \note
+ * The function does not change the put pointer of the stream
+ * before writing to it.
+ *
+ * \note
+ * If the output stream is not currently valid, the function
+ * does nothing and returns immediately.
+ *
+ * \param[in] os  The output stream where the data is to be saved.
+ */
 void EndOfCentralDirectory::write(std::ostream& os)
 {
     if(os)
     {
-        uint16_t comment_len(m_zip_comment.length());
-        buffer_t comment(m_zip_comment.begin(), m_zip_comment.end());
+        /** \TODO
+         * Add support for 64 bit Zip archive. This would allow for pretty
+         * much all the following conditions to be dropped out.
+         */
+        if(m_zip_comment.length() > 65535)
+        {
+            throw IOException("the Zip archive comment is too large");
+        }
+        if(m_central_directory_entries > 65535)
+        {
+            throw IOException("the number of entries in the Zip archive is too large");
+        }
+// Solaris defines _ILP32 for 32 bit platforms
+#if !defined(_ILP32)
+        if(m_central_directory_size   >= 0x100000000UL
+        || m_central_directory_offset >= 0x100000000L)
+        {
+            throw IOException("the Zip archive size or offset are too large");
+        }
+#endif
 
-        zipWrite(os, g_signature         );    // 32
-        zipWrite(os, m_disk_num          );    // 16
-        zipWrite(os, m_cdir_disk_num     );    // 16
-        zipWrite(os, m_cdir_entries      );    // 16
-        zipWrite(os, m_cdir_total_entries);    // 16
-        zipWrite(os, m_cdir_size         );    // 32
-        zipWrite(os, m_cdir_offset       );    // 32
-        zipWrite(os, comment_len         );    // 16
-        zipWrite(os, comment             );    // string
+        uint16_t const disk_number(0);
+        uint16_t const central_directory_entries(m_central_directory_entries);
+        uint32_t const central_directory_size(m_central_directory_size);
+        uint32_t const central_directory_offset(m_central_directory_offset);
+        uint16_t const comment_len(m_zip_comment.length());
+
+        // the total number of entries, across all disks is the same in our
+        // case so we use one number for both fields
+
+        zipWrite(os, g_signature                  );    // 32
+        zipWrite(os, disk_number                  );    // 16
+        zipWrite(os, disk_number                  );    // 16
+        zipWrite(os, central_directory_entries    );    // 16
+        zipWrite(os, central_directory_entries    );    // 16
+        zipWrite(os, central_directory_size       );    // 32
+        zipWrite(os, central_directory_offset     );    // 32
+        zipWrite(os, comment_len                  );    // 16
+        zipWrite(os, m_zip_comment                );    // string
     }
 }
 
