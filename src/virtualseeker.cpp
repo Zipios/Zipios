@@ -110,7 +110,7 @@ VirtualSeeker::VirtualSeeker(offset_t start_offset, offset_t end_offset)
  * \param[in] start_offset  The new start offset.
  * \param[in] end_offset  The new end offset.
  */
-void VirtualSeeker::setOffsets(off_t start_offset, off_t end_offset)
+void VirtualSeeker::setOffsets(offset_t start_offset, offset_t end_offset)
 {
     if(start_offset < 0
     || end_offset < 0)
@@ -131,7 +131,7 @@ void VirtualSeeker::setOffsets(off_t start_offset, off_t end_offset)
  * \param[out] start_offset  Returns the start offset.
  * \param[out] end_offset  Returns the end offset.
  */
-void VirtualSeeker::getOffsets(off_t& start_offset, off_t& end_offset) const
+void VirtualSeeker::getOffsets(offset_t& start_offset, offset_t& end_offset) const
 {
     start_offset = m_start_offset;
     end_offset = m_end_offset;
