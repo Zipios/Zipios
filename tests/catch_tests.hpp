@@ -51,6 +51,28 @@ namespace zipios_test
 {
 
 
+/** \brief Create a random number representing a size_t object.
+ *
+ * This function is used to accomodate 32 and 64 bit tests. It creates
+ * a random number in a size_t variable. The result is expected to fill
+ * all the bits in a random manner.
+ *
+ * \todo
+ * Look into whether we want to define all the bits. Right now, it is
+ * likely that bit 31 and 63 never get set.
+ *
+ * \return A random size_t variable.
+ */
+inline size_t rand_size_t()
+{
+    return static_cast<size_t>(rand())
+#ifndef _ILD32
+         | (static_cast<size_t>(rand()) << 32)
+#endif
+        ;
+}
+
+
 class auto_unlink_t
 {
 public:

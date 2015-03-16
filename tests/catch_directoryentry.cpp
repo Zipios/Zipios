@@ -154,7 +154,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             size_t r;
             do
             {
-                r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+                r = zipios_test::rand_size_t();
             }
             while(r == 0);
             de.setCompressedSize(r);
@@ -385,7 +385,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             size_t r;
             do
             {
-                r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+                r = zipios_test::rand_size_t();
             }
             while(r == 0);
             de.setSize(r);
@@ -441,7 +441,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time numbers are not linear so we test until we get one
             // that works...
-            time_t t((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+            time_t t((static_cast<time_t>(zipios_test::rand_size_t())) % (4354848000LL - 315561600LL) + 315561600);
             dostime_t r(unix2dostime(t));
             de.setTime(r);
 
@@ -496,7 +496,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            time_t r((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+            time_t r((static_cast<time_t>(zipios_test::rand_size_t())) % (4354848000LL - 315561600LL) + 315561600);
             de.setUnixTime(r);
 
             THEN("we take it as is")
@@ -550,7 +550,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            std::streampos r(static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32));
+            std::streampos r(zipios_test::rand_size_t());
             de.setEntryOffset(r);
 
             THEN("we retrive the same value")
@@ -713,7 +713,7 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 size_t r;
                 do
                 {
-                    r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+                    r = zipios_test::rand_size_t();
                 }
                 while(r == 0);
                 de.setCompressedSize(r);
@@ -899,7 +899,7 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 // (although it may be extremely rare...)
                 size_t r;
                 {
-                    r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+                    r = zipios_test::rand_size_t();
                 }
                 while(r == 0);
                 de.setSize(r);
@@ -950,7 +950,7 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
                 // 
                 // Jan 1, 1980 at 00:00:00  is  315561600   (min)
                 // Dec 31, 2107 at 23:59:59  is 4354847999  (max)
-                time_t t((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+                time_t t(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
                 dostime_t r(unix2dostime(t));
                 de.setTime(r);
 
@@ -995,7 +995,7 @@ TEST_CASE("DirectoryEntry with valid files", "[DirectoryEntry] [FileEntry]")
             {
                 // DOS time are limited to a smaller range and on every other
                 // second so we get a valid DOS time and convert it to a Unix time
-                time_t r((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+                time_t r(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
                 de.setUnixTime(r);
 
                 REQUIRE(de.getComment().empty());
@@ -1150,7 +1150,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             size_t r;
             do
             {
-                r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+                r = zipios_test::rand_size_t();
             }
             while(r == 0);
             de.setCompressedSize(r);
@@ -1353,7 +1353,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             size_t r;
             do
             {
-                r = static_cast<size_t>(rand()) | (static_cast<size_t>(rand()) << 32);
+                r = zipios_test::rand_size_t();
             }
             while(r == 0);
             de.setSize(r);
@@ -1403,7 +1403,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time numbers are not linear so we test until we get one
             // that works...
-            time_t t((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+            time_t t(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
             dostime_t r(unix2dostime(t));
             de.setTime(r);
 
@@ -1452,7 +1452,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            time_t r((static_cast<time_t>(rand()) | (static_cast<time_t>(rand()) << 32)) % (4354848000LL - 315561600LL) + 315561600);
+            time_t r(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
             de.setUnixTime(r);
 
             THEN("we take it as is")
