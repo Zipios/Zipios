@@ -52,9 +52,9 @@ namespace zipios
 FilterInputStreambuf::FilterInputStreambuf(std::streambuf *inbuf)
     : m_inbuf(inbuf)
 {
-    if(!inbuf)
+    if(!m_inbuf)
     {
-        throw InvalidStateException("FilterInputStreambuf was called with a null streambuf pointer");
+        throw InvalidStateException("FilterInputStreambuf::FilterInputStreambuf() was called with a null streambuf pointer");
     }
 }
 

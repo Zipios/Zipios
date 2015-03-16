@@ -54,6 +54,7 @@ add_executable( ${PROJECT_NAME}
     catch_directoryentry.cpp
     catch_dostime.cpp
     catch_filepath.cpp
+    catch_stream.cpp
     catch_virtualseeker.cpp
     catch_zipfile.cpp
 

@@ -310,11 +310,11 @@ void EndOfCentralDirectory::write(std::ostream& os)
      */
     if(m_zip_comment.length() > 65535)
     {
-        throw FileCollectionException("the Zip archive comment is too large");
+        throw InvalidStateException("the Zip archive comment is too large");
     }
     if(m_central_directory_entries > 65535)
     {
-        throw FileCollectionException("the number of entries in the Zip archive is too large");
+        throw InvalidStateException("the number of entries in the Zip archive is too large");
     }
 // Solaris defines _ILP32 for 32 bit platforms
 #if !defined(_ILP32)

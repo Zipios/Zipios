@@ -43,13 +43,19 @@ namespace zipios
 {
 
 
-inline char const *get_version()
+inline char const *getVersion()
 {
     return ZIPIOS_VERSION_STRING;
 }
 
 
 typedef std::streamoff      offset_t;
+
+
+inline size_t getBufferSize()
+{
+    return BUFSIZ;
+}
 
 
 } // zipios namespace

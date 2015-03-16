@@ -32,32 +32,35 @@ namespace zipios
 {
 
 
+/** \brief An input stream buffer for Zip data.
+ *
+ * The ZipInputStreambuf class is a Zip input streambuf filter that
+ * automatically decompresses input data that was compressed using
+ * the zlib library.
+ */
+
+
 /** \brief Initialize a ZipInputStreambuf.
  *
  * This ZipInputStreambuf constructor initializes the buffer from the
  * user specified buffer.
  *
  * \param[in,out] inbuf  The streambuf to use for input.
- * \param[in] start_pos  A position to reset the inbuf to before reading. Specify
- *                       -1 to read from the current position.
+ * \param[in] start_pos  A position to reset the inbuf to before reading.
+ *                       Specify -1 to read from the current position.
  */
 ZipInputStreambuf::ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
     : InflateInputStreambuf(inbuf, start_pos)
     //, m_open_entry(false) -- auto-init
-    //, m_curr_entry() -- auto-init
+    //, m_current_entry() -- auto-init
     //, m_data_start(0) -- auto-init
     //, m_remain(0) -- auto-init
 {
-    /** \TODO this was added in our version, but it looked like it would
-     *        skip an entry... so it probably is not required nor even wanted.
+    /** TODO:
+     * Further the initialization of the buffer by calling the getNextEntry().
+     * This is just plainly ugly and we want to change it ASAP.
      */
-
-    //FileEntry::pointer_t entry(getNextEntry());
-    //
-    //if(!entry->isValid())
-    //{
-    //  ; /** \FIXME Throw something if ZipInputStream is passed an invalid entry? */
-    //}
+    getNextEntry();
 }
 
 
@@ -105,7 +108,7 @@ void ZipInputStreambuf::closeEntry()
 
     // check if we are positioned correctly, otherwise position us correctly
     std::streampos const position(m_inbuf->pubseekoff(0, std::ios::cur, std::ios::in));
-    std::streampos const expected_position(m_data_start + m_curr_entry.getCompressedSize());
+    std::streampos const expected_position(m_data_start + m_current_entry.getCompressedSize());
     if(position != expected_position)
     {
         m_inbuf->pubseekoff(expected_position, std::ios::beg, std::ios::in);
@@ -147,23 +150,23 @@ FileEntry::pointer_t ZipInputStreambuf::getNextEntry()
 
     try
     {
-        m_curr_entry.read(is);
-        if(m_curr_entry.isValid())
+        m_current_entry.read(is);
+        if(m_current_entry.isValid())
         {
             m_data_start = m_inbuf->pubseekoff(0, std::ios::cur, std::ios::in);
-            if(m_curr_entry.getMethod() == StorageMethod::DEFLATED)
+            if(m_current_entry.getMethod() == StorageMethod::DEFLATED)
             {
                 m_open_entry = true;
                 reset() ; // reset inflatestream data structures
-                //        cerr << "deflated" << endl ;
+//std::cerr << "deflated" << std::endl;
             }
-            else if(m_curr_entry.getMethod() == StorageMethod::STORED)
+            else if(m_current_entry.getMethod() == StorageMethod::STORED)
             {
                 m_open_entry = true;
-                m_remain = m_curr_entry.getSize();
+                m_remain = m_current_entry.getSize();
                 // Force underflow on first read:
-                setg(&m_outvec[0], &m_outvec[0] + m_outvecsize, &m_outvec[0] + m_outvecsize);
-                // std::cerr << "stored" << std::endl;
+                setg(&m_outvec[0], &m_outvec[0] + getBufferSize(), &m_outvec[0] + getBufferSize());
+//std::cerr << "stored" << std::endl;
             }
             else
             {
@@ -174,16 +177,18 @@ FileEntry::pointer_t ZipInputStreambuf::getNextEntry()
     }
     catch(...)
     {
-        // TODO: this is not valid, if not open we cannot access _curr_entry below
+        /** \TODO
+         * This is not valid, if not open we cannot access _curr_entry below
+         */
         m_open_entry = false ;
     }
 
-    if(m_curr_entry.isValid() && m_curr_entry.trailingDataDescriptor())
+    if(m_current_entry.isValid() && m_current_entry.trailingDataDescriptor())
     {
         throw FileCollectionException("Trailing data descriptor in zip file not supported");
     }
 
-    return m_curr_entry.clone();
+    return m_current_entry.clone();
 }
 
 
@@ -204,13 +209,13 @@ std::streambuf::int_type ZipInputStreambuf::underflow()
         return traits_type::eof();
     }
 
-    if(m_curr_entry.getMethod() == StorageMethod::DEFLATED)
+    if(m_current_entry.getMethod() == StorageMethod::DEFLATED)
     {
         return InflateInputStreambuf::underflow();
     }
 
     // Ok, we are stored, so we handle it ourselves.
-    offset_t const num_b(std::min(m_remain, m_outvecsize));
+    offset_t const num_b(std::min(m_remain, static_cast<offset_t>(getBufferSize())));
     std::streamsize const g(m_inbuf->sgetn(&m_outvec[0], num_b));
     setg(&m_outvec[0], &m_outvec[0], &m_outvec[0] + g);
     m_remain -= g;
@@ -223,24 +228,6 @@ std::streambuf::int_type ZipInputStreambuf::underflow()
     // documentation says to return EOF if no data available
     return traits_type::eof();
 }
-
-
-/** \FIXME We need to check somew ...
- *
- * Not too sure what this is about, but as we complement the implementation we
- * probably will find out...
- *
- * Note that there is a function that does that bit 3 test.
- *
- *    // gp_bitfield bit 3 is one, if the length of the zip entry
- *    // is stored in a trailer.
- *    if ( is->good  && ( _curr_entry.gp_bitfield & 4 ) != 1 ) <<--- this test is wrong! (i.e. it should be != 0 or != 4)
- *      return true ;
- *    else {
- *      is->clear() ;
- *      return false ;
- *    }
- */
 
 
 } // namespace

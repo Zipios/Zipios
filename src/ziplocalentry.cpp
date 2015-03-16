@@ -157,7 +157,7 @@ bool ZipLocalEntry::isEqual(FileEntry const& file_entry) const
         && m_extract_version == ze->m_extract_version
         && m_gp_bitfield     == ze->m_gp_bitfield
         && m_compress_method == ze->m_compress_method;
-        //&& m_compress_size   == ze->m_compress_size -- ignore in comparison
+        //&& m_compressed_size == ze->m_compressed_size -- ignore in comparison
         //&& m_extra_field     == ze->m_extra_field -- ignored in comparison
 }
 
@@ -247,59 +247,56 @@ bool ZipLocalEntry::trailingDataDescriptor() const
 void ZipLocalEntry::read(std::istream& is)
 {
     m_valid = false; // set to true upon successful completion.
+
+    //    // Before reading anything we record the position in the stream
+    //    // This is a field in the central directory entry, but not
+    //    // in the local entry. After all, we know where we are, anyway.
+    //    zlh.rel_offset_loc_head  = is.tellg() ;
+
+    uint32_t signature;
+    zipRead(is, signature);                             // 32
+    if(g_signature != signature)
+    {
+        // put stream in error state and return
+        is.setstate(std::ios::failbit);
+        throw IOException("ZipLocalEntry::read() expected a signature and got some other data");
+    }
+
+    uint16_t compress_method(0);
+    uint32_t dostime(0);
+    uint32_t compressed_size(0);
+    uint32_t uncompressed_size(0);
+    uint16_t filename_len(0);
+    uint16_t extra_field_len(0);
+    std::string filename;
+
+    // See the ZipLocalEntryHeader for more details
+    zipRead(is, m_extract_version);                 // 16
+    zipRead(is, m_gp_bitfield);                     // 16
+    zipRead(is, compress_method);                   // 16
+    zipRead(is, dostime);                           // 32
+    zipRead(is, m_crc_32);                          // 32
+    zipRead(is, compressed_size);                   // 32
+    zipRead(is, uncompressed_size);                 // 32
+    zipRead(is, filename_len);                      // 16
+    zipRead(is, extra_field_len);                   // 16
+    zipRead(is, filename, filename_len);            // string
+    zipRead(is, m_extra_field, extra_field_len);    // buffer
+    /** \TODO add support for zip64, some of those parameters
+     *        may be 0xFFFFF...FFFF in which case the 64 bit
+     *        header should be read
+     */
+
+    m_compress_method = static_cast<StorageMethod>(compress_method);
+    m_unix_time = dos2unixtime(dostime);
+    m_compressed_size = compressed_size;
+    m_uncompressed_size = uncompressed_size;
+    m_filename = FilePath(filename);
+
+    // the zipRead() should throw if the input is invalid...
     if(is)
     {
-        //    // Before reading anything we record the position in the stream
-        //    // This is a field in the central directory entry, but not
-        //    // in the local entry. After all, we know where we are, anyway.
-        //    zlh.rel_offset_loc_head  = is.tellg() ;
-
-        uint32_t signature;
-        zipRead(is, signature);                             // 32
-        if(g_signature != signature)
-        {
-            // put stream in error state and return
-            is.setstate(std::ios::failbit);
-        }
-        else
-        {
-            uint16_t compress_method(0);
-            uint32_t dostime(0);
-            uint32_t compressed_size(0);
-            uint32_t uncompressed_size(0);
-            uint16_t filename_len(0);
-            uint16_t extra_field_len(0);
-            std::string filename;
-
-            // See the ZipLocalEntryHeader for more details
-            zipRead(is, m_extract_version);                 // 16
-            zipRead(is, m_gp_bitfield);                     // 16
-            zipRead(is, compress_method);                   // 16
-            zipRead(is, dostime);                           // 32
-            zipRead(is, m_crc_32);                          // 32
-            zipRead(is, compressed_size);                   // 32
-            zipRead(is, uncompressed_size);                 // 32
-            zipRead(is, filename_len);                      // 16
-            zipRead(is, extra_field_len);                   // 16
-            zipRead(is, filename, filename_len);            // string
-            zipRead(is, m_extra_field, extra_field_len);    // buffer
-            /** \TODO add support for zip64, some of those parameters
-             *        may be 0xFFFFF...FFFF in which case the 64 bit
-             *        header should be read
-             */
-
-            m_compress_method = static_cast<StorageMethod>(compress_method);
-            m_unix_time = dos2unixtime(dostime);
-            m_compressed_size = compressed_size;
-            m_uncompressed_size = uncompressed_size;
-            m_filename = FilePath(filename);
-
-            // the zipRead() should throw if the input is invalid...
-            if(is)
-            {
-                m_valid = true;
-            }
-        }
+        m_valid = true;
     }
 }
 
@@ -317,46 +314,43 @@ void ZipLocalEntry::read(std::istream& is)
  */
 void ZipLocalEntry::write(std::ostream& os)
 {
-    if(os)
+    if(m_filename.length()  > 0x10000
+    || m_extra_field.size() > 0x10000)
     {
-        if(m_filename.length()  > 0x10000
-        || m_extra_field.size() > 0x10000)
-        {
-            throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
-        }
+        throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
+    }
 
-        /** TODO: add support for 64 bit zip archive
-         */
+    /** TODO: add support for 64 bit zip archive
+     */
 // Solaris defines _ILP32 for 32 bit platforms
 #if !defined(_ILP32)
-        if(m_compressed_size   >= 0x100000000UL
-        || m_uncompressed_size >= 0x100000000UL)
-        {
-            throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
-        }
+    if(m_compressed_size   >= 0x100000000UL
+    || m_uncompressed_size >= 0x100000000UL)
+    {
+        throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
+    }
 #endif
 
-        uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
-        uint32_t dostime(unix2dostime(m_unix_time));
-        uint32_t compressed_size(m_compressed_size);
-        uint32_t uncompressed_size(m_uncompressed_size);
-        uint16_t filename_len(m_filename.length());
-        uint16_t extra_field_len(m_extra_field.size());
+    uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
+    uint32_t dostime(unix2dostime(m_unix_time));
+    uint32_t compressed_size(m_compressed_size);
+    uint32_t uncompressed_size(m_uncompressed_size);
+    uint16_t filename_len(m_filename.length());
+    uint16_t extra_field_len(m_extra_field.size());
 
-        // See the ZipLocalEntryHeader for more details
-        zipWrite(os, g_signature       );   // 32
-        zipWrite(os, m_extract_version );   // 16
-        zipWrite(os, m_gp_bitfield     );   // 16
-        zipWrite(os, compress_method   );   // 16
-        zipWrite(os, dostime           );   // 32
-        zipWrite(os, m_crc_32          );   // 32
-        zipWrite(os, compressed_size   );   // 32
-        zipWrite(os, uncompressed_size );   // 32
-        zipWrite(os, filename_len      );   // 16
-        zipWrite(os, extra_field_len   );   // 16
-        zipWrite(os, m_filename        );   // string
-        zipWrite(os, m_extra_field     );   // buffer
-    }
+    // See the ZipLocalEntryHeader for more details
+    zipWrite(os, g_signature);          // 32
+    zipWrite(os, m_extract_version);    // 16
+    zipWrite(os, m_gp_bitfield);        // 16
+    zipWrite(os, compress_method);      // 16
+    zipWrite(os, dostime);              // 32
+    zipWrite(os, m_crc_32);             // 32
+    zipWrite(os, compressed_size);      // 32
+    zipWrite(os, uncompressed_size);    // 32
+    zipWrite(os, filename_len);         // 16
+    zipWrite(os, extra_field_len);      // 16
+    zipWrite(os, m_filename);           // string
+    zipWrite(os, m_extra_field);        // buffer
 }
 
 

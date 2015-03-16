@@ -34,8 +34,6 @@ namespace zipios
 {
 
 
-/** ZipInputStreambuf is a zip input streambuf filter.
- */
 class ZipInputStreambuf : public InflateInputStreambuf
 {
 public:
@@ -53,7 +51,7 @@ protected:
 
 private:
     bool                    m_open_entry = false;
-    ZipLocalEntry           m_curr_entry;
+    ZipLocalEntry           m_current_entry;
     offset_t                m_data_start = 0; // Do not forget entry header has a length too.
     offset_t                m_remain = 0;     // For STORED entry only. the number of bytes that
                                               // has not been put in the m_outvec yet.

@@ -291,7 +291,7 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     size_t const max_entry(eocd.getCount());
     for(size_t entry_num(0); entry_num < max_entry; ++entry_num)
     {
-        ZipCentralDirectoryEntry::pointer_t entry(new ZipCentralDirectoryEntry);
+        FileEntry::pointer_t entry(new ZipCentralDirectoryEntry);
         m_entries[entry_num] = entry;
         entry.get()->read(zipfile);
         if(!zipfile)
@@ -367,27 +367,53 @@ ZipFile::~ZipFile()
 }
 
 
-
+/** \brief Retrieve a pointer to a file in the Zip archive.
+ *
+ * This function returns a shared pointer to an istream defined from the
+ * named entry, which gives you access to the corresponding file defined
+ * in the Zip archive.
+ *
+ * The function returns nullptr if there is no entry with the
+ * specified name in this ZipFile.
+ *
+ * Note that the function returns a smart pointer to an istream. The
+ * ZipFile class does not hold that pointer meaning that
+ * if you call getInputStream() multiple times with the same
+ * \p entry_name parameter, you get different istream instance each
+ * time.
+ *
+ * By default the \p entry_name parameter is expected to match the full
+ * path and filename (MatchPath::MATCH). If you are looking for a file
+ * and want to ignore the path, set the matchpath parameter
+ * to MatchPath::IGNORE.
+ *
+ * \note
+ * If the file is compressed inside the Zip archive, this input stream
+ * returns the uncompressed data transparently to you (outside of the
+ * time it takes to decompress the data, of course.)
+ *
+ * \param[in] entry_name  The name of the file to search in the collection.
+ * \param[in] matchpath  Whether the full path or just the filename is matched.
+ *
+ * \return A shared pointer to an open istream for the specified entry.
+ *
+ * \sa CollectionCollection
+ * \sa DirectoryCollection
+ * \sa FileCollection
+ */
 ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name, MatchPath matchpath)
 {
     mustBeValid();
 
-    FileEntry::pointer_t ent(getEntry(entry_name, matchpath));
-    if(!ent)
+    FileEntry::pointer_t entry(getEntry(entry_name, matchpath));
+    if(entry)
     {
-        return 0;
+        stream_pointer_t zis(new ZipInputStream(m_filename, entry->getEntryOffset() + m_vs.startOffset()));
+        return zis;
     }
 
-    /** \TODO make sure the entry offset is properly defined by ZipCentralDirectoryEntry
-     */
-    //static_cast<ZipCentralDirectoryEntry const *>(ent.get())->getLocalHeaderOffset() + m_vs.startOffset()
-    stream_pointer_t zis(new ZipInputStream(m_filename, ent->getEntryOffset() + m_vs.startOffset()));
-    //
-    // Wed Mar 19 18:16:34 PDT 2014 (RDB)
-    // This was causing a basic_ios::clear exception.
-    // Not sure why we would need to do this here!
-    //zis->getNextEntry();
-    return zis;
+    // no entry with that name (and match) available
+    return nullptr;
 }
 
 

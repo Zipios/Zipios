@@ -506,7 +506,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                     {
                         // files must all work and we can read them and
                         // compare with the "real thing" and it is equal
-                        zipios::DirectoryCollection::stream_pointer_t is(dc.getInputStream(name));
+                        zipios::FileCollection::stream_pointer_t is(dc.getInputStream(name));
                         REQUIRE(is);
 
                         std::ifstream in(name, std::ios::in | std::ios::binary);

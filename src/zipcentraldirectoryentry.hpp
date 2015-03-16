@@ -42,8 +42,6 @@ public:
     virtual pointer_t           clone() const override;
     virtual                     ~ZipCentralDirectoryEntry() override;
 
-    void                        setDefaultWriter();
-
     virtual std::string         getComment() const override;
     virtual size_t              getHeaderSize() const override;
     virtual void                setComment(std::string const& comment) override;
@@ -53,10 +51,6 @@ public:
     virtual void                write(std::ostream& os) override;
 
 private:
-    uint16_t                    m_writer_version;
-    uint16_t                    m_disk_num_start = 0;
-    uint16_t                    m_intern_file_attr = 0;
-    uint32_t                    m_extern_file_attr = 0x81B40000;
     std::string                 m_file_comment;
 };
 

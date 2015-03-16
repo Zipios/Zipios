@@ -20,8 +20,10 @@
 /** \file
  * \brief This file is the implementation of zipios::GZIPOutputStreambuf class.
  *
- * This class is an output stream filter which knows how to compress data
- * using the zlib library.
+ * This class is an output stream filter which knows how to creates a .gz
+ * file from the data you write to it.
+ *
+ * The compression makes use of the zlib library.
  */
 
 #include "gzipoutputstreambuf.hpp"
@@ -120,6 +122,13 @@ void GZIPOutputStreambuf::writeHeader()
                 | (m_comment.empty()  ? 0x00 : 0x10)
             );
 
+    /** \TODO:
+     * We need to know of the last modification time instead of
+     * saving all zeros for MTIME values.
+     *
+     * Also, I am thinking that the OS should be 3 under Unices.
+     */
+
     std::ostream os(m_outbuf) ;
     os << static_cast<unsigned char>(0x1f);  // Magic #
     os << static_cast<unsigned char>(0x8b);  // Magic #
@@ -148,6 +157,7 @@ void GZIPOutputStreambuf::writeHeader()
 
 void GZIPOutputStreambuf::writeTrailer()
 {
+    // write the CRC32 and Size at the end of the file
     writeInt(getCrc32());
     writeInt(getCount());
 }
@@ -155,6 +165,7 @@ void GZIPOutputStreambuf::writeTrailer()
 
 void GZIPOutputStreambuf::writeInt(uint32_t i)
 {
+    /** \TODO: add support for 64 bit files if it exists? */
     std::ostream os(m_outbuf);
     os << static_cast<unsigned char>( i        & 0xFF);
     os << static_cast<unsigned char>((i >>  8) & 0xFF);

@@ -54,14 +54,13 @@ protected:
 
     /** \FIXME Consider design?
      */
-    offset_t const          m_outvecsize = 1000; /** \FIXME Define a ZIPIOS_BUFSIZ for m_outvecsize */
     std::vector<char>       m_outvec;
 
 private:
+    std::vector<char>       m_invec;
+
     z_stream                m_zs;
     bool                    m_zs_initialized = false;
-    offset_t const          m_invecsize = 1000; /** \FIXME Define a ZIPIOS_BUFSIZ for m_invecsize */
-    std::vector<char>       m_invec;
 };
 
 

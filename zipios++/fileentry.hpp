@@ -41,15 +41,28 @@ namespace zipios
 
 enum class StorageMethod : uint8_t
 {
-    STORED = 0,
-    SHRUNK,
-    REDUCED1,
-    REDUCED2,
-    REDUCED3,
-    REDUCED4,
-    IMPLODED,
-    RESERVED,
-    DEFLATED
+    STORED      = 0,
+    SHRUNK      = 1,
+    REDUCED1    = 2,
+    REDUCED2    = 3,
+    REDUCED3    = 4,
+    REDUCED4    = 5,
+    IMPLODED    = 6,
+    TOKENIZED   = 7,
+    DEFLATED    = 8,
+    DEFLATED64  = 9,
+    OLD_TERSE   = 10,
+    RESERVED11  = 11,
+    BZIP2       = 12,
+    REVERVED13  = 13,
+    LZMA        = 14,
+    RESERVED15  = 15,
+    RESERVED16  = 16,
+    RESERVED17  = 17,
+    NEW_TERSE   = 18,
+    LZ77        = 19,
+    WAVPACK     = 97,
+    PPMD_I_1    = 98
 };
 
 

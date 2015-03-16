@@ -34,50 +34,67 @@ namespace zipios
 {
 
 
-ZipInputStream::ZipInputStream(std::istream &is, std::streampos pos)
-    //: std::istream(nullptr)
-    //, m_ifs(nullptr) -- auto-init
-    : m_izf(new ZipInputStreambuf(is.rdbuf(), pos))
-{
-    //  rdbuf(m_izf); is replaced by:
-    init(m_izf.get());
-}
-
-
+/** \brief Initialize a ZipInputStream from a filename and position.
+ *
+ * This constructor creates a ZIP file stream by attaching itself to
+ * a file as defined by the specified filename and a position to the
+ * header of the file being read.
+ *
+ * \param[in] filename  The name of a valid zip file.
+ * \param[in] pos position to reposition the istream to before reading.
+ */
 ZipInputStream::ZipInputStream(std::string const& filename, std::streampos pos)
-    //: std::istream(nullptr)
-    : m_ifs(new std::ifstream(filename.c_str(), std::ios::in | std::ios::binary))
+    //: std::istream()
+    : m_ifs(new std::ifstream(filename, std::ios::in | std::ios::binary))
     , m_izf(new ZipInputStreambuf(m_ifs->rdbuf(), pos))
 {
-    //  rdbuf(m_izf); is replaced by:
+    // properly initialize the stream with the newly allocated buffer
     init(m_izf.get());
 }
 
 
+/** \brief Clean up the input stream.
+ *
+ * The destructor ensures that all resources used by the class get
+ * released.
+ */
 ZipInputStream::~ZipInputStream()
 {
 }
 
 
-int ZipInputStream::available()
-{
-    return 1; // FIXME: Dummy implementation
-}
-
-
+/** \brief Close the current entry.
+ *
+ * This function closes the current entry, and positions the stream
+ * read pointer at the beginning of the next entry (if there is one).
+ */
 void ZipInputStream::closeEntry()
 {
     m_izf->closeEntry();
 }
 
 
+/** \brief Close the input stream.
+ *
+ * This function closes the input stream. After that, the other functions
+ * will most certainly not work anymore.
+ */
 void ZipInputStream::close()
 {
     m_izf->close();
 }
 
-//    ZipLocalEntry *ZipInputStream::createZipCDirEntry( const string &name ) {}
 
+/** \brief Get the next entry from the attached Zip archive.
+ *
+ * This function opens the next entry in the zip archive and returns
+ * a pointer to a FileEntry object for the entry. For new instances
+ * this method has to be called once before you can read from the
+ * first entry.
+ *
+ * \return A list constant FileEntry pointers containing information
+ *         about the (now) current entry.
+ */
 FileEntry::pointer_t ZipInputStream::getNextEntry()
 {
     clear(); // clear eof and other flags.

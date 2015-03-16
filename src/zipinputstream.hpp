@@ -45,60 +45,15 @@ class ZipInputStream : public std::istream
 {
 public:
 
-    /** \brief Crate a ZipInputStream from a stream.
-     *
-     * This function expects an already open input stream which
-     * represents a ZIP archive. The file must be seekable.
-     *
-     * The input file must remain open until the ZipInputStream object
-     * gets destroyed.
-     *
-     * \param[in,out] is  An istream from which the compressed zip archive
-     *                    can be read.
-     * \param[in] pos   Position to reposition the istream to before reading.
-     */
-    explicit ZipInputStream(std::istream& is, std::streampos pos = 0);
+                    ZipInputStream(std::string const& filename, std::streampos pos = 0);
+                    ZipInputStream(ZipInputStream const& src) = delete;
+                    ZipInputStream const& operator = (ZipInputStream const& src) = delete;
+    virtual         ~ZipInputStream() override;
 
-    /** \brief Create a ZipInputStream from a file.
-     *
-     * This constructor creates a ZIP file by loading from filename.
-     *
-     * \param[in] filename  The name of a valid zip file.
-     * \param[in] pos position to reposition the istream to before reading.
-     */
-    explicit ZipInputStream(std::string const& filename, std::streampos pos = 0);
-    ZipInputStream(ZipInputStream const& src) = delete;
-    ZipInputStream const& operator = (ZipInputStream const& src) = delete;
+    void            closeEntry();
+    void            close();
 
-    /** \brief Clean up the input stream.
-     *
-     * The destructor ensures that all resources used by the class get
-     * released.
-     */
-    virtual ~ZipInputStream();
-
-    int available();
-
-    /** Closes the current entry, and positions the stream read pointer at
-      the beginning of the next entry (if there is one). */
-    void closeEntry();
-
-    /** Closes the istream. */
-    void                            close();
-
-    //ZipLocalEntry *createZipCDirEntry(const string &name);
-
-    /** \brief Get the next entry from a Zip archive.
-     *
-     * This function opens the next entry in the zip archive and returns
-     * a pointer to a FileEntry object for the entry. For new instances
-     * this method has to be called once before you can read from the
-     * first entry.
-     *
-     * \return A list constant FileEntry pointers containing information
-     *         about the (now) current entry.
-     */
-    FileEntry::pointer_t                getNextEntry();
+    FileEntry::pointer_t    getNextEntry();
 
 private:
     std::unique_ptr<std::ifstream>      m_ifs;

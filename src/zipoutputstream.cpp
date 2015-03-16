@@ -34,17 +34,15 @@ namespace zipios
 {
 
 
-ZipOutputStream::ZipOutputStream(std::ostream& os)
-    //: std::ostream(nullptr)
-    //, m_ofs(nullptr)
-    : m_ozf(new ZipOutputStreambuf(os.rdbuf()))
-{
-    init(m_ozf.get());
-}
-
-
+/** \brief Initialize a ZipOutputStream object.
+ *
+ * The ZipOutputStream constructor create an output stream that will
+ * be used to save Zip data to a file.
+ *
+ * \param[in] filename  Name of the file to write the zip archive to.
+ */
 ZipOutputStream::ZipOutputStream(std::string const& filename)
-    //: std::ostream(nullptr)
+    //: std::ostream()
     : m_ofs(new std::ofstream(filename.c_str(), std::ios::out | std::ios::binary))
     , m_ozf(new ZipOutputStreambuf(m_ofs->rdbuf()))
 {

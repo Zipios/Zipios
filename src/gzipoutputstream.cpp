@@ -58,9 +58,9 @@ namespace zipios
  * \param[in,out] os  ostream to which the compressed zip archive is written.
  */
 GZIPOutputStream::GZIPOutputStream(std::ostream& os)
-    : std::ostream(nullptr)
+    //: std::ostream() -- auto-init
     //, m_ofs(nullptr) -- auto-init
-    , m_ozf(new GZIPOutputStreambuf(os.rdbuf()))
+    : m_ozf(new GZIPOutputStreambuf(os.rdbuf()))
 {
     init(m_ozf.get());
 }

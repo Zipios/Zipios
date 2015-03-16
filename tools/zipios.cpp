@@ -31,29 +31,76 @@
 #include <stdlib.h>
 
 
-// static variables
+/** \brief A few static variables and functions.
+ *
+ * This namesapce includes various declarations, variables, and funtions
+ * that are specific to the zipios tool, not to be shared with anyone else.
+ */
 namespace
 {
 
+/** \brief Name of the program.
+ *
+ * This variable holds the name of the program. As soon as the main()
+ * function is entered, this variable gets defined.
+ */
 char *g_progname;
 
 
+/** \brief Usage of the zipios tool.
+ *
+ * This function prints out the zipios tool usage and then exits with
+ * error code 1.
+ */
 void usage()
 {
     std::cout << "Usage:  " << g_progname << " [-opt] [file]" << std::endl;
     std::cout << "Where -opt is one or more of:" << std::endl;
-    std::cout << "  --count         count the number of files in a .zip archive" << std::endl;
-    std::cout << "  --help          show this help screen" << std::endl;
-    std::cout << "  --version       print the library version and exit" << std::endl;
-    std::cout << "  --version-tool  print the tool version and exit" << std::endl;
+    std::cout << "  --count                 count the number of files in a .zip archive" << std::endl;
+    std::cout << "  --count-directories     count the number of files in a .zip archive" << std::endl;
+    std::cout << "  --count-files           count the number of files in a .zip archive" << std::endl;
+    std::cout << "  --help                  show this help screen" << std::endl;
+    std::cout << "  --version               print the library version and exit" << std::endl;
+    std::cout << "  --version-tool          print the tool version and exit" << std::endl;
     exit(1);
 }
 
 
+/** \brief The function to apply.
+ *
+ * This enumeration lists all the functions the zipios tool can apply to
+ * a Zip archive file.
+ */
 enum class func_t
 {
+    /** \brief Still undefined.
+     *
+     * This is used to know whether the user had a function on the command
+     * line that would be run by zipios.
+     */
     UNDEFINED,
-    COUNT
+
+    /** \brief Count the number of files in a Zip archive.
+     *
+     * This function is used when the user specify --count. It represents
+     * the total number of entries in a Zip archive.
+     */
+    COUNT,
+
+    /** \brief Count the number of directories in a Zip archive.
+     *
+     * This function is used when the user specify --count-directories.
+     * It represents the number of entries representing directories.
+     */
+    COUNT_DIRECTORIES,
+
+    /** \brief Count the number of regular files in a Zip archive.
+     *
+     * This function is used when the user specify --count-files.
+     * It represents the number of entries representing regular files
+     * found in a Zip archive.
+     */
+    COUNT_FILES
 };
 
 } // no name namespace
@@ -88,7 +135,7 @@ int main(int argc, char *argv[])
             if(strcmp(argv[i], "--version") == 0)
             {
                 // version of the .so library
-                std::cout << zipios::get_version() << std::endl;
+                std::cout << zipios::getVersion() << std::endl;
                 exit(0);
             }
             if(strcmp(argv[i], "--version-tool") == 0)
@@ -102,6 +149,14 @@ int main(int argc, char *argv[])
             {
                 function = func_t::COUNT;
             }
+            else if(strcmp(argv[i], "--count-directories") == 0)
+            {
+                function = func_t::COUNT_DIRECTORIES;
+            }
+            else if(strcmp(argv[i], "--count-files") == 0)
+            {
+                function = func_t::COUNT_FILES;
+            }
         }
         else
         {
@@ -112,8 +167,60 @@ int main(int argc, char *argv[])
     switch(function)
     {
     case func_t::COUNT:
-        // TODO: ...
-        std::cerr << "sorry, not implemented yet...\n";
+        for(auto it(files.begin()); it != files.end(); ++it)
+        {
+            zipios::ZipFile zf(*it);
+            if(files.size() > 1)
+            {
+                // write filename in case there is more than one file
+                std::cout << *it << ": ";
+            }
+            std::cout << zf.entries().size() << std::endl;
+        }
+        break;
+
+    case func_t::COUNT_DIRECTORIES:
+        for(auto it(files.begin()); it != files.end(); ++it)
+        {
+            zipios::ZipFile zf(*it);
+            if(files.size() > 1)
+            {
+                // write filename in case there is more than one file
+                std::cout << *it << ": ";
+            }
+            int count(0);
+            zipios::FileEntry::vector_t entries(zf.entries());
+            for(auto entry(entries.begin()); entry != entries.end(); ++entry)
+            {
+                if((*entry)->isDirectory())
+                {
+                    ++count;
+                }
+            }
+            std::cout << count << std::endl;
+        }
+        break;
+
+    case func_t::COUNT_FILES:
+        for(auto it(files.begin()); it != files.end(); ++it)
+        {
+            zipios::ZipFile zf(*it);
+            if(files.size() > 1)
+            {
+                // write filename in case there is more than one file
+                std::cout << *it << ": ";
+            }
+            int count(0);
+            zipios::FileEntry::vector_t entries(zf.entries());
+            for(auto entry(entries.begin()); entry != entries.end(); ++entry)
+            {
+                if(!(*entry)->isDirectory())
+                {
+                    ++count;
+                }
+            }
+            std::cout << count << std::endl;
+        }
         break;
 
     default:

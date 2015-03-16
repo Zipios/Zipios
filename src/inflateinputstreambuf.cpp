@@ -46,7 +46,7 @@ namespace zipios
  * stream filter.
  *
  * \todo
- * Add support for bzip2 compression.
+ * Add support for bzip2, lzma compressions.
  */
 
 
@@ -66,11 +66,10 @@ namespace zipios
  */
 InflateInputStreambuf::InflateInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
     : FilterInputStreambuf(inbuf)
-    //, m_outvecsize(1000) -- auto-init
-    , m_outvec(m_outvecsize)
+    , m_outvec(getBufferSize())
+    , m_invec(getBufferSize())
+    //, m_zs() -- auto-init
     //, m_zs_initialized(false) -- auto-init
-    //, m_invecsize(1000) -- auto-init
-    , m_invec(m_invecsize)
 {
     // NOTICE: It is important that this constructor and the methods it
     // calls doesn't do anything with the input streambuf inbuf, other
@@ -100,9 +99,15 @@ InflateInputStreambuf::~InflateInputStreambuf()
     int const err(inflateEnd(&m_zs));
     if(err != Z_OK)
     {
-        std::cerr << "InflateInputStreambuf::~InflateInputStreambuf(): inflateEnd() failed"
-                  << ": " << zError(err)
-                  << std::endl;
+        // in a destructor we cannot throw...
+        OutputStringStream msgs; // LCOV_EXCL_LINE
+        msgs << "InflateInputStreambuf::~InflateInputStreambuf(): inflateEnd() failed" // LCOV_EXCL_LINE
+             << ": " << zError(err); // LCOV_EXCL_LINE
+        /** \TODO
+         * Write an error callback interface and call that instead of
+         * using std::cerr...
+         */
+        std::cerr << msgs.str() << std::endl; // LCOV_EXCL_LINE
     }
 }
 
@@ -128,7 +133,7 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
     }
 
     // Prepare _outvec and get array pointers
-    m_zs.avail_out = m_outvecsize;
+    m_zs.avail_out = getBufferSize();
     m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
 
     // Inflate until _outvec is full
@@ -139,7 +144,7 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
         if(m_zs.avail_in == 0)
         {
             // fill m_invec
-            std::streamsize const bc(m_inbuf->sgetn(&m_invec[0], m_invecsize));
+            std::streamsize const bc(m_inbuf->sgetn(&m_invec[0], getBufferSize()));
             /** \FIXME
              * Add I/O error handling while inflating data from a file.
              */
@@ -157,7 +162,7 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
     // full length of the output buffer, but if we can't read
     // more input from the _inbuf streambuf, we end up with
     // less.
-    offset_t const inflated_bytes = m_outvecsize - m_zs.avail_out;
+    offset_t const inflated_bytes = getBufferSize() - m_zs.avail_out;
     setg(&m_outvec[0], &m_outvec[0], &m_outvec[0] + inflated_bytes);
 
     /** \FIXME
@@ -170,10 +175,8 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
     if(err != Z_OK && err != Z_STREAM_END)
     {
         OutputStringStream msgs;
-        msgs << "InflateInputStreambuf: inflate failed";
-#if defined (HAVE_STD_IOSTREAM) && defined (USE_STD_IOSTREAM) && defined (HAVE_ZERROR)
-        msgs << ": " << zError(err);
-#endif
+        msgs << "InflateInputStreambuf: inflate failed"
+             << ": " << zError(err);
         // Throw an exception to make istream set badbit
         throw IOException(msgs.str());
     }
@@ -188,15 +191,20 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
 
 
 
-/** \brief
+/** \brief Initializes the stream buffer.
  *
- * Resets the zlib stream and purges input and output buffers.
- * repositions the input streambuf at stream_position.
- * @param stream_position a position to reset the inbuf to before reading. Specify
- * -1 to read from the current position.
+ * This function resets the zlib stream and purges input and output buffers.
+ * It also repositions the input streambuf at stream_position.
  *
- * This method is called in the constructor, so it must not
- * read anything from the input streambuf _inbuf (see notice in constructor)
+ * \warning
+ * This method is called in the constructor, so it must not read anything
+ * from the input streambuf m_inbuf (see notice in constructor.)
+ *
+ * \param[in] stream_position  A position to reset the inbuf to before
+ *                             reading. Specify -1 to read from the
+ *                             current position.
+ *
+ * \sa InflateInputStreambuf()
  */
 bool InflateInputStreambuf::reset(offset_t stream_position)
 {
@@ -233,9 +241,9 @@ bool InflateInputStreambuf::reset(offset_t stream_position)
     // streambuf init:
     // The important thing here, is that
     // - the pointers are not NULL (which would mean unbuffered)
-    // - and that gptr() is not less than  egptr() (so we trigger underflow
+    // - and that gptr() is not less than egptr() (so we trigger underflow
     //   the first time data is read).
-    setg(&m_outvec[0], &m_outvec[0] + m_outvecsize, &m_outvec[0] + m_outvecsize);
+    setg(&m_outvec[0], &m_outvec[0] + getBufferSize(), &m_outvec[0] + getBufferSize());
 
     return err == Z_OK;
 }

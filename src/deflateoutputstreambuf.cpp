@@ -33,21 +33,40 @@
 namespace zipios
 {
 
+/** \class DeflateOutputStreambuf
+ * \brief A class to handle stream deflate on the fly.
+ *
+ * DeflateOutputStreambuf is an output stream filter, that deflates
+ * the data that is written to it before it passes it on to the
+ * output stream it is attached to. Deflation/Inflation is a
+ * compression/decompression method used in gzip and zip. The zlib
+ * library is used to perform the actual deflation, this class only
+ * wraps the functionality in an output stream filter.
+ */
 
+
+/** \brief Initialize a DeflateOutputStreambuf object.
+ *
+ * This function initializes the DeflateOutputStreambuf object to make it
+ * ready for compressing data using the zlib library.
+ *
+ * \param[in,out] outbuf  The streambuf to use for output.
+ * \param[in] user_init  If false user must invoke init() before writing
+ *                       any data. (ZipOutputStreambuf needs to do this)
+ */
 DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf, bool user_init)
     : FilterOutputStreambuf(outbuf)
+    //, m_zs() -- auto-init
     //, m_zs_initialized(false) -- auto-init
-    //, m_invecsize(1000) -- auto-init
-    , m_invec(m_invecsize)
-    //, m_outvecsize(1000) -- auto-init
-    , m_outvec(m_outvecsize)
+    , m_invec(getBufferSize())
+    , m_outvec(getBufferSize())
     //, m_crc32(0) -- auto-init
     //, m_overflown_bytes(0) -- auto-init
 {
     // NOTICE: It is important that this constructor and the methods it
-    // calls does not do anything with the output streambuf _outbuf The
-    // reason is that this class can be subclassed, and the subclass
-    // should get a chance to write to the buffer first
+    //         calls does not do anything with the output streambuf m_outbuf.
+    //         The reason is that this class can be subclassed, and the
+    //         subclass should get a chance to write to the buffer first.
 
     // zlib init:
     m_zs.zalloc = Z_NULL;
@@ -61,6 +80,7 @@ DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf, bool user
 }
 
 
+/** Destructor. */
 DeflateOutputStreambuf::~DeflateOutputStreambuf()
 {
     closeStream();
@@ -80,7 +100,7 @@ bool DeflateOutputStreambuf::init(CompressionLevel comp_level)
     m_zs.avail_in = 0;
 
     m_zs.next_out  = reinterpret_cast<unsigned char *>(&m_outvec[0]);
-    m_zs.avail_out = m_outvecsize;
+    m_zs.avail_out = getBufferSize();
 
     int err;
     if(m_zs_initialized)
@@ -103,7 +123,7 @@ bool DeflateOutputStreambuf::init(CompressionLevel comp_level)
     }
 
     // streambuf init:
-    setp(&m_invec[0], &m_invec[0] + m_invecsize);
+    setp(&m_invec[0], &m_invec[0] + getBufferSize());
 
     m_crc32 = crc32(0, Z_NULL, 0);
     m_overflown_bytes = 0;
@@ -137,6 +157,28 @@ bool DeflateOutputStreambuf::closeStream()
 }
 
 
+/** Returns the CRC32 for the current stream. The returned value is
+  the CRC for the data that has been compressed already (due to a
+  call to overflow()). As DeflateOutputStreambuf may buffer an
+  arbitrary amount of bytes until closeStream() has been invoked,
+  the returned value is not very useful before closeStream() has
+  been called. */
+uint32_t DeflateOutputStreambuf::getCrc32() const
+{
+    return m_crc32;
+}
+
+
+/** Returns the number of bytes written to the streambuf, that has
+  been processed from the input buffer by the compressor. After
+  closeStream() has been called this number is the total number of
+  bytes written to the stream. */
+size_t DeflateOutputStreambuf::getCount() const
+{
+    return m_overflown_bytes;
+}
+
+
 int DeflateOutputStreambuf::overflow(int c)
 {
     m_zs.avail_in = pptr() - pbase();
@@ -146,7 +188,7 @@ int DeflateOutputStreambuf::overflow(int c)
     m_overflown_bytes += m_zs.avail_in;
 
     m_zs.next_out  = reinterpret_cast<unsigned char *>(&m_outvec[0]);
-    m_zs.avail_out = m_outvecsize;
+    m_zs.avail_out = getBufferSize();
 
     // Deflate until _invec is empty.
     int err = Z_OK;
@@ -163,7 +205,7 @@ int DeflateOutputStreambuf::overflow(int c)
     flushOutvec();
 
     // Update 'put' pointers
-    setp(&m_invec[0], &m_invec[0] + m_invecsize);
+    setp(&m_invec[0], &m_invec[0] + getBufferSize());
 
     if(err != Z_OK && err != Z_STREAM_END)
     {
@@ -196,24 +238,27 @@ int DeflateOutputStreambuf::sync()
 }
 
 
+/** Flushes _outvec and updates _zs.next_out and _zs.avail_out. */
 bool DeflateOutputStreambuf::flushOutvec()
 {
-    int const deflated_bytes = m_outvecsize - m_zs.avail_out;
+    int const deflated_bytes = getBufferSize() - m_zs.avail_out;
     int const bc = m_outbuf->sputn(&m_outvec[0], deflated_bytes);
 
     m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
-    m_zs.avail_out = m_outvecsize;
+    m_zs.avail_out = getBufferSize();
 
     return deflated_bytes == bc;
 }
 
 
+/** Flushes the remaining data in the zlib buffers, after which the
+  only possible operations are deflateEnd() or deflateReset(). */
 void DeflateOutputStreambuf::endDeflation()
 {
     overflow();
 
     m_zs.next_out  = reinterpret_cast<unsigned char *>(&m_outvec[0]);
-    m_zs.avail_out = m_outvecsize;
+    m_zs.avail_out = getBufferSize();
 
     // Deflate until _invec is empty.
     int err = Z_OK;

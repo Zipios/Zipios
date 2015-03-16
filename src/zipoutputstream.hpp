@@ -42,21 +42,6 @@ class ZipOutputStream : public std::ostream
 {
 public:
 
-    /** \brief Initialize a ZipOutputStream object.
-     *
-     * This constructor saves the specified output stream internally and
-     * makes use of it to write any data that is saved in the Zip archive.
-     *
-     * \param[in,out] os  The stream where the compressed data is written.
-     */
-    explicit ZipOutputStream(std::ostream& os);
-
-    /** \brief ZipOutputStream constructor.
-     *
-     * Create an output stream that will be saved to a file.
-     *
-     * \param[in] filename  Name of the file to write the zip archive to.
-     */
     explicit ZipOutputStream(std::string const& filename);
 
     /** Destructor. */

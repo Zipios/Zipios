@@ -34,7 +34,7 @@
 //#include <vector>
 
 #include <unistd.h>
-//#include <string.h>
+#include <string.h>
 
 
 
@@ -123,7 +123,7 @@ TEST_CASE("An empty ZipFile", "[ZipFile] [FileCollection]")
 }
 
 
-SCENARIO("ZipFile with a working", "[ZipFile] [FileCollection]")
+SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
 {
     GIVEN("a tree directory")
     {
@@ -174,7 +174,16 @@ SCENARIO("ZipFile with a working", "[ZipFile] [FileCollection]")
                     }
                     else
                     {
-                        //REQUIRE((*it)->getCompressedSize() < (*it)->getSize()); // this should be always be true with the zip tool
+                         // you would think that the compressed size would
+                         // either be equal to the size or smaller, but never
+                         // larger, that's not the case with zip under Linux...
+                         //
+                         // they probably use a streaming mechanism and thus
+                         // cannot fix the problem later if the compressed
+                         // version ends up being larger than the
+                         // non-compressed version...
+                         //
+                         //REQUIRE((*it)->getCompressedSize() < (*it)->getSize());
                     }
                     //REQUIRE((*it)->getName() == ...);
                     //REQUIRE((*it)->getFileName() == ...);
@@ -182,6 +191,9 @@ SCENARIO("ZipFile with a working", "[ZipFile] [FileCollection]")
                     size_t ut(dos2unixtime(unix2dostime(file_stats.st_mtime)));
                     REQUIRE((*it)->getUnixTime() == ut);
                     REQUIRE_FALSE((*it)->hasCrc());
+                    REQUIRE((*it)->isValid());
+                    //REQUIRE((*it)->toString() == "... (0 bytes)");
+
                     if(t == zipios_test::file_t::type_t::DIRECTORY)
                     {
                         REQUIRE((*it)->isDirectory());
@@ -191,10 +203,32 @@ SCENARIO("ZipFile with a working", "[ZipFile] [FileCollection]")
                     {
                         REQUIRE_FALSE((*it)->isDirectory());
                         REQUIRE((*it)->getSize() == file_stats.st_size);
-                    }
-                    REQUIRE((*it)->isValid());
-                    //REQUIRE((*it)->toString() == "... (0 bytes)");
 
+                        // now read both files (if not a directory) and make sure
+                        // they are equal
+                        zipios::FileCollection::stream_pointer_t is(zf.getInputStream(entry->getName()));
+                        REQUIRE(is);
+                        std::ifstream in(entry->getName(), std::ios::in | std::ios::binary);
+
+                        while(in && *is)
+                        {
+                            char buf1[BUFSIZ], buf2[BUFSIZ];
+
+                            in.read(buf1, sizeof(buf1));
+                            std::streamsize sz1(in.gcount());
+
+                            is->read(buf2, sizeof(buf2));
+                            std::streamsize sz2(is->gcount());
+
+                            REQUIRE(sz1 == sz2);
+                            REQUIRE(memcmp(buf1, buf2, sz1) == 0);
+                        }
+
+                        REQUIRE(!in);
+                        REQUIRE(!*is);
+                    }
+
+                    // I don't think we will test those directly...
                     //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
                     //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                 }

@@ -129,62 +129,69 @@ struct ZipCentralDirectoryEntryHeader
  */
 
 
+/** \brief Initialize a ZipCentralDirectoryEntry.
+ *
+ * This function initializes a FileEntry specific to a Central Directory
+ * of a Zip archive file.
+ *
+ * This definition includes a comment which the ZipLocalEntry lacks.
+ *
+ * \param[in] filename  The name of the file representing this entry.
+ * \param[in] file_comment  Comment specific to this file entry.
+ * \param[in] extra_field  The extra buffer(s) attached to this entry.
+ */
 ZipCentralDirectoryEntry::ZipCentralDirectoryEntry(std::string const& filename, std::string const& file_comment, buffer_t const& extra_field)
     : ZipLocalEntry(filename, extra_field)
-    /** \TODO -- missing initialization of many member variables */
-    //, m_disk_num_start(0) -- auto-init
-    //, m_intern_file_attr(0) -- auto-init
-    //, m_extern_file_attr(0x81B40000) -- auto-init
-
-    /** \FIXME
-     * I do not understand the external mapping, simply
-     * copied value for a file with -rw-rw-r-- permissions
-     * compressed with info-zip
-     */
+    , m_file_comment(file_comment)
 {
-    setComment(file_comment);
-    setDefaultWriter();
 }
 
 
+/** \brief Clean up the entry.
+ *
+ * The destructor makes sure the entry is fully cleaned up.
+ */
 ZipCentralDirectoryEntry::~ZipCentralDirectoryEntry()
 {
 }
 
 
-void ZipCentralDirectoryEntry::setDefaultWriter()
-{
-    // reset version
-    m_writer_version = g_zip_format_version;
-
-    // then add "compatibility" code
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
-    // MS-Windows
-    /** \TODO should we use g_msdos instead?
-     */
-    m_writer_version |= g_windows;
-#elif defined(__APPLE__) && defined(__MACH__)
-    // OS/X
-    m_writer_version |= g_osx;
-#else
-    // Other Unices
-    m_writer_version |= g_unix;
-#endif
-}
-
-
+/** \brief Get the file comment.
+ *
+ * This function returns a copy of the file comment.
+ *
+ * \return The file comment of the entry, may be an empty string.
+ */
 std::string ZipCentralDirectoryEntry::getComment() const
 {
     return m_file_comment;
 }
 
 
+/** \brief Set the file comment.
+ *
+ * This function is used to set the file comment of the entry as read
+ * from a Zip archive.
+ *
+ * \param[in] comment  The comment to set the entry as.
+ */
 void ZipCentralDirectoryEntry::setComment(std::string const& comment)
 {
     m_file_comment = comment;
 }
 
 
+/** \brief Convert the entry into a string.
+ *
+ * This function is used o convert the entry into a printable string
+ * (assuming the filename is printable.)
+ *
+ * \todo
+ * We may want to test whether the entry is a directory and if so
+ * not display any sizes, just says "directory" instead.
+ *
+ * \return The filename and sizes of the entry.
+ */
 std::string ZipCentralDirectoryEntry::toString() const
 {
     OutputStringStream sout;
@@ -194,37 +201,75 @@ std::string ZipCentralDirectoryEntry::toString() const
 }
 
 
+/** \brief Compute and return the current header size.
+ *
+ * This function computes the size that this entry will take in the
+ * Central Directory of the Zip archive.
+ *
+ * \return The total size of the Central Directory entry on disk.
+ */
 size_t ZipCentralDirectoryEntry::getHeaderSize() const
 {
-    return 46 + m_filename.size() + m_extra_field.size() + m_file_comment.size() ;
+    /** \TODO
+     * Add support for 64 bit Zip. At this time this function returns
+     * an invalid size if the filename, extra field, or file comment
+     * sizes are more than allowed in an older version of the Zip format.
+     */
+    return sizeof(ZipCentralDirectoryEntryHeader) + m_filename.size() + m_extra_field.size() + m_file_comment.size() ;
 }
 
 
+/** \brief Create a clone of this Central Directory entry.
+ *
+ * This function allocates a new copy of this ZipCentralDirectoryEntry
+ * object and returns a smart pointer to it.
+ *
+ * \return A smart pointer to the copy.
+ */
 FileEntry::pointer_t ZipCentralDirectoryEntry::clone() const
 {
     return FileEntry::pointer_t(new ZipCentralDirectoryEntry(*this));
 }
 
 
-
+/** \brief Read a Central Directory entry.
+ *
+ * This function reads one Central Directory entry from the specified
+ * input stream. If anything goes wrong with the input stream, the read
+ * function will throw an error.
+ *
+ * \note
+ * While reading the entry is marked as invalid. If the read fails, the
+ * entry will remain invalid. On success, the function restores the status
+ * back to valid.
+ *
+ * \note
+ * If the signature or some other parameter is found to be invalid, then
+ * the input stream is marked as failed and an exception is thrown.
+ *
+ * \exception IOException
+ * This exception is thrown if the signature read does not match the
+ * signature of a Central Directory entry. This can only mean a bug
+ * in a Zip writer or an invalid/corrupt file altogether.
+ *
+ * \param[in] is  The input stream to read from.
+ *
+ * \sa write()
+ */
 void ZipCentralDirectoryEntry::read(std::istream& is)
 {
-    m_valid = false; // set to true upon successful completion.
-    if(!is)
-    {
-        return;
-    }
+    m_valid = false; // set back to true upon successful completion below.
 
+    // verify the signature
     uint32_t signature;
     zipRead(is, signature);
-
     if(g_signature != signature)
     {
-        // put stream in error state and return
         is.setstate(std::ios::failbit);
-        return;
+        throw IOException("ZipCentralDirectoryEntry::read(): Expected Central Directory entry signature not found");
     }
 
+    uint16_t writer_version(0);
     uint16_t compress_method(0);
     uint32_t dostime(0);
     uint32_t compressed_size(0);
@@ -233,10 +278,13 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
     uint16_t filename_len(0);
     uint16_t extra_field_len(0);
     uint16_t file_comment_len(0);
+    uint16_t intern_file_attr(0);
+    uint32_t extern_file_attr(0);
+    uint16_t disk_num_start(0);
     std::string filename;
 
     // read the header
-    zipRead(is, m_writer_version);                  // 16
+    zipRead(is, writer_version);                    // 16
     zipRead(is, m_extract_version);                 // 16
     zipRead(is, m_gp_bitfield);                     // 16
     zipRead(is, compress_method);                   // 16
@@ -247,15 +295,15 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
     zipRead(is, filename_len);                      // 16
     zipRead(is, extra_field_len);                   // 16
     zipRead(is, file_comment_len);                  // 16
-    zipRead(is, m_disk_num_start);                  // 16
-    zipRead(is, m_intern_file_attr);                // 16
-    zipRead(is, m_extern_file_attr);                // 32
+    zipRead(is, disk_num_start);                    // 16
+    zipRead(is, intern_file_attr);                  // 16
+    zipRead(is, extern_file_attr);                  // 32
     zipRead(is, rel_offset_loc_head);               // 32
     zipRead(is, filename, filename_len);            // string
     zipRead(is, m_extra_field, extra_field_len);    // buffer
     zipRead(is, m_file_comment, file_comment_len);  // string
     /** \TODO check whether this was a 64 bit header and make sure
-     *        to read the 64 bit header  too
+     *        to read the 64 bit header too if so
      */
 
     m_compress_method = static_cast<StorageMethod>(compress_method);
@@ -265,7 +313,7 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
     m_entry_offset = rel_offset_loc_head;
     m_filename = FilePath(filename);
 
-    // the zipRead() should throw if is is false...
+    // the zipRead() should throw if it is false...
     if(is)
     {
         m_valid = true;
@@ -273,59 +321,99 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
 }
 
 
+/** \brief Write a Central Directory Entry to the output stream.
+ *
+ * This function verifies that the data of the Central Directory entry
+ * can be written to disk. If so, then it writes a block. The size of
+ * the blocks varies depending on the filename, file comment, and extra
+ * data. The current size can be determined using the getHeaderSize()
+ * function.
+ *
+ * \exception InvalidStateException
+ * The function verifies whether the filename, extra field,
+ * file comment, file data, or data offset are not too large.
+ * If any one of these parameters is too large, then this
+ * exception is raised.
+ *
+ * \param[in] os  The output stream where the data is written.
+ *
+ * \sa getHeaderSize()
+ * \sa read()
+ */
 void ZipCentralDirectoryEntry::write(std::ostream& os)
 {
-    if(os)
+    /** \TODO add support for 64 bit entries
+     *        (zip64 is available, just need to add a 64 bit header...)
+     */
+    if(m_filename.length()     > 0x10000
+    || m_extra_field.size()    > 0x10000
+    || m_file_comment.length() > 0x10000)
     {
-        if(m_filename.length()     > 0x10000
-        || m_extra_field.size()    > 0x10000
-        || m_file_comment.length() > 0x10000)
-        {
-            throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
-        }
+        throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
+    }
 
-        /** \TODO add support for 64 bit entries
-         *        (zip64 is available, just need to add a 64 bit header)
-         */
 // Solaris defines _ILP32 for 32 bit platforms
 #if !defined(_ILP32)
-        if(m_compressed_size   >= 0x100000000ULL
-        || m_uncompressed_size >= 0x100000000ULL
-        || m_entry_offset      >= 0x100000000LL)
-        {
-            throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
-        }
+    if(m_compressed_size   >= 0x100000000ULL
+    || m_uncompressed_size >= 0x100000000ULL
+    || m_entry_offset      >= 0x100000000LL)
+    {
+        throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
+    }
 #endif
 
-        uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
-        uint32_t dostime(unix2dostime(m_unix_time));
-        uint32_t compressed_size(m_compressed_size);
-        uint32_t uncompressed_size(m_uncompressed_size);
-        uint16_t filename_len(m_filename.length());
-        uint16_t extra_field_len(m_extra_field.size());
-        uint16_t file_comment_len(m_file_comment.length());
-        uint32_t rel_offset_loc_head(m_entry_offset);
+    // define version
+    uint16_t writer_version = g_zip_format_version;
+    // including the "compatibility" code
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
+    // MS-Windows
+    /** \TODO should we use g_msdos instead?
+     */
+    writer_version |= g_windows;
+#elif defined(__APPLE__) && defined(__MACH__)
+    // OS/X
+    writer_version |= g_osx;
+#else
+    // Other Unices
+    writer_version |= g_unix;
+#endif
 
-        zipWrite(os, g_signature           );       // 32
-        zipWrite(os, m_writer_version      );       // 16
-        zipWrite(os, m_extract_version     );       // 16
-        zipWrite(os, m_gp_bitfield         );       // 16
-        zipWrite(os, compress_method       );       // 16
-        zipWrite(os, dostime               );       // 32
-        zipWrite(os, m_crc_32              );       // 32
-        zipWrite(os, compressed_size       );       // 32
-        zipWrite(os, uncompressed_size     );       // 32
-        zipWrite(os, filename_len          );       // 16
-        zipWrite(os, extra_field_len       );       // 16
-        zipWrite(os, file_comment_len      );       // 16
-        zipWrite(os, m_disk_num_start      );       // 16
-        zipWrite(os, m_intern_file_attr    );       // 16
-        zipWrite(os, m_extern_file_attr    );       // 32
-        zipWrite(os, rel_offset_loc_head   );       // 32
-        zipWrite(os, m_filename            );       // string
-        zipWrite(os, m_extra_field         );       // buffer
-        zipWrite(os, m_file_comment        );       // string
-    }
+    uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
+    uint32_t dostime(unix2dostime(m_unix_time));
+    uint32_t compressed_size(m_compressed_size);
+    uint32_t uncompressed_size(m_uncompressed_size);
+    uint16_t filename_len(m_filename.length());
+    uint16_t extra_field_len(m_extra_field.size());
+    uint16_t file_comment_len(m_file_comment.length());
+    uint16_t disk_num_start(0);
+    uint16_t intern_file_attr(0);
+    /** \FIXME
+     * I do not understand the external mapping, simply
+     * copied value for a file with -rw-rw-r-- permissions
+     * compressed with info-zip
+     */
+    uint32_t extern_file_attr(0x81B40000);
+    uint32_t rel_offset_loc_head(m_entry_offset);
+
+    zipWrite(os, g_signature           );       // 32
+    zipWrite(os, writer_version        );       // 16
+    zipWrite(os, m_extract_version     );       // 16
+    zipWrite(os, m_gp_bitfield         );       // 16
+    zipWrite(os, compress_method       );       // 16
+    zipWrite(os, dostime               );       // 32
+    zipWrite(os, m_crc_32              );       // 32
+    zipWrite(os, compressed_size       );       // 32
+    zipWrite(os, uncompressed_size     );       // 32
+    zipWrite(os, filename_len          );       // 16
+    zipWrite(os, extra_field_len       );       // 16
+    zipWrite(os, file_comment_len      );       // 16
+    zipWrite(os, disk_num_start        );       // 16
+    zipWrite(os, intern_file_attr      );       // 16
+    zipWrite(os, extern_file_attr      );       // 32
+    zipWrite(os, rel_offset_loc_head   );       // 32
+    zipWrite(os, m_filename            );       // string
+    zipWrite(os, m_extra_field         );       // buffer
+    zipWrite(os, m_file_comment        );       // string
 }
 
 
