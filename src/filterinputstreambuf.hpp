@@ -1,4 +1,7 @@
 #pragma once
+#ifndef FILTERINPUTSTREAMBUF_HPP
+#define FILTERINPUTSTREAMBUF_HPP
+
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -42,7 +45,8 @@ protected:
 };
 
 
-} // namespace
+} // zipios namespace
+
 // vim: ts=4 sw=4 et
 
 // Local Variables:
@@ -51,3 +55,5 @@ protected:
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+#endif

@@ -1,4 +1,7 @@
 #pragma once
+#ifndef ZIPIOS_COMMON_HPP
+#define ZIPIOS_COMMON_HPP
+
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -108,6 +111,7 @@ void     zipWrite(std::ostream& os, std::string const& str);
 
 
 } // zipios namespace
+
 // vim: ts=4 sw=4 et
 
 // Local Variables:
@@ -116,3 +120,5 @@ void     zipWrite(std::ostream& os, std::string const& str);
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+#endif

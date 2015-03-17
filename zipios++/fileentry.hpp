@@ -1,4 +1,7 @@
 #pragma once
+#ifndef ZIPIOS_FILEENTRY_HPP
+#define ZIPIOS_FILEENTRY_HPP
+
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
   Copyright (C) 2000-2015  Thomas Sondergaard
@@ -125,6 +128,7 @@ std::ostream& operator << (std::ostream& os, FileEntry const& entry);
 
 
 } // zipios namespace
+
 // vim: ts=4 sw=4 et
 
 // Local Variables:
@@ -133,3 +137,5 @@ std::ostream& operator << (std::ostream& os, FileEntry const& entry);
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+#endif
