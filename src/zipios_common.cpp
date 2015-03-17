@@ -130,13 +130,16 @@ void zipRead(std::istream& is, uint8_t&  value)
 void zipRead(std::istream& is, buffer_t& buffer, ssize_t const count)
 {
     buffer.resize(count);
-    if(!is.read(reinterpret_cast<char *>(&buffer[0]), count))
+    if(count > 0)
     {
-        throw IOException("an I/O error while reading zip archive data from file.");
-    }
-    if(is.gcount() != count)
-    {
-        throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
+        if(!is.read(reinterpret_cast<char *>(&buffer[0]), count))
+        {
+            throw IOException("an I/O error while reading zip archive data from file.");
+        }
+        if(is.gcount() != count)
+        {
+            throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
+        }
     }
 }
 
@@ -144,13 +147,16 @@ void zipRead(std::istream& is, buffer_t& buffer, ssize_t const count)
 void zipRead(std::istream& is, std::string& str, ssize_t const count)
 {
     str.resize(count);
-    if(!is.read(reinterpret_cast<char *>(&str[0]), count))
+    if(count > 0)
     {
-        throw IOException("an I/O error while reading zip archive data from file.");
-    }
-    if(is.gcount() != count)
-    {
-        throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
+        if(!is.read(reinterpret_cast<char *>(&str[0]), count))
+        {
+            throw IOException("an I/O error while reading zip archive data from file.");
+        }
+        if(is.gcount() != count)
+        {
+            throw IOException("EOF or an I/O error while reading zip archive data from file."); // LCOV_EXCL_LINE
+        }
     }
 }
 

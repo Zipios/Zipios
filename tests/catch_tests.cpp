@@ -52,12 +52,12 @@ int main(int argc, char *argv[])
     char *e(strrchr(g_progname, '/'));
     if(e)
     {
-        g_progname = e + 1;
+        g_progname = e + 1; // LCOV_EXCL_LINE
     }
     e = strrchr(g_progname, '\\');
     if(e)
     {
-        g_progname = e + 1;
+        g_progname = e + 1; // LCOV_EXCL_LINE
     }
 
     unsigned int seed(static_cast<unsigned int>(time(nullptr)));
@@ -66,22 +66,22 @@ int main(int argc, char *argv[])
     {
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
         {
-            help = true;
+            help = true; // LCOV_EXCL_LINE
         }
         if(strcmp(argv[i], "--seed") == 0)
         {
-            if(i + 1 >= argc)
+            if(i + 1 >= argc) // LCOV_EXCL_LINE
             {
-                std::cerr << "error: --seed need to be followed by the actual seed." << std::endl;
-                exit(1);
+                std::cerr << "error: --seed need to be followed by the actual seed." << std::endl; // LCOV_EXCL_LINE
+                exit(1); // LCOV_EXCL_LINE
             }
-            seed = atoll(argv[i + 1]);
+            seed = atoll(argv[i + 1]); // LCOV_EXCL_LINE
             // remove the --seed and <value>
-            for(int j(i); j + 2 < argc; ++j)
+            for(int j(i); j + 2 < argc; ++j) // LCOV_EXCL_LINE
             {
-                argv[j] = argv[j + 2];
+                argv[j] = argv[j + 2]; // LCOV_EXCL_LINE
             }
-            argc -= 2;
+            argc -= 2; // LCOV_EXCL_LINE
         }
     }
     srand(seed);
@@ -89,10 +89,10 @@ int main(int argc, char *argv[])
 
     if(help)
     {
-        std::cout << std::endl
-                  << "WARNING: at this point we hack the main() to add the following options:" << std::endl
-                  << "  --seed <seed>    to force the seed at the start of the process to a specific value (i.e. to reproduce the exact same test over and over again)" << std::endl
-                  << std::endl;
+        std::cout << std::endl // LCOV_EXCL_LINE
+                  << "WARNING: at this point we hack the main() to add the following options:" << std::endl // LCOV_EXCL_LINE
+                  << "  --seed <seed>    to force the seed at the start of the process to a specific value (i.e. to reproduce the exact same test over and over again)" << std::endl // LCOV_EXCL_LINE
+                  << std::endl; // LCOV_EXCL_LINE
     }
 
     return Catch::Session().run(argc, argv);

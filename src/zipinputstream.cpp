@@ -34,6 +34,20 @@ namespace zipios
 {
 
 
+/** \class ZipInputStream
+ * \brief The ZipInputStream to read data from a Zip archive.
+ *
+ * ZipInputStream is an istream that gets its input from a zip file. The
+ * interface was redesigned in version 2.x to be more C++ like.
+ *
+ * \note
+ * The getNextEntry() was removed because we cannot make it work here.
+ * The old implementation would let someone read all the local directory
+ * entries one after another. Only that is not correct and since this class
+ * is not publicly exposed anymore, it wouldn't be available anyway.
+ */
+
+
 /** \brief Initialize a ZipInputStream from a filename and position.
  *
  * This constructor creates a ZIP file stream by attaching itself to
@@ -60,45 +74,6 @@ ZipInputStream::ZipInputStream(std::string const& filename, std::streampos pos)
  */
 ZipInputStream::~ZipInputStream()
 {
-}
-
-
-/** \brief Close the current entry.
- *
- * This function closes the current entry, and positions the stream
- * read pointer at the beginning of the next entry (if there is one).
- */
-void ZipInputStream::closeEntry()
-{
-    m_izf->closeEntry();
-}
-
-
-/** \brief Close the input stream.
- *
- * This function closes the input stream. After that, the other functions
- * will most certainly not work anymore.
- */
-void ZipInputStream::close()
-{
-    m_izf->close();
-}
-
-
-/** \brief Get the next entry from the attached Zip archive.
- *
- * This function opens the next entry in the zip archive and returns
- * a pointer to a FileEntry object for the entry. For new instances
- * this method has to be called once before you can read from the
- * first entry.
- *
- * \return A list constant FileEntry pointers containing information
- *         about the (now) current entry.
- */
-FileEntry::pointer_t ZipInputStream::getNextEntry()
-{
-    clear(); // clear eof and other flags.
-    return m_izf->getNextEntry();
 }
 
 

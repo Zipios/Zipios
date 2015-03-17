@@ -25,6 +25,7 @@
 #include "catch_tests.hpp"
 
 #include "zipios++/zipfile.hpp"
+#include "zipios++/directorycollection.hpp"
 #include "zipios++/zipiosexceptions.hpp"
 
 #include "src/dostime.h"
@@ -36,6 +37,20 @@
 #include <unistd.h>
 #include <string.h>
 
+
+
+namespace
+{
+
+
+zipios::StorageMethod const g_supported_storage_methods[]
+{
+    zipios::StorageMethod::STORED,
+    zipios::StorageMethod::DEFLATED
+};
+
+
+} // no name namespace
 
 
 
@@ -233,6 +248,135 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                 }
             }
+
+            THEN("we can create a totally valid clone")
+            {
+                // we do not have a specific copy constructor and
+                // assignment operator so we only try to clone() function
+                zipios::ZipFile::pointer_t clone(zf.clone());
+
+                // zf is unaffected
+                REQUIRE(zf.isValid());
+                REQUIRE_FALSE(zf.entries().empty());
+                REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE(zf.getName() == "tree.zip");
+                REQUIRE(zf.size() == tree.size());
+                zf.mustBeValid(); // not throwing
+
+                // clone is valid
+                REQUIRE(clone->isValid());
+                REQUIRE_FALSE(clone->entries().empty());
+                REQUIRE_FALSE(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE_FALSE(clone->getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(clone->getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE(clone->getName() == "tree.zip");
+                REQUIRE(clone->size() == tree.size());
+                clone->mustBeValid(); // not throwing
+
+                zipios::FileEntry::vector_t v(clone->entries());
+                for(auto it(v.begin()); it != v.end(); ++it)
+                {
+                    zipios::FileEntry::pointer_t entry(*it);
+
+                    // verify that our tree knows about this file
+                    zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                    REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
+
+                    struct stat file_stats;
+                    REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
+
+                    REQUIRE((*it)->getComment().empty());
+                    //REQUIRE((*it)->getCompressedSize() == (*it)->getSize()); -- not too sure how we could verify this size in this case
+                    //REQUIRE((*it)->getCrc() == ...); -- not too sure how to compute that right now, but once we have it we'll test it
+                    //REQUIRE((*it)->getEntryOffset() == ...); -- that's also difficult to test
+                    //REQUIRE((*it)->getExtra().empty());
+                    //REQUIRE((*it)->getHeaderSize() == 0); -- the header size varies
+                    if((*it)->getMethod() == zipios::StorageMethod::STORED)
+                    {
+                        REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
+                    }
+                    else
+                    {
+                         // you would think that the compressed size would
+                         // either be equal to the size or smaller, but never
+                         // larger, that's not the case with zip under Linux...
+                         //
+                         // they probably use a streaming mechanism and thus
+                         // cannot fix the problem later if the compressed
+                         // version ends up being larger than the
+                         // non-compressed version...
+                         //
+                         //REQUIRE((*it)->getCompressedSize() < (*it)->getSize());
+                    }
+                    //REQUIRE((*it)->getName() == ...);
+                    //REQUIRE((*it)->getFileName() == ...);
+                    REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                    size_t ut(dos2unixtime(unix2dostime(file_stats.st_mtime)));
+                    REQUIRE((*it)->getUnixTime() == ut);
+                    REQUIRE_FALSE((*it)->hasCrc());
+                    REQUIRE((*it)->isValid());
+                    //REQUIRE((*it)->toString() == "... (0 bytes)");
+
+                    if(t == zipios_test::file_t::type_t::DIRECTORY)
+                    {
+                        REQUIRE((*it)->isDirectory());
+                        REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                    }
+                    else
+                    {
+                        REQUIRE_FALSE((*it)->isDirectory());
+                        REQUIRE((*it)->getSize() == file_stats.st_size);
+
+                        // now read both files (if not a directory) and make sure
+                        // they are equal
+                        zipios::FileCollection::stream_pointer_t is(clone->getInputStream(entry->getName()));
+                        REQUIRE(is);
+                        std::ifstream in(entry->getName(), std::ios::in | std::ios::binary);
+
+                        while(in && *is)
+                        {
+                            char buf1[BUFSIZ], buf2[BUFSIZ];
+
+                            in.read(buf1, sizeof(buf1));
+                            std::streamsize sz1(in.gcount());
+
+                            is->read(buf2, sizeof(buf2));
+                            std::streamsize sz2(is->gcount());
+
+                            REQUIRE(sz1 == sz2);
+                            REQUIRE(memcmp(buf1, buf2, sz1) == 0);
+                        }
+
+                        REQUIRE(!in);
+                        REQUIRE(!*is);
+                    }
+
+                    // I don't think we will test those directly...
+                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+                }
+            }
+
+            THEN("we can compare incompatible entries against each others")
+            {
+                // we read the tree as a directory so we have
+                // incompatible entries
+                zipios::DirectoryCollection dc("tree");
+
+                zipios::FileEntry::vector_t e(dc.entries());
+                zipios::FileEntry::vector_t v(zf.entries());
+                REQUIRE(e.size() == v.size()); // same tree so same size
+                //size_t const max_entries(std::min(e.size(), v.size());
+                for(size_t idx(0); idx < e.size(); ++idx)
+                {
+                    REQUIRE_FALSE(e[idx]->isEqual(*v[idx]));
+                    REQUIRE_FALSE(v[idx]->isEqual(*e[idx]));
+                }
+            }
         }
     }
 }
@@ -247,7 +391,7 @@ struct local_header_t
 
     uint32_t            m_signature;            // "PK 3.4"
     uint16_t            m_version;              // 10 or 20
-    uint16_t            m_flags;                // generally zero
+    uint16_t            m_flags;                // generally zero ("general purpose field")
     uint16_t            m_compression_method;   // zipios++ only supports STORED and DEFLATE
     uint32_t            m_time_and_date;        // MS-DOS date and time
     uint32_t            m_crc32;                // CRC-32 of the file data
@@ -278,8 +422,8 @@ struct local_header_t
     {
         if(m_filename.empty())
         {
-            std::cerr << "bug: local_header_t::write() called without a filename." << std::endl;
-            exit(1);
+            std::cerr << "bug: local_header_t::write() called without a filename." << std::endl; // LCOV_EXCL_LINE
+            exit(1); // LCOV_EXCL_LINE
         }
 
         // IMPORTANT NOTE:
@@ -321,6 +465,122 @@ struct local_header_t
         os << static_cast<unsigned char>(extra_field_length >> 8);
         os << m_filename;
         os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+    }
+};
+
+
+struct central_directory_header_t
+{
+    typedef std::vector<unsigned char>      buffer_t;
+
+    uint32_t            m_signature;            // 00 -- "PK 2.1"
+    uint16_t            m_version;              // 04 -- 10 or 20
+    uint16_t            m_extract_version;      // 06 -- generally zero
+    uint16_t            m_flags;                // 08 -- various flags
+    uint16_t            m_compression_method;   // 0A -- method used to compress the data
+    uint32_t            m_time_and_date;        // 0C -- MS-DOS date and time
+    uint32_t            m_crc32;                // 10 -- CRC-32 of the file data
+    uint32_t            m_compressed_size;      // 14 -- size of data once compressed
+    uint32_t            m_uncompressed_size;    // 18 -- size of data uncompressed
+    //uint16_t            m_filename_length;      // 1C -- length name of this file
+    //uint16_t            m_extra_field_length;   // 1E -- length of extra buffer, zipios++ ignore those
+    //uint16_t            m_file_comment_length;  // 20 -- length of comment
+    uint16_t            m_disk_number_start;                // 22 -- disk number of split archives
+    uint16_t            m_internal_file_attributes;         // 24 -- file attributes
+    uint32_t            m_external_file_attributes;         // 26 -- file attributes
+    uint32_t            m_relative_offset_to_local_header;  // 2A -- offset to actual file
+    //uint8_t             m_filename[m_filename_length];    // 2E -- filename (variable size
+    std::string         m_filename;
+    //uint8_t             m_extra_field[m_extra_field_length];      // .. -- extra field(s)
+    buffer_t            m_extra_field;
+    //uint8_t             m_file_comment[m_file_comment_length];    // .. -- file comment
+    std::string         m_file_comment;
+
+    central_directory_header_t()
+        : m_signature(0x02014B50)
+        , m_version(10)
+        , m_extract_version(10)
+        , m_flags(0)
+        , m_compression_method(0)   // 0 == STORED
+        , m_time_and_date(unix2dostime(time(nullptr)))
+        , m_crc32(0)
+        , m_compressed_size(0)      // undefined is compression method is 0
+        , m_uncompressed_size(0)
+        , m_disk_number_start(0)
+        , m_internal_file_attributes(0)
+        , m_external_file_attributes(0)
+        , m_relative_offset_to_local_header(0)
+        //, m_filename("") -- auto-init
+        //, m_extra_field() -- auto-init
+        //, m_file_comment("") -- auto-init
+    {
+    }
+
+    void write(std::ostream& os)
+    {
+        if(m_filename.empty())
+        {
+            std::cerr << "bug: central_directory_header_t::write() called without a filename." << std::endl; // LCOV_EXCL_LINE
+            exit(1); // LCOV_EXCL_LINE
+        }
+
+        // IMPORTANT NOTE:
+        // We do not verify any field other than the filename because
+        // we want to be able to use this class to create anything
+        // (i.e. including invalid headers.)
+
+        os << static_cast<unsigned char>(m_signature >>  0);
+        os << static_cast<unsigned char>(m_signature >>  8);
+        os << static_cast<unsigned char>(m_signature >> 16);
+        os << static_cast<unsigned char>(m_signature >> 24);
+        os << static_cast<unsigned char>(m_version >> 0);
+        os << static_cast<unsigned char>(m_version >> 8);
+        os << static_cast<unsigned char>(m_extract_version >> 0);
+        os << static_cast<unsigned char>(m_extract_version >> 8);
+        os << static_cast<unsigned char>(m_flags >> 0);
+        os << static_cast<unsigned char>(m_flags >> 8);
+        os << static_cast<unsigned char>(m_compression_method >> 0);
+        os << static_cast<unsigned char>(m_compression_method >> 8);
+        os << static_cast<unsigned char>(m_time_and_date >>  0);
+        os << static_cast<unsigned char>(m_time_and_date >>  8);
+        os << static_cast<unsigned char>(m_time_and_date >> 16);
+        os << static_cast<unsigned char>(m_time_and_date >> 24);
+        os << static_cast<unsigned char>(m_crc32 >>  0);
+        os << static_cast<unsigned char>(m_crc32 >>  8);
+        os << static_cast<unsigned char>(m_crc32 >> 16);
+        os << static_cast<unsigned char>(m_crc32 >> 24);
+        os << static_cast<unsigned char>(m_compressed_size >>  0);
+        os << static_cast<unsigned char>(m_compressed_size >>  8);
+        os << static_cast<unsigned char>(m_compressed_size >> 16);
+        os << static_cast<unsigned char>(m_compressed_size >> 24);
+        os << static_cast<unsigned char>(m_uncompressed_size >>  0);
+        os << static_cast<unsigned char>(m_uncompressed_size >>  8);
+        os << static_cast<unsigned char>(m_uncompressed_size >> 16);
+        os << static_cast<unsigned char>(m_uncompressed_size >> 24);
+        uint16_t filename_length(m_filename.length());
+        os << static_cast<unsigned char>(filename_length >> 0);
+        os << static_cast<unsigned char>(filename_length >> 8);
+        uint16_t extra_field_length(m_extra_field.size());
+        os << static_cast<unsigned char>(extra_field_length >> 0);
+        os << static_cast<unsigned char>(extra_field_length >> 8);
+        uint16_t file_comment_length(m_file_comment.length());
+        os << static_cast<unsigned char>(file_comment_length >> 0);
+        os << static_cast<unsigned char>(file_comment_length >> 8);
+        os << static_cast<unsigned char>(m_disk_number_start >> 0);
+        os << static_cast<unsigned char>(m_disk_number_start >> 8);
+        os << static_cast<unsigned char>(m_internal_file_attributes >> 0);
+        os << static_cast<unsigned char>(m_internal_file_attributes >> 8);
+        os << static_cast<unsigned char>(m_external_file_attributes >>  0);
+        os << static_cast<unsigned char>(m_external_file_attributes >>  8);
+        os << static_cast<unsigned char>(m_external_file_attributes >> 16);
+        os << static_cast<unsigned char>(m_external_file_attributes >> 24);
+        os << static_cast<unsigned char>(m_relative_offset_to_local_header >>  0);
+        os << static_cast<unsigned char>(m_relative_offset_to_local_header >>  8);
+        os << static_cast<unsigned char>(m_relative_offset_to_local_header >> 16);
+        os << static_cast<unsigned char>(m_relative_offset_to_local_header >> 24);
+        os << m_filename;
+        os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+        os << m_file_comment;
     }
 };
 
@@ -454,6 +714,239 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 end_of_central_directory_t eocd;
                 eocd.m_file_count = size1;
                 eocd.m_total_count = size2;
+                eocd.write(os);
+            }
+
+            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
+        }
+    }
+
+    SECTION("create files with one Local Entry using an invalid signature")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                // since the signature will be invalid, we can ignore the
+                // rest too...
+                central_directory_header_t cdh;
+                cdh.m_signature = 0x01020304;       // an invalid signature
+                cdh.m_filename = "invalid";
+                cdh.write(os);
+
+                end_of_central_directory_t eocd;
+                eocd.m_file_count = 1;
+                eocd.m_total_count = 1;
+                eocd.m_central_directory_size = 46 + 7; // structure + filename
+                eocd.write(os);
+            }
+
+            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::IOException);
+        }
+    }
+
+    SECTION("create files with a valid central directory but no local entries")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                // since the signature will be invalid, we can ignore the
+                // rest too...
+                central_directory_header_t cdh;
+                cdh.m_filename = "invalid";
+                cdh.write(os);
+
+                end_of_central_directory_t eocd;
+                eocd.m_file_count = 1;
+                eocd.m_total_count = 1;
+                eocd.m_central_directory_size = 46 + 7; // structure + filename
+                eocd.write(os);
+            }
+
+            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::IOException);
+        }
+    }
+
+    SECTION("create files with one an unsupported compression method")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                // create a header (has to be equal to pass to the method check)
+                local_header_t lh;
+                central_directory_header_t cdh;
+                end_of_central_directory_t eocd;
+
+                for(;;)
+                {
+                    // this is saved as a 16 bit value so it probably should
+                    // support 16 bits
+                    lh.m_compression_method = rand() & 0xFFFF;
+
+                    // make sure it is not a valid method
+                    bool found(false);
+                    for(size_t m(0); m < sizeof(g_supported_storage_methods) / sizeof(g_supported_storage_methods[0]); ++m)
+                    {
+                        if(static_cast<zipios::StorageMethod>(lh.m_compression_method) == g_supported_storage_methods[m])
+                        {
+                            // it is valid, we will try again
+                            // (it is going to be really rare, so we exclude
+                            // these lines from the coverage)
+                            found = true; // LCOV_EXCL_LINE
+                            break; // LCOV_EXCL_LINE
+                        }
+                    }
+                    if(!found)
+                    {
+                        break;
+                    }
+                } // LCOV_EXCL_LINE
+                lh.m_filename = "invalid";
+                lh.write(os);
+
+                eocd.m_central_directory_offset = os.tellp();
+
+                cdh.m_compression_method = lh.m_compression_method;
+                cdh.m_filename = "invalid";
+                cdh.write(os);
+
+                eocd.m_file_count = 1;
+                eocd.m_total_count = 1;
+                eocd.m_central_directory_size = 46 + 7; // structure + filename
+                eocd.write(os);
+            }
+
+            zipios::ZipFile zf("file.zip");
+            REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException);
+        }
+    }
+
+    SECTION("create files with a trailing data descriptor")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                // create a header (has to be equal to pass to the method check)
+                local_header_t lh;
+                central_directory_header_t cdh;
+                end_of_central_directory_t eocd;
+
+                // use a valid compression method
+                lh.m_flags |= 4;  // <-- trailing data not suppored!
+                lh.m_compression_method = static_cast<uint16_t>(g_supported_storage_methods[rand() % (sizeof(g_supported_storage_methods) / sizeof(g_supported_storage_methods[0]))]);
+                lh.m_filename = "invalid";
+                lh.write(os);
+
+                eocd.m_central_directory_offset = os.tellp();
+
+                cdh.m_compression_method = lh.m_compression_method;
+                cdh.m_flags = lh.m_flags;
+                cdh.m_filename = "invalid";
+                cdh.write(os);
+
+                eocd.m_file_count = 1;
+                eocd.m_total_count = 1;
+                eocd.m_central_directory_size = 46 + 7; // structure + filename
+                eocd.write(os);
+            }
+
+            zipios::ZipFile zf("file.zip");
+            REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException);
+        }
+    }
+
+    /** \TODO
+     * We need to write a similar test that verifies each and every field
+     * that proves there is an error and all the fields that do not prove
+     * anything.
+     */
+    SECTION("create files with a mismatched compression method")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                // create a header (has to be equal to pass to the method check)
+                local_header_t lh;
+                central_directory_header_t cdh;
+                end_of_central_directory_t eocd;
+
+                // use a valid compression method
+                lh.m_compression_method = static_cast<uint16_t>(zipios::StorageMethod::STORED);
+                lh.m_filename = "invalid";
+                lh.write(os);
+
+                eocd.m_central_directory_offset = os.tellp();
+
+                cdh.m_compression_method = static_cast<uint16_t>(zipios::StorageMethod::DEFLATED);
+                cdh.m_flags = lh.m_flags;
+                cdh.m_filename = "invalid";
+                cdh.write(os);
+
+                eocd.m_file_count = 1;
+                eocd.m_total_count = 1;
+                eocd.m_central_directory_size = 46 + 7; // structure + filename
+                eocd.write(os);
+            }
+
+            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
+        }
+    }
+
+    SECTION("create files with a trailing data descriptor")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                // create a header (has to be equal to pass to the method check)
+                local_header_t lh;
+                central_directory_header_t cdh;
+                end_of_central_directory_t eocd;
+
+                // use a valid compression method
+                lh.m_compression_method = static_cast<uint16_t>(g_supported_storage_methods[rand() % (sizeof(g_supported_storage_methods) / sizeof(g_supported_storage_methods[0]))]);
+                lh.m_filename = "invalid";
+                lh.write(os);
+
+                eocd.m_central_directory_offset = os.tellp();
+
+                cdh.m_compression_method = lh.m_compression_method;
+                cdh.m_flags = lh.m_flags;
+                cdh.m_filename = "invalid";
+                cdh.write(os);
+
+                eocd.m_file_count = 1;
+                eocd.m_total_count = 1;
+                if(i & 1)
+                {
+                    eocd.m_central_directory_size = 46 + 7 + rand() % 10 + 1; // structure + filename + erroneous size
+                }
+                else
+                {
+                    eocd.m_central_directory_size = 46 + 7 - rand() % 10 - 1; // structure + filename - erroneous size
+                }
                 eocd.write(os);
             }
 

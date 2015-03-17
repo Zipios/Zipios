@@ -126,10 +126,11 @@ InflateInputStreambuf::~InflateInputStreambuf()
  */
 std::streambuf::int_type InflateInputStreambuf::underflow()
 {
-    // If not underflow don't fill buffer
+    // If not really underflow do not fill buffer
+    // (is that really possible?!)
     if(gptr() < egptr())
     {
-        return traits_type::to_int_type(*gptr());
+        return traits_type::to_int_type(*gptr()); // LCOV_EXCL_LINE
     }
 
     // Prepare _outvec and get array pointers

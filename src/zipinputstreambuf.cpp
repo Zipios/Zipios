@@ -51,16 +51,39 @@ namespace zipios
  */
 ZipInputStreambuf::ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
     : InflateInputStreambuf(inbuf, start_pos)
-    //, m_open_entry(false) -- auto-init
     //, m_current_entry() -- auto-init
-    //, m_data_start(0) -- auto-init
     //, m_remain(0) -- auto-init
 {
-    /** TODO:
-     * Further the initialization of the buffer by calling the getNextEntry().
-     * This is just plainly ugly and we want to change it ASAP.
-     */
-    getNextEntry();
+    // read the zip local header
+    std::istream is(m_inbuf); // istream does not destroy the streambuf.
+    is.exceptions(std::ios::eofbit | std::ios::failbit | std::ios::badbit);
+
+    // if the read fails in any way it will throw
+    m_current_entry.read(is);
+    if(m_current_entry.isValid() && m_current_entry.trailingDataDescriptor())
+    {
+        throw FileCollectionException("Trailing data descriptor in zip file not supported");
+    }
+
+    switch(m_current_entry.getMethod())
+    {
+    case StorageMethod::DEFLATED:
+        reset() ; // reset inflatestream data structures
+//std::cerr << "deflated" << std::endl;
+        break;
+
+    case StorageMethod::STORED:
+        m_remain = m_current_entry.getSize();
+        // Force underflow on first read:
+        setg(&m_outvec[0], &m_outvec[0] + getBufferSize(), &m_outvec[0] + getBufferSize());
+//std::cerr << "stored" << std::endl;
+        break;
+
+    default:
+        // file not supported... sorry!
+        throw FileCollectionException("Unsupported compression format");
+
+    }
 }
 
 
@@ -93,105 +116,6 @@ ZipInputStreambuf::~ZipInputStreambuf()
 }
 
 
-/** \brief Close the current entry.
- *
- * This function closes the current entry, and positions the stream
- * read pointer at the beginning of the next entry (if there is one).
- */
-void ZipInputStreambuf::closeEntry()
-{
-    if(!m_open_entry)
-    {
-        return;
-    }
-    m_open_entry = false;
-
-    // check if we are positioned correctly, otherwise position us correctly
-    std::streampos const position(m_inbuf->pubseekoff(0, std::ios::cur, std::ios::in));
-    std::streampos const expected_position(m_data_start + m_current_entry.getCompressedSize());
-    if(position != expected_position)
-    {
-        m_inbuf->pubseekoff(expected_position, std::ios::beg, std::ios::in);
-    }
-}
-
-
-/** \brief Closes the stream buffer.
- *
- * This funtion closes the stream buffer.
- *
- * \note
- * At this time this function does nothing.
- */
-void ZipInputStreambuf::close()
-{
-}
-
-
-/** \brief Get the next entry.
- *
- * This function opens the next entry found in the Zip archive
- * and returns a shared pointer to a FileEntry object representing
- * the entry.
- *
- * \return A shared pointer to a FileEntry containing information about
- *         the now current entry.
- */
-FileEntry::pointer_t ZipInputStreambuf::getNextEntry()
-{
-    if(m_open_entry)
-    {
-        closeEntry();
-    }
-
-    // read the zip local header
-    std::istream is(m_inbuf); // istream does not destroy the streambuf.
-    is.exceptions(std::ios::eofbit | std::ios::failbit | std::ios::badbit);
-
-    try
-    {
-        m_current_entry.read(is);
-        if(m_current_entry.isValid())
-        {
-            m_data_start = m_inbuf->pubseekoff(0, std::ios::cur, std::ios::in);
-            if(m_current_entry.getMethod() == StorageMethod::DEFLATED)
-            {
-                m_open_entry = true;
-                reset() ; // reset inflatestream data structures
-//std::cerr << "deflated" << std::endl;
-            }
-            else if(m_current_entry.getMethod() == StorageMethod::STORED)
-            {
-                m_open_entry = true;
-                m_remain = m_current_entry.getSize();
-                // Force underflow on first read:
-                setg(&m_outvec[0], &m_outvec[0] + getBufferSize(), &m_outvec[0] + getBufferSize());
-//std::cerr << "stored" << std::endl;
-            }
-            else
-            {
-                m_open_entry = false; // Unsupported compression format.
-                throw FileCollectionException("Unsupported compression format");
-            }
-        }
-    }
-    catch(...)
-    {
-        /** \TODO
-         * This is not valid, if not open we cannot access _curr_entry below
-         */
-        m_open_entry = false ;
-    }
-
-    if(m_current_entry.isValid() && m_current_entry.trailingDataDescriptor())
-    {
-        throw FileCollectionException("Trailing data descriptor in zip file not supported");
-    }
-
-    return m_current_entry.clone();
-}
-
-
 /** \brief Called when more data is required.
  *
  * The function ensures that at least one byte is available
@@ -203,30 +127,35 @@ FileEntry::pointer_t ZipInputStreambuf::getNextEntry()
  */
 std::streambuf::int_type ZipInputStreambuf::underflow()
 {
-    if(!m_open_entry)
+    switch(m_current_entry.getMethod())
     {
+    case StorageMethod::DEFLATED:
+        // inflate class takes care of it in this case
+        return InflateInputStreambuf::underflow();
+
+    case StorageMethod::STORED:
+    {
+        // Ok, we are STORED, so we handle it ourselves.
+        offset_t const num_b(std::min(m_remain, static_cast<offset_t>(getBufferSize())));
+        std::streamsize const g(m_inbuf->sgetn(&m_outvec[0], num_b));
+        setg(&m_outvec[0], &m_outvec[0], &m_outvec[0] + g);
+        m_remain -= g;
+        if(g > 0)
+        {
+            // we got some data, return it
+            return traits_type::to_int_type(*gptr());
+        }
+
         // documentation says to return EOF if no data available
         return traits_type::eof();
     }
 
-    if(m_current_entry.getMethod() == StorageMethod::DEFLATED)
-    {
-        return InflateInputStreambuf::underflow();
-    }
+    default:
+        // This should NEVER be reached or the constructor let something
+        // go through that should not have gone through
+        throw std::logic_error("ZipInputStreambuf::underflow(): unknown storage method"); // LCOV_EXCL_LINE
 
-    // Ok, we are stored, so we handle it ourselves.
-    offset_t const num_b(std::min(m_remain, static_cast<offset_t>(getBufferSize())));
-    std::streamsize const g(m_inbuf->sgetn(&m_outvec[0], num_b));
-    setg(&m_outvec[0], &m_outvec[0], &m_outvec[0] + g);
-    m_remain -= g;
-    if(g > 0)
-    {
-        // we got some data, return it
-        return traits_type::to_int_type(*gptr());
     }
-
-    // documentation says to return EOF if no data available
-    return traits_type::eof();
 }
 
 

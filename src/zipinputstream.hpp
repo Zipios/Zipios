@@ -35,25 +35,13 @@ namespace zipios
 
 
 
-/** \brief The ZipInputStream to read data from a Zip archive.
- *
- * ZipInputStream is an istream that gets it's input from a zip file. The
- * interface approximates the interface of the Java
- * ZipInputStream.
- */
 class ZipInputStream : public std::istream
 {
 public:
-
                     ZipInputStream(std::string const& filename, std::streampos pos = 0);
                     ZipInputStream(ZipInputStream const& src) = delete;
                     ZipInputStream const& operator = (ZipInputStream const& src) = delete;
     virtual         ~ZipInputStream() override;
-
-    void            closeEntry();
-    void            close();
-
-    FileEntry::pointer_t    getNextEntry();
 
 private:
     std::unique_ptr<std::ifstream>      m_ifs;

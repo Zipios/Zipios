@@ -286,7 +286,7 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
     // read the header
     zipRead(is, writer_version);                    // 16
     zipRead(is, m_extract_version);                 // 16
-    zipRead(is, m_gp_bitfield);                     // 16
+    zipRead(is, m_general_purpose_bitfield);        // 16
     zipRead(is, compress_method);                   // 16
     zipRead(is, dostime);                           // 32
     zipRead(is, m_crc_32);                          // 32
@@ -314,10 +314,7 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
     m_filename = FilePath(filename);
 
     // the zipRead() should throw if it is false...
-    if(is)
-    {
-        m_valid = true;
-    }
+    m_valid = true;
 }
 
 
@@ -395,25 +392,25 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     uint32_t extern_file_attr(0x81B40000);
     uint32_t rel_offset_loc_head(m_entry_offset);
 
-    zipWrite(os, g_signature           );       // 32
-    zipWrite(os, writer_version        );       // 16
-    zipWrite(os, m_extract_version     );       // 16
-    zipWrite(os, m_gp_bitfield         );       // 16
-    zipWrite(os, compress_method       );       // 16
-    zipWrite(os, dostime               );       // 32
-    zipWrite(os, m_crc_32              );       // 32
-    zipWrite(os, compressed_size       );       // 32
-    zipWrite(os, uncompressed_size     );       // 32
-    zipWrite(os, filename_len          );       // 16
-    zipWrite(os, extra_field_len       );       // 16
-    zipWrite(os, file_comment_len      );       // 16
-    zipWrite(os, disk_num_start        );       // 16
-    zipWrite(os, intern_file_attr      );       // 16
-    zipWrite(os, extern_file_attr      );       // 32
-    zipWrite(os, rel_offset_loc_head   );       // 32
-    zipWrite(os, m_filename            );       // string
-    zipWrite(os, m_extra_field         );       // buffer
-    zipWrite(os, m_file_comment        );       // string
+    zipWrite(os, g_signature);                  // 32
+    zipWrite(os, writer_version);               // 16
+    zipWrite(os, m_extract_version);            // 16
+    zipWrite(os, m_general_purpose_bitfield);   // 16
+    zipWrite(os, compress_method);              // 16
+    zipWrite(os, dostime);                      // 32
+    zipWrite(os, m_crc_32);                     // 32
+    zipWrite(os, compressed_size);              // 32
+    zipWrite(os, uncompressed_size);            // 32
+    zipWrite(os, filename_len);                 // 16
+    zipWrite(os, extra_field_len);              // 16
+    zipWrite(os, file_comment_len);             // 16
+    zipWrite(os, disk_num_start);               // 16
+    zipWrite(os, intern_file_attr);             // 16
+    zipWrite(os, extern_file_attr);             // 32
+    zipWrite(os, rel_offset_loc_head);          // 32
+    zipWrite(os, m_filename);                   // string
+    zipWrite(os, m_extra_field);                // buffer
+    zipWrite(os, m_file_comment);               // string
 }
 
 

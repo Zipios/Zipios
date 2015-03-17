@@ -69,7 +69,7 @@ struct ZipLocalEntryHeader
 {
     uint32_t            m_signature;
     uint16_t            m_extract_version;
-    uint16_t            m_gp_bitfield;
+    uint16_t            m_general_purpose_bitfield;
     uint16_t            m_compress_method;
     uint32_t            m_dostime;
     uint32_t            m_crc_32;
@@ -98,7 +98,7 @@ struct ZipLocalEntryHeader
 ZipLocalEntry::ZipLocalEntry(std::string const& filename, buffer_t const& extra_field)
     : FileEntry(filename)
     //, m_extract_version(g_zip_format_version) -- auto-init
-    //, m_gp_bitfield(0) -- auto-init
+    //, m_general_purpose_bitfield(0) -- auto-init
     //, m_compress_method(StorageMethod::STORED) -- auto-init
     //, m_compressed_size(0) -- auto-init
     //, m_extra_field() -- see below, beneficiate from the size check by using the setExtra() function
@@ -154,11 +154,11 @@ bool ZipLocalEntry::isEqual(FileEntry const& file_entry) const
         return false;
     }
     return FileEntry::isEqual(file_entry)
-        && m_extract_version == ze->m_extract_version
-        && m_gp_bitfield     == ze->m_gp_bitfield
-        && m_compress_method == ze->m_compress_method;
-        //&& m_compressed_size == ze->m_compressed_size -- ignore in comparison
-        //&& m_extra_field     == ze->m_extra_field -- ignored in comparison
+        && m_extract_version          == ze->m_extract_version
+        && m_general_purpose_bitfield == ze->m_general_purpose_bitfield
+        && m_compress_method          == ze->m_compress_method;
+        //&& m_compressed_size          == ze->m_compressed_size -- ignore in comparison
+        //&& m_extra_field              == ze->m_extra_field -- ignored in comparison
 }
 
 
@@ -240,7 +240,7 @@ bool ZipLocalEntry::trailingDataDescriptor() const
     // gp_bitfield bit 3 is one, if this entry uses a trailing data
     // descriptor to keep size, compressed size and crc-32
     // fields.
-    return (m_gp_bitfield & 4) != 0;
+    return (m_general_purpose_bitfield & 4) != 0;
 }
 
 
@@ -272,7 +272,7 @@ void ZipLocalEntry::read(std::istream& is)
 
     // See the ZipLocalEntryHeader for more details
     zipRead(is, m_extract_version);                 // 16
-    zipRead(is, m_gp_bitfield);                     // 16
+    zipRead(is, m_general_purpose_bitfield);        // 16
     zipRead(is, compress_method);                   // 16
     zipRead(is, dostime);                           // 32
     zipRead(is, m_crc_32);                          // 32
@@ -293,11 +293,7 @@ void ZipLocalEntry::read(std::istream& is)
     m_uncompressed_size = uncompressed_size;
     m_filename = FilePath(filename);
 
-    // the zipRead() should throw if the input is invalid...
-    if(is)
-    {
-        m_valid = true;
-    }
+    m_valid = true;
 }
 
 
@@ -339,18 +335,18 @@ void ZipLocalEntry::write(std::ostream& os)
     uint16_t extra_field_len(m_extra_field.size());
 
     // See the ZipLocalEntryHeader for more details
-    zipWrite(os, g_signature);          // 32
-    zipWrite(os, m_extract_version);    // 16
-    zipWrite(os, m_gp_bitfield);        // 16
-    zipWrite(os, compress_method);      // 16
-    zipWrite(os, dostime);              // 32
-    zipWrite(os, m_crc_32);             // 32
-    zipWrite(os, compressed_size);      // 32
-    zipWrite(os, uncompressed_size);    // 32
-    zipWrite(os, filename_len);         // 16
-    zipWrite(os, extra_field_len);      // 16
-    zipWrite(os, m_filename);           // string
-    zipWrite(os, m_extra_field);        // buffer
+    zipWrite(os, g_signature);                  // 32
+    zipWrite(os, m_extract_version);            // 16
+    zipWrite(os, m_general_purpose_bitfield);   // 16
+    zipWrite(os, compress_method);              // 16
+    zipWrite(os, dostime);                      // 32
+    zipWrite(os, m_crc_32);                     // 32
+    zipWrite(os, compressed_size);              // 32
+    zipWrite(os, uncompressed_size);            // 32
+    zipWrite(os, filename_len);                 // 16
+    zipWrite(os, extra_field_len);              // 16
+    zipWrite(os, m_filename);                   // string
+    zipWrite(os, m_extra_field);                // buffer
 }
 
 

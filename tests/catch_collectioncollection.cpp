@@ -161,7 +161,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             }
                             else
                             {
-                                ++pos;
+                                ++pos; // LCOV_EXCL_LINE
                             }
                             zipios::FileEntry::pointer_t entry_ignore_a(cc.getEntry(name.substr(pos, name.length() - 1 - pos), zipios::FileCollection::MatchPath::IGNORE));
                             REQUIRE(entry_ignore_a);
@@ -366,7 +366,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             }
                             else
                             {
-                                ++pos;
+                                ++pos; // LCOV_EXCL_LINE
                             }
                             zipios::FileEntry::pointer_t entry_ignore(copy_assignment.getEntry(name.substr(pos, name.length() - 1 - pos), zipios::FileCollection::MatchPath::IGNORE));
                             REQUIRE(entry_ignore);
@@ -463,7 +463,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             }
                             else
                             {
-                                ++pos;
+                                ++pos; // LCOV_EXCL_LINE
                             }
                             zipios::FileEntry::pointer_t entry_ignore(clone->getEntry(name.substr(pos, name.length() - 1 - pos), zipios::FileCollection::MatchPath::IGNORE));
                             REQUIRE(entry_ignore);

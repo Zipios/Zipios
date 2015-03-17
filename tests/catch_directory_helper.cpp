@@ -93,7 +93,7 @@ file_t::file_t(type_t t, int children_count, std::string const& new_filename)
                 // file does not exist, return safely
                 break;
             }
-        }
+        } // LCOV_EXCL_LINE
     }
 
     // This is only to test the validity of the exception handling

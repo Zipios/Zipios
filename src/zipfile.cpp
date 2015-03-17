@@ -291,24 +291,8 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     size_t const max_entry(eocd.getCount());
     for(size_t entry_num(0); entry_num < max_entry; ++entry_num)
     {
-        FileEntry::pointer_t entry(new ZipCentralDirectoryEntry);
-        m_entries[entry_num] = entry;
-        entry.get()->read(zipfile);
-        if(!zipfile)
-        {
-            if(zipfile.bad())
-            {
-                throw IOException("Error reading zip file while reading zip file central directory");
-            }
-            else if(zipfile.fail())
-            {
-                throw FileCollectionException("Zip file consistency problem. Failure while reading zip file central directory");
-            }
-            else if(zipfile.eof())
-            {
-                throw IOException("Premature end of file while reading zip file central directory");
-            }
-        }
+        m_entries[entry_num] = FileEntry::pointer_t(new ZipCentralDirectoryEntry);
+        m_entries[entry_num].get()->read(zipfile);
     }
 
     // Consistency check #1:

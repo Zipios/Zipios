@@ -62,7 +62,7 @@ public:
 
 protected:
     uint16_t                    m_extract_version = g_zip_format_version;
-    uint16_t                    m_gp_bitfield = 0;
+    uint16_t                    m_general_purpose_bitfield = 0;
     StorageMethod               m_compress_method = StorageMethod::STORED;
     size_t                      m_compressed_size = 0;
     buffer_t                    m_extra_field;
