@@ -50,3 +50,10 @@ int main()
   return 0;
 }
 
+
+// Local Variables:
+// mode: cpp
+// indent-tabs-mode: nil
+// c-basic-offset: 4
+// tab-width: 4
+// End:

@@ -80,3 +80,10 @@ int main( int , char *argv[] )
 }
 
 // vim: ts=2 sw=2 et
+
+// Local Variables:
+// mode: cpp
+// indent-tabs-mode: nil
+// c-basic-offset: 4
+// tab-width: 4
+// End:

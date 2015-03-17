@@ -140,3 +140,10 @@ TEST_CASE("Unix to DOS time conversions and vice versa", "[dostime]")
 
 
 // vim: ts=4 sw=4 et
+
+// Local Variables:
+// mode: cpp
+// indent-tabs-mode: nil
+// c-basic-offset: 4
+// tab-width: 4
+// End:

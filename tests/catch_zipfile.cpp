@@ -1040,3 +1040,10 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 
 
 // vim: ts=4 sw=4 et
+
+// Local Variables:
+// mode: cpp
+// indent-tabs-mode: nil
+// c-basic-offset: 4
+// tab-width: 4
+// End:
