@@ -129,21 +129,35 @@ struct ZipCentralDirectoryEntryHeader
  */
 
 
+/** \brief Initializes a default ZipCentralDirectoryEntry object.
+ *
+ * This function initializes a ZipCentralDirectoryEntry object that is
+ * expected to be used to read data from an input stream representing
+ * a Zip archive.
+ */
+ZipCentralDirectoryEntry::ZipCentralDirectoryEntry()
+    //: ZipLocalEntry() -- auto-init
+    //, m_file_comment("") -- auto-init
+{
+}
+
+
 /** \brief Initialize a ZipCentralDirectoryEntry.
  *
- * This function initializes a FileEntry specific to a Central Directory
- * of a Zip archive file.
+ * This function initializes a ZipCentralDirectoryEntry from a FileEntry.
  *
- * This definition includes a comment which the ZipLocalEntry lacks.
+ * The funtion copies all the data it may be interested in and then
+ * ignores the FileEntry.
  *
- * \param[in] filename  The name of the file representing this entry.
- * \param[in] file_comment  Comment specific to this file entry.
- * \param[in] extra_field  The extra buffer(s) attached to this entry.
+ * \param[in] entry  The entry to transform in a ZipCentralDirectoryEntry.
  */
-ZipCentralDirectoryEntry::ZipCentralDirectoryEntry(std::string const& filename, std::string const& file_comment, buffer_t const& extra_field)
-    : ZipLocalEntry(filename, extra_field)
-    , m_file_comment(file_comment)
+ZipCentralDirectoryEntry::ZipCentralDirectoryEntry(FileEntry const& entry)
+    : ZipLocalEntry(entry.getName(), entry.getExtra())
+    , m_file_comment(entry.getComment())
 {
+    // the ZipLocalEntry will get this one wrong since the filename
+    // will not end with a trailing '/'
+    m_is_directory = entry.isDirectory();
 }
 
 
@@ -195,8 +209,16 @@ void ZipCentralDirectoryEntry::setComment(std::string const& comment)
 std::string ZipCentralDirectoryEntry::toString() const
 {
     OutputStringStream sout;
-    sout << m_filename << " (" << m_uncompressed_size << " bytes, ";
-    sout << m_compressed_size << " bytes compressed)";
+    sout << m_filename;
+    if(m_is_directory)
+    {
+        sout << " (directory)";
+    }
+    else
+    {
+        sout << " (" << m_uncompressed_size << " bytes, "
+             << m_compressed_size << " bytes compressed)";
+    }
     return sout.str();
 }
 
@@ -215,7 +237,10 @@ size_t ZipCentralDirectoryEntry::getHeaderSize() const
      * an invalid size if the filename, extra field, or file comment
      * sizes are more than allowed in an older version of the Zip format.
      */
-    return sizeof(ZipCentralDirectoryEntryHeader) + m_filename.size() + m_extra_field.size() + m_file_comment.size() ;
+    return sizeof(ZipCentralDirectoryEntryHeader)
+         + m_filename.length() + (m_is_directory ? 1 : 0)
+         + m_extra_field.size()
+         + m_file_comment.length();
 }
 
 
@@ -306,6 +331,10 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
      *        to read the 64 bit header too if so
      */
 
+    // the FilePath() will remove the trailing slash so make sure
+    // to defined the m_is_directory ahead of time!
+    m_is_directory = !filename.empty() && filename.back() == g_separator;
+
     m_compress_method = static_cast<StorageMethod>(compress_method);
     m_unix_time = dos2unixtime(dostime);
     m_compressed_size = compressed_size;
@@ -325,6 +354,12 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
  * the blocks varies depending on the filename, file comment, and extra
  * data. The current size can be determined using the getHeaderSize()
  * function.
+ *
+ * \warning
+ * The function saves the filename with an ending separator in case
+ * the entry is marked as a directory entry. Note that Zip only really
+ * knows about the trailing slash as a way to detect a file as a
+ * directory.
  *
  * \exception InvalidStateException
  * The function verifies whether the filename, extra field,
@@ -375,11 +410,20 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     writer_version |= g_unix;
 #endif
 
+    std::string filename(m_filename);
+    if(m_is_directory)
+    {
+        // add a trailing separator for directories
+        // (this is VERY important for zip files which do not otherwise
+        // indicate that a file is a directory)
+        filename += g_separator;
+    }
+
     uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
     uint32_t dostime(unix2dostime(m_unix_time));
     uint32_t compressed_size(m_compressed_size);
     uint32_t uncompressed_size(m_uncompressed_size);
-    uint16_t filename_len(m_filename.length());
+    uint16_t filename_len(filename.length());
     uint16_t extra_field_len(m_extra_field.size());
     uint16_t file_comment_len(m_file_comment.length());
     uint16_t disk_num_start(0);
@@ -408,7 +452,7 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     zipWrite(os, intern_file_attr);             // 16
     zipWrite(os, extern_file_attr);             // 32
     zipWrite(os, rel_offset_loc_head);          // 32
-    zipWrite(os, m_filename);                   // string
+    zipWrite(os, filename);                     // string
     zipWrite(os, m_extra_field);                // buffer
     zipWrite(os, m_file_comment);               // string
 }

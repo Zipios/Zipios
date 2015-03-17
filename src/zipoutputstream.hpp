@@ -65,13 +65,7 @@ public:
       closed. */
     void finish();
 
-    /** \brief Begins writing the next entry.
-     */
     void putNextEntry(FileEntry::pointer_t entry);
-
-    /** \brief Begins writing the next entry.
-     */
-    void putNextEntry(std::string const& entryName);
 
     /** Sets the global comment for the Zip archive. */
     void setComment(std::string const& comment);

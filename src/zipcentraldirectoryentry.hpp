@@ -38,7 +38,8 @@ namespace zipios
 class ZipCentralDirectoryEntry : public ZipLocalEntry
 {
 public:
-                                ZipCentralDirectoryEntry(std::string const& filename = "", std::string const& file_comment = "", buffer_t const& extra_field = buffer_t());
+                                ZipCentralDirectoryEntry();
+                                ZipCentralDirectoryEntry(FileEntry const& entry);
     virtual pointer_t           clone() const override;
     virtual                     ~ZipCentralDirectoryEntry() override;
 

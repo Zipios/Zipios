@@ -184,8 +184,11 @@ std::streampos FileEntry::getEntryOffset() const
 
 /** \brief Some extra data to be stored along the entry.
  *
- * This function returns a vector of bytes of extra data that are
- * stored with the entry.
+ * This function returns a copy of the vector of bytes of extra data
+ * that are stored with the entry.
+ *
+ * The default function always returns an empty buffer since extra
+ * data can really only associated with a Zip file entry.
  *
  * \return A buffer_t of extra bytes that are associated with this entry.
  */
@@ -212,7 +215,7 @@ size_t FileEntry::getHeaderSize() const
 
 /** \brief Return the method used to create this entry.
  *
- * This function returns the method used to store the entry in
+ * This function returns the method used to store the entry data in
  * the FileCollection it is attached to.
  *
  * \return the storage method used to store the entry in a collection.

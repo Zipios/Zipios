@@ -51,6 +51,18 @@ namespace
 uint32_t const      g_signature = 0x04034b50;
 
 
+/** \brief A bit in the general purpose flags.
+ *
+ * This mask is used to know whether the size and CRC are saved in
+ * the header or after the header. At this time Zipios++ does not
+ * support such trailing data as it makes use of the compressed
+ * and uncompressed sizes to properly stream the output data.
+ *
+ * This is bit 3. (see point 4.4.4 in doc/zip-format.txt)
+ */
+uint16_t const      g_trailing_data_descriptor = 1 << 3;
+
+
 /** \brief ZipLocalEntry Header
  *
  * This structure shows how the header of the ZipLocalEntry is defined.
@@ -100,6 +112,7 @@ ZipLocalEntry::ZipLocalEntry(std::string const& filename, buffer_t const& extra_
     //, m_extract_version(g_zip_format_version) -- auto-init
     //, m_general_purpose_bitfield(0) -- auto-init
     //, m_compress_method(StorageMethod::STORED) -- auto-init
+    , m_is_directory(!filename.empty() && filename.back() == g_separator)
     //, m_compressed_size(0) -- auto-init
     //, m_extra_field() -- see below, beneficiate from the size check by using the setExtra() function
 {
@@ -126,6 +139,20 @@ FileEntry::pointer_t ZipLocalEntry::clone() const
  */
 ZipLocalEntry::~ZipLocalEntry()
 {
+}
+
+
+/** \brief Check whether the filename represents a directory.
+ *
+ * This function checks the last character of the filename, if it
+ * is a separator ('/') then the function returns true meaning
+ * that the file represents a directory.
+ *
+ * \return true if the entry represents a directory.
+ */
+bool ZipLocalEntry::isDirectory() const
+{
+    return m_is_directory;
 }
 
 
@@ -162,12 +189,27 @@ bool ZipLocalEntry::isEqual(FileEntry const& file_entry) const
 }
 
 
+/** \brief Retrive the size of the file when compressed.
+ *
+ * This function returns the compressed size of the entry. If the
+ * entry is not stored in a compressed format, the uncompressed
+ * size is returned.
+ *
+ * \return The compressed size of the entry.
+ */
 size_t ZipLocalEntry::getCompressedSize() const
 {
     return m_compressed_size;
 }
 
 
+/** \brief Some extra data to be stored along the entry.
+ *
+ * This function returns a copy of the vector of bytes of extra data
+ * that are stored with the entry.
+ *
+ * \return A buffer_t of extra bytes that are associated with this entry.
+ */
 ZipLocalEntry::buffer_t ZipLocalEntry::getExtra() const
 {
     return m_extra_field;
@@ -189,18 +231,47 @@ size_t ZipLocalEntry::getHeaderSize() const
 }
 
 
+/** \brief Return the method used to create this entry.
+ *
+ * This function returns the method used to store the entry data in
+ * the FileCollection it is attached to.
+ *
+ * \return the storage method used to store the entry in a collection.
+ *
+ * \sa StorageMethod
+ * \sa setMethod()
+ */
 StorageMethod ZipLocalEntry::getMethod() const
 {
   return m_compress_method;
 }
 
 
+/** \brief Set the size when the file is compressed.
+ *
+ * This function saves the compressed size of the entry in this object.
+ *
+ * By default the compressed size is viewed as the same as the
+ * uncompressed size (i.e. as if STORED was used for the compression
+ * method.)
+ *
+ * \param[in] size  Value to set the compressed size field of the entry to.
+ */
 void ZipLocalEntry::setCompressedSize(size_t size)
 {
     m_compressed_size = size;
 }
 
 
+/** \brief Save the CRC of the entry.
+ *
+ * This funciton savees the CRC field in this FileEntry field.
+ *
+ * This function has the side of setting the m_has_crc_32 flag
+ * to true meaning that the CRC was defined as expected.
+ *
+ * \param[in] crc  Value to set the CRC field to.
+ */
 void ZipLocalEntry::setCrc(uint32_t crc)
 {
     m_crc_32 = crc;
@@ -208,12 +279,20 @@ void ZipLocalEntry::setCrc(uint32_t crc)
 }
 
 
+/** \brief Set the extra field buffer.
+ *
+ * This function is used to set the extra field.
+ *
+ * Only one type of file entry supports an extra field buffer.
+ * The others do nothing when this function is called.
+ *
+ * \param[in] extra  The extra field is set to this value.
+ */
 void ZipLocalEntry::setExtra(buffer_t const& extra)
 {
-    // TBD: use a max. of 0xFFFE to avoid problems with 64 bit headers
-    if(extra.size() >= 0xFFFE)
+    if(extra.size() >= 0x10000)
     {
-        throw InvalidException("ZipLocalEntry::setExtra(): trying to setup an extra buffer of more than 64Kb, maximum size is 0xFFFE.");
+        throw InvalidException("ZipLocalEntry::setExtra(): trying to setup an extra buffer of more than 64Kb, maximum size is 0xFFFF.");
     }
     m_extra_field = extra;
 }
@@ -225,25 +304,80 @@ void ZipLocalEntry::setMethod(StorageMethod method)
 }
 
 
+/** \brief Returns a human-readable string representation of the entry.
+ *
+ * This function outpust the name of the entry followed its size
+ * uncompressed and compressed between parenthesis.
+ *
+ * \return A human-readable string representation of the entry.
+ */
 std::string ZipLocalEntry::toString() const
 {
+    /** \TODO
+     * If the file represents a directory
+     */
     OutputStringStream sout;
-    sout << m_filename
-         << " (" << m_uncompressed_size << " bytes, "
-         << m_compressed_size << " bytes compressed)";
+    sout << m_filename << " (";
+    if(isDirectory())
+    {
+        sout << "directory";
+    }
+    else
+    {
+        sout << m_uncompressed_size << " bytes, "
+             << m_compressed_size << " bytes compressed";
+    }
+    sout << ")";
     return sout.str();
 }
 
 
-bool ZipLocalEntry::trailingDataDescriptor() const
+/** \brief Is there a trailing data descriptor?
+ *
+ * This function checks the bit in the General Purpose Flags to know
+ * whether the local entry header includes the compressed and uncompressed
+ * sizes or whether these are defined after the compressed data.
+ *
+ * The trailing data buffer looks like this:
+ *
+ * \code
+ *      signature (PK 8.7) -- OPTIONAL  -- 32 bit
+ *      CRC 32                          -- 32 bit
+ *      compressed size                 -- 32 or 64 bit
+ *      uncompressed size               -- 32 or 64 bit
+ * \code
+ *
+ * When a trailing data buffer is defined, the header has the compressed
+ * and uncompressed sizes set to zero.
+ *
+ * \note
+ * Zipios++ does not support such a scheme.
+ *
+ * \return true if this file makes use of a trailing data buffer.
+ */
+bool ZipLocalEntry::hasTrailingDataDescriptor() const
 {
-    // gp_bitfield bit 3 is one, if this entry uses a trailing data
-    // descriptor to keep size, compressed size and crc-32
-    // fields.
-    return (m_general_purpose_bitfield & 4) != 0;
+    return (m_general_purpose_bitfield & g_trailing_data_descriptor) != 0;
 }
 
 
+/** \brief Read one local entry from \p is.
+ *
+ * This function verifies that the input stream starts with a local entry
+ * signature. If so, it reads the input stream for a complete local entry.
+ *
+ * Calling this function first marks the FileEntry object as invalid. If
+ * the read succeeds in full, then the entry is again marked as valid.
+ *
+ * If a read fails, the function throws an exception as defined in
+ * the various zipRead() functions.
+ *
+ * \note
+ * Some of the data found in the local entry on disk are not kept in
+ * this class because there is nothing we can do with it.
+ *
+ * \param[in] is  The input stream to read from.
+ */
 void ZipLocalEntry::read(std::istream& is)
 {
     m_valid = false; // set to true upon successful completion.
@@ -286,6 +420,10 @@ void ZipLocalEntry::read(std::istream& is)
      *        may be 0xFFFFF...FFFF in which case the 64 bit
      *        header should be read
      */
+
+    // the FilePath() will remove the trailing slash so make sure
+    // to defined the m_is_directory ahead of time!
+    m_is_directory = !filename.empty() && filename.back() == g_separator;
 
     m_compress_method = static_cast<StorageMethod>(compress_method);
     m_unix_time = dos2unixtime(dostime);

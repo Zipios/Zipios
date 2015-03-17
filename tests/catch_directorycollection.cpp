@@ -253,10 +253,18 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 dc.mustBeValid(); // not throwing
 
                 {
+                    std::ostringstream expected_output;
+                    expected_output << "collection 'tree' {";
                     zipios::FileEntry::vector_t v(dc.entries());
                     for(auto it(v.begin()); it != v.end(); ++it)
                     {
                         zipios::FileEntry::pointer_t entry(*it);
+
+                        if(it != v.begin())
+                        {
+                            expected_output << ", ";
+                        }
+                        expected_output << entry->getName();
 
                         // verify that our tree knows about this file
                         zipios_test::file_t::type_t t(tree.find(entry->getName()));
@@ -293,6 +301,11 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
                         REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
+                    expected_output << "}";
+
+                    std::ostringstream output;
+                    output << dc;
+                    REQUIRE(expected_output.str() == output.str());
                 }
             }
 
@@ -936,6 +949,11 @@ TEST_CASE("DirectoryCollection with an empty directory", "[DirectoryCollection] 
                 REQUIRE((*it)->getSize() == 0); // size is zero for directories
                 REQUIRE((*it)->isValid());
                 REQUIRE((*it)->toString() == "tree (directory)");
+
+                // using the << operator to a stream we get the toString() value
+                std::ostringstream output;
+                output << **it;
+                REQUIRE(output.str() == "tree (directory)");
 
                 REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
                 REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);

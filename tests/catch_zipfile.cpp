@@ -30,12 +30,12 @@
 
 #include "src/dostime.h"
 
+#include <algorithm>
 #include <fstream>
-//#include <memory>
-//#include <vector>
 
 #include <unistd.h>
 #include <string.h>
+#include <zlib.h>
 
 
 
@@ -847,7 +847,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 end_of_central_directory_t eocd;
 
                 // use a valid compression method
-                lh.m_flags |= 4;  // <-- trailing data not suppored!
+                lh.m_flags |= 1 << 3;  // <-- testing that trailing data is not supported!
                 lh.m_compression_method = static_cast<uint16_t>(g_supported_storage_methods[rand() % (sizeof(g_supported_storage_methods) / sizeof(g_supported_storage_methods[0]))]);
                 lh.m_filename = "invalid";
                 lh.write(os);
@@ -951,6 +951,89 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
             }
 
             REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
+        }
+    }
+
+    SECTION("create files with a compressed file, only save only 50% of the data")
+    {
+        for(int i(0); i < 10; ++i)
+        {
+            // create an empty header in the file
+            //zipios_test::auto_unlink_t auto_unlink("file.zip");
+            size_t uncompressed_size(0);
+            {
+                std::ofstream os("file.zip", std::ios::out | std::ios::binary);
+
+                // create a header (has to be equal to pass to the method check)
+                local_header_t lh;
+                central_directory_header_t cdh;
+                end_of_central_directory_t eocd;
+
+                // create a file in a buffer then compress it
+                // make sure the file is large enough to ensure that the
+                // decompression fails "as expected" by this test
+                typedef std::vector<Bytef> buffer_t;
+                buffer_t file_buffer;
+                size_t const file_size(rand() % (80 * 1024) + zipios::getBufferSize() * 3);
+                for(size_t pos(0); pos < file_size; ++pos)
+                {
+                    file_buffer.push_back(static_cast<unsigned char>(rand()));
+                }
+                buffer_t compressed_buffer;
+                uLongf compressed_size(file_size * 2);
+                compressed_buffer.resize(compressed_size);
+                compress2(&compressed_buffer[0], &compressed_size, &file_buffer[0], file_size, 9);
+                compressed_buffer.resize(compressed_size); // the new size!
+                std::fill(compressed_buffer.begin() + compressed_size / 2, compressed_buffer.end(), 0);
+
+                // use a valid compression method
+                lh.m_compression_method = static_cast<uint16_t>(zipios::StorageMethod::DEFLATED);
+                lh.m_compressed_size = compressed_size - 2;
+                lh.m_uncompressed_size = file_size;
+                lh.m_crc32 = crc32(0L, &file_buffer[0], file_size);
+                lh.m_filename = "invalid";
+                lh.write(os);
+
+                // write the first 50% of the compressed data then zeroes
+                // make sure to skip the first 2 bytes which are the zlib
+                // marker (0x78 0x9C)
+                os.write(reinterpret_cast<char *>(&compressed_buffer[0]) + 2, (compressed_size - 2));
+
+                eocd.m_central_directory_offset = os.tellp();
+
+                cdh.m_compression_method = lh.m_compression_method;
+                cdh.m_compressed_size = lh.m_compressed_size;
+                cdh.m_uncompressed_size = lh.m_uncompressed_size;
+                cdh.m_crc32 = lh.m_crc32;
+                cdh.m_flags = lh.m_flags;
+                cdh.m_filename = "invalid";
+                cdh.write(os);
+
+                eocd.m_file_count = 1;
+                eocd.m_total_count = 1;
+                eocd.m_central_directory_size = 46 + 7; // structure + filename
+                eocd.write(os);
+
+                // keep a copy of the uncompressed size to test after the
+                // read stops
+                uncompressed_size = file_size;
+            }
+
+            zipios::ZipFile zf("file.zip");
+            // we cannot really know when exactly
+            // we are going to get the throw
+            zipios::ZipFile::stream_pointer_t in(zf.getInputStream("invalid"));
+            size_t amount_read(0);
+            do
+            {
+                char buf[BUFSIZ];
+                in->read(buf, sizeof(buf));
+                amount_read += in->gcount();
+            }
+            while(*in);
+            REQUIRE(in->bad());
+            REQUIRE(in->fail());
+            REQUIRE(amount_read != uncompressed_size);
         }
     }
 }

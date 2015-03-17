@@ -48,6 +48,7 @@ public:
     virtual buffer_t            getExtra() const override;
     virtual size_t              getHeaderSize() const override;
     virtual StorageMethod       getMethod() const override;
+    virtual bool                isDirectory() const override;
     virtual bool                isEqual(FileEntry const& file_entry) const override;
     virtual void                setCompressedSize(size_t size) override;
     virtual void                setCrc(crc32_t crc) override;
@@ -55,7 +56,7 @@ public:
     virtual void                setMethod(StorageMethod method) override;
     virtual std::string         toString() const override;
 
-    bool                        trailingDataDescriptor() const;
+    bool                        hasTrailingDataDescriptor() const;
 
     virtual void                read(std::istream& is) override;
     virtual void                write(std::ostream& os) override;
@@ -64,6 +65,7 @@ protected:
     uint16_t                    m_extract_version = g_zip_format_version;
     uint16_t                    m_general_purpose_bitfield = 0;
     StorageMethod               m_compress_method = StorageMethod::STORED;
+    bool                        m_is_directory = false;
     size_t                      m_compressed_size = 0;
     buffer_t                    m_extra_field;
 };

@@ -159,6 +159,7 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
 
         err = inflate(&m_zs, Z_NO_FLUSH);
     }
+
     // Normally the number of inflated bytes will be the
     // full length of the output buffer, but if we can't read
     // more input from the _inbuf streambuf, we end up with
@@ -176,9 +177,10 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
     if(err != Z_OK && err != Z_STREAM_END)
     {
         OutputStringStream msgs;
-        msgs << "InflateInputStreambuf: inflate failed"
+        msgs << "InflateInputStreambuf::underflow(): inflate failed"
              << ": " << zError(err);
-        // Throw an exception to make istream set badbit
+        // Throw an exception to immediately exit to the read() or similar
+        // function and make istream set badbit
         throw IOException(msgs.str());
     }
 
@@ -217,10 +219,10 @@ bool InflateInputStreambuf::reset(offset_t stream_position)
 
     // m_zs.next_in and avail_in must be set according to
     // zlib.h (inline doc).
-    m_zs.next_in = reinterpret_cast<unsigned char *>(&m_invec[0]);
+    m_zs.next_in = reinterpret_cast<Bytef *>(&m_invec[0]);
     m_zs.avail_in = 0;
 
-    int err(0);
+    int err(Z_OK);
     if(m_zs_initialized)
     {
         // just reset it

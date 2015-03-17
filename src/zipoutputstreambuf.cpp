@@ -197,14 +197,14 @@ void ZipOutputStreambuf::putNextEntry(FileEntry::pointer_t entry)
     }
 
     m_entries.push_back(entry);
-    FileEntry::pointer_t ent(m_entries.back());
+    FileEntry::pointer_t copy(m_entries.back());
 
     std::ostream os(m_outbuf);
 
     // Update entry header info
-    ent->setEntryOffset(os.tellp());
-    ent->setMethod(m_method);
-    ent->write(os);
+    copy->setEntryOffset(os.tellp());
+    copy->setMethod(m_method);
+    copy->write(os);
 
     m_open_entry = true;
 }

@@ -60,7 +60,7 @@ ZipInputStreambuf::ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
 
     // if the read fails in any way it will throw
     m_current_entry.read(is);
-    if(m_current_entry.isValid() && m_current_entry.trailingDataDescriptor())
+    if(m_current_entry.isValid() && m_current_entry.hasTrailingDataDescriptor())
     {
         throw FileCollectionException("Trailing data descriptor in zip file not supported");
     }

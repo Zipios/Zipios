@@ -499,7 +499,7 @@ void FileCollection::mustBeValid() const
  */
 std::ostream& operator << (std::ostream& os, FileCollection const& collection)
 {
-    os << "collection '" << collection.getName() << "' {" ;
+    os << "collection '" << collection.getName() << "' {";
     FileEntry::vector_t entries(collection.entries());
     char const *sep("");
     for(auto it = entries.begin(); it != entries.end(); ++it)
