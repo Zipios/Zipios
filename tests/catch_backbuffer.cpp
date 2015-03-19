@@ -1,6 +1,8 @@
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
-  Copyright (C) 2000-2015  Thomas Sondergaard
+
+  Copyright (C) 2000-2007  Thomas Sondergaard
+  Copyright (C) 2015  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -85,3 +87,10 @@ SCENARIO("BackBuffer read a file", "[BackBuffer]")
 
 
 // vim: ts=4 sw=4 et
+
+// Local Variables:
+// mode: cpp
+// indent-tabs-mode: nil
+// c-basic-offset: 4
+// tab-width: 4
+// End:
