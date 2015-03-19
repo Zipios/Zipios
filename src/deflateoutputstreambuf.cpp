@@ -51,10 +51,8 @@ namespace zipios
  * ready for compressing data using the zlib library.
  *
  * \param[in,out] outbuf  The streambuf to use for output.
- * \param[in] user_init  If false user must invoke init() before writing
- *                       any data. (ZipOutputStreambuf needs to do this)
  */
-DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf, bool user_init)
+DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf)
     : FilterOutputStreambuf(outbuf)
     //, m_zs() -- auto-init
     //, m_zs_initialized(false) -- auto-init
@@ -72,29 +70,91 @@ DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf, bool user
     m_zs.zalloc = Z_NULL;
     m_zs.zfree  = Z_NULL;
     m_zs.opaque = Z_NULL;
-
-    if(user_init && !init())
-    {
-        throw InvalidStateException("DeflateOutputStreambuf::init() failed initializing zlib.");
-    }
 }
 
 
-/** Destructor. */
+/** \brief Clean up any resources used by this object.
+ *
+ * The destructor makes sure that the zlib library is done with all
+ * the input and output data by calling various flush functions. It
+ * then makes sure that the remaining data from zlib is printed in
+ * the output file.
+ *
+ * This is similar to calling closeStream() explicitly.
+ */
 DeflateOutputStreambuf::~DeflateOutputStreambuf()
 {
     closeStream();
 }
 
 
-// This method is called in the constructor, so it must not write
-// anything to the output streambuf _outbuf (see notice in
-// constructor)
-bool DeflateOutputStreambuf::init(CompressionLevel comp_level)
+/** \brief Initialize the zlib library.
+ *
+ * This method is called in the constructor, so it must not write
+ * anything to the output streambuf m_outbuf (see notice in
+ * constructor.)
+ *
+ * It will initialize the output stream as required to accept data
+ * to be compressed using the zlib library. The compression level
+ * is expected to come from the FileEntry which is about to be
+ * saved in the file.
+ *
+ * \return true if the initialization succeeded, false otherwise.
+ */
+bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
 {
-    static const int default_mem_level = 8;
+    if(m_zs_initialized)
+    {
+        throw std::logic_error("DeflateOutputStreambuf::init(): initialization function called when the class is already initialized. This is not supported.");
+    }
+    m_zs_initialized = true;
+    m_bytes_to_skip = 0;
 
-    // _zs.next_in and avail_in must be set according to
+    int const default_mem_level(8);
+
+    int zlevel(Z_NO_COMPRESSION);
+    switch(compression_level)
+    {
+    case FileEntry::COMPRESSION_LEVEL_DEFAULT:
+        zlevel = Z_DEFAULT_COMPRESSION;
+        break;
+
+    case FileEntry::COMPRESSION_LEVEL_SMALLEST:
+        zlevel = Z_BEST_COMPRESSION;
+        break;
+
+    case FileEntry::COMPRESSION_LEVEL_FASTEST:
+        zlevel = Z_BEST_SPEED;
+        break;
+
+    case FileEntry::COMPRESSION_LEVEL_NONE:
+        zlevel = Z_NO_COMPRESSION;
+        m_bytes_to_skip = 5; // zlib adds 5 bytes in a header we do not want in the output
+        break;
+
+    default:
+        if(compression_level < FileEntry::COMPRESSION_LEVEL_MINIMUM
+        || compression_level > FileEntry::COMPRESSION_LEVEL_MAXIMUM)
+        {
+            throw std::logic_error("the compression level must be defined between -3 and 100, see the zipios++/fileentry.hpp for a list of valid levels.");
+        }
+        // The zlevel is calculated linearly from the user specified value
+        // of 1 to 100
+        //
+        // The calculation goes as follow:
+        //
+        //    x = user specified value - 1    (0 to 99)
+        //    x = x * 8                       (0 to 792)
+        //    x = x + 11 / 2                  (5 to 797, i.e. +5 with integers)
+        //    x = x / 99                      (0 to 8)
+        //    x = x + 1                       (1 to 9)
+        //
+        zlevel = ((compression_level - 1) * 8 + 11 / 2) / 99 + 1;
+        break;
+
+    }
+
+    // m_zs.next_in and avail_in must be set according to
     // zlib.h (inline doc).
     m_zs.next_in  = reinterpret_cast<unsigned char *>(&m_invec[0]);
     m_zs.avail_in = 0;
@@ -102,24 +162,16 @@ bool DeflateOutputStreambuf::init(CompressionLevel comp_level)
     m_zs.next_out  = reinterpret_cast<unsigned char *>(&m_outvec[0]);
     m_zs.avail_out = getBufferSize();
 
-    int err;
-    if(m_zs_initialized)
+    //
+    // windowBits is passed -MAX_WBITS to tell that no zlib
+    // header should be written.
+    //
+    int const err = deflateInit2(&m_zs, zlevel, Z_DEFLATED, -MAX_WBITS, default_mem_level, Z_DEFAULT_STRATEGY);
+    if(err != Z_OK)
     {
-        // just reset it
-        endDeflation();
-        err = deflateReset(&m_zs);
-        /** \FIXME
-         * For deflateReset we do not update the compression level
-         */
-    }
-    else
-    {
-        // init it
-        err = deflateInit2(&m_zs, comp_level, Z_DEFLATED, -MAX_WBITS,
-                default_mem_level, Z_DEFAULT_STRATEGY);
-        /* windowBits is passed < 0 to tell that no zlib header should be
-           written. */
-        m_zs_initialized = true;
+        std::ostringstream msgs;
+        msgs << "DeflateOutputStreambuf::init(): error while initializing zlib, " << zError(err) << std::endl;
+        throw IOException(msgs.str());
     }
 
     // streambuf init:
@@ -132,53 +184,87 @@ bool DeflateOutputStreambuf::init(CompressionLevel comp_level)
 }
 
 
-bool DeflateOutputStreambuf::closeStream()
+/** \brief Closing the stream.
+ *
+ * This function is expected to be called once the stream is getting
+ * closed (the buffer is destroyed.)
+ *
+ * It ensures that the zlib library last few bytes get flushed and
+ * then mark the class as closed.
+ *
+ * Note that this function can be called to close the current zlib
+ * library stream and start a new one. It is actually called from
+ * the putNextEntry() function (via the closeEntry() function.)
+ */
+void DeflateOutputStreambuf::closeStream()
 {
-    int err = Z_OK;
     if(m_zs_initialized)
     {
-        endDeflation();
-        err = deflateEnd(&m_zs);
         m_zs_initialized = false;
+
+        // flush any remaining data
+        endDeflation();
+
+        int const err(deflateEnd(&m_zs));
+        if(err != Z_OK
+        && (err != Z_DATA_ERROR || m_overflown_bytes > 0)) // when we close a directory, we get the Z_DATA_ERROR!
+        {
+            std::ostringstream msgs;
+            msgs << "DeflateOutputStreambuf::closeStream(): deflateEnd failed: " << zError(err) << std::endl;
+            throw IOException(msgs.str());
+        }
     }
-
-    if(err == Z_OK)
-    {
-        return true;
-    }
-
-    std::cerr << "DeflateOutputStreambuf::closeStream(): deflateEnd failed";
-#ifdef HAVE_ZERROR
-    std::cerr << ": " << zError(err);
-#endif
-    std::cerr << std::endl;
-
-    return false;
 }
 
 
-/** Returns the CRC32 for the current stream. The returned value is
-  the CRC for the data that has been compressed already (due to a
-  call to overflow()). As DeflateOutputStreambuf may buffer an
-  arbitrary amount of bytes until closeStream() has been invoked,
-  the returned value is not very useful before closeStream() has
-  been called. */
+/** \brief Get the CRC32 of the file.
+ *
+ * This function returns the CRC32 for the current file.
+ *
+ * The returned value is the CRC for the data that has been compressed
+ * already (due to calls to overflow()). As DeflateOutputStreambuf may
+ * buffer an arbitrary amount of bytes until closeStream() has been
+ * invoked, the returned value is not very useful before closeStream()
+ * has been called.
+ *
+ * \return The CRC32 of the last file that was passed through.
+ */
 uint32_t DeflateOutputStreambuf::getCrc32() const
 {
     return m_crc32;
 }
 
 
-/** Returns the number of bytes written to the streambuf, that has
-  been processed from the input buffer by the compressor. After
-  closeStream() has been called this number is the total number of
-  bytes written to the stream. */
-size_t DeflateOutputStreambuf::getCount() const
+/** \brief Retrieve the size of the file deflated.
+ *
+ * This function returns the number of bytes written to the
+ * streambuf object and that were processed from the input
+ * buffer by the compressor. After closeStream() has been
+ * called this number is the total number of bytes written
+ * to the stream. In other words, the size of the uncompressed
+ * data.
+ *
+ * \return The uncompressed size of the file that got written here.
+ */
+size_t DeflateOutputStreambuf::getSize() const
 {
     return m_overflown_bytes;
 }
 
 
+/** \brief Handle an overflow.
+ *
+ * This function is called by the streambuf implementation whenever
+ * "too many bytes" are in the output buffer, ready to be compressed.
+ *
+ * \exception IOException
+ * This exception is raised whenever the overflow() function calls
+ * a zlib library function which returns an error.
+ *
+ * \param[in] c  The character (byte) that overflowed the buffer.
+ *
+ * \return Always zero (0).
+ */
 int DeflateOutputStreambuf::overflow(int c)
 {
     m_zs.avail_in = pptr() - pbase();
@@ -191,7 +277,7 @@ int DeflateOutputStreambuf::overflow(int c)
     m_zs.avail_out = getBufferSize();
 
     // Deflate until _invec is empty.
-    int err = Z_OK;
+    int err(Z_OK);
     while((m_zs.avail_in > 0 || m_zs.avail_out == 0) && err == Z_OK)
     {
         if(m_zs.avail_out == 0)
@@ -210,11 +296,8 @@ int DeflateOutputStreambuf::overflow(int c)
     if(err != Z_OK && err != Z_STREAM_END)
     {
         // Throw an exception to make istream set badbit
-        OutputStringStream msgs ;
-        msgs << "Deflation failed";
-#ifdef HAVE_ZERROR
-        msgs << ": " << zError(err);
-#endif
+        OutputStringStream msgs;
+        msgs << "Deflation failed:" << zError(err);
         throw IOException(msgs.str());
     }
 
@@ -224,10 +307,15 @@ int DeflateOutputStreambuf::overflow(int c)
         pbump(1);
     }
 
-    return 0 ;
+    return 0;
 }
 
 
+/** \brief Synchronize the buffer.
+ *
+ * At this time this function does nothing. Do we need to implement
+ * something?
+ */
 int DeflateOutputStreambuf::sync()
 {
     /** \FIXME
@@ -238,16 +326,45 @@ int DeflateOutputStreambuf::sync()
 }
 
 
-/** Flushes _outvec and updates _zs.next_out and _zs.avail_out. */
-bool DeflateOutputStreambuf::flushOutvec()
+/** \brief Flush the cached output data.
+ *
+ * This function flushes m_outvec and updates the output pointer
+ * and size m_zs.next_out and m_zs.avail_out.
+ */
+void DeflateOutputStreambuf::flushOutvec()
 {
-    int const deflated_bytes = getBufferSize() - m_zs.avail_out;
-    int const bc = m_outbuf->sputn(&m_outvec[0], deflated_bytes);
+    /** \TODO
+     * We need to redesign the class to allow for STORED files to
+     * flow through without the need have this crap of bytes to
+     * skip...
+     */
+    size_t deflated_bytes(getBufferSize() - m_zs.avail_out);
+    size_t offset(0);
+    if(m_bytes_to_skip > 0)
+    {
+        if(deflated_bytes > m_bytes_to_skip)
+        {
+            offset += m_bytes_to_skip;
+            deflated_bytes -= m_bytes_to_skip;
+            m_bytes_to_skip = 0;
+        }
+        else
+        {
+            m_bytes_to_skip -= deflated_bytes;
+            deflated_bytes = 0;
+        }
+    }
+    if(deflated_bytes > 0)
+    {
+        size_t const bc(m_outbuf->sputn(&m_outvec[0] + offset, deflated_bytes));
+        if(deflated_bytes != bc)
+        {
+            throw IOException("DeflateOutputStreambuf::flushOutvec(): zlib generated an error.");
+        }
+    }
 
     m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
     m_zs.avail_out = getBufferSize();
-
-    return deflated_bytes == bc;
 }
 
 
@@ -261,27 +378,35 @@ void DeflateOutputStreambuf::endDeflation()
     m_zs.avail_out = getBufferSize();
 
     // Deflate until _invec is empty.
-    int err = Z_OK;
+    int err(Z_OK);
 
-    while(err == Z_OK)
+    // make sure to NOT call deflate() if nothing was written to the
+    // deflate output stream, otherwise we get a spurious 0x03 0x00
+    // marker from the zlib library
+    //
+    if(m_overflown_bytes > 0)
     {
-        if(m_zs.avail_out == 0)
+        while(err == Z_OK)
         {
-            flushOutvec();
-        }
+            if(m_zs.avail_out == 0)
+            {
+                flushOutvec();
+            }
 
-        err = deflate(&m_zs, Z_FINISH);
+            err = deflate(&m_zs, Z_FINISH);
+        }
+    }
+    else
+    {
+        err = Z_STREAM_END;
     }
 
     flushOutvec();
 
     if(err != Z_STREAM_END)
     {
-        std::cerr << "DeflateOutputStreambuf::endDeflation(): deflation failed:\n";
-#ifdef HAVE_ZERROR
-        std::cerr << ": " << zError(err);
-#endif
-        std::cerr << std::endl;
+        std::cerr << "DeflateOutputStreambuf::endDeflation(): deflate() failed: "
+                  << zError(err) << std::endl;
     }
 }
 

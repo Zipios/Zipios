@@ -401,6 +401,9 @@ FileEntry::vector_t FileCollection::entries() const
  */
 FileEntry::pointer_t FileCollection::getEntry(std::string const& name, MatchPath matchpath) const
 {
+    // make sure the entries were loaded if necessary
+    entries();
+
     mustBeValid();
 
     FileEntry::vector_t::const_iterator iter;
@@ -448,6 +451,9 @@ std::string FileCollection::getName() const
  */
 size_t FileCollection::size() const
 {
+    // make sure the entries were loaded if necessary
+    entries();
+
     mustBeValid();
     return m_entries.size();
 }
@@ -483,6 +489,76 @@ void FileCollection::mustBeValid() const
     if(!m_valid)
     {
         throw InvalidStateException("Attempted to access an invalid FileCollection");
+    }
+}
+
+
+/** \brief Change the storage method to the specified value.
+ *
+ * This function changes the storage method of all the entries in
+ * this collection to the specified value.
+ *
+ * The size limit is used to know which storage method to use:
+ * small_storage_method for any file that has a size smaller or
+ * equal to the specified limit and large_storage_method for the
+ * others.
+ *
+ * \param[in] limit  The threshold to use to define the compression level.
+ * \param[in] small_storage_method  The storage method for smaller files.
+ * \param[in] large_storage_method  The storage method for larger files.
+ */
+void FileCollection::setMethod(size_t limit, StorageMethod small_storage_method, StorageMethod large_storage_method)
+{
+    // make sure the entries were loaded if necessary
+    entries();
+
+    mustBeValid();
+
+    for(auto it(m_entries.begin()); it != m_entries.end(); ++it)
+    {
+        if((*it)->getSize() > limit)
+        {
+            (*it)->setMethod(large_storage_method);
+        }
+        else
+        {
+            (*it)->setMethod(small_storage_method);
+        }
+    }
+}
+
+
+/** \brief Change the compression level to the specified value.
+ *
+ * This function changes the compression level of all the entries in
+ * this collection to the specified value.
+ *
+ * The size limit is used to know which compression level to use:
+ * small_compression_level for any file that has a size smaller or
+ * equal to the specified limit and large_compression_level for the
+ * others.
+ *
+ * \param[in] limit  The threshold to use to define the compression level.
+ * \param[in] small_compression_level  The compression level for smaller files.
+ * \param[in] large_compression_level  The compression level for larger files.
+ */
+void FileCollection::setLevel(size_t limit, FileEntry::CompressionLevel small_compression_level, FileEntry::CompressionLevel large_compression_level)
+{
+    // make sure the entries were loaded if necessary
+    entries();
+
+    mustBeValid();
+
+    for(auto it(m_entries.begin()); it != m_entries.end(); ++it)
+    {
+        if((*it)->getSize() > limit)
+        {
+            (*it)->setLevel(large_compression_level);
+        }
+        else
+        {
+            (*it)->setLevel(small_compression_level);
+        }
     }
 }
 

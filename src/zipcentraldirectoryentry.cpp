@@ -92,13 +92,17 @@ uint16_t const   g_osx           = 0x1300;
  * This structure is NOT used directly only for its sizeof() and
  * documentation because that way zipios can work on little and big
  * endians without the need to know the endianess of your computer.
+ *
+ * \bug
+ * This structure is aligned on 4 bytes since it includes some uint32_t
+ * values and thus has a size of 48 bytes instead of 46.
  */
 struct ZipCentralDirectoryEntryHeader
 {
     uint32_t        m_signature;
     uint16_t        m_writer_version;
     uint16_t        m_extract_version;
-    uint16_t        m_gp_bitfield;
+    uint16_t        m_general_purpose_bitfield;
     uint16_t        m_compress_method;
     uint32_t        m_dostime;
     uint32_t        m_crc_32;
@@ -110,7 +114,7 @@ struct ZipCentralDirectoryEntryHeader
     uint16_t        m_disk_num_start;
     uint16_t        m_intern_file_attr;
     uint32_t        m_extern_file_attr;
-    uint32_t        m_rel_offset_loc_head;
+    uint32_t        m_relative_offset_location_header;
     //uint8_t       m_filename[m_filename_len];
     //uint8_t       m_extra_field[m_extra_field_len];
     //uint8_t       m_file_comment[m_file_comment_len];
@@ -137,7 +141,6 @@ struct ZipCentralDirectoryEntryHeader
  */
 ZipCentralDirectoryEntry::ZipCentralDirectoryEntry()
     //: ZipLocalEntry() -- auto-init
-    //, m_file_comment("") -- auto-init
 {
 }
 
@@ -152,12 +155,8 @@ ZipCentralDirectoryEntry::ZipCentralDirectoryEntry()
  * \param[in] entry  The entry to transform in a ZipCentralDirectoryEntry.
  */
 ZipCentralDirectoryEntry::ZipCentralDirectoryEntry(FileEntry const& entry)
-    : ZipLocalEntry(entry.getName(), entry.getExtra())
-    , m_file_comment(entry.getComment())
+    : ZipLocalEntry(entry)
 {
-    // the ZipLocalEntry will get this one wrong since the filename
-    // will not end with a trailing '/'
-    m_is_directory = entry.isDirectory();
 }
 
 
@@ -167,31 +166,6 @@ ZipCentralDirectoryEntry::ZipCentralDirectoryEntry(FileEntry const& entry)
  */
 ZipCentralDirectoryEntry::~ZipCentralDirectoryEntry()
 {
-}
-
-
-/** \brief Get the file comment.
- *
- * This function returns a copy of the file comment.
- *
- * \return The file comment of the entry, may be an empty string.
- */
-std::string ZipCentralDirectoryEntry::getComment() const
-{
-    return m_file_comment;
-}
-
-
-/** \brief Set the file comment.
- *
- * This function is used to set the file comment of the entry as read
- * from a Zip archive.
- *
- * \param[in] comment  The comment to set the entry as.
- */
-void ZipCentralDirectoryEntry::setComment(std::string const& comment)
-{
-    m_file_comment = comment;
 }
 
 
@@ -237,10 +211,13 @@ size_t ZipCentralDirectoryEntry::getHeaderSize() const
      * an invalid size if the filename, extra field, or file comment
      * sizes are more than allowed in an older version of the Zip format.
      */
-    return sizeof(ZipCentralDirectoryEntryHeader)
+    // Note that the structure is 48 bytes because of an alignment
+    // and attempting to use options to avoid the alignment would
+    // not be portable so we use a hard coded value (yuck!)
+    return 46 /* sizeof(ZipCentralDirectoryEntryHeader) */
          + m_filename.length() + (m_is_directory ? 1 : 0)
          + m_extra_field.size()
-         + m_file_comment.length();
+         + m_comment.length();
 }
 
 
@@ -326,7 +303,7 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
     zipRead(is, rel_offset_loc_head);               // 32
     zipRead(is, filename, filename_len);            // string
     zipRead(is, m_extra_field, extra_field_len);    // buffer
-    zipRead(is, m_file_comment, file_comment_len);  // string
+    zipRead(is, m_comment, file_comment_len);       // string
     /** \TODO check whether this was a 64 bit header and make sure
      *        to read the 64 bit header too if so
      */
@@ -377,9 +354,9 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     /** \TODO add support for 64 bit entries
      *        (zip64 is available, just need to add a 64 bit header...)
      */
-    if(m_filename.length()     > 0x10000
-    || m_extra_field.size()    > 0x10000
-    || m_file_comment.length() > 0x10000)
+    if(m_filename.length()  > 0x10000
+    || m_extra_field.size() > 0x10000
+    || m_comment.length()   > 0x10000)
     {
         throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
     }
@@ -425,15 +402,29 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     uint32_t uncompressed_size(m_uncompressed_size);
     uint16_t filename_len(filename.length());
     uint16_t extra_field_len(m_extra_field.size());
-    uint16_t file_comment_len(m_file_comment.length());
+    uint16_t file_comment_len(m_comment.length());
     uint16_t disk_num_start(0);
     uint16_t intern_file_attr(0);
     /** \FIXME
-     * I do not understand the external mapping, simply
-     * copied value for a file with -rw-rw-r-- permissions
-     * compressed with info-zip
+     * The external_file_attr supports the standard Unix
+     * permissions in the higher 16 bits defined as:
+     *
+     *    <type> <rwx> <rwx> <rwx>
+     *
+     * The <type> is the top 4 bits and is set to either 8 or 4:
+     *
+     * \li 8 for regular files
+     * \li 4 for directories
+     *
+     * The <rwx> are the standard permission flags representing the
+     * owner, group, and other read/write/execute permissions.
+     *
+     * The value also includes the special flags SUID, SGID and VTX.
+     *
+     * So to have a fix here we need to have a way to read those flags
+     * from the file entry.
      */
-    uint32_t extern_file_attr(0x81B40000);
+    uint32_t extern_file_attr(m_is_directory ? 0x41FD0010 : 0x81B40000);
     uint32_t rel_offset_loc_head(m_entry_offset);
 
     zipWrite(os, g_signature);                  // 32
@@ -454,7 +445,7 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     zipWrite(os, rel_offset_loc_head);          // 32
     zipWrite(os, filename);                     // string
     zipWrite(os, m_extra_field);                // buffer
-    zipWrite(os, m_file_comment);               // string
+    zipWrite(os, m_comment);                    // string
 }
 
 

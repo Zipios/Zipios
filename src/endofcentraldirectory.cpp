@@ -256,14 +256,14 @@ bool EndOfCentralDirectory::read(::zipios::buffer_t const& buf, size_t pos)
     uint32_t central_directory_offset;
     uint16_t comment_len;
 
-    zipRead(buf, pos, disk_number                       );  // 16
-    zipRead(buf, pos, disk_number                       );  // 16
-    zipRead(buf, pos, central_directory_entries         );  // 16
-    zipRead(buf, pos, central_directory_total_entries   );  // 16
-    zipRead(buf, pos, central_directory_size            );  // 32
-    zipRead(buf, pos, central_directory_offset          );  // 32
-    zipRead(buf, pos, comment_len                       );  // 16
-    zipRead(buf, pos, m_zip_comment, comment_len        );  // string
+    zipRead(buf, pos, disk_number);                         // 16
+    zipRead(buf, pos, disk_number);                         // 16
+    zipRead(buf, pos, central_directory_entries);           // 16
+    zipRead(buf, pos, central_directory_total_entries);     // 16
+    zipRead(buf, pos, central_directory_size);              // 32
+    zipRead(buf, pos, central_directory_offset);            // 32
+    zipRead(buf, pos, comment_len);                         // 16
+    zipRead(buf, pos, m_zip_comment, comment_len);          // string
 
     // note that if disk_number is defined, then these following two
     // numbers should differ too
@@ -334,15 +334,15 @@ void EndOfCentralDirectory::write(std::ostream& os)
     // the total number of entries, across all disks is the same in our
     // case so we use one number for both fields
 
-    zipWrite(os, g_signature                  );    // 32
-    zipWrite(os, disk_number                  );    // 16
-    zipWrite(os, disk_number                  );    // 16
-    zipWrite(os, central_directory_entries    );    // 16
-    zipWrite(os, central_directory_entries    );    // 16
-    zipWrite(os, central_directory_size       );    // 32
-    zipWrite(os, central_directory_offset     );    // 32
-    zipWrite(os, comment_len                  );    // 16
-    zipWrite(os, m_zip_comment                );    // string
+    zipWrite(os, g_signature);                      // 32
+    zipWrite(os, disk_number);                      // 16
+    zipWrite(os, disk_number);                      // 16
+    zipWrite(os, central_directory_entries);        // 16
+    zipWrite(os, central_directory_entries);        // 16
+    zipWrite(os, central_directory_size);           // 32
+    zipWrite(os, central_directory_offset);         // 32
+    zipWrite(os, comment_len);                      // 16
+    zipWrite(os, m_zip_comment);                    // string
 }
 
 

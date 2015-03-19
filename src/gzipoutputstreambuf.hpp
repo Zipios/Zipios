@@ -36,7 +36,7 @@ namespace zipios
 class GZIPOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
-    explicit      GZIPOutputStreambuf(std::streambuf *outbuf);
+                  GZIPOutputStreambuf(std::streambuf *outbuf, FileEntry::CompressionLevel compression_level);
     virtual       ~GZIPOutputStreambuf() override;
 
     void          setFilename(std::string const& filename);

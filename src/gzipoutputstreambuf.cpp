@@ -28,6 +28,8 @@
 
 #include "gzipoutputstreambuf.hpp"
 
+#include "zipios++/zipiosexceptions.hpp"
+
 
 namespace zipios
 {
@@ -38,11 +40,16 @@ namespace zipios
  * A newly constructed GZIPOutputStreambuf is ready to accept data.
  *
  * \param[in,out] outbuf  The streambuf to use for output.
+ * \param[in] compression_level  The compression level to use to compress.
  */
-GZIPOutputStreambuf::GZIPOutputStreambuf(std::streambuf *outbuf)
-    : DeflateOutputStreambuf(outbuf, true)
+GZIPOutputStreambuf::GZIPOutputStreambuf(std::streambuf *outbuf, FileEntry::CompressionLevel compression_level)
+    : DeflateOutputStreambuf(outbuf)
     //, m_open(false) -- auto-init
 {
+    if(!init(compression_level))
+    {
+        throw InvalidStateException("GZIPOutputStreambuf::GZIPOutputStreambuf() failed initializing zlib.");
+    }
 }
 
 
@@ -159,7 +166,7 @@ void GZIPOutputStreambuf::writeTrailer()
 {
     // write the CRC32 and Size at the end of the file
     writeInt(getCrc32());
-    writeInt(getCount());
+    writeInt(getSize());
 }
 
 

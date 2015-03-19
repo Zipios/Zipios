@@ -111,12 +111,30 @@ ZipLocalEntry::ZipLocalEntry(std::string const& filename, buffer_t const& extra_
     : FileEntry(filename)
     //, m_extract_version(g_zip_format_version) -- auto-init
     //, m_general_purpose_bitfield(0) -- auto-init
-    //, m_compress_method(StorageMethod::STORED) -- auto-init
     , m_is_directory(!filename.empty() && filename.back() == g_separator)
     //, m_compressed_size(0) -- auto-init
     //, m_extra_field() -- see below, beneficiate from the size check by using the setExtra() function
 {
     setExtra(extra_field);
+}
+
+
+/** \brief Copy of the ZipLocalEntry from any kind of FileEntry object.
+ *
+ * This function is used when copying a DirectoryEntry to a
+ * ZipCentralDirectoryEntry object when creating a copy while
+ * saving a Zip archive.
+ *
+ * \param[in] src  The source to copy in this new ZipLocalEntry.
+ */
+ZipLocalEntry::ZipLocalEntry(FileEntry const & src)
+    : FileEntry(src)
+    //, m_extract_version(g_zip_format_version) -- auto-init
+    //, m_general_purpose_bitfield(0) -- auto-init
+    , m_is_directory(src.isDirectory())
+    //, m_compressed_size(0) -- auto-init
+    //, m_extra_field() -- see below, beneficiate from the size check by using the setExtra() function
+{
 }
 
 
@@ -182,8 +200,7 @@ bool ZipLocalEntry::isEqual(FileEntry const& file_entry) const
     }
     return FileEntry::isEqual(file_entry)
         && m_extract_version          == ze->m_extract_version
-        && m_general_purpose_bitfield == ze->m_general_purpose_bitfield
-        && m_compress_method          == ze->m_compress_method;
+        && m_general_purpose_bitfield == ze->m_general_purpose_bitfield;
         //&& m_compressed_size          == ze->m_compressed_size -- ignore in comparison
         //&& m_extra_field              == ze->m_extra_field -- ignored in comparison
 }
@@ -227,23 +244,12 @@ ZipLocalEntry::buffer_t ZipLocalEntry::getExtra() const
  */
 size_t ZipLocalEntry::getHeaderSize() const
 {
-    return sizeof(ZipLocalEntryHeader) + m_filename.length() + m_extra_field.size();
-}
-
-
-/** \brief Return the method used to create this entry.
- *
- * This function returns the method used to store the entry data in
- * the FileCollection it is attached to.
- *
- * \return the storage method used to store the entry in a collection.
- *
- * \sa StorageMethod
- * \sa setMethod()
- */
-StorageMethod ZipLocalEntry::getMethod() const
-{
-  return m_compress_method;
+    // Note that the structure is 32 bytes because of an alignment
+    // and attempting to use options to avoid the alignment would
+    // not be portable so we use a hard coded value (yuck!)
+    return 30 /* sizeof(ZipLocalEntryHeader) */
+         + m_filename.length() + (m_is_directory ? 1 : 0)
+         + m_extra_field.size();
 }
 
 
@@ -295,12 +301,6 @@ void ZipLocalEntry::setExtra(buffer_t const& extra)
         throw InvalidException("ZipLocalEntry::setExtra(): trying to setup an extra buffer of more than 64Kb, maximum size is 0xFFFF.");
     }
     m_extra_field = extra;
-}
-
-
-void ZipLocalEntry::setMethod(StorageMethod method)
-{
-    m_compress_method = method;
 }
 
 
@@ -393,7 +393,7 @@ void ZipLocalEntry::read(std::istream& is)
     {
         // put stream in error state and return
         is.setstate(std::ios::failbit);
-        throw IOException("ZipLocalEntry::read() expected a signature and got some other data");
+        throw IOException("ZipLocalEntry::read() expected a signature but got some other data");
     }
 
     uint16_t compress_method(0);
@@ -465,11 +465,17 @@ void ZipLocalEntry::write(std::ostream& os)
     }
 #endif
 
+    std::string filename(m_filename);
+    if(m_is_directory)
+    {
+        filename += g_separator;
+    }
+
     uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
     uint32_t dostime(unix2dostime(m_unix_time));
     uint32_t compressed_size(m_compressed_size);
     uint32_t uncompressed_size(m_uncompressed_size);
-    uint16_t filename_len(m_filename.length());
+    uint16_t filename_len(filename.length());
     uint16_t extra_field_len(m_extra_field.size());
 
     // See the ZipLocalEntryHeader for more details
@@ -483,7 +489,7 @@ void ZipLocalEntry::write(std::ostream& os)
     zipWrite(os, uncompressed_size);            // 32
     zipWrite(os, filename_len);                 // 16
     zipWrite(os, extra_field_len);              // 16
-    zipWrite(os, m_filename);                   // string
+    zipWrite(os, filename);                     // string
     zipWrite(os, m_extra_field);                // buffer
 }
 

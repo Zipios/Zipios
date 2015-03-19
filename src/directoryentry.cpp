@@ -39,7 +39,7 @@ namespace zipios
  *
  * DirectoryEntry is a FileEntry that is suitable as a base class for
  * basic entries, that do not support any form of compression and
- * in most cadrd represent a file in a directtory.
+ * in most cases represent a file in a directtory.
  */
 
 
@@ -54,8 +54,7 @@ namespace zipios
  * \param[in] comment  A comment for the entry.
  */
 DirectoryEntry::DirectoryEntry(FilePath const& filename, std::string const& comment)
-    : FileEntry(filename)
-    , m_comment(comment)
+    : FileEntry(filename, comment)
 {
     m_valid = m_filename.isRegular() || m_filename.isDirectory();
     if(m_valid)
@@ -93,23 +92,6 @@ DirectoryEntry::~DirectoryEntry()
 }
 
 
-/** \brief Retrieve the comment of the file entry.
- *
- * This function returns the comment of this entry.
- *
- * If the entry was not assigned a comment, this function returns
- * an empty string.
- *
- * This implementation of FileEntry has a comment.
- *
- * \return The comment associated with this entry, if there is one.
- */
-std::string DirectoryEntry::getComment() const
-{
-    return m_comment;
-}
-
-
 /** \brief Compare two file entries for equality.
  *
  * This function compares most of the fields between two file
@@ -130,21 +112,7 @@ bool DirectoryEntry::isEqual(FileEntry const& file_entry) const
     {
         return false;
     }
-    return FileEntry::isEqual(file_entry)
-        && m_comment == de->m_comment;
-}
-
-
-/** \brief Set the comment field for the DirectoryEntry.
- *
- * This function sets the comment of this DirectoryEntry.
- * This implementation actually keeps track of comments.
- *
- * \param[in] comment  A string with the new comment.
- */
-void DirectoryEntry::setComment(std::string const& comment)
-{
-    m_comment = comment;
+    return FileEntry::isEqual(file_entry);
 }
 
 

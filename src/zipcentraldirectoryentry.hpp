@@ -43,16 +43,11 @@ public:
     virtual pointer_t           clone() const override;
     virtual                     ~ZipCentralDirectoryEntry() override;
 
-    virtual std::string         getComment() const override;
     virtual size_t              getHeaderSize() const override;
-    virtual void                setComment(std::string const& comment) override;
     virtual std::string         toString() const override;
 
     virtual void                read(std::istream& is) override;
     virtual void                write(std::ostream& os) override;
-
-private:
-    std::string                 m_file_comment;
 };
 
 

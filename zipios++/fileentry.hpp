@@ -41,16 +41,16 @@ namespace zipios
 
 enum class StorageMethod : uint8_t
 {
-    STORED      = 0,
-    SHRUNK      = 1,
-    REDUCED1    = 2,
-    REDUCED2    = 3,
-    REDUCED3    = 4,
-    REDUCED4    = 5,
-    IMPLODED    = 6,
-    TOKENIZED   = 7,
-    DEFLATED    = 8,
-    DEFLATED64  = 9,
+    STORED      =  0,
+    SHRUNK      =  1,
+    REDUCED1    =  2,
+    REDUCED2    =  3,
+    REDUCED3    =  4,
+    REDUCED4    =  5,
+    IMPLODED    =  6,
+    TOKENIZED   =  7,
+    DEFLATED    =  8,
+    DEFLATED64  =  9,
     OLD_TERSE   = 10,
     RESERVED11  = 11,
     BZIP2       = 12,
@@ -66,7 +66,6 @@ enum class StorageMethod : uint8_t
 };
 
 
-
 class FileEntry
 {
 public:
@@ -76,7 +75,18 @@ public:
     typedef uint32_t                        crc32_t;
     typedef uint32_t                        dostime_t;
 
-                                FileEntry(FilePath const& filename);
+    // we use our own compression level type, it gets converted as
+    // required when the level is to be used by a compression scheme
+    typedef int                     CompressionLevel;
+
+    static CompressionLevel const   COMPRESSION_LEVEL_DEFAULT   =  -3;
+    static CompressionLevel const   COMPRESSION_LEVEL_SMALLEST  =  -2;
+    static CompressionLevel const   COMPRESSION_LEVEL_FASTEST   =  -1;
+    static CompressionLevel const   COMPRESSION_LEVEL_NONE      =   0;
+    static CompressionLevel const   COMPRESSION_LEVEL_MINIMUM   =   1;
+    static CompressionLevel const   COMPRESSION_LEVEL_MAXIMUM   = 100;
+
+                                FileEntry(FilePath const & filename, std::string const & comment = std::string());
     virtual pointer_t           clone() const = 0;
     virtual                     ~FileEntry();
 
@@ -86,6 +96,7 @@ public:
     std::streampos              getEntryOffset() const;
     virtual buffer_t            getExtra() const;
     virtual size_t              getHeaderSize() const;
+    virtual CompressionLevel    getLevel() const;
     virtual StorageMethod       getMethod() const;
     virtual std::string         getName() const;
     virtual std::string         getFileName() const;
@@ -101,6 +112,7 @@ public:
     virtual void                setCrc(crc32_t crc);
     void                        setEntryOffset(std::streampos offset);
     virtual void                setExtra(buffer_t const& extra);
+    virtual void                setLevel(CompressionLevel level);
     virtual void                setMethod(StorageMethod method);
     virtual void                setSize(size_t size);
     virtual void                setTime(dostime_t time);
@@ -112,9 +124,12 @@ public:
 
 protected:
     FilePath                    m_filename;
+    std::string                 m_comment;
     size_t                      m_uncompressed_size = 0;
     time_t                      m_unix_time = 0;
     std::streampos              m_entry_offset = 0;
+    StorageMethod               m_compress_method = StorageMethod::STORED;
+    CompressionLevel            m_compression_level = COMPRESSION_LEVEL_DEFAULT;
     uint32_t                    m_crc_32 = 0;
     bool                        m_has_crc_32 = false;
     bool                        m_valid = false;

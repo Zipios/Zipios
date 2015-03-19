@@ -44,22 +44,19 @@ public:
     void                    finish();
     void                    putNextEntry(FileEntry::pointer_t entry);
     void                    setComment(std::string const& comment);
-    void                    setLevel(CompressionLevel level);
-    void                    setMethod(StorageMethod method);
 
 protected:
     virtual int             overflow(int c = EOF);
     virtual int             sync();
+
+private:
     void                    setEntryClosedState();
     void                    updateEntryHeaderInfo();
 
-private:
     std::string             m_zip_comment;
     FileEntry::vector_t     m_entries;
     bool                    m_open_entry = false;
     bool                    m_open = true;
-    StorageMethod           m_method = StorageMethod::DEFLATED;
-    int                     m_level = 6;
 };
 
 

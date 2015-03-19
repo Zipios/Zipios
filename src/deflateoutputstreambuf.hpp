@@ -29,6 +29,8 @@
 
 #include "filteroutputstreambuf.hpp"
 
+#include "zipios++/fileentry.hpp"
+
 #include <cstdint>
 #include <vector>
 
@@ -41,38 +43,32 @@ namespace zipios
 class DeflateOutputStreambuf : public FilterOutputStreambuf
 {
 public:
-    // zlib does not define a type for its compression level
-    typedef int             CompressionLevel;
-
-    static CompressionLevel const   NO_COMPRESSION      = Z_NO_COMPRESSION;
-    static CompressionLevel const   BEST_SPEED          = Z_BEST_SPEED;
-    static CompressionLevel const   BEST_COMPRESSION    = Z_BEST_COMPRESSION;
-    static CompressionLevel const   DEFAULT_COMPRESSION = Z_DEFAULT_COMPRESSION;
-
-                            DeflateOutputStreambuf(std::streambuf *outbuf, bool user_init = false);
+                            DeflateOutputStreambuf(std::streambuf *outbuf);
     virtual                 ~DeflateOutputStreambuf();
 
-    bool                    init(CompressionLevel comp_level = DEFAULT_COMPRESSION);
-    bool                    closeStream();
+    bool                    init(FileEntry::CompressionLevel compression_level);
+    void                    closeStream();
     uint32_t                getCrc32() const;
-    size_t                  getCount() const;
+    size_t                  getSize() const;
 
 protected:
     virtual int             overflow(int c = EOF);
     virtual int             sync();
-    bool                    flushOutvec();
-    void                    endDeflation();
 
 private:
+    void                    endDeflation();
+    void                    flushOutvec();
+
     z_stream                m_zs;
     bool                    m_zs_initialized = false;
+    bool                    m_compressed_data = false;
 
-protected:
     std::vector<char>       m_invec;
     std::vector<char>       m_outvec;
 
     uint32_t                m_crc32 = 0;
     uint32_t                m_overflown_bytes = 0;
+    uint32_t                m_bytes_to_skip = 0;
 };
 
 

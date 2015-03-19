@@ -32,6 +32,7 @@
 #include "endofcentraldirectory.hpp"
 #include "zipcentraldirectoryentry.hpp"
 #include "zipinputstream.hpp"
+#include "zipoutputstream.hpp"
 
 #include <fstream>
 
@@ -408,14 +409,28 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name,
  *
  * \param[in,out] os  The output stream where the Zip archive is saed.
  * \param[in] collection  The collection to save in this output stream.
+ * \param[in] zip_comment  The global comment of the Zip archive.
  */
-void ZipFile::saveCollectionToArchive(std::ostream& os, FileCollection const& collection)
+void ZipFile::saveCollectionToArchive(std::ostream & os, FileCollection & collection, std::string const & zip_comment)
 {
-    static_cast<void>(os);
-    static_cast<void>(collection);
-    /** \TODO Write implementation! */
+    ZipOutputStream output_stream(os);
 
-    throw IOException("not implemented!");
+    output_stream.setComment(zip_comment);
+
+    FileEntry::vector_t entries(collection.entries());
+    for(auto it(entries.begin()); it != entries.end(); ++it)
+    {
+        output_stream.putNextEntry(*it);
+        // get an InputStream if available (i.e. directories do not have an input stream)
+        if(!(*it)->isDirectory())
+        {
+            FileCollection::stream_pointer_t is(collection.getInputStream((*it)->getName()));
+            if(is)
+            {
+                output_stream << is->rdbuf();
+            }
+        }
+    }
 }
 
 

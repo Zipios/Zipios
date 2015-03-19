@@ -40,20 +40,19 @@ public:
     // Zip file format version
     static uint16_t const       g_zip_format_version = 20; // 2.0
 
-                                ZipLocalEntry(std::string const& filename = "", buffer_t const& extra_field = buffer_t());
+                                ZipLocalEntry(std::string const & filename = "", buffer_t const & extra_field = buffer_t());
+                                ZipLocalEntry(FileEntry const & src);
     virtual pointer_t           clone() const override;
     virtual                     ~ZipLocalEntry() override;
 
     virtual size_t              getCompressedSize() const override;
     virtual buffer_t            getExtra() const override;
     virtual size_t              getHeaderSize() const override;
-    virtual StorageMethod       getMethod() const override;
     virtual bool                isDirectory() const override;
-    virtual bool                isEqual(FileEntry const& file_entry) const override;
+    virtual bool                isEqual(FileEntry const & file_entry) const override;
     virtual void                setCompressedSize(size_t size) override;
     virtual void                setCrc(crc32_t crc) override;
     virtual void                setExtra(buffer_t const& extra) override;
-    virtual void                setMethod(StorageMethod method) override;
     virtual std::string         toString() const override;
 
     bool                        hasTrailingDataDescriptor() const;
@@ -64,7 +63,6 @@ public:
 protected:
     uint16_t                    m_extract_version = g_zip_format_version;
     uint16_t                    m_general_purpose_bitfield = 0;
-    StorageMethod               m_compress_method = StorageMethod::STORED;
     bool                        m_is_directory = false;
     size_t                      m_compressed_size = 0;
     buffer_t                    m_extra_field;

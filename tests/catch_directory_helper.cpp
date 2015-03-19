@@ -157,6 +157,8 @@ file_t::file_t(type_t t, int children_count, std::string const& new_filename)
  */
 file_t::~file_t()
 {
+// use this return to keep the tree to check files before they get deleted
+//return;
     if(m_type == type_t::REGULAR)
     {
         unlink(m_filename.c_str());

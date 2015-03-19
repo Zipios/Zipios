@@ -382,6 +382,129 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
 }
 
 
+SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
+{
+    GIVEN("a tree directory")
+    {
+        system("rm -rf tree tree.zip"); // clean up, just in case
+        size_t const start_count(rand() % 40 + 80);
+        zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
+        //zipios_test::auto_unlink_t remove_zip("tree.zip");
+        zipios::DirectoryCollection dc("tree");
+
+        // first, check that the object is setup as expected
+        WHEN("we save the directory tree in a .zip file")
+        {
+            {
+                dc.setMethod(1024, zipios::StorageMethod::STORED, zipios::StorageMethod::DEFLATED);
+                dc.setLevel(1024, zipios::FileEntry::COMPRESSION_LEVEL_NONE, zipios::FileEntry::COMPRESSION_LEVEL_MAXIMUM);
+                std::ofstream out("tree.zip", std::ios::out | std::ios::binary);
+                zipios::ZipFile::saveCollectionToArchive(out, dc);
+            }
+
+            THEN("it is valid and includes all the files in the tree as expected")
+            {
+                zipios::ZipFile zf("tree.zip");
+
+                REQUIRE(zf.isValid());
+                REQUIRE_FALSE(zf.entries().empty());
+                REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE(zf.getName() == "tree.zip");
+                REQUIRE(zf.size() == tree.size());
+                zf.mustBeValid(); // not throwing
+
+                zipios::FileEntry::vector_t v(zf.entries());
+                for(auto it(v.begin()); it != v.end(); ++it)
+                {
+                    zipios::FileEntry::pointer_t entry(*it);
+
+                    // verify that our tree knows about this file
+                    zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                    REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
+
+                    struct stat file_stats;
+                    REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
+
+                    REQUIRE((*it)->getComment().empty());
+                    //REQUIRE((*it)->getCompressedSize() == (*it)->getSize()); -- not too sure how we could verify this size in this case
+                    //REQUIRE((*it)->getCrc() == ...); -- not too sure how to compute that right now, but once we have it we'll test it
+                    //REQUIRE((*it)->getEntryOffset() == ...); -- that's also difficult to test
+                    //REQUIRE((*it)->getExtra().empty());
+                    //REQUIRE((*it)->getHeaderSize() == 0); -- the header size varies
+                    if((*it)->getMethod() == zipios::StorageMethod::STORED)
+                    {
+                        REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
+                    }
+                    else
+                    {
+                         // you would think that the compressed size would
+                         // either be equal to the size or smaller, but never
+                         // larger, that's not the case with zip under Linux...
+                         //
+                         // they probably use a streaming mechanism and thus
+                         // cannot fix the problem later if the compressed
+                         // version ends up being larger than the
+                         // non-compressed version...
+                         //
+                         //REQUIRE((*it)->getCompressedSize() < (*it)->getSize());
+                    }
+                    //REQUIRE((*it)->getName() == ...);
+                    //REQUIRE((*it)->getFileName() == ...);
+                    time_t const dostime(unix2dostime(file_stats.st_mtime));
+                    REQUIRE((*it)->getTime() == dostime);  // invalid date
+                    size_t const ut(dos2unixtime(dostime));
+                    REQUIRE((*it)->getUnixTime() == ut);
+                    REQUIRE_FALSE((*it)->hasCrc());
+                    REQUIRE((*it)->isValid());
+                    //REQUIRE((*it)->toString() == "... (0 bytes)");
+
+                    if(t == zipios_test::file_t::type_t::DIRECTORY)
+                    {
+                        REQUIRE((*it)->isDirectory());
+                        REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                    }
+                    else
+                    {
+                        REQUIRE_FALSE((*it)->isDirectory());
+                        REQUIRE((*it)->getSize() == file_stats.st_size);
+
+                        // now read both files (if not a directory) and make sure
+                        // they are equal
+                        zipios::FileCollection::stream_pointer_t is(zf.getInputStream(entry->getName()));
+                        REQUIRE(is);
+                        std::ifstream in(entry->getName(), std::ios::in | std::ios::binary);
+
+                        while(in && *is)
+                        {
+                            char buf1[BUFSIZ], buf2[BUFSIZ];
+
+                            in.read(buf1, sizeof(buf1));
+                            std::streamsize sz1(in.gcount());
+
+                            is->read(buf2, sizeof(buf2));
+                            std::streamsize sz2(is->gcount());
+
+                            REQUIRE(sz1 == sz2);
+                            REQUIRE(memcmp(buf1, buf2, sz1) == 0);
+                        }
+
+                        REQUIRE(!in);
+                        REQUIRE(!*is);
+                    }
+
+                    // I don't think we will test those directly...
+                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+                }
+            }
+        }
+    }
+}
+
+
 // For this one we have a set of structures and we "manually"
 // create Zip archive files that we can thus tweak with totally
 // invalid parameters

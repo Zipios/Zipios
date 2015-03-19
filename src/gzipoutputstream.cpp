@@ -56,11 +56,12 @@ namespace zipios
  * the \p os stream.)
  *
  * \param[in,out] os  ostream to which the compressed zip archive is written.
+ * \param[in] compression_level  The compression level to use to compress.
  */
-GZIPOutputStream::GZIPOutputStream(std::ostream& os)
+GZIPOutputStream::GZIPOutputStream(std::ostream& os, FileEntry::CompressionLevel compression_level)
     //: std::ostream() -- auto-init
     //, m_ofs(nullptr) -- auto-init
-    : m_ozf(new GZIPOutputStreambuf(os.rdbuf()))
+    : m_ozf(new GZIPOutputStreambuf(os.rdbuf(), compression_level))
 {
     init(m_ozf.get());
 }
@@ -73,12 +74,13 @@ GZIPOutputStream::GZIPOutputStream(std::ostream& os)
  * To do so, call the setFilename() function.
  *
  * \param[in] filename  Name of the file where the zip archive is to
- *                       be written.
+ *                      be written.
+ * \param[in] compression_level  The compression level to use to compress.
  */
-GZIPOutputStream::GZIPOutputStream(std::string const& filename)
+GZIPOutputStream::GZIPOutputStream(std::string const& filename, FileEntry::CompressionLevel compression_level)
     : std::ostream(0)
     , m_ofs(new std::ofstream(filename.c_str(), std::ios::out | std::ios::binary))
-    , m_ozf(new GZIPOutputStreambuf(m_ofs->rdbuf()))
+    , m_ozf(new GZIPOutputStreambuf(m_ofs->rdbuf(), compression_level))
 {
     init(m_ozf.get());
 }

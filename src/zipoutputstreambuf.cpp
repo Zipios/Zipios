@@ -27,6 +27,7 @@
 #include "zipoutputstreambuf.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
+#include "ziplocalentry.hpp"
 
 #include "endofcentraldirectory.hpp"
 
@@ -78,7 +79,7 @@ void writeCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::
  */
 
 
-/** \typedef int ZipOutputStreambuf::CompressionLevel;
+/** \typedef int ZipOutputStreambuf::CompressionLevel
  * \brief The compression level to be used to save an entry.
  *
  * Values defined using this time represent the compression level to
@@ -106,11 +107,9 @@ void writeCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::
  * \param outbuf  The streambuf to use for output.
  */
 ZipOutputStreambuf::ZipOutputStreambuf(std::streambuf *outbuf)
-    : DeflateOutputStreambuf(outbuf, false)
+    : DeflateOutputStreambuf(outbuf)
     //, m_open_entry(false) -- auto-init
     //, m_open(true) -- auto-init
-    //, m_method(StorageMethod::DEFLATED) -- auto-init
-    //, m_level(6) -- auto-init
 {
 }
 
@@ -191,20 +190,20 @@ void ZipOutputStreambuf::putNextEntry(FileEntry::pointer_t entry)
 {
     closeEntry();
 
-    if(!init(m_level))
-    {
-        std::cerr << "ZipOutputStreambuf::putNextEntry(): init() failed!\n";
-    }
+    // if the method is STORED force uncompressed data
+    init(entry->getMethod() == StorageMethod::STORED ? FileEntry::COMPRESSION_LEVEL_NONE : entry->getLevel());
 
     m_entries.push_back(entry);
-    FileEntry::pointer_t copy(m_entries.back());
 
     std::ostream os(m_outbuf);
 
     // Update entry header info
-    copy->setEntryOffset(os.tellp());
-    copy->setMethod(m_method);
-    copy->write(os);
+    entry->setEntryOffset(os.tellp());
+    /** \TODO
+     * Rethink the design as we have to force a call to the correct
+     * write() function?
+     */
+    static_cast<ZipLocalEntry *>(entry.get())->ZipLocalEntry::write(os);
 
     m_open_entry = true;
 }
@@ -219,68 +218,14 @@ void ZipOutputStreambuf::putNextEntry(FileEntry::pointer_t entry)
  *
  * The comment is saved when the first entry is saved so it
  * has to be put in there early on.
+ *
+ * \param[in] comment  The comment to save in the Zip archive.
  */
 void ZipOutputStreambuf::setComment(std::string const& comment)
 {
     m_zip_comment = comment;
 }
 
-
-/** \brief Change the compression level.
- *
- * This function sets the compression level to be used by subsequent
- * entries. It has to be called before the putNextEntry() function.
- *
- * \param[in] level  A zlib compression level (0 to 9).
- */
-void ZipOutputStreambuf::setLevel(CompressionLevel level)
-{
-    if(level < 0 || level > 9)
-    {
-        throw InvalidException("Invalid level used with ZipOutputStreambuf::setLevel(). A value from 1 to 9 only is allowed.");
-    }
-
-    m_level = level;
-}
-
-
-/** \brief Change the compression method.
- *
- * This function sets the compression method to be used.
- *
- * Only STORED (uncompressed) and DEFLATED (compressed with zlib)
- * are supported in this version.
- *
- * This function calls setLevel() with the correct compression
- * level. It has to be called before putNextEntry() to be effective
- * with the following entry.
- *
- * \note
- * If you set the method to DEFLATED and the compression level is
- * not NO_COMPRESSION, then the compression level is not changed.
- *
- * \param[in] method  The compression method to be used next.
- */
-void ZipOutputStreambuf::setMethod(StorageMethod method)
-{
-    m_method = method;
-    if(method == StorageMethod::STORED)
-    {
-        setLevel(NO_COMPRESSION);
-    }
-    else if(method == StorageMethod::DEFLATED)
-    {
-        // if the user already defined a compression level, leave it as is
-        if(m_level == NO_COMPRESSION)
-        {
-            setLevel(DEFAULT_COMPRESSION);
-        }
-    }
-    else
-    {
-        throw FileCollectionException("Specified compression method not supported");
-    }
-}
 
 //
 // Protected and private methods
@@ -289,11 +234,6 @@ void ZipOutputStreambuf::setMethod(StorageMethod method)
 int ZipOutputStreambuf::overflow(int c)
 {
     return DeflateOutputStreambuf::overflow(c);
-
-    /** \FIXME Actually implement this function for real?
-     */
-    //cout << "ZipOutputStreambuf::overflow() not implemented yet!\n";
-    //return EOF ;
 }
 
 
@@ -301,11 +241,6 @@ int ZipOutputStreambuf::overflow(int c)
 int ZipOutputStreambuf::sync()
 {
     return DeflateOutputStreambuf::sync();
-
-    /** \FIXME Actually implement this function for real?
-     */
-    //cout << "ZipOutputStreambuf::sync() not implemented yet!\n";
-    //return EOF ;
 }
 
 
@@ -321,6 +256,17 @@ void ZipOutputStreambuf::setEntryClosedState()
 }
 
 
+/** \brief Save the header information.
+ *
+ * This function saves parameters that are now available in the header
+ * of the local entry.
+ *
+ * These parameters include:
+ *
+ * \li The uncompressed size of the entry
+ * \li The compressed size of the entry
+ * \li The CRC32 of the input file (before the compression)
+ */
 void ZipOutputStreambuf::updateEntryHeaderInfo()
 {
     if(!m_open_entry)
@@ -333,14 +279,21 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
 
     // update fields in m_entries.back()
     FileEntry::pointer_t entry(m_entries.back());
-    entry->setSize(getCount());
+    entry->setSize(getSize());
     entry->setCrc(getCrc32());
-    entry->setCompressedSize(curr_pos - entry->getEntryOffset() - entry->getHeaderSize());
-    entry->setUnixTime(std::time(nullptr));
+    /** \TODO
+     * Rethink the design as we have to force a call to the correct
+     * getHeaderSize() function?
+     */
+    entry->setCompressedSize(curr_pos - entry->getEntryOffset() - static_cast<ZipLocalEntry *>(entry.get())->ZipLocalEntry::getHeaderSize());
 
     // write ZipLocalEntry header to header position
     os.seekp(entry->getEntryOffset());
-    entry->write(os);
+    /** \TODO
+     * Rethink the design as we have to force a call to the correct write()
+     * function?
+     */
+    static_cast<ZipLocalEntry *>(entry.get())->ZipLocalEntry::write(os);
     os.seekp(curr_pos);
 }
 

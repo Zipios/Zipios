@@ -59,6 +59,8 @@ public:
     virtual size_t                  size() const;
     bool                            isValid() const;
     virtual void                    mustBeValid() const;
+    void                            setMethod(size_t limit, StorageMethod small_storage_method, StorageMethod large_storage_method);
+    void                            setLevel(size_t limit, FileEntry::CompressionLevel small_compression_level, FileEntry::CompressionLevel large_compression_level);
 
 protected:
     std::string                     m_filename;

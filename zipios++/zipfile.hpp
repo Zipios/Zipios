@@ -42,15 +42,15 @@ namespace zipios
 class ZipFile : public FileCollection
 {
 public:
-    static pointer_t            openEmbeddedZipFile(std::string const& name);
+    static pointer_t            openEmbeddedZipFile(std::string const & name);
 
                                 ZipFile();
-                                ZipFile(std::string const& filename, offset_t s_off = 0, offset_t e_off = 0);
+                                ZipFile(std::string const & filename, offset_t s_off = 0, offset_t e_off = 0);
     virtual pointer_t           clone() const override;
     virtual                     ~ZipFile() override;
 
-    virtual stream_pointer_t    getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
-    static void                 saveCollectionToArchive(std::ostream& os, FileCollection const& collection);
+    virtual stream_pointer_t    getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+    static void                 saveCollectionToArchive(std::ostream & os, FileCollection & collection, std::string const & zip_comment = "");
 
 private:
     VirtualSeeker           	m_vs;

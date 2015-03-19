@@ -74,12 +74,16 @@ namespace zipios
  * viewed as invalid. There is, otherwise, no restriction to the filename.
  *
  * \param[in] filename  The file entry filename.
+ * \param[in] comment  The comment attached to the file.
  */
-FileEntry::FileEntry(FilePath const& filename)
+FileEntry::FileEntry(FilePath const& filename, std::string const& comment)
     : m_filename(filename)
+    , m_comment(comment)
     //, m_uncompressed_size(0) -- auto-init
     //, m_unix_time(0) -- auto-init
     //, m_entry_offset(0) -- auto-init
+    //, m_compress_method(StorageMethod::STORED) -- auto-init
+    //, m_compression_level(COMPRESSION_LEVEL_DEFAULT) -- auto-init
     //, m_crc_32(0) -- auto-init
     //, m_has_crc_32(false) -- auto-init
     //, m_valid(false) -- auto-init
@@ -116,17 +120,15 @@ FileEntry::~FileEntry()
  * This function returns the comment of this entry.
  *
  * If the entry was not assigned a comment, this function returns
- * an empty string.
- *
- * Note that certain types of file entries cannot be assigned a
- * comment and thus this method will always return an empty string
- * for those.
+ * an empty string. All entries can be given a comment, although
+ * for most it will be ignored unless you save the file to a Zip
+ * archive.
  *
  * \return The comment associated with this entry, if there is one.
  */
 std::string FileEntry::getComment() const
 {
-    return "";
+    return m_comment;
 }
 
 
@@ -213,6 +215,35 @@ size_t FileEntry::getHeaderSize() const
 }
 
 
+/** \brief Retrieve the compression level.
+ *
+ * Use this function to read the compression level to use to compress
+ * a file.
+ *
+ * Note that the compression level is rarely saved in the
+ * destination file, so after reading a file from a Zip archive this
+ * parameter is set to the default compression level which does not
+ * represent the level used to create the file.
+ *
+ * The compression level is a number between 1 and 100 if compression
+ * is wanted. 0 for no compression. A few negative numbers represent
+ * various default compression levels.
+ *
+ * \return The compression level to use to write this entry to a Zip archive.
+ *
+ * \sa CompressionLevel
+ * \sa setLevel()
+ */
+FileEntry::CompressionLevel FileEntry::getLevel() const
+{
+    if(isDirectory())
+    {
+        return COMPRESSION_LEVEL_NONE;
+    }
+    return m_compression_level;
+}
+
+
 /** \brief Return the method used to create this entry.
  *
  * This function returns the method used to store the entry data in
@@ -225,7 +256,13 @@ size_t FileEntry::getHeaderSize() const
  */
 StorageMethod FileEntry::getMethod() const
 {
-    return StorageMethod::STORED;
+    if(isDirectory())
+    {
+        // make sure we do not return anything else than STORED
+        // for a directory
+        return StorageMethod::STORED;
+    }
+    return m_compress_method;
 }
 
 
@@ -355,8 +392,10 @@ bool FileEntry::isDirectory() const
 bool FileEntry::isEqual(FileEntry const& file_entry) const
 {
     return m_filename          == file_entry.m_filename
+        && m_comment           == file_entry.m_comment
         && m_uncompressed_size == file_entry.m_uncompressed_size
         && m_unix_time         == file_entry.m_unix_time
+        && m_compress_method   == file_entry.m_compress_method
         && m_crc_32            == file_entry.m_crc_32
         && m_has_crc_32        == file_entry.m_has_crc_32
         && m_valid             == file_entry.m_valid;
@@ -387,8 +426,10 @@ bool FileEntry::isValid() const
  */
 void FileEntry::setComment(std::string const& comment)
 {
-    // By default, no comment!
-    static_cast<void>(comment);
+    // WARNING: we do NOT check the maximum size here because it can depend
+    //          on the output format which is just zip now but could be a
+    //          bit extended later (i.e. Zip64)
+    m_comment = comment;
 }
 
 
@@ -455,6 +496,42 @@ void FileEntry::setExtra(buffer_t const& extra)
 }
 
 
+/** \brief Define the level of compression to use by this FileEntry.
+ *
+ * This function saves the level of compression the library should use
+ * to compress the file before saving it in the output file.
+ *
+ * \note
+ * If the StorageMethod is set to STORED, then the compression level is
+ * ignored, but it is left unchanged.
+ *
+ * \exception InvalidStateException
+ * This function raises this exception if the specified level is out of
+ * the allowed range.
+ *
+ * \param[in] level  The compression level to use to compress the file data.
+ */
+void FileEntry::setLevel(CompressionLevel level)
+{
+    if(level < COMPRESSION_LEVEL_DEFAULT || level > COMPRESSION_LEVEL_MAXIMUM)
+    {
+        throw InvalidStateException("level must be between COMPRESSION_LEVEL_DEFAULT and COMPRESSION_LEVEL_MAXIMUM");
+    }
+    if(isDirectory())
+    {
+        if(level >= COMPRESSION_LEVEL_MINIMUM)
+        {
+            throw InvalidStateException("directories cannot be marked with a compression level other than COMPRESSION_LEVEL_NONE (defaults will also work");
+        }
+        m_compression_level = COMPRESSION_LEVEL_NONE;
+    }
+    else
+    {
+        m_compression_level = level;
+    }
+}
+
+
 /** \brief Sets the storage method field for the entry.
  *
  * This function sets the method with which the file data is to
@@ -463,11 +540,56 @@ void FileEntry::setExtra(buffer_t const& extra)
  * The method is ignored in a file entry which cannot be compressed.
  * (or more precisly, the method is forced as STORED.)
  *
+ * \exception InvalidStateException
+ * This exception is raised if the \p method parameter does not represent
+ * a supported method. At this time the library only supports STORED and
+ * DEFLATED. The getMethod() may return more types as read from a Zip
+ * archive, but it is not possible to set such types using this function.
+ *
  * \param[in] method  The method field is set to the specified value.
  */
 void FileEntry::setMethod(StorageMethod method)
 {
-    static_cast<void>(method);
+    switch(method)
+    {
+    case StorageMethod::STORED:
+    //case StorageMethod::SHRUNK:
+    //case StorageMethod::REDUCED1:
+    //case StorageMethod::REDUCED2:
+    //case StorageMethod::REDUCED3:
+    //case StorageMethod::REDUCED4:
+    //case StorageMethod::IMPLODED:
+    //case StorageMethod::TOKENIZED:
+    case StorageMethod::DEFLATED:
+    //case StorageMethod::DEFLATED64:
+    //case StorageMethod::OLD_TERSE:
+    //case StorageMethod::RESERVED11:
+    //case StorageMethod::BZIP2:
+    //case StorageMethod::REVERVED13:
+    //case StorageMethod::LZMA:
+    //case StorageMethod::RESERVED15:
+    //case StorageMethod::RESERVED16:
+    //case StorageMethod::RESERVED17:
+    //case StorageMethod::NEW_TERSE:
+    //case StorageMethod::LZ77:
+    //case StorageMethod::WAVPACK:
+    //case StorageMethod::PPMD_I_1:
+        break;
+
+    default:
+        throw InvalidStateException("unknown method");
+
+    }
+
+    if(isDirectory())
+    {
+        // force uncompressed for directories
+        m_compress_method = StorageMethod::STORED;
+    }
+    else
+    {
+        m_compress_method = method;
+    }
 }
 
 
