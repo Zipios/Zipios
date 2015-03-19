@@ -389,7 +389,7 @@ SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
         system("rm -rf tree tree.zip"); // clean up, just in case
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
-        //zipios_test::auto_unlink_t remove_zip("tree.zip");
+        zipios_test::auto_unlink_t remove_zip("tree.zip");
         zipios::DirectoryCollection dc("tree");
 
         // first, check that the object is setup as expected
