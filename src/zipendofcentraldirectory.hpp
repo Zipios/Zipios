@@ -24,7 +24,7 @@
 */
 
 /** \file
- * \brief Declaration of the zipios::EndOfCentralDirectory class.
+ * \brief Declaration of the zipios::ZipEndOfCentralDirectory class.
  *
  * This file contains the class used to handle the "end of central directory"
  * information found in a Zip archive.
@@ -42,10 +42,10 @@ namespace zipios
 {
 
 
-class EndOfCentralDirectory
+class ZipEndOfCentralDirectory
 {
 public:
-                        EndOfCentralDirectory(std::string const& zip_comment = "");
+                        ZipEndOfCentralDirectory(std::string const& zip_comment = "");
 
     size_t              getCentralDirectorySize() const;
     size_t              getCount() const;
@@ -58,7 +58,7 @@ public:
     void                write(std::ostream& os);
 
 private:
-    // some of the fields found in a Zip archive EndOfCentralDirectory
+    // some of the fields found in a Zip archive ZipEndOfCentralDirectory
     size_t              m_central_directory_entries = 0;
     size_t              m_central_directory_size = 0;
     offset_t            m_central_directory_offset = 0;

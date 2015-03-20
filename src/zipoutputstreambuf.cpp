@@ -29,9 +29,9 @@
 #include "zipoutputstreambuf.hpp"
 
 #include "zipios++/zipiosexceptions.hpp"
-#include "ziplocalentry.hpp"
 
-#include "endofcentraldirectory.hpp"
+#include "ziplocalentry.hpp"
+#include "zipendofcentraldirectory.hpp"
 
 
 namespace zipios
@@ -52,9 +52,9 @@ namespace
  * \param[in] entries  The array of entries to save in this central directory.
  * \param[in] comment  The zip archive global comment.
  */
-void writeCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::string const& comment)
+void writeZipCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::string const& comment)
 {
-    EndOfCentralDirectory eocd(comment);
+    ZipEndOfCentralDirectory eocd(comment);
     eocd.setOffset(os.tellp());  // start position
     eocd.setCount(entries.size());
 
@@ -173,7 +173,7 @@ void ZipOutputStreambuf::finish()
 
     closeEntry();
     std::ostream os(m_outbuf);
-    writeCentralDirectory(os, m_entries, m_zip_comment);
+    writeZipCentralDirectory(os, m_entries, m_zip_comment);
     m_open = false;
 }
 

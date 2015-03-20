@@ -31,7 +31,7 @@
 #include "zipios++/zipiosexceptions.hpp"
 
 #include "backbuffer.hpp"
-#include "endofcentraldirectory.hpp"
+#include "zipendofcentraldirectory.hpp"
 #include "zipcentraldirectoryentry.hpp"
 #include "zipinputstream.hpp"
 #include "zipoutputstream.hpp"
@@ -258,7 +258,7 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     }
 
     // Find and read the End of Central Directory.
-    EndOfCentralDirectory eocd;
+    ZipEndOfCentralDirectory eocd;
     {
         BackBuffer bb(zipfile, m_vs);
         ssize_t read_p(-1);

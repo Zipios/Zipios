@@ -36,7 +36,6 @@ add_library( ${PROJECT_NAME} SHARED
     directorycollection.cpp
     directoryentry.cpp
     dostime.c
-    endofcentraldirectory.cpp
     filecollection.cpp
     fileentry.cpp
     filepath.cpp
@@ -47,6 +46,7 @@ add_library( ${PROJECT_NAME} SHARED
     inflateinputstreambuf.cpp
     virtualseeker.cpp
     zipcentraldirectoryentry.cpp
+    zipendofcentraldirectory.cpp
     zipfile.cpp
     zipinputstream.cpp
     zipinputstreambuf.cpp
