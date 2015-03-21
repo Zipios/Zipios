@@ -136,6 +136,7 @@ protected:
     StorageMethod               m_compress_method = StorageMethod::STORED;
     CompressionLevel            m_compression_level = COMPRESSION_LEVEL_DEFAULT;
     uint32_t                    m_crc_32 = 0;
+    buffer_t                    m_extra_field;
     bool                        m_has_crc_32 = false;
     bool                        m_valid = false;
 };

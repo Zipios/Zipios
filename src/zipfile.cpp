@@ -415,29 +415,42 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name,
  */
 void ZipFile::saveCollectionToArchive(std::ostream & os, FileCollection & collection, std::string const & zip_comment)
 {
-    ZipOutputStream output_stream(os);
-
-    output_stream.setComment(zip_comment);
-
-    FileEntry::vector_t entries(collection.entries());
-    for(auto it(entries.begin()); it != entries.end(); ++it)
+    try
     {
-        output_stream.putNextEntry(*it);
-        // get an InputStream if available (i.e. directories do not have an input stream)
-        if(!(*it)->isDirectory())
+        ZipOutputStream output_stream(os);
+
+        output_stream.setComment(zip_comment);
+
+        FileEntry::vector_t entries(collection.entries());
+        for(auto it(entries.begin()); it != entries.end(); ++it)
         {
-            FileCollection::stream_pointer_t is(collection.getInputStream((*it)->getName()));
-            if(is)
+            output_stream.putNextEntry(*it);
+            // get an InputStream if available (i.e. directories do not have an input stream)
+            if(!(*it)->isDirectory())
             {
-                output_stream << is->rdbuf();
+                FileCollection::stream_pointer_t is(collection.getInputStream((*it)->getName()));
+                if(is)
+                {
+                    output_stream << is->rdbuf();
+                }
             }
         }
+
+        // clean up mantually so we can get any exception
+        // (so we avoid having exceptions gobbled by the destructor)
+        output_stream.closeEntry();
+        output_stream.finish();
+        output_stream.close();
+    }
+    catch(...)
+    {
+        os.setstate(std::ios::failbit);
+        throw;
     }
 }
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -445,3 +458,5 @@ void ZipFile::saveCollectionToArchive(std::ostream & os, FileCollection & collec
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

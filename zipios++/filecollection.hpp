@@ -50,16 +50,16 @@ public:
         MATCH
     };
 
-                                    FileCollection(std::string const& filename = "");
-                                    FileCollection(FileCollection const& src);
-    FileCollection&                 operator = (FileCollection const& src);
+                                    FileCollection(std::string const & filename = "");
+                                    FileCollection(FileCollection const & src);
+    FileCollection &                operator = (FileCollection const & src);
     virtual pointer_t               clone() const = 0;
     virtual                         ~FileCollection();
 
     virtual void                    close();
     virtual FileEntry::vector_t     entries() const;
-    virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const;
-    virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) = 0;
+    virtual FileEntry::pointer_t    getEntry(std::string const & name, MatchPath matchpath = MatchPath::MATCH) const;
+    virtual stream_pointer_t        getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH) = 0;
     virtual std::string             getName() const;
     virtual size_t                  size() const;
     bool                            isValid() const;
@@ -70,7 +70,7 @@ public:
 protected:
     std::string                     m_filename;
     FileEntry::vector_t             m_entries;
-    bool                            m_valid = false;
+    bool                            m_valid = true;
 };
 
 

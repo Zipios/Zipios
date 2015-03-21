@@ -41,17 +41,17 @@ class CollectionCollection : public FileCollection
 {
 public:
     explicit                        CollectionCollection();
-                                    CollectionCollection(CollectionCollection const& src);
+                                    CollectionCollection(CollectionCollection const & src);
     virtual pointer_t               clone() const override;
-    CollectionCollection&           operator = (CollectionCollection const& src);
+    CollectionCollection&           operator = (CollectionCollection const & src);
     virtual                         ~CollectionCollection() override;
 
-    bool                            addCollection(FileCollection const& collection);
+    bool                            addCollection(FileCollection const & collection);
     bool                            addCollection(FileCollection::pointer_t collection);
     virtual void                    close() override;
     virtual FileEntry::vector_t     entries() const override;
-    virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const override;
-    virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+    virtual FileEntry::pointer_t    getEntry(std::string const & name, MatchPath matchpath = MatchPath::MATCH) const override;
+    virtual stream_pointer_t        getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH) override;
     virtual size_t                  size() const override;
     virtual void                    mustBeValid() const;
 
@@ -62,8 +62,6 @@ protected:
 
 } // zipios namespace
 
-// vim: ts=4 sw=4 et
-
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
@@ -71,4 +69,5 @@ protected:
 // tab-width: 4
 // End:
 
+// vim: ts=4 sw=4 et
 #endif

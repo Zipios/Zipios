@@ -92,13 +92,13 @@ DirectoryCollection::DirectoryCollection()
  * \param[in] recursive  Whether to load all the files found in
  *                       sub-direcotries.
  */
-DirectoryCollection::DirectoryCollection(std::string const& path, bool recursive)
+DirectoryCollection::DirectoryCollection(std::string const & path, bool recursive)
     //: m_entries_loaded(false) -- auto-init
     : m_recursive(recursive)
     , m_filepath(path)
 {
     m_filename = m_filepath;
-    m_valid = m_filepath.isDirectory();
+    m_valid = m_filepath.isDirectory() | m_filepath.isRegular();
 }
 
 
@@ -169,7 +169,7 @@ FileEntry::vector_t DirectoryCollection::entries() const
  *
  * \sa mustBeValid()
  */
-FileEntry::pointer_t DirectoryCollection::getEntry(std::string const& name, MatchPath matchpath) const
+FileEntry::pointer_t DirectoryCollection::getEntry(std::string const & name, MatchPath matchpath) const
 {
     loadEntries();
 
@@ -271,7 +271,10 @@ void DirectoryCollection::loadEntries() const
             const_cast<DirectoryCollection *>(this)->m_entries.push_back(entry);
 
             // now read the data inside that directory
-            const_cast<DirectoryCollection *>(this)->load(FilePath());
+            if(m_filepath.isDirectory())
+            {
+                const_cast<DirectoryCollection *>(this)->load(FilePath());
+            }
         }
         catch(...)
         {
@@ -412,10 +415,10 @@ void DirectoryCollection::load(FilePath const& subdir)
         // a Zip archive
         if(name != "." && name != "..")
         {
-            FileEntry::pointer_t ent(new DirectoryEntry(m_filepath + subdir + name, ""));
-            m_entries.push_back(ent);
+            FileEntry::pointer_t entry(new DirectoryEntry(m_filepath + subdir + name, ""));
+            m_entries.push_back(entry);
 
-            if(m_recursive && ent->isDirectory())
+            if(m_recursive && entry->isDirectory())
             {
                 load(subdir + name);
             }
@@ -425,7 +428,6 @@ void DirectoryCollection::load(FilePath const& subdir)
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -433,3 +435,5 @@ void DirectoryCollection::load(FilePath const& subdir)
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

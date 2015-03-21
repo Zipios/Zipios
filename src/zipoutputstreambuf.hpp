@@ -41,7 +41,9 @@ namespace zipios
 class ZipOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
-    explicit                ZipOutputStreambuf(std::streambuf *outbuf);
+                            ZipOutputStreambuf(std::streambuf *outbuf);
+                            ZipOutputStreambuf(ZipOutputStreambuf const & src) = delete;
+    ZipOutputStreambuf &    operator = (ZipOutputStreambuf const & rhs) = delete;
     virtual                 ~ZipOutputStreambuf();
 
     void                    closeEntry();
@@ -67,8 +69,6 @@ private:
 
 } // zipios namespace
 
-// vim: ts=4 sw=4 et
-
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
@@ -76,4 +76,5 @@ private:
 // tab-width: 4
 // End:
 
+// vim: ts=4 sw=4 et
 #endif

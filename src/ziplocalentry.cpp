@@ -109,15 +109,17 @@ struct ZipLocalEntryHeader
 
 
 
-ZipLocalEntry::ZipLocalEntry(std::string const& filename, buffer_t const& extra_field)
-    : FileEntry(filename)
+/** \brief Create a default ZipLocalEntry objects.
+ *
+ * This constructor is used to create a default ZipLocalEntry object.
+ */
+ZipLocalEntry::ZipLocalEntry()
+    : FileEntry(FilePath(""))
     //, m_extract_version(g_zip_format_version) -- auto-init
     //, m_general_purpose_bitfield(0) -- auto-init
-    , m_is_directory(!filename.empty() && filename.back() == g_separator)
+    //, m_is_directory(false)
     //, m_compressed_size(0) -- auto-init
-    //, m_extra_field() -- see below, beneficiate from the size check by using the setExtra() function
 {
-    setExtra(extra_field);
 }
 
 
@@ -135,7 +137,6 @@ ZipLocalEntry::ZipLocalEntry(FileEntry const & src)
     //, m_general_purpose_bitfield(0) -- auto-init
     , m_is_directory(src.isDirectory())
     //, m_compressed_size(0) -- auto-init
-    //, m_extra_field() -- see below, beneficiate from the size check by using the setExtra() function
 {
 }
 
@@ -193,7 +194,7 @@ bool ZipLocalEntry::isDirectory() const
  *
  * \return true if both FileEntry objects are considered equal.
  */
-bool ZipLocalEntry::isEqual(FileEntry const& file_entry) const
+bool ZipLocalEntry::isEqual(FileEntry const & file_entry) const
 {
     ZipLocalEntry const * const ze(dynamic_cast<ZipLocalEntry const * const>(&file_entry));
     if(!ze)
@@ -202,9 +203,9 @@ bool ZipLocalEntry::isEqual(FileEntry const& file_entry) const
     }
     return FileEntry::isEqual(file_entry)
         && m_extract_version          == ze->m_extract_version
-        && m_general_purpose_bitfield == ze->m_general_purpose_bitfield;
+        && m_general_purpose_bitfield == ze->m_general_purpose_bitfield
+        && m_is_directory             == ze->m_is_directory;
         //&& m_compressed_size          == ze->m_compressed_size -- ignore in comparison
-        //&& m_extra_field              == ze->m_extra_field -- ignored in comparison
 }
 
 
@@ -219,19 +220,6 @@ bool ZipLocalEntry::isEqual(FileEntry const& file_entry) const
 size_t ZipLocalEntry::getCompressedSize() const
 {
     return m_compressed_size;
-}
-
-
-/** \brief Some extra data to be stored along the entry.
- *
- * This function returns a copy of the vector of bytes of extra data
- * that are stored with the entry.
- *
- * \return A buffer_t of extra bytes that are associated with this entry.
- */
-ZipLocalEntry::buffer_t ZipLocalEntry::getExtra() const
-{
-    return m_extra_field;
 }
 
 
@@ -284,25 +272,6 @@ void ZipLocalEntry::setCrc(uint32_t crc)
 {
     m_crc_32 = crc;
     m_has_crc_32 = true;
-}
-
-
-/** \brief Set the extra field buffer.
- *
- * This function is used to set the extra field.
- *
- * Only one type of file entry supports an extra field buffer.
- * The others do nothing when this function is called.
- *
- * \param[in] extra  The extra field is set to this value.
- */
-void ZipLocalEntry::setExtra(buffer_t const& extra)
-{
-    if(extra.size() >= 0x10000)
-    {
-        throw InvalidException("ZipLocalEntry::setExtra(): trying to setup an extra buffer of more than 64Kb, maximum size is 0xFFFF.");
-    }
-    m_extra_field = extra;
 }
 
 
@@ -463,7 +432,8 @@ void ZipLocalEntry::write(std::ostream& os)
     if(m_compressed_size   >= 0x100000000UL
     || m_uncompressed_size >= 0x100000000UL)
     {
-        throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
+        // these are really big files, we do not currently test such so ignore in coverage
+        throw InvalidStateException("The size of this file is too large to fit in a zip archive."); // LCOV_EXCL_LINE
     }
 #endif
 
@@ -497,7 +467,6 @@ void ZipLocalEntry::write(std::ostream& os)
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -505,3 +474,5 @@ void ZipLocalEntry::write(std::ostream& os)
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

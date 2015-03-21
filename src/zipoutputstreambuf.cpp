@@ -41,6 +41,7 @@ namespace zipios
 namespace
 {
 
+
 /** \brief Help function used to write the central directory.
  *
  * When you create a Zip archive, it includes a central directory where
@@ -123,7 +124,14 @@ ZipOutputStreambuf::ZipOutputStreambuf(std::streambuf *outbuf)
  */
 ZipOutputStreambuf::~ZipOutputStreambuf()
 {
-    finish();
+    // avoid the possible throw when writing the central directory
+    try
+    {
+        finish();
+    }
+    catch(...)
+    {
+    }
 }
 
 
@@ -170,11 +178,19 @@ void ZipOutputStreambuf::finish()
     {
         return;
     }
-
-    closeEntry();
-    std::ostream os(m_outbuf);
-    writeZipCentralDirectory(os, m_entries, m_zip_comment);
     m_open = false;
+
+    std::ostream os(m_outbuf);
+    try
+    {
+        closeEntry();
+        writeZipCentralDirectory(os, m_entries, m_zip_comment);
+    }
+    catch(...)
+    {
+        os.setstate(std::ios::failbit);
+        throw;
+    }
 }
 
 
@@ -233,6 +249,16 @@ void ZipOutputStreambuf::setComment(std::string const& comment)
 // Protected and private methods
 //
 
+/** \brief Implementation of the overflow() function.
+ *
+ * When writing to a buffer, the overflow() function gets called when
+ * there is no more room in the output buffer. The buffer is expected
+ * to flush the data to disk and reset the buffer availability.
+ *
+ * \param[in] c  The character that made it all happen. Maybe EOF.
+ *
+ * \return EOF if the function fails, 0 otherwise.
+ */
 int ZipOutputStreambuf::overflow(int c)
 {
     return DeflateOutputStreambuf::overflow(c);
@@ -240,13 +266,27 @@ int ZipOutputStreambuf::overflow(int c)
 
 
 
-int ZipOutputStreambuf::sync()
+/** \brief Implement the sync() functionality.
+ *
+ * This virtual function is reimplemented to make sure that the system
+ * does not run a default sync() function.
+ *
+ * This function calls the DeflateOutputStreambuf::sync() function which
+ * returns -1 because it will not "synchronize" the input buffer.
+ */
+int ZipOutputStreambuf::sync() // LCOV_EXCL_LINE
 {
-    return DeflateOutputStreambuf::sync();
+    return DeflateOutputStreambuf::sync(); // LCOV_EXCL_LINE
 }
 
 
 
+/** \brief Mark the current entry as closed.
+ *
+ * After the putNextEntry() call and saving of the file content, the
+ * closeEntry() function can be called to close the entry. The entry
+ * is really closed when this setEntryClosedState() is called.
+ */
 void ZipOutputStreambuf::setEntryClosedState()
 {
     m_open_entry = false;
@@ -301,7 +341,6 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -309,3 +348,5 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

@@ -360,7 +360,7 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     || m_extra_field.size() > 0x10000
     || m_comment.length()   > 0x10000)
     {
-        throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
+        throw InvalidStateException("ZipCentralDirectoryEntry::write(): file name or extra field too large to save in a Zip file.");
     }
 
 // Solaris defines _ILP32 for 32 bit platforms
@@ -369,7 +369,7 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     || m_uncompressed_size >= 0x100000000ULL
     || m_entry_offset      >= 0x100000000LL)
     {
-        throw InvalidStateException("The size of this file is too large to fit in a zip archive.");
+        throw InvalidStateException("ZipCentralDirectoryEntry::write(): The size of this file is too large to fit in a zip archive.");
     }
 #endif
 

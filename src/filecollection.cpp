@@ -269,7 +269,7 @@ private:
 FileCollection::FileCollection(std::string const& filename)
     : m_filename(filename.empty() ? g_default_filename : filename)
     //, m_entries() -- auto-init
-    //, m_valid(false) -- auto-init
+    //, m_valid(true) -- auto-init
 {
 }
 

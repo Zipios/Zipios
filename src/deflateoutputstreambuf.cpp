@@ -315,16 +315,17 @@ int DeflateOutputStreambuf::overflow(int c)
 
 /** \brief Synchronize the buffer.
  *
- * At this time this function does nothing. Do we need to implement
- * something?
+ * The sync() function is expected to clear the input buffer so that
+ * any new data read from the input (i.e. a file) are re-read from
+ * disk. However, a call to sync() could break the filtering
+ * functionality so we do not implement it at all.
+ *
+ * This means you are stuck with the existing buffer. But to make
+ * sure the system understands that, we always returns -1.
  */
-int DeflateOutputStreambuf::sync()
+int DeflateOutputStreambuf::sync() // LCOV_EXCL_LINE
 {
-    /** \FIXME
-     * Do something in the sync() function?
-     */
-    //return overflow();
-    return 0;
+    return -1; // LCOV_EXCL_LINE
 }
 
 
@@ -370,8 +371,12 @@ void DeflateOutputStreambuf::flushOutvec()
 }
 
 
-/** Flushes the remaining data in the zlib buffers, after which the
-  only possible operations are deflateEnd() or deflateReset(). */
+/** \brief End deflation of current file.
+ *
+ * This function flushes the remaining data in the zlib buffers,
+ * after which the only possible operations are deflateEnd() or
+ * deflateReset().
+ */
 void DeflateOutputStreambuf::endDeflation()
 {
     overflow();
@@ -383,8 +388,9 @@ void DeflateOutputStreambuf::endDeflation()
     int err(Z_OK);
 
     // make sure to NOT call deflate() if nothing was written to the
-    // deflate output stream, otherwise we get a spurious 0x03 0x00
-    // marker from the zlib library
+    // deflate output stream, otherwise we get a "spurious" (as far
+    // Zip archives are concerned) 0x03 0x00 marker from the zlib
+    // library
     //
     if(m_overflown_bytes > 0)
     {
@@ -407,8 +413,10 @@ void DeflateOutputStreambuf::endDeflation()
 
     if(err != Z_STREAM_END)
     {
-        std::cerr << "DeflateOutputStreambuf::endDeflation(): deflate() failed: "
-                  << zError(err) << std::endl;
+        std::ostringstream msgs;
+        msgs << "DeflateOutputStreambuf::endDeflation(): deflate() failed: "
+             << zError(err) << std::endl;
+        throw IOException(msgs.str());
     }
 }
 

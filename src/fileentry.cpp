@@ -191,14 +191,18 @@ std::streampos FileEntry::getEntryOffset() const
  * This function returns a copy of the vector of bytes of extra data
  * that are stored with the entry.
  *
- * The default function always returns an empty buffer since extra
- * data can really only associated with a Zip file entry.
+ * This buffer should be generated using the still non-existant
+ * ZipExtra class. This includes definitions of additional meta
+ * data necessary on various operating systems. For example, Linux
+ * makes use of the "UT" (Universal Time) to save the atime, ctime,
+ * and mtime parameters, and "ux" (Unix) to save the Unix permissions
+ * and user identifier (uid) and group identifier (gid).
  *
  * \return A buffer_t of extra bytes that are associated with this entry.
  */
 FileEntry::buffer_t FileEntry::getExtra() const
 {
-    return buffer_t();
+    return m_extra_field;
 }
 
 
@@ -387,11 +391,19 @@ bool FileEntry::isDirectory() const
  * This function compares most of the fields between two file
  * entries to see whether they are equal or not.
  *
+ * \warning
+ * The Extra buffer is ignored in the comparison. There are two
+ * reasons for this: (1) it is unlikely that such a parameter
+ * should could in the comparison (just like the compressed
+ * size of the file) and (2) the comparison is not trivial as
+ * each chunk in the buffer needs to be separately compared
+ * (we may offer that capability once we have a ZipExtra class.)
+ *
  * \param[in] file_entry  The file entry to compare this against.
  *
  * \return true if both FileEntry objects are considered equal.
  */
-bool FileEntry::isEqual(FileEntry const& file_entry) const
+bool FileEntry::isEqual(FileEntry const & file_entry) const
 {
     return m_filename          == file_entry.m_filename
         && m_comment           == file_entry.m_comment
@@ -401,6 +413,7 @@ bool FileEntry::isEqual(FileEntry const& file_entry) const
         && m_crc_32            == file_entry.m_crc_32
         && m_has_crc_32        == file_entry.m_has_crc_32
         && m_valid             == file_entry.m_valid;
+        //&& m_extra_field       == file_entry.m_extra_field -- ignored in comparison
 }
 
 
@@ -494,7 +507,7 @@ void FileEntry::setEntryOffset(std::streampos offset)
  */
 void FileEntry::setExtra(buffer_t const& extra)
 {
-    static_cast<void>(extra);
+    m_extra_field = extra;
 }
 
 
