@@ -34,7 +34,8 @@ namespace zipios
 {
 
 
-/** \brief An input stream buffer for Zip data.
+/** \class ZipInputStreambuf
+ * \brief An input stream buffer for Zip data.
  *
  * The ZipInputStreambuf class is a Zip input streambuf filter that
  * automatically decompresses input data that was compressed using
@@ -89,7 +90,7 @@ ZipInputStreambuf::ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
 }
 
 
-/** \fn ZipInputStreambuf(ZipInputStreambuf const& src);
+/** \fn ZipInputStreambuf::ZipInputStreambuf(ZipInputStreambuf const & src);
  * \brief The copy contructor is deleted.
  *
  * ZipInputStreambuf objects cannot be copied so the copy constructor
@@ -98,15 +99,6 @@ ZipInputStreambuf::ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
  * \param[in] src  The source to copy.
  */
 
-
-/** \fn ZipInputStreambuf& operator = (ZipInputStreambuf const& src):
- * \brief The copy assignment is deleted.
- *
- * ZipInputStreambuf objects cannot be copied so the copy assignment
- * is deleted.
- *
- * \param[in] src  The source to copy.
- */
 
 
 /** \brief Clean up a ZipInputStreambuf object.

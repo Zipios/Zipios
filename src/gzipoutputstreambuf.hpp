@@ -41,11 +41,11 @@ namespace zipios
 class GZIPOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
-                  GZIPOutputStreambuf(std::streambuf *outbuf, FileEntry::CompressionLevel compression_level);
+                  GZIPOutputStreambuf(std::streambuf * outbuf, FileEntry::CompressionLevel compression_level);
     virtual       ~GZIPOutputStreambuf() override;
 
-    void          setFilename(std::string const& filename);
-    void          setComment(std::string const& comment);
+    void          setFilename(std::string const & filename);
+    void          setComment(std::string const & comment);
     void          close();
     void          finish();
 
@@ -66,8 +66,6 @@ private:
 
 } // zipios namespace
 
-// vim: ts=4 sw=4 et
-
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
@@ -75,4 +73,5 @@ private:
 // tab-width: 4
 // End:
 
+// vim: ts=4 sw=4 et
 #endif

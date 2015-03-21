@@ -82,34 +82,14 @@ void writeZipCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, st
  */
 
 
-/** \typedef int ZipOutputStreambuf::CompressionLevel
- * \brief The compression level to be used to save an entry.
- *
- * Values defined using this time represent the compression level to
- * be used when compressing an entry.
- *
- * If unchanged, use the DEFAULT_COMPRESSION value.
- *
- * It is possible to change the compression level
- * to NO_COMPRESSION or use the setMethod() with
- * STORED to avoid any compression (i.e. create
- * a zip file which awfully looks like a tarball).
- *
- * \todo
- * These values are one to one mapped to zlib compression values. This
- * is likely to change once we start offering other compression scheme
- * for a number defined between 0 and 100 instead.
- */
-
-
 /** \brief Initialize a ZipOutputStreambuf object.
  *
  * Note that a new initialized ZipOutputStreambuf is not ready to
  * accept data, putNextEntry() must be invoked at least once first.
  *
- * \param outbuf  The streambuf to use for output.
+ * \param[in] outbuf  The streambuf to use for output.
  */
-ZipOutputStreambuf::ZipOutputStreambuf(std::streambuf *outbuf)
+ZipOutputStreambuf::ZipOutputStreambuf(std::streambuf * outbuf)
     : DeflateOutputStreambuf(outbuf)
     //, m_open_entry(false) -- auto-init
     //, m_open(true) -- auto-init

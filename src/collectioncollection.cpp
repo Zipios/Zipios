@@ -51,7 +51,8 @@ namespace
  * \param[in] collections  The collections to search for the specified name.
  * \param[in] name  The name of the entry to search.
  * \param[out] cep  The pointer to the entry found.
- * \param[out] it  The iterator pointing to the entry in this collection.
+ * \param[out] file_collection  A reference to a smarter pointer where we
+ *                              can save the found file collection.
  * \param[in] matchpath  How the name of the entry is compared with \p name.
  */
 void matchEntry(CollectionCollection::vector_t collections, std::string const& name, FileEntry::pointer_t& cep, FileCollection::pointer_t& file_collection, CollectionCollection::MatchPath matchpath)

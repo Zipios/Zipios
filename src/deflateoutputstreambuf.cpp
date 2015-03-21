@@ -212,8 +212,7 @@ void DeflateOutputStreambuf::closeStream()
         endDeflation();
 
         int const err(deflateEnd(&m_zs));
-        if(err != Z_OK
-        && (err != Z_DATA_ERROR || m_overflown_bytes > 0)) // when we close a directory, we get the Z_DATA_ERROR!
+        if(err != Z_OK) // when we close a directory, we get the Z_DATA_ERROR!
         {
             // There are not too many cases which break the deflateEnd()
             // function call...
@@ -409,7 +408,8 @@ void DeflateOutputStreambuf::endDeflation()
     }
     else
     {
-        err = Z_STREAM_END;
+        // this is not expected to happen, but it can
+        err = Z_STREAM_END; // LCOV_EXCL_LINE
     }
 
     flushOutvec();

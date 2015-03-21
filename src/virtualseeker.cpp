@@ -66,7 +66,7 @@ namespace zipios
  * on initialization. By default it is initialized to a transparent
  * seeker since the start and end are set to zero.
  *
- * \node
+ * \note
  * If the offsets are left undefined (both set to zero) then the virtual
  * seeker is viewed as a transparent seeker, meaning that it seeks in
  * the input streams as if it did not exist.

@@ -37,7 +37,6 @@
 #include "zipios++/fileentry.hpp"
 
 #include <cstdint>
-#include <vector>
 
 #include <zlib.h>
 

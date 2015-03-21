@@ -42,9 +42,9 @@ namespace zipios
 class ZipInputStreambuf : public InflateInputStreambuf
 {
 public:
-                            ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos = -1);
-                            ZipInputStreambuf(ZipInputStreambuf const& src) = delete;
-    ZipInputStreambuf&      operator = (ZipInputStreambuf const& src) = delete;
+                            ZipInputStreambuf(std::streambuf * inbuf, offset_t start_pos = -1);
+                            ZipInputStreambuf(ZipInputStreambuf const & src) = delete;
+    ZipInputStreambuf &     operator = (ZipInputStreambuf const & rhs) = delete;
     virtual                 ~ZipInputStreambuf() override;
 
 protected:
