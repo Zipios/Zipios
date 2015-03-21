@@ -56,7 +56,6 @@ public:
     virtual bool                isEqual(FileEntry const & file_entry) const override;
     virtual void                setCompressedSize(size_t size) override;
     virtual void                setCrc(crc32_t crc) override;
-    virtual std::string         toString() const override;
 
     bool                        hasTrailingDataDescriptor() const;
 

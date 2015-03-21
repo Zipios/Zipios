@@ -279,31 +279,6 @@ void ZipLocalEntry::setCrc(uint32_t crc)
 }
 
 
-/** \brief Returns a human-readable string representation of the entry.
- *
- * This function outpust the name of the entry followed its size
- * uncompressed and compressed between parenthesis.
- *
- * \return A human-readable string representation of the entry.
- */
-std::string ZipLocalEntry::toString() const
-{
-    OutputStringStream sout;
-    sout << m_filename;
-    if(isDirectory())
-    {
-        sout << " (directory)";
-    }
-    else
-    {
-        sout << " ("
-             << m_uncompressed_size << " bytes, "
-             << m_compressed_size << " bytes compressed";
-    }
-    return sout.str();
-}
-
-
 /** \brief Is there a trailing data descriptor?
  *
  * This function checks the bit in the General Purpose Flags to know
