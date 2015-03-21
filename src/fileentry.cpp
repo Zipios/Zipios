@@ -66,6 +66,25 @@ namespace zipios
  */
 
 
+/** \typedef int FileEntry::CompressionLevel
+ * \brief The compression level to be used to save an entry.
+ *
+ * Values defined using this time represent the compression level to
+ * be used when compressing an entry.
+ *
+ * If unchanged, use the DEFAULT_COMPRESSION value.
+ *
+ * It is possible to change the compression level to NO_COMPRESSION or
+ * use the setMethod() with STORED to avoid any compression (i.e. create
+ * a zip file which awfully looks like a tarball).
+ *
+ * \todo
+ * These values are one to one mapped to zlib compression values. This
+ * is likely to change once we start offering other compression scheme
+ * for a number defined between 0 and 100 instead.
+ */
+
+
 /** \brief Initialize a FileEntry object.
  *
  * This funciton initializes a FileEntry object. By default you may define

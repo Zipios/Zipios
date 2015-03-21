@@ -38,6 +38,12 @@ namespace zipios
 {
 
 
+/** \brief Various definitions for local blocks.
+ *
+ * The ZipLocalEntry needs a signature, a flag, and makes use
+ * of a structure declaration (although we cannot really use
+ * that structure.)
+ */
 namespace
 {
 
@@ -97,6 +103,7 @@ struct ZipLocalEntryHeader
 
 
 } // no name namespace
+
 
 
 /** \class ZipLocalEntry
@@ -292,7 +299,7 @@ void ZipLocalEntry::setCrc(uint32_t crc)
  *      CRC 32                          -- 32 bit
  *      compressed size                 -- 32 or 64 bit
  *      uncompressed size               -- 32 or 64 bit
- * \code
+ * \endcode
  *
  * When a trailing data buffer is defined, the header has the compressed
  * and uncompressed sizes set to zero.

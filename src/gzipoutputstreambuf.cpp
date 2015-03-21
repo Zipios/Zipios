@@ -36,6 +36,13 @@
 namespace zipios
 {
 
+/** \class GZIPOutputStreambuf
+ * \brief Save the output stream buffer.
+ *
+ * This class is used to output the data of a file in a gzip stream
+ * including the necessary header and footer.
+ */
+
 
 /** \brief Initialize a GZIPOutputStreambuf object.
  *

@@ -38,6 +38,7 @@ namespace zipios
 {
 
 /** \class InflateInputStreambuf
+ * \brief A stream buffer to inflate data previous compressed with zlib.
  *
  * The InflateInputStreambuf class is an input stream filter, that
  * inflates the input from the attached input stream.

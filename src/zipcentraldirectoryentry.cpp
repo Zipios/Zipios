@@ -389,14 +389,14 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
      * The external_file_attr supports the standard Unix
      * permissions in the higher 16 bits defined as:
      *
-     *    <type> <rwx> <rwx> <rwx>
+     *    \<type> \<rwx> \<rwx> \<rwx>
      *
-     * The <type> is the top 4 bits and is set to either 8 or 4:
+     * The \<type> is the top 4 bits and is set to either 8 or 4:
      *
      * \li 8 for regular files
      * \li 4 for directories
      *
-     * The <rwx> are the standard permission flags representing the
+     * The \<rwx> are the standard permission flags representing the
      * owner, group, and other read/write/execute permissions.
      *
      * The value also includes the special flags SUID, SGID and VTX.
