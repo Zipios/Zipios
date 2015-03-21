@@ -351,6 +351,26 @@ FileCollection::~FileCollection()
 }
 
 
+/** \brief Add an entry to this collection.
+ *
+ * This function adds an entry to the file collection allowing you to
+ * create a FileCollection from the exact files you want to have in
+ * the collection instead of having to read an entire directory as
+ * the DirectoryCollection offers by default.
+ *
+ * \warning
+ * This function creates a clone of the entry to make sure that
+ * the caller's entry can be modified without affecting the
+ * FileCollection.
+ *
+ * \param[in] entry  The entry to add to the FileCollection.
+ */
+void FileCollection::addEntry(FileEntry const & entry)
+{
+    m_entries.push_back(entry.clone());
+}
+
+
 /** \brief Close the current FileEntry of this FileCollection.
  *
  * This function closes the current file entry.
@@ -592,7 +612,6 @@ std::ostream& operator << (std::ostream& os, FileCollection const& collection)
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -600,3 +619,5 @@ std::ostream& operator << (std::ostream& os, FileCollection const& collection)
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

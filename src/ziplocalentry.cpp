@@ -420,6 +420,11 @@ void ZipLocalEntry::write(std::ostream& os)
     }
 
     uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
+    if(m_compression_level == COMPRESSION_LEVEL_NONE)
+    {
+        compress_method = static_cast<uint8_t>(StorageMethod::STORED);
+    }
+
     uint32_t dostime(unix2dostime(m_unix_time));
     uint32_t compressed_size(m_compressed_size);
     uint32_t uncompressed_size(m_uncompressed_size);

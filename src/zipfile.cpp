@@ -61,9 +61,12 @@ namespace zipios
  * \section intro Introduction
  *
  * Zipios++ is a java.util.zip-like C++ library for reading and
- * writing Zip files. Access to individual entries is provided through
- * standard C++ iostreams. A simple read-only virtual file system that
- * mounts regular directories and zip files is also provided.
+ * writing Zip files (ZipFile). Access to individual entries is
+ * provided through a Zipios++ class (FileEntry) for the meta data
+ * of the and a standard C++ iostreams for the contents of the file.
+ *
+ * A simple virtual file system that mounts regular directories and
+ * zip files is also provided (FileCollection).
  *
  * The source code is released under the <a
  * href="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
@@ -97,42 +100,71 @@ namespace zipios
  * is generated from the source files using <a
  * href="http://www.stack.nl/~dimitri/doxygen/index.html">Doxygen</a>.
  * Use the links at the top of the page to browse the API
- * documentation. Your Doxygen installation may also work be capable
- * of generating other formats (Latex, PDF, etc.)
+ * documentation. Your Doxygen installation may also be capable
+ * of generating other formats (Latex, PDF, etc.) if you would
+ * prefer such (we only offer the HTML documentation.)
  *
  * \subsection zipfiles Zip file access
  *
- * The two most important classes are ZipFile and ZipInputStream.'
- * ZipInputStream is an istream for reading zipfiles. It can be
- * instantiated directly, without the use of ZipFile.
+ * The two most important classes are DirectoryCollection and ZipFile.
  *
- * ZipInputStream::getNextEntry() positions a new ZipInputStream on
- * the first entry. The following entry can be accessed by calling
- * ZipInputStream::getNextEntry() again.
+ * A ZipFile is also a FileCollection, only the collection is loaded
+ * from a Zip archive instead of a directory. A ZipFile is composed of
+ * ZipCentralDirectoryEntry objects. As far as you are concerned though,
+ * you can only use it as FileEntry objects.
  *
- * ZipFile scans the central directory of a zipfile and provides an
- * interface to access that directory. The user may search for entries
- * with a particular filename using ZipFile::getEntry(),
- * or simply get the complete list of entries
- * with ZipFile::entries(). To get an
- * istream (ZipInputStream) to a particular entry simply use
- * ZipFile::getInputStream().
+ * Note that the ZipFile constructor immediately scans the Central
+ * Directory of the Zip archive so the entries are immediately accessible.
  *
- * zipios_example.cpp demonstrates the central elements of Zipios++.
+ * The DirectoryCollection can be created one file at a time, so it is
+ * possible to create a collection without having to include all the
+ * files from a directory. However, the files still have to exist on
+ * disk. The DirectoryCollection is composed of DirectoryEntry objects.
  *
- * A Zip file appended to another file, e.g. a binary program, with the program
- * appendzip.cpp, can be read with ZipFile::openEmbeddedZipFile().
+ * To access the entries in a collection, use the entries() function
+ * which returns a vector of FileEntry objects. If you know the exact
+ * filename of an entry, you may also use the getEntry() with that name.
+ * This is particularly useful if you want to use Zipios++ as a way to
+ * handle the resources of your executable (see the openEmbeddedZipFile()
+ * function and the appendzip.cpp tool). Finally, you want to use
+ * the getInputStream() function to read the data of a file defined in
+ * a collection.
+ *
+ * \code
+ *      // Resources global pointer
+ *      zipios::ZipFile::pointer_t g_resources;
+ *
+ *      // Initialization of resources
+ *      g_resources = zipios::ZipFile::openEmbeddedZipFile("executable_filename");
+ *
+ *      // Anywhere else in your application
+ *
+ *      // 1. get the entry (to access meta data)
+ *      zipios::FileEntry::pointer_t entry(g_resources->getEntry("my/resource/file.xml"));
+ *
+ *      // 2. get the istream (to access the actual file data)
+ *      zipios::FileCollection::stream_pointer_t in_stream(g_resources->getInputStream("my/resource/file.xml"));
+ * \endcode
+ *
+ * zipios_example.cpp demonstrates the central elements of Zipios++ when used
+ * in read mode.
  *
  * \subsection filecollection FileCollection
  *
  * A ZipFile is actually just a special kind of FileCollection that
- * obtains its entries from a .zip Zip archive. Zipios++ also implements
- * a DirectoryCollection that obtains its entries from a specified directory,
- * and a CollectionCollection that obtains its entries from
- * other collections. Using a single CollectionCollection any number of
- * other FileCollections can be placed under its control and accessed
- * through the same single interface that is used to access a ZipFile or
- * a DirectoryCollection.
+ * obtains its entries from a Zip archive. Zipios++ also implements
+ * a DirectoryCollection that obtains its entries from an on disk
+ * directory and a CollectionCollection that obtains its entries from
+ * other collections.
+ *
+ * Using a single CollectionCollection, any number of other FileCollection's
+ * can be placed under its control and accessed through the same single
+ * interface that is used to access a ZipFile or a DirectoryCollection.
+ *
+ * \warning
+ * The CollectionCollection singleton in version 1.x was removed to make
+ * the entire library 100% re-entrant without the need to link against
+ * a thread library.
  *
  * \section download Download
  *
@@ -155,7 +187,7 @@ namespace zipios
  * were changes...
  *
  * You will find a text file in the doc directory named zip-format.txt
- * with a complete description of the zip file format.
+ * with a complete description of the zip file format as of October 1, 2014.
  *
  * \section bugs Bugs
  *

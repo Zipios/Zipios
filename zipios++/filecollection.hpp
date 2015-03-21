@@ -56,6 +56,7 @@ public:
     virtual pointer_t               clone() const = 0;
     virtual                         ~FileCollection();
 
+    virtual void                    addEntry(FileEntry const & entry);
     virtual void                    close();
     virtual FileEntry::vector_t     entries() const;
     virtual FileEntry::pointer_t    getEntry(std::string const & name, MatchPath matchpath = MatchPath::MATCH) const;
@@ -79,8 +80,6 @@ std::ostream & operator << (std::ostream& os, FileCollection const& collection);
 
 } // zipios namespace
 
-// vim: ts=4 sw=4 et
-
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
@@ -88,4 +87,5 @@ std::ostream & operator << (std::ostream& os, FileCollection const& collection);
 // tab-width: 4
 // End:
 
+// vim: ts=4 sw=4 et
 #endif

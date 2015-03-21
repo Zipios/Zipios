@@ -55,7 +55,7 @@ namespace zipios
  * \param[in] filename  The filename of the entry.
  * \param[in] comment  A comment for the entry.
  */
-DirectoryEntry::DirectoryEntry(FilePath const& filename, std::string const& comment)
+DirectoryEntry::DirectoryEntry(FilePath const & filename, std::string const & comment)
     : FileEntry(filename, comment)
 {
     m_valid = m_filename.isRegular() || m_filename.isDirectory();
@@ -107,7 +107,7 @@ DirectoryEntry::~DirectoryEntry()
  *
  * \return true if both FileEntry objects are considered equal.
  */
-bool DirectoryEntry::isEqual(FileEntry const& file_entry) const
+bool DirectoryEntry::isEqual(FileEntry const & file_entry) const
 {
     DirectoryEntry const * const de(dynamic_cast<DirectoryEntry const * const>(&file_entry));
     if(!de)
@@ -118,36 +118,7 @@ bool DirectoryEntry::isEqual(FileEntry const& file_entry) const
 }
 
 
-/** \brief Returns a human-readable string representation of the entry.
- *
- * This function transforms the basic information of the entry in a
- * string. Note that most of the information is lost as the function
- * is likely to only display the filename and the size of the file,
- * nothing more.
- *
- * \return A human-readable string representation of the entry.
- */
-std::string DirectoryEntry::toString() const
-{
-    OutputStringStream sout;
-    // TBD: shall we offer translation support for these?
-    sout << static_cast<std::string>(m_filename) << " (";
-    if(isDirectory())
-    {
-        sout << "directory";
-    }
-    else
-    {
-        sout << m_uncompressed_size << " byte"
-             << (m_uncompressed_size == 1 ? "" : "s");
-    }
-    sout << ")";
-    return sout.str();
-}
-
-
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -155,3 +126,5 @@ std::string DirectoryEntry::toString() const
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

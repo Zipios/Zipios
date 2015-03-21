@@ -42,18 +42,15 @@ namespace zipios
 class DirectoryEntry : public FileEntry
 {
 public:
-                            DirectoryEntry(FilePath const& filename, std::string const& comment);
+                            DirectoryEntry(FilePath const & filename, std::string const & comment = std::string());
     virtual pointer_t       clone() const override;
     virtual                 ~DirectoryEntry() override;
 
-    virtual bool            isEqual(FileEntry const& file_entry) const override;
-    virtual std::string     toString() const override;
+    virtual bool            isEqual(FileEntry const & file_entry) const override;
 };
 
 
 } // zipios namespace
-
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -62,4 +59,5 @@ public:
 // tab-width: 4
 // End:
 
+// vim: ts=4 sw=4 et
 #endif

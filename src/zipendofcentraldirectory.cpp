@@ -323,7 +323,7 @@ void ZipEndOfCentralDirectory::write(std::ostream& os)
     if(m_central_directory_size   >= 0x100000000UL
     || m_central_directory_offset >= 0x100000000L)
     {
-        throw FileCollectionException("the Zip archive size or offset are too large");
+        throw FileCollectionException("the Zip archive size or offset are too large"); // LCOV_EXCL_LINE
     }
 #endif
 

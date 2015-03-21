@@ -122,7 +122,7 @@ public:
     virtual void                setSize(size_t size);
     virtual void                setTime(dostime_t time);
     virtual void                setUnixTime(std::time_t time);
-    virtual std::string         toString() const = 0;
+    virtual std::string         toString() const;
 
     virtual void                read(std::istream& is);
     virtual void                write(std::ostream& os);

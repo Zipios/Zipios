@@ -341,7 +341,8 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     || m_uncompressed_size >= 0x100000000ULL
     || m_entry_offset      >= 0x100000000LL)
     {
-        throw InvalidStateException("ZipCentralDirectoryEntry::write(): The size of this file is too large to fit in a zip archive.");
+        // This represents really large files which we do not test at this point
+        throw InvalidStateException("ZipCentralDirectoryEntry::write(): The size of this file is too large to fit in a zip archive."); // LCOV_EXCL_LINE
     }
 #endif
 
@@ -371,6 +372,11 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     }
 
     uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
+    if(m_compression_level == COMPRESSION_LEVEL_NONE)
+    {
+        compress_method = static_cast<uint8_t>(StorageMethod::STORED);
+    }
+
     uint32_t dostime(unix2dostime(m_unix_time));
     uint32_t compressed_size(m_compressed_size);
     uint32_t uncompressed_size(m_uncompressed_size);
@@ -424,7 +430,6 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -432,3 +437,5 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

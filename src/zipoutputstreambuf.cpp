@@ -209,7 +209,18 @@ void ZipOutputStreambuf::putNextEntry(FileEntry::pointer_t entry)
     closeEntry();
 
     // if the method is STORED force uncompressed data
-    init(entry->getMethod() == StorageMethod::STORED ? FileEntry::COMPRESSION_LEVEL_NONE : entry->getLevel());
+    FileEntry::CompressionLevel level;
+    if(entry->getMethod() == StorageMethod::STORED)
+    {
+        // force to "no compression" when the method is STORED
+        level = FileEntry::COMPRESSION_LEVEL_NONE;
+    }
+    else
+    {
+        // get the user defined compression level
+        level = entry->getLevel();
+    }
+    init(level);
 
     m_entries.push_back(entry);
 

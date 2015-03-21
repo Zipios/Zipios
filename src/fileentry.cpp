@@ -652,8 +652,7 @@ void FileEntry::setUnixTime(std::time_t time)
 }
 
 
-/** \fn std::string FileEntry::toString() const;
- * \brief Returns a human-readable string representation of the entry.
+/** \brief Returns a human-readable string representation of the entry.
  *
  * This function transforms the basic information of the entry in a
  * string. Note that most of the information is lost as the function
@@ -662,6 +661,34 @@ void FileEntry::setUnixTime(std::time_t time)
  *
  * \return A human-readable string representation of the entry.
  */
+std::string FileEntry::toString() const
+{
+    OutputStringStream sout;
+    sout << m_filename;
+    if(isDirectory())
+    {
+        sout << " (directory)";
+    }
+    else
+    {
+        sout << " ("
+             << m_uncompressed_size << " byte"
+             << (m_uncompressed_size == 1 ? "" : "s");
+        size_t const compressed_size(getCompressedSize());
+        if(compressed_size != m_uncompressed_size)
+        {
+             // this is not currently accessible since only the
+             // ZipLocalEntry and ZipCentralDirectoryEntry have
+             // a compressed size
+             sout << ",  " // LCOV_EXCL_LINE
+                  << compressed_size << " byte" // LCOV_EXCL_LINE
+                  << (compressed_size == 1 ? "" : "s") // LCOV_EXCL_LINE
+                  << " compressed"; // LCOV_EXCL_LINE
+        }
+        sout << ")";
+    }
+    return sout.str();
+}
 
 
 /** \brief Read this FileEntry from the input stream.
@@ -718,7 +745,6 @@ std::ostream& operator << (std::ostream& os, FileEntry const& entry)
 
 
 } // namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -726,3 +752,5 @@ std::ostream& operator << (std::ostream& os, FileEntry const& entry)
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

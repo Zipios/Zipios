@@ -107,7 +107,9 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
 {
     if(m_zs_initialized)
     {
-        throw std::logic_error("DeflateOutputStreambuf::init(): initialization function called when the class is already initialized. This is not supported.");
+        // This is excluded from the coverage since if we reach this
+        // line there is an internal error that needs to be fixed.
+        throw std::logic_error("DeflateOutputStreambuf::init(): initialization function called when the class is already initialized. This is not supported."); // LCOV_EXCL_LINE
     }
     m_zs_initialized = true;
     m_bytes_to_skip = 0;
@@ -138,7 +140,9 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
         if(compression_level < FileEntry::COMPRESSION_LEVEL_MINIMUM
         || compression_level > FileEntry::COMPRESSION_LEVEL_MAXIMUM)
         {
-            throw std::logic_error("the compression level must be defined between -3 and 100, see the zipios++/fileentry.hpp for a list of valid levels.");
+            // This is excluded from the coverage since if we reach this
+            // line there is an internal error that needs to be fixed.
+            throw std::logic_error("the compression level must be defined between -3 and 100, see the zipios++/fileentry.hpp for a list of valid levels."); // LCOV_EXCL_LINE
         }
         // The zlevel is calculated linearly from the user specified value
         // of 1 to 100
@@ -171,9 +175,13 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
     int const err = deflateInit2(&m_zs, zlevel, Z_DEFLATED, -MAX_WBITS, default_mem_level, Z_DEFAULT_STRATEGY);
     if(err != Z_OK)
     {
-        std::ostringstream msgs;
-        msgs << "DeflateOutputStreambuf::init(): error while initializing zlib, " << zError(err) << std::endl;
-        throw IOException(msgs.str());
+        // Not too sure how we could generate an error here, the deflateInit2()
+        // would fail if (1) there is not enough memory and (2) if a parameter
+        // is out of wack which neither can be generated from the outside
+        // (well... not easily)
+        std::ostringstream msgs; // LCOV_EXCL_LINE
+        msgs << "DeflateOutputStreambuf::init(): error while initializing zlib, " << zError(err) << std::endl; // LCOV_EXCL_LINE
+        throw IOException(msgs.str()); // LCOV_EXCL_LINE
     }
 
     // streambuf init:
@@ -211,9 +219,11 @@ void DeflateOutputStreambuf::closeStream()
         if(err != Z_OK
         && (err != Z_DATA_ERROR || m_overflown_bytes > 0)) // when we close a directory, we get the Z_DATA_ERROR!
         {
-            std::ostringstream msgs;
-            msgs << "DeflateOutputStreambuf::closeStream(): deflateEnd failed: " << zError(err) << std::endl;
-            throw IOException(msgs.str());
+            // There are not too many cases which break the deflateEnd()
+            // function call...
+            std::ostringstream msgs; // LCOV_EXCL_LINE
+            msgs << "DeflateOutputStreambuf::closeStream(): deflateEnd failed: " << zError(err) << std::endl; // LCOV_EXCL_LINE
+            throw IOException(msgs.str()); // LCOV_EXCL_LINE
         }
     }
 }
@@ -269,27 +279,32 @@ size_t DeflateOutputStreambuf::getSize() const
  */
 int DeflateOutputStreambuf::overflow(int c)
 {
+    int err(Z_OK);
+
     m_zs.avail_in = pptr() - pbase();
     m_zs.next_in = reinterpret_cast<unsigned char *>(&m_invec[0]);
 
-    m_crc32 = crc32(m_crc32, m_zs.next_in, m_zs.avail_in); // update crc32
-    m_overflown_bytes += m_zs.avail_in;
-
-    m_zs.next_out  = reinterpret_cast<unsigned char *>(&m_outvec[0]);
-    m_zs.avail_out = getBufferSize();
-
-    // Deflate until _invec is empty.
-    int err(Z_OK);
-    while((m_zs.avail_in > 0 || m_zs.avail_out == 0) && err == Z_OK)
+    if(m_zs.avail_in > 0)
     {
-        if(m_zs.avail_out == 0)
-        {
-            flushOutvec();
-        }
+        m_crc32 = crc32(m_crc32, m_zs.next_in, m_zs.avail_in); // update crc32
+        m_overflown_bytes += m_zs.avail_in;
 
-        err = deflate(&m_zs, Z_NO_FLUSH);
+        m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
+        m_zs.avail_out = getBufferSize();
+
+        // Deflate until m_invec is empty.
+        while((m_zs.avail_in > 0 || m_zs.avail_out == 0) && err == Z_OK)
+        {
+            if(m_zs.avail_out == 0)
+            {
+                flushOutvec();
+            }
+
+            err = deflate(&m_zs, Z_NO_FLUSH);
+        }
     }
 
+    // somehow we need this flush here or it fails
     flushOutvec();
 
     // Update 'put' pointers
@@ -298,9 +313,14 @@ int DeflateOutputStreambuf::overflow(int c)
     if(err != Z_OK && err != Z_STREAM_END)
     {
         // Throw an exception to make istream set badbit
-        OutputStringStream msgs;
-        msgs << "Deflation failed:" << zError(err);
-        throw IOException(msgs.str());
+        //
+        // This is marked as not cover-able because the calls that
+        // access this function only happen in an internal loop and
+        // even if we were to write a direct test, I do not see how
+        // we could end up with an error here
+        OutputStringStream msgs; // LCOV_EXCL_LINE
+        msgs << "Deflation failed:" << zError(err); // LCOV_EXCL_LINE
+        throw IOException(msgs.str()); // LCOV_EXCL_LINE
     }
 
     if(c != EOF)
@@ -362,7 +382,10 @@ void DeflateOutputStreambuf::flushOutvec()
         size_t const bc(m_outbuf->sputn(&m_outvec[0] + offset, deflated_bytes));
         if(deflated_bytes != bc)
         {
-            throw IOException("DeflateOutputStreambuf::flushOutvec(): zlib generated an error.");
+            // Without implementing our own stream in our test, this
+            // cannot really be reached because it is all happening
+            // inside the same loop in ZipFile::saveCollectionToArchive()
+            throw IOException("DeflateOutputStreambuf::flushOutvec(): zlib generated an error."); // LCOV_EXCL_LINE
         }
     }
 
@@ -413,16 +436,19 @@ void DeflateOutputStreambuf::endDeflation()
 
     if(err != Z_STREAM_END)
     {
-        std::ostringstream msgs;
-        msgs << "DeflateOutputStreambuf::endDeflation(): deflate() failed: "
-             << zError(err) << std::endl;
-        throw IOException(msgs.str());
+        // This is marked as not cover-able because the calls that
+        // access this function only happen in an internal loop and
+        // even if we were to write a direct test, I do not see how
+        // we could end up with an error here
+        std::ostringstream msgs; // LCOV_EXCL_LINE
+        msgs << "DeflateOutputStreambuf::endDeflation(): deflate() failed: " // LCOV_EXCL_LINE
+             << zError(err) << std::endl; // LCOV_EXCL_LINE
+        throw IOException(msgs.str()); // LCOV_EXCL_LINE
     }
 }
 
 
 } // namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -430,3 +456,5 @@ void DeflateOutputStreambuf::endDeflation()
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et
