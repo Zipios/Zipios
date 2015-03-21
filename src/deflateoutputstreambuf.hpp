@@ -62,20 +62,19 @@ protected:
     virtual int             overflow(int c = EOF);
     virtual int             sync();
 
+    uint32_t                m_overflown_bytes = 0;
+    std::vector<char>       m_invec;
+
 private:
     void                    endDeflation();
     void                    flushOutvec();
 
     z_stream                m_zs;
     bool                    m_zs_initialized = false;
-    bool                    m_compressed_data = false;
 
-    std::vector<char>       m_invec;
     std::vector<char>       m_outvec;
 
     uint32_t                m_crc32 = 0;
-    uint32_t                m_overflown_bytes = 0;
-    uint32_t                m_bytes_to_skip = 0;
 };
 
 

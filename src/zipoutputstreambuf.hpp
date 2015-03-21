@@ -41,29 +41,30 @@ namespace zipios
 class ZipOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
-                            ZipOutputStreambuf(std::streambuf *outbuf);
-                            ZipOutputStreambuf(ZipOutputStreambuf const & src) = delete;
-    ZipOutputStreambuf &    operator = (ZipOutputStreambuf const & rhs) = delete;
-    virtual                 ~ZipOutputStreambuf();
+                                ZipOutputStreambuf(std::streambuf *outbuf);
+                                ZipOutputStreambuf(ZipOutputStreambuf const & src) = delete;
+    ZipOutputStreambuf &        operator = (ZipOutputStreambuf const & rhs) = delete;
+    virtual                     ~ZipOutputStreambuf();
 
-    void                    closeEntry();
-    void                    close();
-    void                    finish();
-    void                    putNextEntry(FileEntry::pointer_t entry);
-    void                    setComment(std::string const& comment);
+    void                        closeEntry();
+    void                        close();
+    void                        finish();
+    void                        putNextEntry(FileEntry::pointer_t entry);
+    void                        setComment(std::string const& comment);
 
 protected:
-    virtual int             overflow(int c = EOF);
-    virtual int             sync();
+    virtual int                 overflow(int c = EOF) override;
+    virtual int                 sync() override;
 
 private:
-    void                    setEntryClosedState();
-    void                    updateEntryHeaderInfo();
+    void                        setEntryClosedState();
+    void                        updateEntryHeaderInfo();
 
-    std::string             m_zip_comment;
-    FileEntry::vector_t     m_entries;
-    bool                    m_open_entry = false;
-    bool                    m_open = true;
+    std::string                 m_zip_comment;
+    FileEntry::vector_t         m_entries;
+    FileEntry::CompressionLevel m_compression_level;
+    bool                        m_open_entry = false;
+    bool                        m_open = true;
 };
 
 

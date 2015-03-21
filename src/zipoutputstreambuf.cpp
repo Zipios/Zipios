@@ -147,7 +147,17 @@ void ZipOutputStreambuf::closeEntry()
         return;
     }
 
-    closeStream();
+    switch(m_compression_level)
+    {
+    case FileEntry::COMPRESSION_LEVEL_NONE:
+        overflow(); // flush
+        break;
+
+    default:
+        closeStream();
+        break;
+
+    }
 
     updateEntryHeaderInfo();
     setEntryClosedState();
@@ -209,18 +219,28 @@ void ZipOutputStreambuf::putNextEntry(FileEntry::pointer_t entry)
     closeEntry();
 
     // if the method is STORED force uncompressed data
-    FileEntry::CompressionLevel level;
     if(entry->getMethod() == StorageMethod::STORED)
     {
         // force to "no compression" when the method is STORED
-        level = FileEntry::COMPRESSION_LEVEL_NONE;
+        m_compression_level = FileEntry::COMPRESSION_LEVEL_NONE;
     }
     else
     {
         // get the user defined compression level
-        level = entry->getLevel();
+        m_compression_level = entry->getLevel();
     }
-    init(level);
+    m_overflown_bytes = 0;
+    switch(m_compression_level)
+    {
+    case FileEntry::COMPRESSION_LEVEL_NONE:
+        setp(&m_invec[0], &m_invec[0] + getBufferSize());
+        break;
+
+    default:
+        init(m_compression_level);
+        break;
+
+    }
 
     m_entries.push_back(entry);
 
@@ -272,7 +292,37 @@ void ZipOutputStreambuf::setComment(std::string const& comment)
  */
 int ZipOutputStreambuf::overflow(int c)
 {
-    return DeflateOutputStreambuf::overflow(c);
+    size_t const size(pptr() - pbase());
+    m_overflown_bytes += size;
+    switch(m_compression_level)
+    {
+    case FileEntry::COMPRESSION_LEVEL_NONE:
+    {
+        // Ok, we are STORED, so we handle it ourselves to avoid "side
+        // effects" from zlib, which adds markers every now and then.
+        size_t const bc(m_outbuf->sputn(&m_invec[0], size));
+        if(size != bc)
+        {
+            // Without implementing our own stream in our test, this
+            // cannot really be reached because it is all happening
+            // inside the same loop in ZipFile::saveCollectionToArchive()
+            throw IOException("ZipOutputStreambuf::overflow(): write to buffer failed."); // LCOV_EXCL_LINE
+        }
+        setp(&m_invec[0], &m_invec[0] + getBufferSize());
+
+        if(c != EOF)
+        {
+            *pptr() = c;
+            pbump(1);
+        }
+
+        return 0;
+    }
+
+    default:
+        return DeflateOutputStreambuf::overflow(c);
+
+    }
 }
 
 

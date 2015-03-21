@@ -509,7 +509,6 @@ SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
         {
             for(zipios::FileEntry::CompressionLevel level(-3); level <= 100; ++level)
             {
-std::cerr << "Testing case with level " << level << "\n";
                 // Note that a level of COMPRESSION_LEVEL_NONE and method of
                 // DEFLATED is valid, the system will ignore the DEFLATED
                 // when saving the file and just use STORED instead.
@@ -536,7 +535,6 @@ std::cerr << "Testing case with level " << level << "\n";
                 for(auto it(v.begin()); it != v.end(); ++it)
                 {
                     zipios::FileEntry::pointer_t entry(*it);
-std::cerr << "Working on [" << entry->getName() << "]\n";
 
                     // verify that our tree knows about this file
                     zipios_test::file_t::type_t t(tree.find(entry->getName()));
@@ -594,31 +592,22 @@ std::cerr << "Working on [" << entry->getName() << "]\n";
                         REQUIRE(is);
                         std::ifstream in(entry->getName(), std::ios::in | std::ios::binary);
 
-std::cerr << "check file contents " << entry->getName() << " sz 1 " << (*it)->getSize() << std::endl;
                         while(in && *is)
                         {
                             char buf1[BUFSIZ], buf2[BUFSIZ];
 
-std::cerr << "reading on the left\n";
                             in.read(buf1, sizeof(buf1));
                             std::streamsize sz1(in.gcount());
 
-std::cerr << "reading on the right\n";
                             is->read(buf2, sizeof(buf2));
                             std::streamsize sz2(is->gcount());
 
-std::cerr << "check sizes " << sz1 << " / " << sz2 << std::endl;
                             REQUIRE(sz1 == sz2);
-std::cerr << "check content" << std::endl;
                             REQUIRE(memcmp(buf1, buf2, sz1) == 0);
-std::cerr << "that part is a match" << std::endl;
                         }
 
-std::cerr << "check in" << std::endl;
                         REQUIRE_FALSE(in);
-std::cerr << "check *is" << std::endl;
                         REQUIRE_FALSE(*is);
-std::cerr << "Content matches!\n";
                     }
 
                     // I don't think we will test those directly...

@@ -56,12 +56,12 @@ namespace zipios
  */
 DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf)
     : FilterOutputStreambuf(outbuf)
+    //, m_overflown_bytes(0) -- auto-init
+    , m_invec(getBufferSize())
     //, m_zs() -- auto-init
     //, m_zs_initialized(false) -- auto-init
-    , m_invec(getBufferSize())
     , m_outvec(getBufferSize())
     //, m_crc32(0) -- auto-init
-    //, m_overflown_bytes(0) -- auto-init
 {
     // NOTICE: It is important that this constructor and the methods it
     //         calls does not do anything with the output streambuf m_outbuf.
@@ -112,7 +112,6 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
         throw std::logic_error("DeflateOutputStreambuf::init(): initialization function called when the class is already initialized. This is not supported."); // LCOV_EXCL_LINE
     }
     m_zs_initialized = true;
-    m_bytes_to_skip = 0;
 
     int const default_mem_level(8);
 
@@ -132,9 +131,7 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
         break;
 
     case FileEntry::COMPRESSION_LEVEL_NONE:
-        zlevel = Z_NO_COMPRESSION;
-        m_bytes_to_skip = 5; // zlib adds 5 bytes in a header we do not want in the output
-        break;
+        throw std::logic_error("the compression level NONE is not supported in DeflateOutputStreambuf::init()"); // LCOV_EXCL_LINE
 
     default:
         if(compression_level < FileEntry::COMPRESSION_LEVEL_MINIMUM
@@ -188,7 +185,6 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
     setp(&m_invec[0], &m_invec[0] + getBufferSize());
 
     m_crc32 = crc32(0, Z_NULL, 0);
-    m_overflown_bytes = 0;
 
     return err == Z_OK;
 }
@@ -287,7 +283,6 @@ int DeflateOutputStreambuf::overflow(int c)
     if(m_zs.avail_in > 0)
     {
         m_crc32 = crc32(m_crc32, m_zs.next_in, m_zs.avail_in); // update crc32
-        m_overflown_bytes += m_zs.avail_in;
 
         m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
         m_zs.avail_out = getBufferSize();
@@ -362,30 +357,15 @@ void DeflateOutputStreambuf::flushOutvec()
      * skip...
      */
     size_t deflated_bytes(getBufferSize() - m_zs.avail_out);
-    size_t offset(0);
-    if(m_bytes_to_skip > 0)
-    {
-        if(deflated_bytes > m_bytes_to_skip)
-        {
-            offset += m_bytes_to_skip;
-            deflated_bytes -= m_bytes_to_skip;
-            m_bytes_to_skip = 0;
-        }
-        else
-        {
-            m_bytes_to_skip -= deflated_bytes;
-            deflated_bytes = 0;
-        }
-    }
     if(deflated_bytes > 0)
     {
-        size_t const bc(m_outbuf->sputn(&m_outvec[0] + offset, deflated_bytes));
+        size_t const bc(m_outbuf->sputn(&m_outvec[0], deflated_bytes));
         if(deflated_bytes != bc)
         {
             // Without implementing our own stream in our test, this
             // cannot really be reached because it is all happening
             // inside the same loop in ZipFile::saveCollectionToArchive()
-            throw IOException("DeflateOutputStreambuf::flushOutvec(): zlib generated an error."); // LCOV_EXCL_LINE
+            throw IOException("DeflateOutputStreambuf::flushOutvec(): write to buffer failed."); // LCOV_EXCL_LINE
         }
     }
 
@@ -404,7 +384,7 @@ void DeflateOutputStreambuf::endDeflation()
 {
     overflow();
 
-    m_zs.next_out  = reinterpret_cast<unsigned char *>(&m_outvec[0]);
+    m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
     m_zs.avail_out = getBufferSize();
 
     // Deflate until _invec is empty.
