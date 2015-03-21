@@ -148,9 +148,13 @@ ZipLocalEntry::ZipLocalEntry(FileEntry const & src)
  *
  * \return A new ZipLocalEntry which is a clone of this ZipLocalEntry object.
  */
-FileEntry::pointer_t ZipLocalEntry::clone() const
+FileEntry::pointer_t ZipLocalEntry::clone() const // LCOV_EXCL_LINE
 {
-    return FileEntry::pointer_t(new ZipLocalEntry(*this));
+    // It makes sense to keep the clone() function for this class
+    // but since it is internal and never allocated as is (we use
+    // the ZipCentralDirectoryEntry instead) it is marked as none
+    // reachable by the coverage tests
+    return FileEntry::pointer_t(new ZipLocalEntry(*this)); // LCOV_EXCL_LINE
 }
 
 
@@ -284,21 +288,18 @@ void ZipLocalEntry::setCrc(uint32_t crc)
  */
 std::string ZipLocalEntry::toString() const
 {
-    /** \TODO
-     * If the file represents a directory
-     */
     OutputStringStream sout;
-    sout << m_filename << " (";
+    sout << m_filename;
     if(isDirectory())
     {
-        sout << "directory";
+        sout << " (directory)";
     }
     else
     {
-        sout << m_uncompressed_size << " bytes, "
+        sout << " ("
+             << m_uncompressed_size << " bytes, "
              << m_compressed_size << " bytes compressed";
     }
-    sout << ")";
     return sout.str();
 }
 

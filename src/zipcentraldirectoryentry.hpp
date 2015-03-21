@@ -49,7 +49,6 @@ public:
     virtual                     ~ZipCentralDirectoryEntry() override;
 
     virtual size_t              getHeaderSize() const override;
-    virtual std::string         toString() const override;
 
     virtual void                read(std::istream& is) override;
     virtual void                write(std::ostream& os) override;

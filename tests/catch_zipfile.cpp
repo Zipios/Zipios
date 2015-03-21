@@ -628,7 +628,33 @@ SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
             }
             (*it)->setComment(comment);
 
-            THEN("it is valid and includes the file as expected")
+            THEN("it is invalid and fails as expected")
+            {
+                zipios_test::auto_unlink_t remove_zip("file.zip");
+                {
+                    std::ofstream out("file.zip", std::ios::out | std::ios::binary);
+                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException);
+                    REQUIRE(!out);
+                }
+            }
+        }
+
+        // check that extra buffers that are too large make the save fail
+        WHEN("we make sure that saving the file fails if the extra buffer is too large")
+        {
+            zipios::DirectoryCollection dc("file.bin");
+            zipios::FileEntry::vector_t v(dc.entries());
+            REQUIRE(v.size() == 1);
+            auto it(v.begin());
+            // generate a random comment of 65Kb
+            zipios::FileEntry::buffer_t buffer;
+            for(int i(0); i < 65 * 1024; ++i)
+            {
+                buffer.push_back(static_cast<unsigned char>(rand()));
+            }
+            (*it)->setExtra(buffer);
+
+            THEN("it is invalid and fails as expected")
             {
                 zipios_test::auto_unlink_t remove_zip("file.zip");
                 {

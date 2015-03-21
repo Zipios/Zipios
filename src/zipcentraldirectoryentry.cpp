@@ -171,34 +171,6 @@ ZipCentralDirectoryEntry::~ZipCentralDirectoryEntry()
 }
 
 
-/** \brief Convert the entry into a string.
- *
- * This function is used o convert the entry into a printable string
- * (assuming the filename is printable.)
- *
- * \todo
- * We may want to test whether the entry is a directory and if so
- * not display any sizes, just says "directory" instead.
- *
- * \return The filename and sizes of the entry.
- */
-std::string ZipCentralDirectoryEntry::toString() const
-{
-    OutputStringStream sout;
-    sout << m_filename;
-    if(m_is_directory)
-    {
-        sout << " (directory)";
-    }
-    else
-    {
-        sout << " (" << m_uncompressed_size << " bytes, "
-             << m_compressed_size << " bytes compressed)";
-    }
-    return sout.str();
-}
-
-
 /** \brief Compute and return the current header size.
  *
  * This function computes the size that this entry will take in the
