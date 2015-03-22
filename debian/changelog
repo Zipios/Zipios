@@ -1,14 +1,21 @@
-zipios++ (2.0.0.1~trusty) trusty; urgency=high
+zipios++ (2.0.1~trusty) trusty; urgency=high
+
+  * Removed the unused tests.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat, 21 Mar 2015 18:28:33 -0700
+
+zipios++ (2.0.0~trusty) trusty; urgency=high
 
   * Moving to the new 2.X version.
   * Lots of updates and upgrades from Alexis, since he came on as the new lead.
+  * Brand new set of tests with 100% coverage of the core library.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Tue, 3 Mar 2015 08:37:31 -0700
 
 zipios++ (0.1.5.10m2osw1~saucy) saucy; urgency=high
 
   * Added dostime.h/c and new methods that allow for conversion between
-  dostime and unixtime.
+    dostime and unixtime.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Mon, 24 Mar 2014 19:17:19 -0700
 
