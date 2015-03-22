@@ -36,6 +36,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <iostream>
 
 TEST_CASE("Unix to DOS time conversions and vice versa", "[dostime]")
 {
