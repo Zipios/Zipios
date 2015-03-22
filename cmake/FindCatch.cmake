@@ -10,7 +10,7 @@ SET(CATCH_FOUND "NO")
 FIND_PATH(CATCH_INCLUDE_DIR
     catch.hpp
     PATHS
-        contrib
+        ${CMAKE_SOURCE_DIR}/contrib
         /usr/local/include
         /usr/include
 )
