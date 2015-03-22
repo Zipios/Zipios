@@ -101,7 +101,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
 
             size_t const sz(std::min(max_read, FOUR));
             is.read(buf, sz);
-            REQUIRE(is.tellg() == start_offset + sz);
+            REQUIRE(is.tellg() == static_cast<zipios::offset_t>(start_offset + sz));
             REQUIRE(is);
             if(sz > 0)
             {

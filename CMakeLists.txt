@@ -27,7 +27,7 @@
 #      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.4)
 
 project( zipios_project )
 
@@ -37,11 +37,19 @@ set( ZIPIOS_VERSION_PATCH 1 )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -fdiagnostics-show-option -fPIC -Wunused-parameter -Wfloat-equal -Wold-style-cast -Wnoexcept" )
-set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0" )
+set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fdiagnostics-show-option -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -Wunused-parameter -Wfloat-equal -Wold-style-cast -Wnoexcept" )
 set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
 
-set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra -fPIC -Wunused-parameter -fwrapv" )
+set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fwrapv" )
+set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Werror -Wall -Wextra -Wunused-parameter" )
+
+
+if( CYGWIN )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11" )
+else()
+    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC" )
+endif()
 
 # To generate coverage, use -D<project name>_COVERAGE=ON
 #                       and -DCMAKE_BUILD_TYPE=Debug
@@ -126,7 +134,7 @@ set(CPACK_PACKAGE_VENDOR "Made to Order Software Corporation")
 set(CPACK_PACKAGE_CONTACT "alexis@m2osw.com")
 set(CPACK_RESOURCE_FILE_LICENSE "${zipios_project_SOURCE_DIR}/COPYING")
 set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_IGNORE_FILES "/CVS/;/work-files/;/.git/;.swp$;.*~;cscope.*;/tmp/;BUILD;Build;build")
+set(CPACK_SOURCE_IGNORE_FILES "/CVS/;/work-files/;/.git/;.swp$;.*~;cscope.*;/tmp/;BUILD;Build")
 set(CPACK_PACKAGE_VERSION "${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}.${ZIPIOS_VERSION_PATCH}")
 set(CPACK_PACKAGE_VERSION_MAJOR "${ZIPIOS_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${ZIPIOS_VERSION_MINOR}")

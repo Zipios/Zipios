@@ -30,12 +30,14 @@
  * that all the tests access, such as the catch.hpp header file.
  */
 
+#include "zipios++/zipios-config.hpp"
+
 #include <catch.hpp>
 
 #include <sstream>
 
 
-#if defined(__sun) || defined(__sun__) || defined(__SunOS)
+#if defined(__sun) || defined(__sun__) || defined(__SunOS) || defined(__CYGWIN__)
 namespace std
 {
 

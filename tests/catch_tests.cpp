@@ -32,10 +32,9 @@
 
 #include "catch_tests.hpp"
 
-#include "zipios++/zipios-config.hpp"
-
 #include <cstring>
 
+#include <stdlib.h>
 
 
 // static variables
