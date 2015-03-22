@@ -68,6 +68,8 @@ namespace zipios
  * A simple virtual file system that mounts regular directories and
  * zip files is also provided (FileCollection).
  *
+ * The library is fully re-entrant. It is not otherwise thread safe.
+ *
  * The source code is released under the <a
  * href="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
  * License</a>.
@@ -172,6 +174,10 @@ namespace zipios
  * (CVS for v1.x and GIT for v2.x), and ChangeLog.
  * <a href="https://sourceforge.net/projects/zipios/" >
  * https://sourceforge.net/projects/zipios/</a>
+ *
+ * <a href="https://sourceforge.net/projects/zipios/files/latest/download"
+ * rel="nofollow"><img alt="Download Zipios++"
+ * src="https://img.shields.io/sourceforge/dt/zipios.svg"></a>
  *
  * \section links Links
  *

@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Retrieve the project version from the main CMakeLists.txt file
+
+MAJOR=`grep 'set( ZIPIOS_VERSION_MAJOR ' CMakeLists.txt | sed -e 's/.*ZIPIOS_VERSION_MAJOR //' -e 's/ .*//'`
+MINOR=`grep 'set( ZIPIOS_VERSION_MINOR ' CMakeLists.txt | sed -e 's/.*ZIPIOS_VERSION_MINOR //' -e 's/ .*//'`
+PATCH=`grep 'set( ZIPIOS_VERSION_PATCH ' CMakeLists.txt | sed -e 's/.*ZIPIOS_VERSION_PATCH //' -e 's/ .*//'`
+
+VERSION=${MAJOR}.${MINOR}
+FULL_VERSION=${MAJOR}.${MINOR}.${PATCH}
+
+#echo $FULL_VERSION
+

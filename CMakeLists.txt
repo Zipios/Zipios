@@ -117,4 +117,21 @@ add_custom_target(zipios_code_analysis
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
+##
+## To pack the source
+##
+set(CPACK_PACKAGE_NAME "zipios")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Zipios++ is a small C++ library for reading and writing zip files.")
+set(CPACK_PACKAGE_VENDOR "Made to Order Software Corporation")
+set(CPACK_PACKAGE_CONTACT "alexis@m2osw.com")
+set(CPACK_RESOURCE_FILE_LICENSE "${zipios_project_SOURCE_DIR}/COPYING")
+set(CPACK_SOURCE_GENERATOR "TGZ")
+set(CPACK_SOURCE_IGNORE_FILES "/CVS/;/work-files/;/.git/;.swp$;.*~;cscope.*;/tmp/;BUILD;Build;build")
+set(CPACK_PACKAGE_VERSION "${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}.${ZIPIOS_VERSION_PATCH}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${ZIPIOS_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${ZIPIOS_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${ZIPIOS_VERSION_PATCH}")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "zipios-${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}.${ZIPIOS_VERSION_PATCH}")
+include(CPack)
+
 # vim: ts=4 sw=4 et nocindent

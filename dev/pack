@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# Build the project, generate the documentation and source tarball
+#
+# Use these script at your own risk!
+# These are generally for Unix platforms.
+# Start this script from the source directory.
+
+set -e
+
+# Run the standard build process
+# This include running all the test and if that fails the packing will
+# also fail
+dev/build
+
+# Generate the package source
+make -C ../BUILD/zipios package_source
+
+# Generate the Doxygen documentation (you must have Doxygen and DOT)
+make -C ../BUILD/zipios zipios_Documentation
+
+# Copy the resulting files to the packages folder
+. dev/version
+
+mkdir -p ../packages
+cp ../BUILD/zipios/zipios-${FULL_VERSION}.tar.gz ../packages
+cp ../BUILD/zipios/doc/zipios-doc-${VERSION}.tar.gz ../packages
+
