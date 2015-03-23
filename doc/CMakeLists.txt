@@ -50,6 +50,12 @@ function( AddDoxygenTarget TARGET_NAME VERSION_MAJOR VERSION_MINOR VERSION_PATCH
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${TARGET_NAME}.doxy.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.doxy @ONLY)
         set( DOCUMENTATION_OUTPUT ${TARGET_NAME}-doc-${VERSION} )
 
+        if(SUNOS)
+            set(TAR_OPTIONS cEzf)
+        else()
+            set(TAR_OPTIONS czf)
+        endif()
+
         add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTATION_OUTPUT}.tar.gz ${DOCUMENTATION_OUTPUT}
             COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.doxy
                 1> ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}-doxy.log
@@ -57,7 +63,7 @@ function( AddDoxygenTarget TARGET_NAME VERSION_MAJOR VERSION_MINOR VERSION_PATCH
             COMMAND echo Compacting as ${DOCUMENTATION_OUTPUT}.tar.gz
             COMMAND rm -rf ${DOCUMENTATION_OUTPUT}
             COMMAND mv html ${DOCUMENTATION_OUTPUT}
-            COMMAND tar czf ${DOCUMENTATION_OUTPUT}.tar.gz ${DOCUMENTATION_OUTPUT}
+            COMMAND tar ${TAR_OPTIONS} ${DOCUMENTATION_OUTPUT}.tar.gz ${DOCUMENTATION_OUTPUT}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )
 
