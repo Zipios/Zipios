@@ -1,6 +1,7 @@
 zipios++ (2.0.1~trusty) trusty; urgency=high
 
   * Removed the unused tests.
+  * Applied a couple fixes to get cygwin to work as expected.
 
  -- Alexis Wilke <alexis@m2osw.com>  Sat, 21 Mar 2015 18:28:33 -0700
 
