@@ -33,7 +33,7 @@ project( zipios_project )
 
 set( ZIPIOS_VERSION_MAJOR 2 )
 set( ZIPIOS_VERSION_MINOR 0 )
-set( ZIPIOS_VERSION_PATCH 1 )
+set( ZIPIOS_VERSION_PATCH 2 )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
