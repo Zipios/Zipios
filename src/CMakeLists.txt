@@ -66,7 +66,9 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES
 )
 
 install( TARGETS ${PROJECT_NAME}
-    DESTINATION lib
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
 )
 
 

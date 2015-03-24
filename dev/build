@@ -19,9 +19,16 @@ mkdir -p BUILD/dist BUILD/zipios
 cd BUILD
 BUILD_PATH=`pwd`
 cd zipios
-cmake -DCMAKE_INSTALL_PREFIX:PATH=$BUILD_PATH/dist \
-      -DCMAKE_BUILD_TYPE=Debug \
-          ../../zipios
+if test "$1" = "-d"
+then
+    # Include debug here
+    cmake -DCMAKE_INSTALL_PREFIX:PATH=$BUILD_PATH/dist \
+          -DCMAKE_BUILD_TYPE=Debug \
+                ../../zipios
+else
+    cmake -DCMAKE_INSTALL_PREFIX:PATH=$BUILD_PATH/dist \
+                ../../zipios
+fi
 
 # Build
 make
@@ -34,4 +41,4 @@ cd $SOURCE_PATH/tests
 ../../BUILD/zipios/tests/zipios_tests
 
 
-# vim: ts=2 sw=2 et et
+# vim: ts=4 sw=4 et et
