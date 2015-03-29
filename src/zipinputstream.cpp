@@ -60,8 +60,8 @@ namespace zipios
  * \param[in] pos position to reposition the istream to before reading.
  */
 ZipInputStream::ZipInputStream(std::string const& filename, std::streampos pos)
-    //: std::istream()
-    : m_ifs(new std::ifstream(filename, std::ios::in | std::ios::binary))
+    : std::istream(nullptr)
+    , m_ifs(new std::ifstream(filename, std::ios::in | std::ios::binary))
     , m_izf(new ZipInputStreambuf(m_ifs->rdbuf(), pos))
 {
     // properly initialize the stream with the newly allocated buffer
