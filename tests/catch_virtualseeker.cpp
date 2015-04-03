@@ -67,9 +67,9 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         //
         zipios::offset_t const start_offset(rand() % 200);
         zipios::offset_t const end_offset(start_offset + rand() % (256 - start_offset));
-        REQUIRE(start_offset <= end_offset); // this should not happen, period!
+        REQUIRE(start_offset <= end_offset); // this should always be true
         zipios::offset_t const end(256 - end_offset);
-        size_t max_read(end_offset - start_offset);
+        size_t const max_read(end_offset - start_offset);
         // note that the "gap" may be zero
 
         // attempt to create the seeker with invalid offsets
