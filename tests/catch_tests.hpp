@@ -36,6 +36,8 @@
 
 #include <sstream>
 
+#include <limits.h>
+
 
 #if defined(__sun) || defined(__sun__) || defined(__SunOS) || defined(__CYGWIN__)
 namespace std
