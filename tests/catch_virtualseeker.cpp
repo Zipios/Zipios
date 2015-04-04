@@ -150,7 +150,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         }
 
         {
-            size_t const sz(std::min(max_read, FOUR));
+            ssize_t const sz(std::min(max_read, FOUR));
 
             vs.vseekg(is, -sz, std::ios::end);
             std::streampos const expected_absolute_pos(end_offset - sz);
@@ -181,7 +181,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             // try moving a little more (if max_read allows it)
             if(max_read >= 9UL && max_read - 8UL >= static_cast<size_t>(start_offset))
             {
-                size_t const sz2(std::min(max_read - 8UL, 4UL));
+                ssize_t const sz2(std::min(max_read - 8UL, 4UL));
 
                 vs.vseekg(is, -sz2 - sz, std::ios::cur);
                 std::streampos const expected_absolute_pos2(end_offset - sz2 - sz);
@@ -282,7 +282,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         }
 
         {
-            size_t const sz(std::min(max_read2, FOUR));
+            ssize_t const sz(std::min(max_read2, FOUR));
 
             vs.vseekg(is, -sz, std::ios::end);
             std::streampos const expected_absolute_pos(end_offset2 - sz);
