@@ -73,7 +73,7 @@ namespace zipios_test
 inline size_t rand_size_t()
 {
     return static_cast<size_t>(rand())
-#if !defined(_ILP32)
+#if !defined(_ILP32) && ((UINT_MAX) != 0xFFFFFFFFU)
          | (static_cast<size_t>(rand()) << 32)
 #endif
         ;
