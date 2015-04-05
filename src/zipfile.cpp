@@ -56,7 +56,7 @@ namespace zipios
 
 /** \mainpage Zipios++
  *
- * \image html   zipios++.jpg
+ * \image html zipios++.jpg
  *
  * \section intro Introduction
  *
@@ -76,20 +76,39 @@ namespace zipios
  *
  * \section status Status
  *
- * This was the status of version 1.x. At this point, 2.x is being worked on.
+ * This was the status of version 1.x. At this point, 2.x has a brand new
+ * version out and we are waiting for good news about the current status.
+ * That being said, version 2.x comes a test suite which produces a
+ * 100% coverage of the library (except gzip which is not yet publicly
+ * available.)
+ *
+ * \warning
+ * There is a bug in the catch.hpp header file that generates a never
+ * ending loop (see https://github.com/philsquared/Catch/issues/271 for
+ * more information) when running the test suite under FreeBSD and an error
+ * occurs (although you should not have an error, if it happens, then
+ * the loop never ends.) I have noticed that problem with the following
+ * scenario, and it does not seem to be fixed yet (Apr 4, 2015):
+ *
+ * \li "use Zipios++ to create zip archives with 1 or 3 files each"
  *
  * Spanned archives are not supported, and support is not planned.
  *
- * The library v1.x has been tested and appears to be working with
+ * The library v1.x has been tested and appears to be working with:
  *
- * <ul>
- * <li><a href="http://www.freebsd.org/ports/archivers.html#zipios++-0.1.5">FreeBSD stable and current / gcc 2.95.3</a></li>
- * <li>Red Hat Linux release 7.0  / gcc 2.96</li>
- * <li>Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66</li>
- * <li>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</li>
- * <li>SGI IRIX64 6.5 / gcc 2.95.2</li>
- * <li>SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30</li>
- * </ul>
+ * \li <a href="http://www.freebsd.org/ports/archivers.html#zipios++-0.1.5">FreeBSD stable and current / gcc 2.95.3</a>
+ * \li Red Hat Linux release 7.0  / gcc 2.96
+ * \li Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66
+ * \li Linux Mandrake release 7.0 (Air) / gcc 2.95.2
+ * \li SGI IRIX64 6.5 / gcc 2.95.2
+ * \li SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30
+ *
+ * The library v2.x has been compiled and appears to be working with:
+ *
+ * \li Ubuntu (starting with 14.04) -- full test suite working
+ * \li FreeBSD (starting with 10.01)
+ * \li SunOS (starting with Open SunOS 11.2)
+ * \li Cygwin (starting with 6.1)
  *
  * If you make zipios++ work on other platforms, let us know by posting
  * a message on Sourceforge.net

@@ -620,7 +620,7 @@ SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
 }
 
 
-SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFile] [FileCollection]")
+SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile] [FileCollection]")
 {
     GIVEN("a one file zip file")
     {
@@ -915,7 +915,7 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
             {
                 zipios::DirectoryEntry other_entry2(zipios::FilePath("file2.bin"));
                 dc.addEntry(other_entry2);
-                zipios::DirectoryEntry other_entry3(zipios::FilePath("file2.bin"));
+                zipios::DirectoryEntry other_entry3(zipios::FilePath("file3.bin"));
                 dc.addEntry(other_entry3);
             }
             zipios::FileEntry::vector_t v(dc.entries());
