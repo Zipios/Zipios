@@ -678,7 +678,7 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
                     {
                          // you would think that the compressed size would
                          // either be equal to the size or smaller, but never
-                         // larger, that's not the case with zip under Linux...
+                         // larger, that is not the case with zip under Linux...
                          //
                          // they probably use a streaming mechanism and thus
                          // cannot fix the problem later if the compressed
@@ -763,7 +763,7 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
             zipios::FileEntry::vector_t v(dc.entries());
             REQUIRE(v.size() == 1);
             auto it(v.begin());
-            // generate a random comment of 65Kb
+            // generate a random extra buffer of 65Kb
             zipios::FileEntry::buffer_t buffer;
             for(int i(0); i < 65 * 1024; ++i)
             {
@@ -782,7 +782,7 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
             }
         }
 
-        // check with a global comment that's too large
+        // check with a global comment which is too large
         WHEN("we make sure that saving the file fails if the Zip (gloabl) comment is too large")
         {
             zipios::DirectoryCollection dc("file.bin");
@@ -837,7 +837,11 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
             }
         }
     }
+}
 
+
+TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
+{
     SECTION("try one uncompressed file of many sizes")
     {
         system("rm -f file.bin"); // clean up, just in case

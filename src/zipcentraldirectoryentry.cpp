@@ -332,7 +332,7 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     || m_extra_field.size() > 0x10000
     || m_comment.length()   > 0x10000)
     {
-        throw InvalidStateException("ZipCentralDirectoryEntry::write(): file name or extra field too large to save in a Zip file.");
+        throw InvalidStateException("ZipCentralDirectoryEntry::write(): file name, comment, or extra field too large to save in a Zip file.");
     }
 
 // Solaris defines _ILP32 for 32 bit platforms

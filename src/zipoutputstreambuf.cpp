@@ -101,10 +101,18 @@ ZipOutputStreambuf::ZipOutputStreambuf(std::streambuf * outbuf)
  *
  * This function cleans up this output buffer. In general this ensures
  * that the data still cached gets flushed.
+ *
+ * \warning
+ * This function may gobble up some important exceptions. If you want
+ * to make sure that the file is properly written, you must call the
+ * finish() function (or the close() function) to fully terminate the
+ * file. If these functions do not fail, then the output file is
+ * considered valid and you can keep it. The finish() function can fail
+ * because of a comment or a file which are too large, for example.
  */
 ZipOutputStreambuf::~ZipOutputStreambuf()
 {
-    // avoid the possible throw when writing the central directory
+    // avoid possible exceptions when writing the central directory
     try
     {
         finish();
@@ -164,6 +172,15 @@ void ZipOutputStreambuf::close()
  */
 void ZipOutputStreambuf::finish()
 {
+    /** \TODO
+     * Somehow clang under FreeBSD seems to not properly clear the
+     * std::uncaught_exception() flag when we have two levels of
+     * "try/catch(...)/(re)throw". Therefore, at this point I remove
+     * the deeper try/catch because the one found in the
+     * ZipFile::saveCollectionToArchive() function is currently more
+     * than enough. However, long term this may cause a problem
+     * for other internal functions that call this function.
+     */
     if(!m_open)
     {
         return;
@@ -171,16 +188,20 @@ void ZipOutputStreambuf::finish()
     m_open = false;
 
     std::ostream os(m_outbuf);
+#ifndef __clang__
     try
+#endif
     {
         closeEntry();
         writeZipCentralDirectory(os, m_entries, m_zip_comment);
     }
+#ifndef __clang__
     catch(...)
     {
         os.setstate(std::ios::failbit);
         throw;
     }
+#endif
 }
 
 

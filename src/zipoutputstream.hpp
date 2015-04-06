@@ -41,7 +41,7 @@ class ZipOutputStreambuf;
 class ZipOutputStream : public std::ostream
 {
 public:
-                    ZipOutputStream(std::ostream& os);
+                    ZipOutputStream(std::ostream & os);
     virtual         ~ZipOutputStream();
 
     void            closeEntry();
