@@ -840,7 +840,7 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
 }
 
 
-TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
+TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 {
     SECTION("try one uncompressed file of many sizes")
     {
