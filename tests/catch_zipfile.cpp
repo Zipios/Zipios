@@ -1530,6 +1530,14 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         }
     }
 
+/** \TODO
+ * Once clang is fixed, remove those tests. clang does not clear the
+ * std::unchecked_exception() flag when we have a re-throw in a catch.
+ * In this case we have a problem with the exception raised in
+ * InflateInputStreambuf::underflow() when gzip finds an invalid
+ * input stream.
+ */
+#ifndef __clang__
     SECTION("create files with a compressed file, only save only 50% of the data")
     {
         for(int i(0); i < 10; ++i)
@@ -1612,6 +1620,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
             REQUIRE(amount_read != uncompressed_size);
         }
     }
+#endif
 }
 
 
