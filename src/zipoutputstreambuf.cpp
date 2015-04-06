@@ -172,15 +172,6 @@ void ZipOutputStreambuf::close()
  */
 void ZipOutputStreambuf::finish()
 {
-    /** \TODO
-     * Somehow clang under FreeBSD seems to not properly clear the
-     * std::uncaught_exception() flag when we have two levels of
-     * "try/catch(...)/(re)throw". Therefore, at this point I remove
-     * the deeper try/catch because the one found in the
-     * ZipFile::saveCollectionToArchive() function is currently more
-     * than enough. However, long term this may cause a problem
-     * for other internal functions that call this function.
-     */
     if(!m_open)
     {
         return;
@@ -188,20 +179,8 @@ void ZipOutputStreambuf::finish()
     m_open = false;
 
     std::ostream os(m_outbuf);
-#ifndef __clang__
-    try
-#endif
-    {
-        closeEntry();
-        writeZipCentralDirectory(os, m_entries, m_zip_comment);
-    }
-#ifndef __clang__
-    catch(...)
-    {
-        os.setstate(std::ios::failbit);
-        throw;
-    }
-#endif
+    closeEntry();
+    writeZipCentralDirectory(os, m_entries, m_zip_comment);
 }
 
 

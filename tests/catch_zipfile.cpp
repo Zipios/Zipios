@@ -730,6 +730,11 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
             }
         }
 
+/** \TODO
+ * Once clang is fixed, remove those tests. clang does not clear the
+ * std::unchecked_exception() flag when we have a re-throw in a catch.
+ */
+#ifndef __clang__
         // test with a comment that's too large
         WHEN("we make sure that saving the file fails if the comment is too large")
         {
@@ -755,7 +760,9 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
                 }
             }
         }
+#endif
 
+#ifndef __clang__
         // check that extra buffers that are too large make the save fail
         WHEN("we make sure that saving the file fails if the extra buffer is too large")
         {
@@ -781,7 +788,9 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
                 }
             }
         }
+#endif
 
+#ifndef __clang__
         // check with a global comment which is too large
         WHEN("we make sure that saving the file fails if the Zip (gloabl) comment is too large")
         {
@@ -803,8 +812,10 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
                 }
             }
         }
+#endif
     }
 
+#ifndef __clang__
     GIVEN("a very small file")
     {
         system("rm -f file.bin"); // clean up, just in case
@@ -837,6 +848,7 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
             }
         }
     }
+#endif
 }
 
 
