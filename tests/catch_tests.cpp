@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
         {
             help = true; // LCOV_EXCL_LINE
         }
-        if(strcmp(argv[i], "--seed") == 0)
+        else if(strcmp(argv[i], "--seed") == 0)
         {
             if(i + 1 >= argc) // LCOV_EXCL_LINE
             {
