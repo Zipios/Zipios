@@ -1,3 +1,11 @@
+zipios++ (2.0.2~trusty) trusty; urgency=high
+
+  * Finished fixing the vim/emacs comments.
+  * Removed some unnecessary code (a try/catch).
+  * Various small fixes to allow FreeBSD to pass all the tests.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat, 21 Mar 2015 18:28:33 -0700
+
 zipios++ (2.0.1~trusty) trusty; urgency=high
 
   * Removed the unused tests.
