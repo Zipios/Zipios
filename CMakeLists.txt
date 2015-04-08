@@ -146,4 +146,9 @@ set(CPACK_PACKAGE_VERSION_PATCH "${ZIPIOS_VERSION_PATCH}")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "zipios-${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}.${ZIPIOS_VERSION_PATCH}")
 include(CPack)
 
+# Local Variables:
+# indent-tabs-mode: nil
+# tab-width: 4
+# End:
+
 # vim: ts=4 sw=4 et nocindent

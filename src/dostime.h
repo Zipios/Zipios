@@ -1,4 +1,7 @@
 #pragma once
+#ifndef DOSTIME_H
+#define DOSTIME_H
+
 /*
   dostime.h - routines for converting UNIX time to MS-DOS time.
 
@@ -54,6 +57,15 @@ dostime_t   unix2dostime(time_t unix_time);
 
 
 #ifdef __cplusplus
-}
+} // extern "C"
 #endif
+
+// Local Variables:
+// mode: cpp
+// indent-tabs-mode: nil
+// c-basic-offset: 4
+// tab-width: 4
+// End:
+
 // vim: ts=2 sw=2 et
+#endif

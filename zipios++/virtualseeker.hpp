@@ -63,8 +63,6 @@ private:
 
 } // zipios namespace
 
-// vim: ts=4 sw=4 et
-
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
@@ -72,4 +70,5 @@ private:
 // tab-width: 4
 // End:
 
+// vim: ts=4 sw=4 et
 #endif

@@ -349,7 +349,6 @@ void ZipEndOfCentralDirectory::write(std::ostream& os)
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -357,3 +356,5 @@ void ZipEndOfCentralDirectory::write(std::ostream& os)
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

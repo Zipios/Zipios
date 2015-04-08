@@ -80,7 +80,6 @@ ZipInputStream::~ZipInputStream()
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -88,3 +87,5 @@ ZipInputStream::~ZipInputStream()
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

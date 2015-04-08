@@ -191,7 +191,6 @@ void GZIPOutputStreambuf::writeInt(uint32_t i)
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -199,3 +198,5 @@ void GZIPOutputStreambuf::writeInt(uint32_t i)
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

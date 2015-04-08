@@ -72,4 +72,9 @@ install( TARGETS ${PROJECT_NAME}
 )
 
 
+# Local Variables:
+# indent-tabs-mode: nil
+# tab-width: 4
+# End:
+
 # vim: ts=4 sw=4 et

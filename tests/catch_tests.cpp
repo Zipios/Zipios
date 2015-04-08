@@ -65,11 +65,11 @@ int main(int argc, char *argv[])
     bool help(false);
     for(int i(1); i < argc; ++i)
     {
-        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
+        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) // LCOV_EXCL_LINE
         {
             help = true; // LCOV_EXCL_LINE
         }
-        else if(strcmp(argv[i], "--seed") == 0)
+        else if(strcmp(argv[i], "--seed") == 0) // LCOV_EXCL_LINE
         {
             if(i + 1 >= argc) // LCOV_EXCL_LINE
             {
@@ -101,11 +101,11 @@ int main(int argc, char *argv[])
 
 
 
-// vim: ts=4 sw=4 et
-
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

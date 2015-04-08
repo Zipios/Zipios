@@ -228,4 +228,11 @@ dostime_t unix2dostime(time_t unix_time)
 }
 
 
+// Local Variables:
+// mode: cpp
+// indent-tabs-mode: nil
+// c-basic-offset: 4
+// tab-width: 4
+// End:
+
 // vim: ts=4 sw=4 et

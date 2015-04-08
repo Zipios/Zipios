@@ -256,7 +256,6 @@ bool InflateInputStreambuf::reset(offset_t stream_position)
 
 
 } // zipios namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -264,3 +263,5 @@ bool InflateInputStreambuf::reset(offset_t stream_position)
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

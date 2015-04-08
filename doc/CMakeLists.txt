@@ -85,4 +85,9 @@ configure_file( ${CMAKE_SOURCE_DIR}/doc/zipios.doxy.in ${CMAKE_BINARY_DIR}/doc/z
 
 AddDoxygenTarget( zipios ${ZIPIOS_VERSION_MAJOR} ${ZIPIOS_VERSION_MINOR} ${ZIPIOS_VERSION_PATCH} )
 
+# Local Variables:
+# indent-tabs-mode: nil
+# tab-width: 4
+# End:
+
 # vim: ts=4 sw=4 et nocindent

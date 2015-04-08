@@ -95,4 +95,9 @@ target_link_libraries( ${PROJECT_NAME}
 # DO NOT INSTALL THIS ONE, IT IS JUST AN EXAMPLE!
 
 
+# Local Variables:
+# indent-tabs-mode: nil
+# tab-width: 4
+# End:
+
 # vim: ts=4 sw=4 et

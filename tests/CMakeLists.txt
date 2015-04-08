@@ -96,4 +96,9 @@ add_custom_target(run_zipios_tests
 
 endif(CATCH_FOUND)
 
+# Local Variables:
+# indent-tabs-mode: nil
+# tab-width: 4
+# End:
+
 # vim: ts=4 sw=4 et
