@@ -198,6 +198,32 @@ namespace zipios
  * rel="nofollow"><img alt="Download Zipios++"
  * src="https://img.shields.io/sourceforge/dt/zipios.svg"></a>
  *
+ * \section development Development
+ *
+ * The Zipios++ project makes use of a few development tools and the
+ * tests require the zip utility, used to verify that an external tool
+ * can generate a zip file that Zipios++ can read.
+ *
+ * Under a Debian or Ubuntu system, you can run apt-get install with
+ * the following list of packages:
+ *
+ * \code
+ *   # For source management (or download the .tar.gz file)
+ *   apt-get install git
+ *
+ *   # For developement
+ *   apt-get install g++ cmake zlib1g-dev
+ *
+ *   # For documentation (or download the -doc.tar.gz file)
+ *   apt-get install doxygen graphviz
+ *
+ *   # For testing (optional, albeit recommended)
+ *   apt-get install catch zip
+ * \endcode
+ *
+ * Other systems use tools with pretty much the same naming convention
+ * so you should be able to make the correlation.
+ *
  * \section links Links
  *
  * <a href="http://www.zlib.net/">zlib</a>.

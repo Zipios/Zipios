@@ -215,23 +215,6 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::s
 }
 
 
-/** \brief Return the number of entries defined in this collection.
- *
- * This function makes sure that the DirectoryCollection loaded its
- * entries, then it returns the size of the m_entries vector which
- * represents all the files in this directory, including the root
- * directory.
- *
- * \return The number of entries defined in this collection.
- */
-size_t DirectoryCollection::size() const
-{
-    loadEntries();
-
-    return m_entries.size();
-}
-
-
 /** \brief Create another DirectoryCollection.
  *
  * This function creates a clone of this DirectoryCollection. This is
