@@ -1,6 +1,7 @@
 <html>
 <head>
 	<title>Zipios++</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 		body
 		{
@@ -28,6 +29,7 @@
 			border: 1px solid #0000ff;
 			border-radius: 5px;
 			padding: 0;
+			background-color: #9d9ddf;
 			background: linear-gradient(to bottom, #bbbbdf, #9898df 60%, #8080df) repeat scroll 0 0 #9d9ddf;
 		}
 		ul.menu li.no-button
@@ -81,6 +83,23 @@
 		<li><a href="/coverage/">Test Coverage Information (version 2.x only)</a></li>
 		<li><a href="/zipios-v1/">Documentation of version 1.x of the zipios++ library</a></li>
 	</ul>
+	<h2>Running the unit tests (v2.x)</h2>
+	<p>
+		Testing on various systesm, I determined that to all the unit
+		tests in one go, you need about 50Mb of memory. The fact is
+		that some tests create zip files in memory. The library used
+		by itself would require very little in comparison unless
+		you load a large number of files and keep them in memory.
+	</p>
+	<p>
+		A computer with 512Mb of RAM is enough to run the tests
+		although I suggest at least 1Gb. One processor is enough
+		since we do not offer a multithreaded version of the tests.
+		However, since we use cmake, you can compile using any
+		number of processors and that will make it a lot faster.
+		(i.e. use the -J command line option with make to compile
+		multiple source files at once; it is very fast anyway.)
+	</p>
 </div>
 </body>
 </html>
