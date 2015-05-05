@@ -52,11 +52,11 @@ if $help
 then
 	echo "Usage: $0 [-opt]"
 	echo "where -opt is one or more of the following:"
-	echo "  -h | --help            print out this help screen"
-	echo "  -m | --main            transmit the main HTML files"
-	echo "  -d | --documentation   transmit the documentation if available"
-	echo "  -c | --coverage        transmit the coverage data if available"
-	echo "  -u | --username        log in to sourceforge using that user name"
+	echo "  -h | --help                print out this help screen"
+	echo "  -m | --main                transmit the main HTML files"
+	echo "  -d | --documentation       transmit the documentation if available"
+	echo "  -c | --coverage            transmit the coverage data if available"
+	echo "  -u | --username <name>     log in to sourceforge using that user name"
 	exit 1;
 fi
 
