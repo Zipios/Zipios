@@ -3,14 +3,15 @@
 #      CMakeLists.txt
 #
 # Description:
-#      Build zipios++ tools.
+#      Build Zipios++ tools.
 #
 # Documentation:
 #      See the CMake documentation.
 #
 # License:
 #      Zipios++ - a small C++ library that provides easy access to .zip files.
-#      Copyright (C) 2000-2015  Thomas Sondergaard
+#      Copyright (C) 2000-2007  Thomas Sondergaard
+#      Copyright (C) 2015  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
 #      modify it under the terms of the GNU Lesser General Public
@@ -41,8 +42,9 @@ target_link_libraries( ${PROJECT_NAME}
     zipios
 )
 
-install( TARGETS ${PROJECT_NAME}
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
     DESTINATION bin
+    RENAME zipios
 )
 
 

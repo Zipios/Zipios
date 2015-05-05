@@ -27,9 +27,9 @@
  * functions.
  */
 
-#include "zipios++/filecollection.hpp"
+#include "zipios/filecollection.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include <algorithm>
 

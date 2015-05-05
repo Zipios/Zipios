@@ -29,7 +29,7 @@
 
 #include "zipios_common.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 
 namespace zipios

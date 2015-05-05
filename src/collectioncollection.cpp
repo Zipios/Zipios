@@ -26,9 +26,9 @@
  * any number of collections within one collection.
  */
 
-#include "zipios++/collectioncollection.hpp"
+#include "zipios/collectioncollection.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "zipios_common.hpp"
 

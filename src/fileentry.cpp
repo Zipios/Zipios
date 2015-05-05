@@ -29,10 +29,10 @@
  * zipios::FileEntry is used to build collections of files.
  */
 
-#include "zipios++/fileentry.hpp"
+#include "zipios/fileentry.hpp"
 
 #include "dostime.h"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "zipios_common.hpp"
 

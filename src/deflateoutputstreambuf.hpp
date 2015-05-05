@@ -34,7 +34,7 @@
 
 #include "filteroutputstreambuf.hpp"
 
-#include "zipios++/fileentry.hpp"
+#include "zipios/fileentry.hpp"
 
 #include <cstdint>
 

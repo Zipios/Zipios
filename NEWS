@@ -1,3 +1,13 @@
+Release notes for Zipios++ 2.1.0
+--------------------------------
+
+Moving the header files from /usr/include/zipios++ to /usr/include/zipios
+which is a more conventional name for a directory.
+
+Various fixes such as copyright notices, zipios_tool renamed, manual
+pages.
+
+
 Release notes for Zipios++ 2.0.0
 --------------------------------
 

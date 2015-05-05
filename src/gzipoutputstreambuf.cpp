@@ -30,7 +30,7 @@
 
 #include "gzipoutputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 
 namespace zipios

@@ -33,7 +33,7 @@
  * that the virtual file has.
  */
 
-#include "zipios++/zipios-config.hpp"
+#include "zipios/zipios-config.hpp"
 
 #include <ctime>
 #include <string>

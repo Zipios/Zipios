@@ -27,7 +27,7 @@
  * system.
  */
 
-#include "zipios++/filepath.hpp"
+#include "zipios/filepath.hpp"
 
 #include "zipios_common.hpp"
 

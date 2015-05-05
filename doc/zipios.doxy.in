@@ -32,7 +32,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "zipios++"
+PROJECT_NAME           = "zipios"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -746,8 +746,8 @@ WARN_LOGFILE           =
 
 INPUT                  = @zipios_project_SOURCE_DIR@/src \
                          @zipios_project_SOURCE_DIR@/tools \
-                         @zipios_project_SOURCE_DIR@/zipios++ \
-                         @zipios_project_BINARY_DIR@/zipios++
+                         @zipios_project_SOURCE_DIR@/zipios \
+                         @zipios_project_BINARY_DIR@/zipios
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1751,7 +1751,7 @@ RTF_EXTENSIONS_FILE    =
 # classes and files.
 # The default value is: NO.
 
-GENERATE_MAN           = NO
+GENERATE_MAN           = YES
 
 # The MAN_OUTPUT tag is used to specify where the man pages will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of

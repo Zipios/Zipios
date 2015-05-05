@@ -19,6 +19,10 @@ Requires **zlib** ([http://www.zlib.org](http://www.zlib.org)).
 
 To run the automatic unit test suite you need **Catch**
 ([https://github.com/philsquared/Catch](https://github.com/philsquared/Catch))
+The tests also require the command line *zip* tool.
+
+To build the projects, we use a C++ compiler (tested with **g++** and
+**clang**) as well as **cmake**.
 
 
 # Installation (Unix)
@@ -50,8 +54,8 @@ For details about available installation configurations of cmake packages
 refer to the CMake documentation online
 [http://www.cmake.org/](http://www.cmake.org/)
 
-By default, `make install` installs the Zipios++ header files under
-`/usr/include/zipios++/` and the library `libzipios.so` under `/usr/lib/`.
+By default, `make install` installs the Zipios++ 2.1+ header files under
+`/usr/include/zipios/` and the library `libzipios.so` under `/usr/lib/`.
 You can choose another base path than `/usr/` using the following option
 on the `cmake` command line:
 

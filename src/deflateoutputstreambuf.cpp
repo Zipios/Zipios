@@ -27,7 +27,7 @@
 
 #include "deflateoutputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "zipios_common.hpp"
 
@@ -139,7 +139,7 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
         {
             // This is excluded from the coverage since if we reach this
             // line there is an internal error that needs to be fixed.
-            throw std::logic_error("the compression level must be defined between -3 and 100, see the zipios++/fileentry.hpp for a list of valid levels."); // LCOV_EXCL_LINE
+            throw std::logic_error("the compression level must be defined between -3 and 100, see the zipios/fileentry.hpp for a list of valid levels."); // LCOV_EXCL_LINE
         }
         // The zlevel is calculated linearly from the user specified value
         // of 1 to 100

@@ -28,7 +28,7 @@
 
 #include "ziplocalentry.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "dostime.h"
 #include "zipios_common.hpp"

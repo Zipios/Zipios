@@ -26,9 +26,9 @@
  * a Zip archive file.
  */
 
-#include "zipios++/zipfile.hpp"
+#include "zipios/zipfile.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "backbuffer.hpp"
 #include "zipendofcentraldirectory.hpp"
@@ -45,7 +45,7 @@
  * Note that a very few definitions are found outside of the namespace.
  * Some of those are hidden in the source of the library, a very few
  * appear in the zipios-config.hpp file as they are used to support
- * zipios++ on any platform.
+ * Zipios++ on any platform.
  *
  * Note that to ensure secure development, we do not make use of the
  * C++ "using ..." keyword. That way we can guarantee what's what.
@@ -110,7 +110,7 @@ namespace zipios
  * \li SunOS (starting with Open SunOS 11.2)
  * \li Cygwin (starting with 6.1)
  *
- * If you make zipios++ work on other platforms, let us know by posting
+ * If you make Zipios++ work on other platforms, let us know by posting
  * a message on Sourceforge.net
  *
  *   http://sourceforge.net/projects/zipios/

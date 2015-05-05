@@ -36,8 +36,8 @@
  * zipios::FileEntry objects from a zipios::DirectoryCollection.
  */
 
-#include "zipios++/filecollection.hpp"
-#include "zipios++/virtualseeker.hpp"
+#include "zipios/filecollection.hpp"
+#include "zipios/virtualseeker.hpp"
 
 
 namespace zipios

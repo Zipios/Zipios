@@ -26,8 +26,8 @@
 
 #include "catch_tests.hpp"
 
-#include "zipios++/zipfile.hpp"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipfile.hpp"
+#include "zipios/zipiosexceptions.hpp"
 #include "src/filterinputstreambuf.hpp"
 #include "src/filteroutputstreambuf.hpp"
 

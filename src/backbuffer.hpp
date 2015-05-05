@@ -29,7 +29,7 @@
  * The zipios::BackBuffer class is used to read a file backward.
  */
 
-#include "zipios++/virtualseeker.hpp"
+#include "zipios/virtualseeker.hpp"
 
 #include "zipios_common.hpp"
 

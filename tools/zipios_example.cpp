@@ -20,7 +20,7 @@
 */
 
 /** \file
- * \brief Implementation of a very simple zipios++ example.
+ * \brief Implementation of a very simple Zipios++ example.
  * \anchor zipios_example_anchor
  *
  * This source code is a small program that demonstrates the central
@@ -29,7 +29,7 @@
  * \include zipios_example.cpp
  */
 
-#include "zipios++/zipfile.hpp"
+#include "zipios/zipfile.hpp"
 
 
 int main(int argc, char *argv[])

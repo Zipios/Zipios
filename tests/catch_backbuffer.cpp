@@ -27,7 +27,7 @@
 #include "catch_tests.hpp"
 
 #include "src/backbuffer.hpp"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include <fstream>
 

@@ -26,8 +26,8 @@
 
 #include "catch_tests.hpp"
 
-#include "zipios++/directorycollection.hpp"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/directorycollection.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "src/dostime.h"
 

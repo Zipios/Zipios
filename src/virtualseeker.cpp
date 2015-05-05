@@ -31,9 +31,9 @@
  * \sa zipios::ZipFile::openEmbeddedZipFile()
  */
 
-#include "zipios++/virtualseeker.hpp"
+#include "zipios/virtualseeker.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 
 namespace zipios

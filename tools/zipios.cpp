@@ -22,11 +22,15 @@
 /** \file
  * \brief A tool to test various things in a zip file.
  *
- * Also zipios can be used to determine the version of your zipios++
- * installation (this tool version, the libzipios++.so/dll version, etc.)
+ * Also zipios can be used to determine the version of your Zipios++
+ * installation (this tool version, the libzipios.so/dll version, etc.)
+ *
+ * \todo
+ * Actually make this tool really useful (as a simple replacement to
+ * zip and unzip for example).
  */
 
-#include "zipios++/zipfile.hpp"
+#include "zipios/zipfile.hpp"
 
 #include <cstring>
 

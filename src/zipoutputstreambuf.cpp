@@ -28,7 +28,7 @@
 
 #include "zipoutputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "ziplocalentry.hpp"
 #include "zipendofcentraldirectory.hpp"

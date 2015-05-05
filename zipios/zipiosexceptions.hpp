@@ -34,7 +34,7 @@
  * errors we generate.
  */
 
-#include "zipios++/zipios-config.hpp"
+#include "zipios/zipios-config.hpp"
 
 #include <stdexcept>
 #include <string>

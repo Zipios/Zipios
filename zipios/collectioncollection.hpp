@@ -1,6 +1,6 @@
 #pragma once
-#ifndef ZIPIOS_DIRECTORYCOLLECTION_HPP
-#define ZIPIOS_DIRECTORYCOLLECTION_HPP
+#ifndef ZIPIOS_COLLECTIONCOLLECTION_HPP
+#define ZIPIOS_COLLECTIONCOLLECTION_HPP
 
 /*
   Zipios++ - a small C++ library that provides easy access to .zip files.
@@ -24,40 +24,39 @@
 */
 
 /** \file
- * \brief Define the zipios::DirectoryCollection class.
+ * \brief Define the zipios::CollectionCollection class.
  *
- * The zipios::DirectoryCollection class is used to handle a collection
- * of files as found in a directory on disk.
+ * This zipios::CollectionCollection class can be used to manage
+ * a collection of collections with a simple interface.
  */
 
-#include "zipios++/filecollection.hpp"
-#include "zipios++/directoryentry.hpp"
+#include "zipios/filecollection.hpp"
 
 
 namespace zipios
 {
 
 
-class DirectoryCollection : public FileCollection
+class CollectionCollection : public FileCollection
 {
 public:
-                                    DirectoryCollection();
-                                    DirectoryCollection(std::string const& path, bool recursive = true);
+    explicit                        CollectionCollection();
+                                    CollectionCollection(CollectionCollection const & src);
     virtual pointer_t               clone() const override;
-    virtual                         ~DirectoryCollection() override;
+    CollectionCollection&           operator = (CollectionCollection const & src);
+    virtual                         ~CollectionCollection() override;
 
+    bool                            addCollection(FileCollection const & collection);
+    bool                            addCollection(FileCollection::pointer_t collection);
     virtual void                    close() override;
     virtual FileEntry::vector_t     entries() const override;
-    virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const override;
-    virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+    virtual FileEntry::pointer_t    getEntry(std::string const & name, MatchPath matchpath = MatchPath::MATCH) const override;
+    virtual stream_pointer_t        getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH) override;
+    virtual size_t                  size() const override;
+    virtual void                    mustBeValid() const;
 
 protected:
-    void                            loadEntries() const;
-    void                            load(FilePath const& subdir);
-
-    mutable bool                    m_entries_loaded = false;
-    bool                            m_recursive = true;
-    FilePath                        m_filepath;
+    vector_t                        m_collections;
 };
 
 

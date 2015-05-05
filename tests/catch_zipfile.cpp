@@ -26,9 +26,9 @@
 
 #include "catch_tests.hpp"
 
-#include "zipios++/zipfile.hpp"
-#include "zipios++/directorycollection.hpp"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipfile.hpp"
+#include "zipios/directorycollection.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "src/dostime.h"
 
@@ -968,13 +968,13 @@ struct local_header_t
     uint32_t            m_signature;            // "PK 3.4"
     uint16_t            m_version;              // 10 or 20
     uint16_t            m_flags;                // generally zero ("general purpose field")
-    uint16_t            m_compression_method;   // zipios++ only supports STORED and DEFLATE
+    uint16_t            m_compression_method;   // Zipios++ only supports STORED and DEFLATE
     uint32_t            m_time_and_date;        // MS-DOS date and time
     uint32_t            m_crc32;                // CRC-32 of the file data
     uint32_t            m_compressed_size;      // size of data once compressed
     uint32_t            m_uncompressed_size;    // size of data uncompressed
     //uint16_t            m_filename_length;     // length name of this file
-    //uint16_t            m_extra_field_length;   // length of extra buffer, zipios++ ignore those
+    //uint16_t            m_extra_field_length;   // length of extra buffer, Zipios++ ignore those
     //uint8_t             m_filename[m_filename_length];
     std::string         m_filename;
     //uint8_t             m_extra_field[m_extra_field_length];
@@ -1059,7 +1059,7 @@ struct central_directory_header_t
     uint32_t            m_compressed_size;      // 14 -- size of data once compressed
     uint32_t            m_uncompressed_size;    // 18 -- size of data uncompressed
     //uint16_t            m_filename_length;      // 1C -- length name of this file
-    //uint16_t            m_extra_field_length;   // 1E -- length of extra buffer, zipios++ ignore those
+    //uint16_t            m_extra_field_length;   // 1E -- length of extra buffer, Zipios++ ignore those
     //uint16_t            m_file_comment_length;  // 20 -- length of comment
     uint16_t            m_disk_number_start;                // 22 -- disk number of split archives
     uint16_t            m_internal_file_attributes;         // 24 -- file attributes

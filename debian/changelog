@@ -1,4 +1,15 @@
-zipios++ (2.0.2~trusty) trusty; urgency=high
+zipios (2.1.0~trusty) trusty; urgency=high
+
+  * Renamed the include directory to remove the '++'.
+  * Renamed the Debian package "zipios".
+  * Added a few scripts to help with publishing a new version of Zipios++.
+  * Fixed and added some copyright notices.
+  * Fixed the comments in the cmake/* files.
+  * Fixed name of zipios_tool as just zipios once installed.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue,  5 May 2015 14:20:07 -0700
+
+zipios (2.0.2~trusty) trusty; urgency=high
 
   * Finished fixing the vim/emacs comments.
   * Removed some unnecessary code (a try/catch).
@@ -6,14 +17,14 @@ zipios++ (2.0.2~trusty) trusty; urgency=high
 
  -- Alexis Wilke <alexis@m2osw.com>  Sat, 21 Mar 2015 18:28:33 -0700
 
-zipios++ (2.0.1~trusty) trusty; urgency=high
+zipios (2.0.1~trusty) trusty; urgency=high
 
   * Removed the unused tests.
   * Applied a couple fixes to get cygwin to work as expected.
 
  -- Alexis Wilke <alexis@m2osw.com>  Sat, 21 Mar 2015 18:28:33 -0700
 
-zipios++ (2.0.0~trusty) trusty; urgency=high
+zipios (2.0.0~trusty) trusty; urgency=high
 
   * Moving to the new 2.X version.
   * Lots of updates and upgrades from Alexis, since he came on as the new lead.
@@ -21,33 +32,33 @@ zipios++ (2.0.0~trusty) trusty; urgency=high
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Tue, 3 Mar 2015 08:37:31 -0700
 
-zipios++ (0.1.5.10m2osw1~saucy) saucy; urgency=high
+zipios (0.1.5.10m2osw1~saucy) saucy; urgency=high
 
   * Added dostime.h/c and new methods that allow for conversion between
     dostime and unixtime.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Mon, 24 Mar 2014 19:17:19 -0700
 
-zipios++ (0.1.5.9+cvs.2007.04.28-5.1.m2osw4~saucy) saucy; urgency=high
+zipios (0.1.5.9+cvs.2007.04.28-5.1.m2osw4~saucy) saucy; urgency=high
 
   * Control file had the wrong dependency for dev package.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Thu, 20 Mar 2014 09:55:07 -0700
 
-zipios++ (0.1.5.9+cvs.2007.04.28-5.1.m2osw3~saucy) saucy; urgency=high
+zipios (0.1.5.9+cvs.2007.04.28-5.1.m2osw3~saucy) saucy; urgency=high
 
   * Corrected package install specs.
   * Main package is now renamed.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Thu, 20 Mar 2014 09:18:20 -0700
 
-zipios++ (0.1.5.9+cvs.2007.04.28-5.1.m2osw2~saucy) saucy; urgency=high
+zipios (0.1.5.9+cvs.2007.04.28-5.1.m2osw2~saucy) saucy; urgency=high
 
   * Forgot to include cmake in the build dependencies.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Wed, 19 Mar 2014 19:08:49 -0700
 
-zipios++ (0.1.5.9+cvs.2007.04.28-5.1.m2osw1~saucy) saucy; urgency=high
+zipios (0.1.5.9+cvs.2007.04.28-5.1.m2osw1~saucy) saucy; urgency=high
 
   * Fixed bug with zipfile.cpp, where getNextEntry() is called in the
   getInputStream() method, which does not need to happen, and in fact, causes
@@ -55,7 +66,7 @@ zipios++ (0.1.5.9+cvs.2007.04.28-5.1.m2osw1~saucy) saucy; urgency=high
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Wed, 19 Mar 2014 18:28:50 -0700
 
-zipios++ (0.1.5.9+cvs.2007.04.28-5.1) unstable; urgency=low
+zipios (0.1.5.9+cvs.2007.04.28-5.1) unstable; urgency=low
 
   * Non-maintainer upload.
   * Fix "zipios++: FTBFS: directory.h:85:12: error: 'ptrdiff_t' does not
@@ -67,7 +78,7 @@ zipios++ (0.1.5.9+cvs.2007.04.28-5.1) unstable; urgency=low
 
  -- gregor herrmann <gregoa@debian.org>  Sat, 08 Oct 2011 14:52:37 +0200
 
-zipios++ (0.1.5.9+cvs.2007.04.28-5) unstable; urgency=low
+zipios (0.1.5.9+cvs.2007.04.28-5) unstable; urgency=low
 
   * Bumped to Standards-Version: 3.8.0.
   * Use DESTDIR instead of prefix for doc install, thanks Ben
@@ -77,14 +88,14 @@ zipios++ (0.1.5.9+cvs.2007.04.28-5) unstable; urgency=low
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Fri, 18 Jul 2008 00:44:54 +0900
 
-zipios++ (0.1.5.9+cvs.2007.04.28-4) unstable; urgency=low
+zipios (0.1.5.9+cvs.2007.04.28-4) unstable; urgency=low
 
   * Added graphicsmagick-imagemagick-compat to Build-Depends.
     Thanks to Anibal Avelar - closes: #456349
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Wed, 02 Jan 2008 23:35:44 +0900
 
-zipios++ (0.1.5.9+cvs.2007.04.28-3) unstable; urgency=low
+zipios (0.1.5.9+cvs.2007.04.28-3) unstable; urgency=low
 
   * Bumped to Standards-Version: 3.7.3.
   * Fixed various lintian warnings.
@@ -93,7 +104,7 @@ zipios++ (0.1.5.9+cvs.2007.04.28-3) unstable; urgency=low
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Sun, 09 Dec 2007 06:33:47 +0900
 
-zipios++ (0.1.5.9+cvs.2007.04.28-2) unstable; urgency=low
+zipios (0.1.5.9+cvs.2007.04.28-2) unstable; urgency=low
 
   * Fix for amd64 in -1 was incomplete.  Now fixed.
   * src/zipinputstreambuf.cpp : Backported from the previous revision. 
@@ -101,7 +112,7 @@ zipios++ (0.1.5.9+cvs.2007.04.28-2) unstable; urgency=low
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Mon, 30 Apr 2007 10:21:50 +0900
 
-zipios++ (0.1.5.9+cvs.2007.04.28-1) unstable; urgency=low
+zipios (0.1.5.9+cvs.2007.04.28-1) unstable; urgency=low
 
   * New upstream release (CVS snapshot).
   * Acknowledged NMU - closes: #372679
@@ -111,7 +122,7 @@ zipios++ (0.1.5.9+cvs.2007.04.28-1) unstable; urgency=low
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Sat, 28 Apr 2007 02:11:43 +0900
 
-zipios++ (0.1.5.9+cvs.2004.02.07-3.4) unstable; urgency=high
+zipios (0.1.5.9+cvs.2004.02.07-3.4) unstable; urgency=high
 
   * Non-maintainer upload.
   * Ship an empty zipios-config.h, since it isn't good to have stuff like
@@ -123,21 +134,21 @@ zipios++ (0.1.5.9+cvs.2004.02.07-3.4) unstable; urgency=high
 
  -- Steinar H. Gunderson <sesse@debian.org>  Sun, 11 Jun 2006 00:46:57 +0200
 
-zipios++ (0.1.5.9+cvs.2004.02.07-3.3) unstable; urgency=high
+zipios (0.1.5.9+cvs.2004.02.07-3.3) unstable; urgency=high
 
   * Non-maintainer upload.
   * Rename to libzipios++0c2a for libstdc++ allocator change (Closes: #339280).
 
  -- Luk Claes <luk@debian.org>  Mon,  2 Jan 2006 19:26:45 +0100
 
-zipios++ (0.1.5.9+cvs.2004.02.07-3.2) unstable; urgency=medium
+zipios (0.1.5.9+cvs.2004.02.07-3.2) unstable; urgency=medium
 
   * Non-maintainer upload.
   * Build depend on libcppunit-dev. (Closes: #288819).
 
  -- Luk Claes <luk@debian.org>  Mon, 17 Oct 2005 17:56:52 +0200
 
-zipios++ (0.1.5.9+cvs.2004.02.07-3.1) unstable; urgency=low
+zipios (0.1.5.9+cvs.2004.02.07-3.1) unstable; urgency=low
 
   * NMU
   * gcc4 transition, renamed libzipios++0c102 to libzipios++0,
@@ -147,33 +158,33 @@ zipios++ (0.1.5.9+cvs.2004.02.07-3.1) unstable; urgency=low
 
  -- Isaac Clerencia <isaac@debian.org>  Mon, 18 Jul 2005 23:50:27 +0200
 
-zipios++ (0.1.5.9+cvs.2004.02.07-3) unstable; urgency=low
+zipios (0.1.5.9+cvs.2004.02.07-3) unstable; urgency=low
 
   * Added missing zipios-config.h - closes: #232097
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Wed, 11 Feb 2004 08:59:21 +0900
 
-zipios++ (0.1.5.9+cvs.2004.02.07-2) unstable; urgency=low
+zipios (0.1.5.9+cvs.2004.02.07-2) unstable; urgency=low
 
   * [control] changed Maintainer field.
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Sun,  8 Feb 2004 01:28:47 +0900
 
-zipios++ (0.1.5.9+cvs.2004.02.07-1) unstable; urgency=low
+zipios (0.1.5.9+cvs.2004.02.07-1) unstable; urgency=low
 
   * New upstream release (CVS snapshot).
   * Bumped Standards-Version to 3.6.1.
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Sat,  7 Feb 2004 16:47:39 +0900
 
-zipios++ (0.1.5+cvs.2003.03.18-1) unstable; urgency=low
+zipios (0.1.5+cvs.2003.03.18-1) unstable; urgency=low
 
   * New upstream release (CVS snapshot).
   * Added Build-Depends: automake1.7 - closes: #178638
 
  -- Masayuki Hatta <mhatta@debian.org>  Tue, 18 Mar 2003 10:51:25 +0900
 
-zipios++ (0.1.5+cvs.2003.01.14-1) unstable; urgency=low
+zipios (0.1.5+cvs.2003.01.14-1) unstable; urgency=low
 
   * New upstream release (CVS snapshot).
   * GCC 3.2 Transition begins.  Now it's called libzipios++0c102.
@@ -183,14 +194,14 @@ zipios++ (0.1.5+cvs.2003.01.14-1) unstable; urgency=low
 
  -- Masayuki Hatta <mhatta@debian.org>  Tue, 14 Jan 2003 16:51:29 +0900
 
-zipios++ (0.1.5+cvs.2002.11.22-1) unstable; urgency=low
+zipios (0.1.5+cvs.2002.11.22-1) unstable; urgency=low
 
   * New upstream release (CVS snapshot)
   * Applied patched from FreeBSD people - closes: #156424, #166741
 
  -- Masayuki Hatta <mhatta@debian.org>  Fri, 22 Nov 2002 11:50:35 +0900
 
-zipios++ (0.1.5+cvs.2002.08.10-1) unstable; urgency=low
+zipios (0.1.5+cvs.2002.08.10-1) unstable; urgency=low
 
   * Initial Release - closes: #156131
   * Uses CVS snapshot, since the original 0.1.5 doesn't support shared

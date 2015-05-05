@@ -33,7 +33,7 @@
 
 #include "filterinputstreambuf.hpp"
 
-#include "zipios++/zipios-config.hpp"
+#include "zipios/zipios-config.hpp"
 
 #include <vector>
 

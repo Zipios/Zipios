@@ -30,7 +30,7 @@
  * another place to live.
  */
 
-#include "zipios++/zipios-config.hpp"
+#include "zipios/zipios-config.hpp"
 
 #include <vector>
 #include <sstream>

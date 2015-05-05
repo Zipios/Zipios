@@ -26,9 +26,9 @@
 
 #include "catch_tests.hpp"
 
-#include "zipios++/collectioncollection.hpp"
-#include "zipios++/directorycollection.hpp"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/collectioncollection.hpp"
+#include "zipios/directorycollection.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include <fstream>
 

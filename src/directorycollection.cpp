@@ -31,9 +31,9 @@
 #define ZIPIOS_WINDOWS
 #endif
 
-#include "zipios++/directorycollection.hpp"
+#include "zipios/directorycollection.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include <fstream>
 

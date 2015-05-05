@@ -27,7 +27,7 @@
  */
 
 #include "src/dostime.h"
-#include "zipios++/zipios-config.hpp"
+#include "zipios/zipios-config.hpp"
 
 #include <cstring>
 #include <iostream>

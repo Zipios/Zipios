@@ -3,14 +3,15 @@
 #      CMakeLists.txt
 #
 # Description:
-#      Build zipios++ library, tools, packages, tests, documentation.
+#      Build the Zipios++ library, tools, packages, tests, documentation.
 #
 # Documentation:
 #      See the CMake documentation.
 #
 # License:
 #      Zipios++ - a small C++ library that provides easy access to .zip files.
-#      Copyright (C) 2000-2015  Thomas Sondergaard
+#      Copyright (C) 2000-2007  Thomas Sondergaard
+#      Copyright (C) 2015  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
 #      modify it under the terms of the GNU Lesser General Public
@@ -32,8 +33,8 @@ cmake_minimum_required(VERSION 2.8.4)
 project( zipios_project )
 
 set( ZIPIOS_VERSION_MAJOR 2 )
-set( ZIPIOS_VERSION_MINOR 0 )
-set( ZIPIOS_VERSION_PATCH 3 )
+set( ZIPIOS_VERSION_MINOR 1 )
+set( ZIPIOS_VERSION_PATCH 0 )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
@@ -82,11 +83,11 @@ endif()
 
 find_package( ZLIB REQUIRED )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios++/zipios-config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/zipios++/zipios-config.hpp )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios/zipios-config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/zipios/zipios-config.hpp )
 
 # Generate the RPM package specification file
-set(PACKAGE "libzipios++")
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios++.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios++.spec )
+set(PACKAGE "libzipios")
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.spec )
 
 include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 
@@ -95,15 +96,17 @@ add_subdirectory( tools )
 add_subdirectory( tests )
 add_subdirectory( doc )
 
-install( DIRECTORY zipios++
+install( DIRECTORY zipios
     DESTINATION include
     PATTERN "*.in" EXCLUDE
 )
 
-install( FILES ${CMAKE_BINARY_DIR}/zipios++/zipios-config.hpp
-    DESTINATION include/zipios++
+install( FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
+    DESTINATION include/zipios
 )
 
+# TODO: how do we determine the correct destination?
+#       (i.e. 3.x is now out and 2.8 will probably fail for those users)
 install( DIRECTORY cmake/
     DESTINATION share/cmake-2.8/Modules
 )

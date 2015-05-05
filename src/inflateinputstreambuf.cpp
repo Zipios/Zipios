@@ -29,7 +29,7 @@
 
 #include "inflateinputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "zipios_common.hpp"
 

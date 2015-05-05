@@ -4,7 +4,7 @@ set -e
 
 if test "$1" = "--help" -o "$1" = "-h"
 then
-    echo "Usage: $0 [--opt]"
+    echo "Usage: $0 [--opt] [test-name]"
     echo "where --opt is one of:"
     echo "   --all          run all tests"
     echo "   --full         run all tests and publish to the world"
@@ -13,6 +13,10 @@ then
     echo "   [directoryentry]  run the DirectoryEntry class tests"
     echo "   [fileentry]       run all the tests that check the FileEntry interface"
     echo "   [filepath]        run the FilePath class tests"
+    echo
+    echo "for a complete list of tests use the --list command line option"
+    echo "of the test executable:"
+    echo "   zipios_tests --list"
     exit 1;
 fi
 
@@ -100,7 +104,7 @@ end_date=`date`
 # Statistics
 echo "<html><head><title>zipios $FULL_VERSION statistics</title></head><body>" >zipios_coverage_html/statistics.html
 echo "<h3>Statistics of the zipios $FULL_VERSION code</h3><pre>" >>zipios_coverage_html/statistics.html
-cloc $SOURCE_PATH/src/ $SOURCE_PATH/tools/ $SOURCE_PATH/zipios++/ >>zipios_coverage_html/statistics.html
+cloc $SOURCE_PATH/src/ $SOURCE_PATH/tools/ $SOURCE_PATH/zipios/ >>zipios_coverage_html/statistics.html
 echo "</pre><h3>Statistics of the zipios $FULL_VERSION tests</h3><pre>" >>zipios_coverage_html/statistics.html
 cloc $SOURCE_PATH/tests/ >>zipios_coverage_html/statistics.html
 echo "</pre></body></html>" >>zipios_coverage_html/statistics.html

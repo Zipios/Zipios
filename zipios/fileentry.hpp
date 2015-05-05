@@ -34,7 +34,7 @@
  * \sa zipios::FileCollection
  */
 
-#include "zipios++/filepath.hpp"
+#include "zipios/filepath.hpp"
 
 #include <memory>
 #include <vector>

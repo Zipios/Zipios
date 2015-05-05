@@ -26,8 +26,8 @@
 
 #include "catch_tests.hpp"
 
-#include "zipios++/virtualseeker.hpp"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/virtualseeker.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include <fstream>
 
