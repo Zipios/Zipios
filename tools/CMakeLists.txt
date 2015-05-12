@@ -38,13 +38,16 @@ add_executable( ${PROJECT_NAME}
     zipios.cpp
 )
 
+set_target_properties( ${PROJECT_NAME}
+    PROPERTIES OUTPUT_NAME zipios
+)
+
 target_link_libraries( ${PROJECT_NAME}
     zipios
 )
 
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+install( TARGETS ${PROJECT_NAME}
     DESTINATION bin
-    RENAME zipios
 )
 
 
