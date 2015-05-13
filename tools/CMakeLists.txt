@@ -47,7 +47,7 @@ target_link_libraries( ${PROJECT_NAME}
 )
 
 install( TARGETS ${PROJECT_NAME}
-    DESTINATION bin
+    DESTINATION ${BIN_INSTALL_DIR}
 )
 
 
@@ -61,7 +61,7 @@ add_executable( ${PROJECT_NAME}
 )
 
 install( TARGETS ${PROJECT_NAME}
-    DESTINATION bin
+    DESTINATION ${BIN_INSTALL_DIR}
 )
 
 
@@ -80,7 +80,7 @@ target_link_libraries( ${PROJECT_NAME}
 )
 
 install( TARGETS ${PROJECT_NAME}
-    DESTINATION bin
+    DESTINATION ${BIN_INSTALL_DIR}
 )
 
 

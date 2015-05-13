@@ -81,6 +81,23 @@ if( ${${PROJECT_NAME}_COVERAGE} )
     set( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} ${COV_EXE_LINKER_FLAGS}"       )
 endif()
 
+#
+# Default install locations, override cache variables to change.
+#
+if(NOT CMAKE_VERSION VERSION_GREATER "2.8.4")
+    set(CMAKE_INSTALL_BINDIR  bin)
+    set(CMAKE_INSTALL_INCLUDE include)
+    set(CMAKE_INSTALL_LIBDIR  lib)
+    set(CMAKE_INSTALL_DATADIR share)
+else()
+    include(GNUInstallDirs)
+endif()
+set(BIN_INSTALL_DIR     ${CMAKE_INSTALL_BINDIR}     CACHE PATH "Location to install binaries relative to the install prefix.")
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE PATH "Location to install headers relative to the install prefix.")
+set(LIB_INSTALL_DIR     ${CMAKE_INSTALL_LIBDIR}     CACHE PATH "Location to install libraries relative to the install prefix.")
+set(DATA_INSTALL_DIR    ${CMAKE_INSTALL_DATADIR}    CACHE PATH "Location to install data files relative to the install prefix.")
+
+
 find_package( ZLIB REQUIRED )
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios/zipios-config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/zipios/zipios-config.hpp )
@@ -97,18 +114,18 @@ add_subdirectory( tests )
 add_subdirectory( doc )
 
 install( DIRECTORY zipios
-    DESTINATION include
+    DESTINATION ${INCLUDE_INSTALL_DIR}
     PATTERN "*.in" EXCLUDE
 )
 
 install( FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
-    DESTINATION include/zipios
+    DESTINATION ${INCLUDE_INSTALL_DIR}/zipios
 )
 
 # TODO: how do we determine the correct destination?
 #       (i.e. 3.x is now out and 2.8 will probably fail for those users)
 install( DIRECTORY cmake/
-    DESTINATION share/cmake-2.8/Modules
+    DESTINATION ${DATA_INSTALL_DIR}/cmake-2.8/Modules
 )
 
 add_custom_target(zipios_code_analysis

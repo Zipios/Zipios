@@ -75,7 +75,7 @@ function( AddDoxygenTarget TARGET_NAME VERSION_MAJOR VERSION_MINOR VERSION_PATCH
 
         string( TOLOWER ${TARGET_NAME} LOWER_TARGET_NAME )
         install( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${DOCUMENTATION_OUTPUT}/
-                DESTINATION share/doc/${LOWER_TARGET_NAME}/html/
+                DESTINATION ${DATA_INSTALL_DIR}/doc/${LOWER_TARGET_NAME}/html/
         )
         # The following installs the man3 files, we only install the man
         # pages of public classes. For more details the user will have to
@@ -89,7 +89,7 @@ function( AddDoxygenTarget TARGET_NAME VERSION_MAJOR VERSION_MINOR VERSION_PATCH
                        ${CMAKE_CURRENT_BINARY_DIR}/man/man3/zipios_FilePath.3
                        ${CMAKE_CURRENT_BINARY_DIR}/man/man3/zipios_VirtualSeeker.3
                        ${CMAKE_CURRENT_BINARY_DIR}/man/man3/zipios_ZipFile.3
-                DESTINATION share/man/man3
+                DESTINATION ${DATA_INSTALL_DIR}/man/man3
         )
     else()
         message( WARNING "You do not seem to have doxygen installed on this system, no documentation will be generated." )
