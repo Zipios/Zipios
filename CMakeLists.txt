@@ -92,10 +92,13 @@ if(NOT CMAKE_VERSION VERSION_GREATER "2.8.4")
 else()
     include(GNUInstallDirs)
 endif()
-set(BIN_INSTALL_DIR     ${CMAKE_INSTALL_BINDIR}     CACHE PATH "Location to install binaries relative to the install prefix.")
-set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE PATH "Location to install headers relative to the install prefix.")
-set(LIB_INSTALL_DIR     ${CMAKE_INSTALL_LIBDIR}     CACHE PATH "Location to install libraries relative to the install prefix.")
-set(DATA_INSTALL_DIR    ${CMAKE_INSTALL_DATADIR}    CACHE PATH "Location to install data files relative to the install prefix.")
+set(CMAKE_INSTALL_CMAKEMODULESDIR ${CMAKE_INSTALL_DATADIR}/cmake-2.8/Modules)
+
+set(BIN_INSTALL_DIR             ${CMAKE_INSTALL_BINDIR}             CACHE PATH "Location to install binaries relative to the install prefix.")
+set(INCLUDE_INSTALL_DIR         ${CMAKE_INSTALL_INCLUDEDIR}         CACHE PATH "Location to install headers relative to the install prefix.")
+set(LIB_INSTALL_DIR             ${CMAKE_INSTALL_LIBDIR}             CACHE PATH "Location to install libraries relative to the install prefix.")
+set(DATA_INSTALL_DIR            ${CMAKE_INSTALL_DATADIR}            CACHE PATH "Location to install data files relative to the install prefix.")
+set(CMAKE_MODULES_INSTALL_DIR   ${CMAKE_INSTALL_CMAKEMODULESDIR}    CACHE PATH "Location to install data files relative to the install prefix.")
 
 
 find_package( ZLIB REQUIRED )
@@ -125,7 +128,7 @@ install( FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
 # TODO: how do we determine the correct destination?
 #       (i.e. 3.x is now out and 2.8 will probably fail for those users)
 install( DIRECTORY cmake/
-    DESTINATION ${DATA_INSTALL_DIR}/cmake-2.8/Modules
+    DESTINATION ${CMAKE_MODULES_INSTALL_DIR}
 )
 
 add_custom_target(zipios_code_analysis
