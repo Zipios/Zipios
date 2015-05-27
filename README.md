@@ -25,10 +25,31 @@ To build the projects, we use a C++ compiler (tested with **g++** and
 **clang**) as well as **cmake**.
 
 
-# Installation (Unix)
+# Installation
 
 This version of the software uses `cmake` to generate the necessary make
 files or solutions and projects under MS-Windows.
+
+The following options are supported:
+
+    - `BUILD_SHARED_LIBS` (ON by default)
+    - `BUILD_DOCUMENTATION` (ON by default)
+    - `zipios_project_COVERAGE` (OFF by default)
+
+In order to build Zipios++ as a static library, specify:
+
+    -DBUILD_SHARED_LIBS:BOOL=OFF
+
+In order to explicitly disable building Doxygen documentation, specify:
+
+    -DBUILD_DOCUMENTATION:BOOL=OFF
+
+In order to build the library with coverage support, use the coverage
+option and make sure to compile in Debug mode too:
+
+    -Dzipios_project_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+
+## Unix
 
 Once you have `cmake` installed, you should be able to run the following
 under Unix:
@@ -70,7 +91,7 @@ many tests. (It is possible to run one test at a time, see the script
 under `dev/check` for an example.)
 
 
-# Installation (Windows)
+## Windows
 
 CMake comes with a graphical tool one can use under MS-Windows to
 configure and generate a project supporting cmake. You will find more

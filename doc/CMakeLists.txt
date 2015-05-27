@@ -30,6 +30,8 @@
 
 cmake_minimum_required(VERSION 2.8)
 
+if (BUILD_DOCUMENTATION)
+
 project( zipios_documentation )
 
 ################################################################################
@@ -99,6 +101,12 @@ endfunction()
 configure_file( ${CMAKE_SOURCE_DIR}/doc/zipios.doxy.in ${CMAKE_BINARY_DIR}/doc/zipios.doxy )
 
 AddDoxygenTarget( zipios ${ZIPIOS_VERSION_MAJOR} ${ZIPIOS_VERSION_MINOR} ${ZIPIOS_VERSION_PATCH} )
+
+else(BUILD_DOCUMENTATION)
+
+message("No documentation will be created because you explicitly disabled it.")
+
+endif(BUILD_DOCUMENTATION)
 
 # Local Variables:
 # indent-tabs-mode: nil

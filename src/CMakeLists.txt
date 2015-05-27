@@ -30,7 +30,7 @@
 
 project( zipios )
 
-add_library( ${PROJECT_NAME} SHARED
+add_library( ${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
     backbuffer.cpp
     collectioncollection.cpp
     deflateoutputstreambuf.cpp

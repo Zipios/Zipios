@@ -26,13 +26,15 @@
 #      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 
-find_path( ZIPIOSCC_INCLUDE_DIR zipios/zipfile.h
-		   PATHS /usr/include /usr/local/include $ENV{ZIPIOSCC_INCLUDE_DIR}
-		   PATH_SUFFIXES zipios
-		 )
-find_library( ZIPIOSCC_LIBRARY libzipios.so
-			PATHS /usr/lib /usr/local/lib $ENV{ZIPIOSCC_LIBRARY}
-		 )
+find_path( ZIPIOSCC_INCLUDE_DIR zipios/zipfile.hpp
+                          HINTS $ENV{ZIPIOSCC_INCLUDE_DIR}
+                  PATH_SUFFIXES zipios
+)
+
+find_library( ZIPIOSCC_LIBRARY zipios
+                         HINTS $ENV{ZIPIOSCC_LIBRARY}
+)
+
 mark_as_advanced( ZIPIOSCC_INCLUDE_DIR ZIPIOSCC_LIBRARY )
 
 set( ZIPIOSCC_INCLUDE_DIRS ${ZIPIOSCC_INCLUDE_DIR} )
@@ -43,3 +45,4 @@ include( FindPackageHandleStandardArgs )
 # if all listed variables are TRUE
 find_package_handle_standard_args( ZipIos DEFAULT_MSG ZIPIOSCC_INCLUDE_DIR ZIPIOSCC_LIBRARY )
 
+# vim: ts=4 sw=4 et

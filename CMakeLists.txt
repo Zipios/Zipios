@@ -56,6 +56,16 @@ else()
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC" )
 endif()
 
+option(BUILD_SHARED_LIBS "Build the ${PROJECT_NAME} libraries shared." ON)
+
+if(BUILD_SHARED_LIBS)
+    set(ZIPIOS_LIBRARY_TYPE SHARED)
+else(BUILD_SHARED_LIBS)
+    set(ZIPIOS_LIBRARY_TYPE STATIC)
+endif(BUILD_SHARED_LIBS)
+
+option(BUILD_DOCUMENTATION "Build the ${PROJECT_NAME} documentation." ON)
+
 # To generate coverage, use -D<project name>_COVERAGE=ON
 #                       and -DCMAKE_BUILD_TYPE=Debug
 option( ${PROJECT_NAME}_COVERAGE "Turn on coverage for ${PROJECT_NAME}." OFF )
