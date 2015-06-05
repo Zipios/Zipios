@@ -27,7 +27,8 @@
  *   https://github.com/philsquared/Catch/blob/master/docs/tutorial.md
  */
 
-// Ask Catch to define the main() function in this file
+// Prevent Catch from defining a default main() function in this file
+// but let it know this is the file that does containt the main() function
 #define CATCH_CONFIG_RUNNER
 
 #include "catch_tests.hpp"
