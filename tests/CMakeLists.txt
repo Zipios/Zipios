@@ -34,13 +34,6 @@ if(CATCH_FOUND)
 
 project( zipios_tests )
 
-# The tests also include a set of test files:
-#          file1.txt    a text file part of test.zip
-#          file2.txt    a text file part of test.zip
-#          file3.txt    a text file part of test.zip
-#          testfile.bin a binary file part of test.zip
-#          test.zip     a zip file for test purposes
-
 include_directories(
     ${CATCH_INCLUDE_DIR}
 )
