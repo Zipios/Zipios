@@ -54,22 +54,10 @@ add_executable( ${PROJECT_NAME}
 
     catch_directory_helper.cpp
     catch_raii_helper.cpp
-
-# commontest.cpp
-# zipfiletest.cpp
-# zipinputstreamtest.cpp
-# zipoutputstreamtest.cpp
-
-# test_appzip.cpp                                        test_zipinputstream.cpp
-# test_collcoll.cpp          test_simplesmartptr.cpp     test_zipoutputstreambuf.cpp
-# test_dircoll.cpp                                       test_zipoutputstream.cpp
-# example_zip.cpp            test_zip.cpp
-# test_gzipoutputstream.cpp  test_zipinputstreambuf.cpp
 )
 
 target_link_libraries( ${PROJECT_NAME}
     zipios
-    ${CPPUNIT_LIBRARIES}
 )
 
 add_custom_target(run_zipios_tests
