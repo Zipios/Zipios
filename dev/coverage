@@ -58,7 +58,7 @@ echo "***"
 # Catch does not give us such... we may want to bypass the limitation...
 #if test `tests/zipios_tests --version` != "$FULL_VERSION"
 #then
-#    echo "the version of test_as2js (`BUILD/tests/test_as2js --version`) is not equal to the project version ($FULL_VERSION)"
+#    echo "the version of zipios_tests (`BUILD/tests/zipios_tests --version`) is not equal to the project version ($FULL_VERSION)"
 #    exit 1;
 #fi
 if $FULL
@@ -110,7 +110,7 @@ cloc $SOURCE_PATH/tests/ >>zipios_coverage_html/statistics.html
 echo "</pre></body></html>" >>zipios_coverage_html/statistics.html
 
 # Test output (Logs)
-echo "<html><head><title>as2js $FULL_VERSION test logs</title></head><body><h3>Logs for the as2js $FULL_VERSION tests</h3><p>Tests started on $start_date and finished on $end_date</p><pre>" >zipios_coverage_html/test_log.html
+echo "<html><head><title>zipios $FULL_VERSION test logs</title></head><body><h3>Logs for the zipios $FULL_VERSION tests</h3><p>Tests started on $start_date and finished on $end_date</p><pre>" >zipios_coverage_html/test_log.html
 if test -f zipios_coverage/test_log.txt
 then
     # If test_log.txt does not exist, the user got the logs in the
