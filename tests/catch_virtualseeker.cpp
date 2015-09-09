@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -164,17 +164,17 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             if(sz > 0)
             {
                 REQUIRE(buf[0] == static_cast<char>(end_offset - sz));
-            }                                                         
-            if(sz > 1)                                                
-            {                                                         
+            }
+            if(sz > 1)
+            {
                 REQUIRE(buf[1] == static_cast<char>(end_offset - sz + 1));
-            }                                                         
-            if(sz > 2)                                                
-            {                                                         
+            }
+            if(sz > 2)
+            {
                 REQUIRE(buf[2] == static_cast<char>(end_offset - sz + 2));
-            }                                                         
-            if(sz > 3)                                                
-            {                                                         
+            }
+            if(sz > 3)
+            {
                 REQUIRE(buf[3] == static_cast<char>(end_offset - sz + 3));
             }
 
@@ -295,17 +295,17 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             if(sz > 0)
             {
                 REQUIRE(buf[0] == static_cast<char>(end_offset2 - sz));
-            }                                                         
-            if(sz > 1)                                                
-            {                                                         
+            }
+            if(sz > 1)
+            {
                 REQUIRE(buf[1] == static_cast<char>(end_offset2 - sz + 1));
-            }                                                         
-            if(sz > 2)                                                
-            {                                                         
+            }
+            if(sz > 2)
+            {
                 REQUIRE(buf[2] == static_cast<char>(end_offset2 - sz + 2));
-            }                                                         
-            if(sz > 3)                                                
-            {                                                         
+            }
+            if(sz > 3)
+            {
                 REQUIRE(buf[3] == static_cast<char>(end_offset2 - sz + 3));
             }
         }

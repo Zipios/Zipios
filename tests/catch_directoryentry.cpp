@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -1138,7 +1138,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
             {
                 // DOS time numbers are not linear so we use a Unix date and
                 // convert to DOS time (since we know our convertor works)
-                // 
+                //
                 // Jan 1, 1980 at 00:00:00  is  315561600   (min)
                 // Dec 31, 2107 at 23:59:59  is 4354847999  (max)
                 time_t t(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
