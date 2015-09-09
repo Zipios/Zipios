@@ -24,7 +24,7 @@
  * Zipios++ unit tests used to verify the VirtualSeeker class.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
 #include "zipios/virtualseeker.hpp"
 #include "zipios/zipiosexceptions.hpp"

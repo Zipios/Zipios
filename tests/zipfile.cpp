@@ -24,7 +24,7 @@
  * Zipios++ unit tests for the ZipFile class.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
 #include "zipios/zipfile.hpp"
 #include "zipios/directorycollection.hpp"

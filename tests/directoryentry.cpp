@@ -24,7 +24,7 @@
  * Zipios++ unit tests for the DirectoryEntry class.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
 #include "zipios/directoryentry.hpp"
 #include "zipios/zipiosexceptions.hpp"

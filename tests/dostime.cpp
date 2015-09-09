@@ -27,7 +27,7 @@
  * This directly accesses dostime.h which is a private header file.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
 #include "src/dostime.h"
 

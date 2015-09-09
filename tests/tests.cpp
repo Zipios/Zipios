@@ -31,7 +31,7 @@
 // but let it know this is the file that does containt the main() function
 #define CATCH_CONFIG_RUNNER
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
 #include <cstring>
 

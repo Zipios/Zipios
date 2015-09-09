@@ -24,7 +24,7 @@
  * Zipios++ unit tests for the CollectionCollection class.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
 #include "zipios/collectioncollection.hpp"
 #include "zipios/directorycollection.hpp"

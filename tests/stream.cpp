@@ -24,7 +24,7 @@
  * Zipios++ unit tests for various stream and buffer classes.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
 #include "zipios/zipfile.hpp"
 #include "zipios/zipiosexceptions.hpp"

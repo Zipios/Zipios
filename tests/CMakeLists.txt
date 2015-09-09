@@ -39,21 +39,21 @@ include_directories(
 )
 
 add_executable( ${PROJECT_NAME}
-    catch_tests.cpp
+    tests.cpp
 
-    catch_backbuffer.cpp
-    catch_collectioncollection.cpp
-    catch_common.cpp
-    catch_directorycollection.cpp
-    catch_directoryentry.cpp
-    catch_dostime.cpp
-    catch_filepath.cpp
-    catch_stream.cpp
-    catch_virtualseeker.cpp
-    catch_zipfile.cpp
+    backbuffer.cpp
+    collectioncollection.cpp
+    common.cpp
+    directorycollection.cpp
+    directoryentry.cpp
+    dostime.cpp
+    filepath.cpp
+    stream.cpp
+    virtualseeker.cpp
+    zipfile.cpp
 
-    catch_directory_helper.cpp
-    catch_raii_helper.cpp
+    directory_helper.cpp
+    raii_helper.cpp
 )
 
 target_link_libraries( ${PROJECT_NAME}

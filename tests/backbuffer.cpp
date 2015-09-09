@@ -24,7 +24,7 @@
  * Zipios++ unit tests for the BackBuffer class.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
 #include "src/backbuffer.hpp"
 #include "zipios/zipiosexceptions.hpp"
