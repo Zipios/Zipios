@@ -34,6 +34,11 @@
 
 #include <vector>
 #include <sstream>
+#include <stdint.h>
+
+#if !defined(ssize_t)
+typedef int32_t ssize_t;
+#endif
 
 
 /** \brief Contatenate two vectors together.

@@ -30,6 +30,7 @@
 
 #include "zipios/zipiosexceptions.hpp"
 
+#include <algorithm>
 
 namespace zipios
 {

@@ -30,6 +30,8 @@
 
 project( zipios )
 
+include_directories( ${ZLIB_INCLUDE_DIR} )
+
 add_library( ${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
     backbuffer.cpp
     collectioncollection.cpp
@@ -58,7 +60,7 @@ add_library( ${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
 )
 
 target_link_libraries( ${PROJECT_NAME}
-    ${ZLIB_LIBRARIES}
+    ${ZLIB_LIBRARY}
 )
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES

@@ -32,6 +32,7 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <stdint.h>
 
 
 // static variables
