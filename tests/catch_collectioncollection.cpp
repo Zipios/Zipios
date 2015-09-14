@@ -106,7 +106,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
             REQUIRE_FALSE(cc.addCollection(cc));
 
             // create a directory tree starting in "tree"
-            system("rm -rf tree"); // clean up, just in case
+            REQUIRE(system("rm -rf tree") != -1); // clean up, just in case
             size_t start_count(rand() % 10 + 10); // pretty small, no need to waste too much time here
             zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
             zipios::DirectoryCollection dc("tree", true);
@@ -544,7 +544,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
             //
 
             // create directory trees starting in "tree1", "tree2", ..., "tree5"
-            system("rm -rf tree[1-5]"); // clean up, just in case
+            REQUIRE(system("rm -rf tree[1-5]")!=-1); // clean up, just in case
 
             zipios_test::file_t::vector_t tree;
             zipios::DirectoryCollection::vector_t dc;
