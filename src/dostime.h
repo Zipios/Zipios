@@ -1,4 +1,7 @@
 #pragma once
+#ifndef DOSTIME_H
+#define DOSTIME_H
+
 /*
   dostime.h - routines for converting UNIX time to MS-DOS time.
 
@@ -21,7 +24,7 @@
 
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -54,6 +57,15 @@ dostime_t   unix2dostime(time_t unix_time);
 
 
 #ifdef __cplusplus
-}
+} // extern "C"
 #endif
+
+// Local Variables:
+// mode: cpp
+// indent-tabs-mode: nil
+// c-basic-offset: 4
+// tab-width: 4
+// End:
+
 // vim: ts=2 sw=2 et
+#endif

@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -28,7 +28,7 @@
 
 #include "ziplocalentry.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "dostime.h"
 #include "zipios_common.hpp"
@@ -416,6 +416,10 @@ void ZipLocalEntry::write(std::ostream& os)
     || m_uncompressed_size >= 0x100000000UL)
     {
         // these are really big files, we do not currently test such so ignore in coverage
+        //
+        // Note: The compressed size is known at the end, we seek back to
+        //       this header and resave it with the info; thus the error
+        //       is caught then if it was not out of bounds earlier.
         throw InvalidStateException("The size of this file is too large to fit in a zip archive."); // LCOV_EXCL_LINE
     }
 #endif

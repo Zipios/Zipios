@@ -1,0 +1,105 @@
+<html>
+<head>
+	<title>Zipios++</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		body
+		{
+			margin: 0;
+			height: 100%;
+			background: linear-gradient(to bottom, #f8f8f8, #f8f8f8 90%, #bbbbbb) repeat fixed 0 0 #f8f8f8;
+			font-family: sans-serif;
+		}
+		div
+		{
+			margin: 0;
+		}
+		ul.menu
+		{
+			margin: 0;
+			padding: 0;
+			text-align: center;
+		}
+		ul.menu li
+		{
+			display: inline;
+			list-style: none;
+			margin: 5px 0 0 20px;
+			float: left;
+			border: 1px solid #0000ff;
+			border-radius: 5px;
+			padding: 0;
+			background-color: #9d9ddf;
+			background: linear-gradient(to bottom, #bbbbdf, #9898df 60%, #8080df) repeat scroll 0 0 #9d9ddf;
+		}
+		ul.menu li.no-button
+		{
+			border: none;
+			background: none;
+			margin-top: 0;
+		}
+		ul.menu li a
+		{
+			display: block;
+			padding: 5px 10px;
+			text-decoration: none;
+			color: white;
+		}
+		div.header
+		{
+			padding: 10px;
+			background: white;
+			border-bottom: 1px solid black;
+		}
+		div.page
+		{
+			border-top: 1px solid #666666;
+			padding: 20px;
+		}
+	</style>
+</head>
+<body>
+<div class="header">
+	<ul class="menu">
+		<li class="no-button"><a href="/" title="Zipios++ Home Page"><img src="zipios-v1/zipios++.jpg" style="width: auto; height: 40px;"/></a></li>
+		<li><a href="http://zipios.sourceforge.net/" title="Home page of the Zipios++ library">Zipios++</a></li>
+		<li><a href="/zipios-v2.0/" title="Documentation of the most current version of Zipios++">Documentation</a></li>
+		<li><a href="https://sourceforge.net/projects/zipios/support/" title="Get support for the Zipios++ library">Support</a></li>
+		<li><a href="https://sourceforge.net/p/zipios/git-code/" title="Source code of the Zipios++ 2.x library">Source Code (v2.x)</a></li>
+		<li><a href="https://sourceforge.net/p/zipios/news/" title="Latest news of the Zipios++ library">News</a></li>
+		<li><strong><a href="https://sourceforge.net/projects/zipios/files/" title="Download the latest published Zipios++ tarballs (source and documentation)">Download</a></strong></li>
+	</ul>
+	<div style="clear: both;"></div>
+</div>
+<div class="page">
+	<p>
+		We are slowly working on getting a new website going for Zipios++.
+		The main idea is that we want to be able to upload some more pages
+		than just the documentation. Not only that, we want to support
+		having more than one version of the documentation.
+	</p>
+	<ul>
+		<li><a href="/zipios-v2.0/">Documentation of version 2.0 of the Zipios++ library</a></li>
+		<li><a href="/coverage/">Test Coverage Information (version 2.x only)</a></li>
+		<li><a href="/zipios-v1/">Documentation of version 1.x of the Zipios++ library</a></li>
+	</ul>
+	<h2>Running the unit tests (v2.x)</h2>
+	<p>
+		Testing on various systesm, I determined that to all the unit
+		tests in one go, you need about 50Mb of memory. The fact is
+		that some tests create zip files in memory. The library used
+		by itself would require very little in comparison unless
+		you load a large number of files and keep them in memory.
+	</p>
+	<p>
+		A computer with 512Mb of RAM is enough to run the tests
+		although I suggest at least 1Gb. One processor is enough
+		since we do not offer a multithreaded version of the tests.
+		However, since we use cmake, you can compile using any
+		number of processors and that will make it a lot faster.
+		(i.e. use the -J command line option with make to compile
+		multiple source files at once; it is very fast anyway.)
+	</p>
+</div>
+</body>
+</html>

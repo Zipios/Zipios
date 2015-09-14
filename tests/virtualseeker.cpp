@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -24,10 +24,10 @@
  * Zipios++ unit tests used to verify the VirtualSeeker class.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
-#include "zipios++/virtualseeker.hpp"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/virtualseeker.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include <fstream>
 
@@ -67,9 +67,9 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         //
         zipios::offset_t const start_offset(rand() % 200);
         zipios::offset_t const end_offset(start_offset + rand() % (256 - start_offset));
-        REQUIRE(start_offset <= end_offset); // this should not happen, period!
+        REQUIRE(start_offset <= end_offset); // this should always be true
         zipios::offset_t const end(256 - end_offset);
-        size_t max_read(end_offset - start_offset);
+        size_t const max_read(end_offset - start_offset);
         // note that the "gap" may be zero
 
         // attempt to create the seeker with invalid offsets
@@ -150,7 +150,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         }
 
         {
-            size_t const sz(std::min(max_read, FOUR));
+            ssize_t const sz(std::min(max_read, FOUR));
 
             vs.vseekg(is, -sz, std::ios::end);
             std::streampos const expected_absolute_pos(end_offset - sz);
@@ -164,24 +164,24 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             if(sz > 0)
             {
                 REQUIRE(buf[0] == static_cast<char>(end_offset - sz));
-            }                                                         
-            if(sz > 1)                                                
-            {                                                         
+            }
+            if(sz > 1)
+            {
                 REQUIRE(buf[1] == static_cast<char>(end_offset - sz + 1));
-            }                                                         
-            if(sz > 2)                                                
-            {                                                         
+            }
+            if(sz > 2)
+            {
                 REQUIRE(buf[2] == static_cast<char>(end_offset - sz + 2));
-            }                                                         
-            if(sz > 3)                                                
-            {                                                         
+            }
+            if(sz > 3)
+            {
                 REQUIRE(buf[3] == static_cast<char>(end_offset - sz + 3));
             }
 
             // try moving a little more (if max_read allows it)
             if(max_read >= 9UL && max_read - 8UL >= static_cast<size_t>(start_offset))
             {
-                size_t const sz2(std::min(max_read - 8UL, 4UL));
+                ssize_t const sz2(std::min(max_read - 8UL, 4UL));
 
                 vs.vseekg(is, -sz2 - sz, std::ios::cur);
                 std::streampos const expected_absolute_pos2(end_offset - sz2 - sz);
@@ -282,7 +282,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         }
 
         {
-            size_t const sz(std::min(max_read2, FOUR));
+            ssize_t const sz(std::min(max_read2, FOUR));
 
             vs.vseekg(is, -sz, std::ios::end);
             std::streampos const expected_absolute_pos(end_offset2 - sz);
@@ -295,17 +295,17 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             if(sz > 0)
             {
                 REQUIRE(buf[0] == static_cast<char>(end_offset2 - sz));
-            }                                                         
-            if(sz > 1)                                                
-            {                                                         
+            }
+            if(sz > 1)
+            {
                 REQUIRE(buf[1] == static_cast<char>(end_offset2 - sz + 1));
-            }                                                         
-            if(sz > 2)                                                
-            {                                                         
+            }
+            if(sz > 2)
+            {
                 REQUIRE(buf[2] == static_cast<char>(end_offset2 - sz + 2));
-            }                                                         
-            if(sz > 3)                                                
-            {                                                         
+            }
+            if(sz > 3)
+            {
                 REQUIRE(buf[3] == static_cast<char>(end_offset2 - sz + 3));
             }
         }

@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -28,7 +28,7 @@
 
 #include "zipoutputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "ziplocalentry.hpp"
 #include "zipendofcentraldirectory.hpp"
@@ -101,10 +101,18 @@ ZipOutputStreambuf::ZipOutputStreambuf(std::streambuf * outbuf)
  *
  * This function cleans up this output buffer. In general this ensures
  * that the data still cached gets flushed.
+ *
+ * \warning
+ * This function may gobble up some important exceptions. If you want
+ * to make sure that the file is properly written, you must call the
+ * finish() function (or the close() function) to fully terminate the
+ * file. If these functions do not fail, then the output file is
+ * considered valid and you can keep it. The finish() function can fail
+ * because of a comment or a file which are too large, for example.
  */
 ZipOutputStreambuf::~ZipOutputStreambuf()
 {
-    // avoid the possible throw when writing the central directory
+    // avoid possible exceptions when writing the central directory
     try
     {
         finish();
@@ -171,16 +179,8 @@ void ZipOutputStreambuf::finish()
     m_open = false;
 
     std::ostream os(m_outbuf);
-    try
-    {
-        closeEntry();
-        writeZipCentralDirectory(os, m_entries, m_zip_comment);
-    }
-    catch(...)
-    {
-        os.setstate(std::ios::failbit);
-        throw;
-    }
+    closeEntry();
+    writeZipCentralDirectory(os, m_entries, m_zip_comment);
 }
 
 

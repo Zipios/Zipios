@@ -1,0 +1,115 @@
+#!/bin/sh
+#
+# Upload the website on Sourceforge.net
+#
+# You will need to have an account with Sourceforge.net for this script to
+# work for you. Also, you'll have to change the user name in the scp commands.
+
+set -e
+
+. dev/version
+
+username=alexis_wilke
+help=false
+main=false
+documentation=false
+coverage=false
+while test ! -z "$1"
+do
+	case "$1" in
+	-h|--help)
+		help=true
+		shift
+		;;
+	-m|--main)
+		main=true
+		shift
+		;;
+	-d|--documentation)
+		documentation=true
+		shift
+		;;
+	-c|--coverage)
+		coverage=true
+		shift
+		;;
+	-u|--username)
+		shift
+		if test -z "$1"
+		then
+			echo "error: the --user command line option expects a parameter"
+			exit 1;
+		fi
+		username=$1
+		shift
+		;;
+	*)
+		echo "error: unknown command line option. Try --help."
+		exit 1;
+	esac
+done
+if $help
+then
+	echo "Usage: $0 [-opt]"
+	echo "where -opt is one or more of the following:"
+	echo "  -h | --help                print out this help screen"
+	echo "  -m | --main                transmit the main HTML files"
+	echo "  -d | --documentation       transmit the documentation if available"
+	echo "  -c | --coverage            transmit the coverage data if available"
+	echo "  -u | --username <name>     log in to sourceforge using that user name"
+	exit 1;
+fi
+
+# Always copy the main files
+if $main
+then
+	echo "Copy main files ($FULL_VERSION)"
+	scp doc/www/*.* $username@web.sourceforge.net:/home/project-web/zipios/htdocs/
+else
+	echo "Ignore main"
+fi
+
+# Copy the documentation if --documentation used and docs are available
+if $documentation
+then
+	if test -d ../BUILD/dist/share/doc/zipios/html
+	then
+		echo "Copy documentation ($VERSION)"
+		#
+		#   To keep a copy of each major.minor versions, we first
+		#   rename the HTML directory. Once done we restore the
+		#   directory name so one can run the process again.
+		#   (we should use a trap to make sure to restore the
+		#   name but well... this is a sloppy script anyway.)
+		#
+		mv ../BUILD/dist/share/doc/zipios/html ../BUILD/dist/share/doc/zipios/zipios-v$VERSION
+		scp -r ../BUILD/dist/share/doc/zipios/zipios-v$VERSION $username@web.sourceforge.net:/home/project-web/zipios/htdocs/
+		mv ../BUILD/dist/share/doc/zipios/zipios-v$VERSION ../BUILD/dist/share/doc/zipios/html
+	else
+		echo "Documentation not available."
+	fi
+else
+	echo "Ignore documentation"
+fi
+
+# Copy the coverage data if --coverage used and such is available
+if $coverage
+then
+	if test -d ../BUILD/zipios_coverage_html
+	then
+		echo "Copy coverage ($FULL_VERSION)"
+		# Now copy the HTML data
+		# Note that we only keep the last version...
+		mkdir ../BUILD/coverage
+		mv ../BUILD/zipios_coverage_html ../BUILD/coverage/zipios-$FULL_VERSION
+		cp dev/index.php ../BUILD/coverage/.
+		scp -r ../BUILD/coverage $username@web.sourceforge.net:/home/project-web/zipios/htdocs/.
+		mv ../BUILD/coverage/zipios-$FULL_VERSION ../BUILD/zipios_coverage_html
+		rm -rf ../BUILD/coverage
+	else
+		echo "Coverage data not available."
+	fi
+else
+	echo "Ignore coverage"
+fi
+

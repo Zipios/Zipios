@@ -3,19 +3,20 @@
 #      CMakeLists.txt
 #
 # Description:
-#      Build zipios++ tools.
+#      Build Zipios++ tools.
 #
 # Documentation:
 #      See the CMake documentation.
 #
 # License:
 #      Zipios++ - a small C++ library that provides easy access to .zip files.
-#      Copyright (C) 2000-2015  Thomas Sondergaard
+#      Copyright (C) 2000-2007  Thomas Sondergaard
+#      Copyright (C) 2015  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
 #      modify it under the terms of the GNU Lesser General Public
 #      License as published by the Free Software Foundation; either
-#      version 2 of the License, or (at your option) any later version.
+#      version 2.1 of the License, or (at your option) any later version.
 #
 #      This library is distributed in the hope that it will be useful,
 #      but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,7 +25,7 @@
 #
 #      You should have received a copy of the GNU Lesser General Public
 #      License along with this library; if not, write to the Free Software
-#      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
 
@@ -37,12 +38,16 @@ add_executable( ${PROJECT_NAME}
     zipios.cpp
 )
 
+set_target_properties( ${PROJECT_NAME}
+    PROPERTIES OUTPUT_NAME zipios
+)
+
 target_link_libraries( ${PROJECT_NAME}
     zipios
 )
 
 install( TARGETS ${PROJECT_NAME}
-    DESTINATION bin
+    DESTINATION ${BIN_INSTALL_DIR}
 )
 
 
@@ -56,7 +61,7 @@ add_executable( ${PROJECT_NAME}
 )
 
 install( TARGETS ${PROJECT_NAME}
-    DESTINATION bin
+    DESTINATION ${BIN_INSTALL_DIR}
 )
 
 
@@ -75,7 +80,7 @@ target_link_libraries( ${PROJECT_NAME}
 )
 
 install( TARGETS ${PROJECT_NAME}
-    DESTINATION bin
+    DESTINATION ${BIN_INSTALL_DIR}
 )
 
 
@@ -94,5 +99,10 @@ target_link_libraries( ${PROJECT_NAME}
 
 # DO NOT INSTALL THIS ONE, IT IS JUST AN EXAMPLE!
 
+
+# Local Variables:
+# indent-tabs-mode: nil
+# tab-width: 4
+# End:
 
 # vim: ts=4 sw=4 et

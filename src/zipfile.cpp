@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -26,9 +26,9 @@
  * a Zip archive file.
  */
 
-#include "zipios++/zipfile.hpp"
+#include "zipios/zipfile.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "backbuffer.hpp"
 #include "zipendofcentraldirectory.hpp"
@@ -45,7 +45,7 @@
  * Note that a very few definitions are found outside of the namespace.
  * Some of those are hidden in the source of the library, a very few
  * appear in the zipios-config.hpp file as they are used to support
- * zipios++ on any platform.
+ * Zipios++ on any platform.
  *
  * Note that to ensure secure development, we do not make use of the
  * C++ "using ..." keyword. That way we can guarantee what's what.
@@ -56,7 +56,7 @@ namespace zipios
 
 /** \mainpage Zipios++
  *
- * \image html   zipios++.jpg
+ * \image html zipios++.jpg
  *
  * \section intro Introduction
  *
@@ -76,22 +76,41 @@ namespace zipios
  *
  * \section status Status
  *
- * This was the status of version 1.x. At this point, 2.x is being worked on.
+ * This was the status of version 1.x. At this point, 2.x has a brand new
+ * version out and we are waiting for good news about the current status.
+ * That being said, version 2.x comes a test suite which produces a
+ * 100% coverage of the library (except gzip which is not yet publicly
+ * available.)
+ *
+ * \warning
+ * There is a bug in the catch.hpp header file that generates a never
+ * ending loop (see https://github.com/philsquared/Catch/issues/271 for
+ * more information) when running the test suite under FreeBSD and an error
+ * occurs (although you should not have an error, if it happens, then
+ * the loop never ends.) I have noticed that problem with the following
+ * scenario, and it does not seem to be fixed yet (Apr 4, 2015):
+ *
+ * \li "use Zipios++ to create zip archives with 1 or 3 files each"
  *
  * Spanned archives are not supported, and support is not planned.
  *
- * The library v1.x has been tested and appears to be working with
+ * The library v1.x has been tested and appears to be working with:
  *
- * <ul>
- * <li><a href="http://www.freebsd.org/ports/archivers.html#zipios++-0.1.5">FreeBSD stable and current / gcc 2.95.3</a></li>
- * <li>Red Hat Linux release 7.0  / gcc 2.96</li>
- * <li>Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66</li>
- * <li>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</li>
- * <li>SGI IRIX64 6.5 / gcc 2.95.2</li>
- * <li>SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30</li>
- * </ul>
+ * \li <a href="http://www.freebsd.org/ports/archivers.html#zipios++-0.1.5">FreeBSD stable and current / gcc 2.95.3</a>
+ * \li Red Hat Linux release 7.0  / gcc 2.96
+ * \li Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66
+ * \li Linux Mandrake release 7.0 (Air) / gcc 2.95.2
+ * \li SGI IRIX64 6.5 / gcc 2.95.2
+ * \li SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30
  *
- * If you make zipios++ work on other platforms, let us know by posting
+ * The library v2.x has been compiled and appears to be working with:
+ *
+ * \li Ubuntu (starting with 14.04) -- full test suite working
+ * \li FreeBSD (starting with 10.01)
+ * \li SunOS (starting with Open SunOS 11.2)
+ * \li Cygwin (starting with 6.1)
+ *
+ * If you make Zipios++ work on other platforms, let us know by posting
  * a message on Sourceforge.net
  *
  *   http://sourceforge.net/projects/zipios/
@@ -178,6 +197,32 @@ namespace zipios
  * <a href="https://sourceforge.net/projects/zipios/files/latest/download"
  * rel="nofollow"><img alt="Download Zipios++"
  * src="https://img.shields.io/sourceforge/dt/zipios.svg"></a>
+ *
+ * \section development Development
+ *
+ * The Zipios++ project makes use of a few development tools and the
+ * tests require the zip utility, used to verify that an external tool
+ * can generate a zip file that Zipios++ can read.
+ *
+ * Under a Debian or Ubuntu system, you can run apt-get install with
+ * the following list of packages:
+ *
+ * \code
+ *   # For source management (or download the .tar.gz file)
+ *   apt-get install git
+ *
+ *   # For developement
+ *   apt-get install g++ cmake zlib1g-dev
+ *
+ *   # For documentation (or download the -doc.tar.gz file)
+ *   apt-get install doxygen graphviz
+ *
+ *   # For testing (optional, albeit recommended)
+ *   apt-get install catch zip
+ * \endcode
+ *
+ * Other systems use tools with pretty much the same naming convention
+ * so you should be able to make the correlation.
  *
  * \section links Links
  *

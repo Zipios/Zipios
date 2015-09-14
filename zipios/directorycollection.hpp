@@ -11,7 +11,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,7 +20,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -30,8 +30,8 @@
  * of files as found in a directory on disk.
  */
 
-#include "zipios++/filecollection.hpp"
-#include "zipios++/directoryentry.hpp"
+#include "zipios/filecollection.hpp"
+#include "zipios/directoryentry.hpp"
 
 
 namespace zipios
@@ -50,7 +50,6 @@ public:
     virtual FileEntry::vector_t     entries() const override;
     virtual FileEntry::pointer_t    getEntry(std::string const& name, MatchPath matchpath = MatchPath::MATCH) const override;
     virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
-    virtual size_t                  size() const override;
 
 protected:
     void                            loadEntries() const;
@@ -64,8 +63,6 @@ protected:
 
 } // zipios namespace
 
-// vim: ts=4 sw=4 et
-
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
@@ -73,4 +70,5 @@ protected:
 // tab-width: 4
 // End:
 
+// vim: ts=4 sw=4 et
 #endif

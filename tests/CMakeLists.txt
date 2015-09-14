@@ -3,19 +3,20 @@
 #      CMakeLists.txt
 #
 # Description:
-#      Build zipios++ tests.
+#      Build Zipios++ tests.
 #
 # Documentation:
 #      See the CMake documentation.
 #
 # License:
 #      Zipios++ - a small C++ library that provides easy access to .zip files.
-#      Copyright (C) 2000-2015  Thomas Sondergaard
+#      Copyright (C) 2000-2007  Thomas Sondergaard
+#      Copyright (C) 2015  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
 #      modify it under the terms of the GNU Lesser General Public
 #      License as published by the Free Software Foundation; either
-#      version 2 of the License, or (at your option) any later version.
+#      version 2.1 of the License, or (at your option) any later version.
 #
 #      This library is distributed in the hope that it will be useful,
 #      but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,7 +25,7 @@
 #
 #      You should have received a copy of the GNU Lesser General Public
 #      License along with this library; if not, write to the Free Software
-#      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
 find_package( Catch )
@@ -33,49 +34,30 @@ if(CATCH_FOUND)
 
 project( zipios_tests )
 
-# The tests also include a set of test files:
-#          file1.txt    a text file part of test.zip
-#          file2.txt    a text file part of test.zip
-#          file3.txt    a text file part of test.zip
-#          testfile.bin a binary file part of test.zip
-#          test.zip     a zip file for test purposes
-
 include_directories(
     ${CATCH_INCLUDE_DIR}
 )
 
 add_executable( ${PROJECT_NAME}
-    catch_tests.cpp
+    tests.cpp
 
-    catch_backbuffer.cpp
-    catch_collectioncollection.cpp
-    catch_common.cpp
-    catch_directorycollection.cpp
-    catch_directoryentry.cpp
-    catch_dostime.cpp
-    catch_filepath.cpp
-    catch_stream.cpp
-    catch_virtualseeker.cpp
-    catch_zipfile.cpp
+    backbuffer.cpp
+    collectioncollection.cpp
+    common.cpp
+    directorycollection.cpp
+    directoryentry.cpp
+    dostime.cpp
+    filepath.cpp
+    stream.cpp
+    virtualseeker.cpp
+    zipfile.cpp
 
-    catch_directory_helper.cpp
-    catch_raii_helper.cpp
-
-# commontest.cpp
-# zipfiletest.cpp
-# zipinputstreamtest.cpp
-# zipoutputstreamtest.cpp
-
-# test_appzip.cpp                                        test_zipinputstream.cpp
-# test_collcoll.cpp          test_simplesmartptr.cpp     test_zipoutputstreambuf.cpp
-# test_dircoll.cpp                                       test_zipoutputstream.cpp
-# example_zip.cpp            test_zip.cpp
-# test_gzipoutputstream.cpp  test_zipinputstreambuf.cpp
+    directory_helper.cpp
+    raii_helper.cpp
 )
 
 target_link_libraries( ${PROJECT_NAME}
     zipios
-    ${CPPUNIT_LIBRARIES}
 )
 
 add_custom_target(run_zipios_tests
@@ -95,5 +77,10 @@ add_custom_target(run_zipios_tests
 )
 
 endif(CATCH_FOUND)
+
+# Local Variables:
+# indent-tabs-mode: nil
+# tab-width: 4
+# End:
 
 # vim: ts=4 sw=4 et

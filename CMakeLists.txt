@@ -3,19 +3,20 @@
 #      CMakeLists.txt
 #
 # Description:
-#      Build zipios++ library, tools, packages, tests, documentation.
+#      Build the Zipios++ library, tools, packages, tests, documentation.
 #
 # Documentation:
 #      See the CMake documentation.
 #
 # License:
 #      Zipios++ - a small C++ library that provides easy access to .zip files.
-#      Copyright (C) 2000-2015  Thomas Sondergaard
+#      Copyright (C) 2000-2007  Thomas Sondergaard
+#      Copyright (C) 2015  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
 #      modify it under the terms of the GNU Lesser General Public
 #      License as published by the Free Software Foundation; either
-#      version 2 of the License, or (at your option) any later version.
+#      version 2.1 of the License, or (at your option) any later version.
 #
 #      This library is distributed in the hope that it will be useful,
 #      but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,7 +25,7 @@
 #
 #      You should have received a copy of the GNU Lesser General Public
 #      License along with this library; if not, write to the Free Software
-#      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
 cmake_minimum_required(VERSION 2.8.4)
@@ -32,33 +33,54 @@ cmake_minimum_required(VERSION 2.8.4)
 project( zipios_project )
 
 set( ZIPIOS_VERSION_MAJOR 2 )
-set( ZIPIOS_VERSION_MINOR 0 )
-set( ZIPIOS_VERSION_PATCH 2 )
+set( ZIPIOS_VERSION_MINOR 1 )
+set( ZIPIOS_VERSION_PATCH 1 )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
-# SUNOS is not set by cmake
-string( REGEX MATCH "SunOS" SUNOS ${CMAKE_SYSTEM_NAME} )
-
-set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fdiagnostics-show-option -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -Wunused-parameter -Wfloat-equal -Wold-style-cast -Wnoexcept" )
-set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
-
-set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fwrapv" )
-set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Werror -Wall -Wextra -Wunused-parameter" )
-
-
-if( CYGWIN )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11" )
+if( MSVC )
+    set( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS"              )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS" )
 else()
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC" )
+    if( BORLAND )
+        message( FATAL_ERROR "Borland compiler not supported!" )
+    endif()
+
+    # SUNOS is not set by cmake
+    string( REGEX MATCH "SunOS" SUNOS ${CMAKE_SYSTEM_NAME} )
+
+    set( CMAKE_C_FLAGS           "${CMAKE_C_FLAGS} -fwrapv -fPIC"                                  )
+    set( CMAKE_C_FLAGS_DEBUG     "${CMAKE_C_FLAGS_DEBUG} -Werror -Wall -Wextra -Wunused-parameter" )
+    set( CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} -O3"                                    )
+    #
+    if( CYGWIN )
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11"     )
+    else()
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC" )
+    endif()
+    set( CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fdiagnostics-show-option -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -Wunused-parameter -Wfloat-equal -Wold-style-cast -Wnoexcept" )
+    set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
 endif()
+
+option(BUILD_SHARED_LIBS "Build the ${PROJECT_NAME} libraries shared." ON)
+
+if(BUILD_SHARED_LIBS)
+    set(ZIPIOS_LIBRARY_TYPE SHARED)
+else(BUILD_SHARED_LIBS)
+    set(ZIPIOS_LIBRARY_TYPE STATIC)
+endif(BUILD_SHARED_LIBS)
+
+option(BUILD_DOCUMENTATION "Build the ${PROJECT_NAME} documentation." ON)
 
 # To generate coverage, use -D<project name>_COVERAGE=ON
 #                       and -DCMAKE_BUILD_TYPE=Debug
 option( ${PROJECT_NAME}_COVERAGE "Turn on coverage for ${PROJECT_NAME}." OFF )
 
 if( ${${PROJECT_NAME}_COVERAGE} )
+    if( MSVC )
+        message( FATAL_ERROR "Coverage is not available on this platform (yet)." )
+    endif()
+
     message("*** COVERAGE TURNED ON ***")
     find_program( COV gcov )
     if( ${COV} STREQUAL "COV-NOTFOUND" )
@@ -79,13 +101,33 @@ if( ${${PROJECT_NAME}_COVERAGE} )
     set( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} ${COV_EXE_LINKER_FLAGS}"       )
 endif()
 
+#
+# Default install locations, override cache variables to change.
+#
+if(NOT CMAKE_VERSION VERSION_GREATER "2.8.4")
+    set(CMAKE_INSTALL_BINDIR  bin)
+    set(CMAKE_INSTALL_INCLUDE include)
+    set(CMAKE_INSTALL_LIBDIR  lib)
+    set(CMAKE_INSTALL_DATADIR share)
+else()
+    include(GNUInstallDirs)
+endif()
+set(CMAKE_INSTALL_CMAKEMODULESDIR ${CMAKE_INSTALL_DATADIR}/cmake-2.8/Modules)
+
+set(BIN_INSTALL_DIR             ${CMAKE_INSTALL_BINDIR}             CACHE PATH "Location to install binaries relative to the install prefix.")
+set(INCLUDE_INSTALL_DIR         ${CMAKE_INSTALL_INCLUDEDIR}         CACHE PATH "Location to install headers relative to the install prefix.")
+set(LIB_INSTALL_DIR             ${CMAKE_INSTALL_LIBDIR}             CACHE PATH "Location to install libraries relative to the install prefix.")
+set(DATA_INSTALL_DIR            ${CMAKE_INSTALL_DATADIR}            CACHE PATH "Location to install data files relative to the install prefix.")
+set(CMAKE_MODULES_INSTALL_DIR   ${CMAKE_INSTALL_CMAKEMODULESDIR}    CACHE PATH "Location to install data files relative to the install prefix.")
+
+
 find_package( ZLIB REQUIRED )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios++/zipios-config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/zipios++/zipios-config.hpp )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios/zipios-config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/zipios/zipios-config.hpp )
 
 # Generate the RPM package specification file
-set(PACKAGE "libzipios++")
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios++.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios++.spec )
+set(PACKAGE "libzipios")
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.spec )
 
 include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 
@@ -94,17 +136,19 @@ add_subdirectory( tools )
 add_subdirectory( tests )
 add_subdirectory( doc )
 
-install( DIRECTORY zipios++
-    DESTINATION include
+install( DIRECTORY zipios
+    DESTINATION ${INCLUDE_INSTALL_DIR}
     PATTERN "*.in" EXCLUDE
 )
 
-install( FILES ${CMAKE_BINARY_DIR}/zipios++/zipios-config.hpp
-    DESTINATION include/zipios++
+install( FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
+    DESTINATION ${INCLUDE_INSTALL_DIR}/zipios
 )
 
+# TODO: how do we determine the correct destination?
+#       (i.e. 3.x is now out and 2.8 will probably fail for those users)
 install( DIRECTORY cmake/
-    DESTINATION share/cmake-2.8/Modules
+    DESTINATION ${CMAKE_MODULES_INSTALL_DIR}
 )
 
 add_custom_target(zipios_code_analysis
@@ -144,5 +188,10 @@ set(CPACK_PACKAGE_VERSION_MINOR "${ZIPIOS_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${ZIPIOS_VERSION_PATCH}")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "zipios-${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}.${ZIPIOS_VERSION_PATCH}")
 include(CPack)
+
+# Local Variables:
+# indent-tabs-mode: nil
+# tab-width: 4
+# End:
 
 # vim: ts=4 sw=4 et nocindent

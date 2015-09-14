@@ -5,4 +5,5 @@ A few things that contributors can definitively help with:
  * Help with getting the project to work under MS-Windows.
  * Implement a ZipExtra class to handle the extra buffer.
  * Implement a VirtualEntry to allow in-memory files.
+ * Add a test for the cmake/FindZipIos.cmake code.
 

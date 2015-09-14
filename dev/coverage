@@ -4,7 +4,7 @@ set -e
 
 if test "$1" = "--help" -o "$1" = "-h"
 then
-    echo "Usage: $0 [--opt]"
+    echo "Usage: $0 [--opt] [test-name]"
     echo "where --opt is one of:"
     echo "   --all          run all tests"
     echo "   --full         run all tests and publish to the world"
@@ -13,6 +13,10 @@ then
     echo "   [directoryentry]  run the DirectoryEntry class tests"
     echo "   [fileentry]       run all the tests that check the FileEntry interface"
     echo "   [filepath]        run the FilePath class tests"
+    echo
+    echo "for a complete list of tests use the --list command line option"
+    echo "of the test executable:"
+    echo "   zipios_tests --list"
     exit 1;
 fi
 
@@ -26,12 +30,9 @@ fi
 
 start_date=`date`
 SOURCE_PATH=`pwd`
-MAJOR=`grep ZIPIOS_VERSION_MAJOR CMakeLists.txt | sed -e 's/^.*set(.*ZIPIOS_VERSION_MAJOR.*\([0-9]\+\).*$/\1/'`
-MINOR=`grep ZIPIOS_VERSION_MINOR CMakeLists.txt | sed -e 's/^.*set(.*ZIPIOS_VERSION_MINOR.*\([0-9]\+\).*$/\1/'`
-PATCH=`grep ZIPIOS_VERSION_PATCH CMakeLists.txt | sed -e 's/^.*set(.*ZIPIOS_VERSION_PATCH.*\([0-9]\+\).*$/\1/'`
-VERSION="$MAJOR.$MINOR.$PATCH"
+. dev/version
 echo "***"
-echo "*** zipios coverage for version $VERSION (`date`)"
+echo "*** zipios coverage for version $FULL_VERSION (`date`)"
 echo "***"
 mkdir -p ../BUILD/zipios_coverage
 rm -rf ../BUILD/zipios_coverage/*
@@ -54,10 +55,10 @@ echo "***"
 echo "*** run (`date`)"
 echo "***"
 # TODO:
-# Cash does not give us such... we may want to bypass the limitation...
-#if test `tests/zipios_tests --version` != "$VERSION"
+# Catch does not give us such... we may want to bypass the limitation...
+#if test `tests/zipios_tests --version` != "$FULL_VERSION"
 #then
-#    echo "the version of test_as2js (`BUILD/tests/test_as2js --version`) is not equal to the project version ($VERSION)"
+#    echo "the version of zipios_tests (`BUILD/tests/zipios_tests --version`) is not equal to the project version ($FULL_VERSION)"
 #    exit 1;
 #fi
 if $FULL
@@ -101,15 +102,15 @@ genhtml --legend --demangle-cpp --no-branch-coverage --show-details coverage.inf
 end_date=`date`
 
 # Statistics
-echo "<html><head><title>zipios $VERSION statistics</title></head><body>" >zipios_coverage_html/statistics.html
-echo "<h3>Statistics of the zipios $VERSION code</h3><pre>" >>zipios_coverage_html/statistics.html
-cloc $SOURCE_PATH/src/ $SOURCE_PATH/tools/ $SOURCE_PATH/zipios++/ >>zipios_coverage_html/statistics.html
-echo "</pre><h3>Statistics of the zipios $VERSION tests</h3><pre>" >>zipios_coverage_html/statistics.html
+echo "<html><head><title>zipios $FULL_VERSION statistics</title></head><body>" >zipios_coverage_html/statistics.html
+echo "<h3>Statistics of the zipios $FULL_VERSION code</h3><pre>" >>zipios_coverage_html/statistics.html
+cloc $SOURCE_PATH/src/ $SOURCE_PATH/tools/ $SOURCE_PATH/zipios/ >>zipios_coverage_html/statistics.html
+echo "</pre><h3>Statistics of the zipios $FULL_VERSION tests</h3><pre>" >>zipios_coverage_html/statistics.html
 cloc $SOURCE_PATH/tests/ >>zipios_coverage_html/statistics.html
 echo "</pre></body></html>" >>zipios_coverage_html/statistics.html
 
 # Test output (Logs)
-echo "<html><head><title>as2js $VERSION test logs</title></head><body><h3>Logs for the as2js $VERSION tests</h3><p>Tests started on $start_date and finished on $end_date</p><pre>" >zipios_coverage_html/test_log.html
+echo "<html><head><title>zipios $FULL_VERSION test logs</title></head><body><h3>Logs for the zipios $FULL_VERSION tests</h3><p>Tests started on $start_date and finished on $end_date</p><pre>" >zipios_coverage_html/test_log.html
 if test -f zipios_coverage/test_log.txt
 then
     # If test_log.txt does not exist, the user got the logs in the
@@ -132,9 +133,9 @@ then
         mkdir -p /usr/clients/www/alexis.m2osw.com/public_html/zipios/documentation
         cp -r zipios_coverage/doc/zipios-doc-*/* /usr/clients/www/alexis.m2osw.com/public_html/zipios/documentation/.
         cp $SOURCE_PATH/dev/index.php /usr/clients/www/alexis.m2osw.com/public_html/zipios/.
-        mkdir -p /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION
-        cp -r zipios_coverage_html/* /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION/.
-        cp zipios_coverage_html/statistics.html /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$VERSION/.
+        mkdir -p /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$FULL_VERSION
+        cp -r zipios_coverage_html/* /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$FULL_VERSION/.
+        cp zipios_coverage_html/statistics.html /usr/clients/www/alexis.m2osw.com/public_html/zipios/zipios-$FULL_VERSION/.
     fi
 fi
 

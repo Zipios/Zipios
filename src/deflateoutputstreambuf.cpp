@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -27,7 +27,7 @@
 
 #include "deflateoutputstreambuf.hpp"
 
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "zipios_common.hpp"
 
@@ -139,7 +139,7 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
         {
             // This is excluded from the coverage since if we reach this
             // line there is an internal error that needs to be fixed.
-            throw std::logic_error("the compression level must be defined between -3 and 100, see the zipios++/fileentry.hpp for a list of valid levels."); // LCOV_EXCL_LINE
+            throw std::logic_error("the compression level must be defined between -3 and 100, see the zipios/fileentry.hpp for a list of valid levels."); // LCOV_EXCL_LINE
         }
         // The zlevel is calculated linearly from the user specified value
         // of 1 to 100

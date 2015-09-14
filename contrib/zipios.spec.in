@@ -22,12 +22,12 @@ Zipios++ also provides a way for an application to support files from multiple s
 zip files or from ordinary directories) transparently.
 
 %package devel
-Summary: zipios++ header files
+Summary: Zipios++ header files
 Group: Development/Libraries
 Requires: %name = %version
 
 %description devel
-Header files and documentation for zipios++ development.
+Header files and documentation for Zipios++ development.
 
 %prep
 %__rm -rf $RPM_BUILD_ROOT
@@ -53,7 +53,7 @@ Header files and documentation for zipios++ development.
 
 %files devel
 %defattr(-,root,root,644)
-%{_includedir}/zipios++/*.h
+%{_includedir}/zipios/*.h
 %doc NEWS ChangeLog
 %doc %dir doc/html/
 %defattr(-,root,root,755)
@@ -62,6 +62,9 @@ Header files and documentation for zipios++ development.
 %{_libdir}/libzipios.la
 
 %changelog
+* Tue May 5 2015 Alexis Wilke <alexis@m2osw.com>
+- Updated the zipios include file directory name.
+
 * Tue Feb 3 2004 Russel Winder <r.winder@180sw.com>
 - Updated spec file to tidy up properly after a run.  Removed use of /usr/local/bin/g++ for
   compilation in favour of using default.

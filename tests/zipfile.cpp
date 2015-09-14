@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
@@ -24,11 +24,11 @@
  * Zipios++ unit tests for the ZipFile class.
  */
 
-#include "catch_tests.hpp"
+#include "tests.hpp"
 
-#include "zipios++/zipfile.hpp"
-#include "zipios++/directorycollection.hpp"
-#include "zipios++/zipiosexceptions.hpp"
+#include "zipios/zipfile.hpp"
+#include "zipios/directorycollection.hpp"
+#include "zipios/zipiosexceptions.hpp"
 
 #include "src/dostime.h"
 
@@ -391,118 +391,118 @@ SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
         system("rm -rf tree tree.zip"); // clean up, just in case
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
-        //zipios_test::auto_unlink_t remove_zip("tree.zip");
+        zipios_test::auto_unlink_t remove_zip("tree.zip");
         zipios::DirectoryCollection dc("tree");
 
         // first, check that the object is setup as expected
-        //WHEN("we save the directory tree in a .zip file")
-        //{
-        //    {
-        //        dc.setMethod(1024, zipios::StorageMethod::STORED, zipios::StorageMethod::DEFLATED);
-        //        dc.setLevel(1024, zipios::FileEntry::COMPRESSION_LEVEL_NONE, zipios::FileEntry::COMPRESSION_LEVEL_MAXIMUM);
-        //        std::ofstream out("tree.zip", std::ios::out | std::ios::binary);
-        //        zipios::ZipFile::saveCollectionToArchive(out, dc);
-        //    }
+        WHEN("we save the directory tree in a .zip file")
+        {
+            {
+                dc.setMethod(1024, zipios::StorageMethod::STORED, zipios::StorageMethod::DEFLATED);
+                dc.setLevel(1024, zipios::FileEntry::COMPRESSION_LEVEL_NONE, zipios::FileEntry::COMPRESSION_LEVEL_MAXIMUM);
+                std::ofstream out("tree.zip", std::ios::out | std::ios::binary);
+                zipios::ZipFile::saveCollectionToArchive(out, dc);
+            }
 
-        //    THEN("it is valid and includes all the files in the tree as expected")
-        //    {
-        //        zipios::ZipFile zf("tree.zip");
+            THEN("it is valid and includes all the files in the tree as expected")
+            {
+                zipios::ZipFile zf("tree.zip");
 
-        //        REQUIRE(zf.isValid());
-        //        REQUIRE_FALSE(zf.entries().empty());
-        //        REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
-        //        REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
-        //        REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
-        //        REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
-        //        REQUIRE(zf.getName() == "tree.zip");
-        //        REQUIRE(zf.size() == tree.size());
-        //        zf.mustBeValid(); // not throwing
+                REQUIRE(zf.isValid());
+                REQUIRE_FALSE(zf.entries().empty());
+                REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(zf.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH));
+                REQUIRE_FALSE(zf.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE));
+                REQUIRE(zf.getName() == "tree.zip");
+                REQUIRE(zf.size() == tree.size());
+                zf.mustBeValid(); // not throwing
 
-        //        zipios::FileEntry::vector_t v(zf.entries());
-        //        for(auto it(v.begin()); it != v.end(); ++it)
-        //        {
-        //            zipios::FileEntry::pointer_t entry(*it);
+                zipios::FileEntry::vector_t v(zf.entries());
+                for(auto it(v.begin()); it != v.end(); ++it)
+                {
+                    zipios::FileEntry::pointer_t entry(*it);
 
-        //            // verify that our tree knows about this file
-        //            zipios_test::file_t::type_t t(tree.find(entry->getName()));
-        //            REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
+                    // verify that our tree knows about this file
+                    zipios_test::file_t::type_t t(tree.find(entry->getName()));
+                    REQUIRE(t != zipios_test::file_t::type_t::UNKNOWN);
 
-        //            struct stat file_stats;
-        //            REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
+                    struct stat file_stats;
+                    REQUIRE(stat(entry->getName().c_str(), &file_stats) == 0);
 
-        //            REQUIRE((*it)->getComment().empty());
-        //            //REQUIRE((*it)->getCompressedSize() == (*it)->getSize()); -- not too sure how we could verify this size in this case
-        //            //REQUIRE((*it)->getCrc() == ...); -- not too sure how to compute that right now, but once we have it we'll test it
-        //            //REQUIRE((*it)->getEntryOffset() == ...); -- that's also difficult to test
-        //            //REQUIRE((*it)->getExtra().empty());
-        //            //REQUIRE((*it)->getHeaderSize() == 0); -- the header size varies
-        //            if((*it)->getMethod() == zipios::StorageMethod::STORED)
-        //            {
-        //                REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-        //            }
-        //            else
-        //            {
-        //                 // you would think that the compressed size would
-        //                 // either be equal to the size or smaller, but never
-        //                 // larger, that's not the case with zip under Linux...
-        //                 //
-        //                 // they probably use a streaming mechanism and thus
-        //                 // cannot fix the problem later if the compressed
-        //                 // version ends up being larger than the
-        //                 // non-compressed version...
-        //                 //
-        //                 //REQUIRE((*it)->getCompressedSize() < (*it)->getSize());
-        //            }
-        //            //REQUIRE((*it)->getName() == ...);
-        //            //REQUIRE((*it)->getFileName() == ...);
-        //            time_t const dostime(unix2dostime(file_stats.st_mtime));
-        //            REQUIRE((*it)->getTime() == dostime);  // invalid date
-        //            size_t const ut(dos2unixtime(dostime));
-        //            REQUIRE((*it)->getUnixTime() == ut);
-        //            REQUIRE_FALSE((*it)->hasCrc());
-        //            REQUIRE((*it)->isValid());
-        //            //REQUIRE((*it)->toString() == "... (0 bytes)");
+                    REQUIRE((*it)->getComment().empty());
+                    //REQUIRE((*it)->getCompressedSize() == (*it)->getSize()); -- not too sure how we could verify this size in this case
+                    //REQUIRE((*it)->getCrc() == ...); -- not too sure how to compute that right now, but once we have it we'll test it
+                    //REQUIRE((*it)->getEntryOffset() == ...); -- that's also difficult to test
+                    //REQUIRE((*it)->getExtra().empty());
+                    //REQUIRE((*it)->getHeaderSize() == 0); -- the header size varies
+                    if((*it)->getMethod() == zipios::StorageMethod::STORED)
+                    {
+                        REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
+                    }
+                    else
+                    {
+                         // you would think that the compressed size would
+                         // either be equal to the size or smaller, but never
+                         // larger, that's not the case with zip under Linux...
+                         //
+                         // they probably use a streaming mechanism and thus
+                         // cannot fix the problem later if the compressed
+                         // version ends up being larger than the
+                         // non-compressed version...
+                         //
+                         //REQUIRE((*it)->getCompressedSize() < (*it)->getSize());
+                    }
+                    //REQUIRE((*it)->getName() == ...);
+                    //REQUIRE((*it)->getFileName() == ...);
+                    time_t const dostime(unix2dostime(file_stats.st_mtime));
+                    REQUIRE((*it)->getTime() == dostime);  // invalid date
+                    size_t const ut(dos2unixtime(dostime));
+                    REQUIRE((*it)->getUnixTime() == ut);
+                    REQUIRE_FALSE((*it)->hasCrc());
+                    REQUIRE((*it)->isValid());
+                    //REQUIRE((*it)->toString() == "... (0 bytes)");
 
-        //            if(t == zipios_test::file_t::type_t::DIRECTORY)
-        //            {
-        //                REQUIRE((*it)->isDirectory());
-        //                REQUIRE((*it)->getSize() == 0); // size is zero for directories
-        //            }
-        //            else
-        //            {
-        //                REQUIRE_FALSE((*it)->isDirectory());
-        //                REQUIRE((*it)->getSize() == file_stats.st_size);
+                    if(t == zipios_test::file_t::type_t::DIRECTORY)
+                    {
+                        REQUIRE((*it)->isDirectory());
+                        REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                    }
+                    else
+                    {
+                        REQUIRE_FALSE((*it)->isDirectory());
+                        REQUIRE((*it)->getSize() == file_stats.st_size);
 
-        //                // now read both files (if not a directory) and make sure
-        //                // they are equal
-        //                zipios::FileCollection::stream_pointer_t is(zf.getInputStream(entry->getName()));
-        //                REQUIRE(is);
-        //                std::ifstream in(entry->getName(), std::ios::in | std::ios::binary);
+                        // now read both files (if not a directory) and make sure
+                        // they are equal
+                        zipios::FileCollection::stream_pointer_t is(zf.getInputStream(entry->getName()));
+                        REQUIRE(is);
+                        std::ifstream in(entry->getName(), std::ios::in | std::ios::binary);
 
-        //                while(in && *is)
-        //                {
-        //                    char buf1[BUFSIZ], buf2[BUFSIZ];
+                        while(in && *is)
+                        {
+                            char buf1[BUFSIZ], buf2[BUFSIZ];
 
-        //                    in.read(buf1, sizeof(buf1));
-        //                    std::streamsize sz1(in.gcount());
+                            in.read(buf1, sizeof(buf1));
+                            std::streamsize sz1(in.gcount());
 
-        //                    is->read(buf2, sizeof(buf2));
-        //                    std::streamsize sz2(is->gcount());
+                            is->read(buf2, sizeof(buf2));
+                            std::streamsize sz2(is->gcount());
 
-        //                    REQUIRE(sz1 == sz2);
-        //                    REQUIRE(memcmp(buf1, buf2, sz1) == 0);
-        //                }
+                            REQUIRE(sz1 == sz2);
+                            REQUIRE(memcmp(buf1, buf2, sz1) == 0);
+                        }
 
-        //                REQUIRE(!in);
-        //                REQUIRE(!*is);
-        //            }
+                        REQUIRE(!in);
+                        REQUIRE(!*is);
+                    }
 
-        //            // I don't think we will test those directly...
-        //            //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
-        //            //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
-        //        }
-        //    }
-        //}
+                    // I don't think we will test those directly...
+                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+                }
+            }
+        }
 
         // test with all the possible levels
         SECTION("test creating zip with all available levels")
@@ -620,7 +620,7 @@ SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
 }
 
 
-SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFile] [FileCollection]")
+SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile] [FileCollection]")
 {
     GIVEN("a one file zip file")
     {
@@ -678,7 +678,7 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
                     {
                          // you would think that the compressed size would
                          // either be equal to the size or smaller, but never
-                         // larger, that's not the case with zip under Linux...
+                         // larger, that is not the case with zip under Linux...
                          //
                          // they probably use a streaming mechanism and thus
                          // cannot fix the problem later if the compressed
@@ -730,6 +730,11 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
             }
         }
 
+/** \TODO
+ * Once clang is fixed, remove those tests. clang does not clear the
+ * std::unchecked_exception() flag when we have a re-throw in a catch.
+ */
+#ifndef __clang__
         // test with a comment that's too large
         WHEN("we make sure that saving the file fails if the comment is too large")
         {
@@ -755,7 +760,9 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
                 }
             }
         }
+#endif
 
+#ifndef __clang__
         // check that extra buffers that are too large make the save fail
         WHEN("we make sure that saving the file fails if the extra buffer is too large")
         {
@@ -763,7 +770,7 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
             zipios::FileEntry::vector_t v(dc.entries());
             REQUIRE(v.size() == 1);
             auto it(v.begin());
-            // generate a random comment of 65Kb
+            // generate a random extra buffer of 65Kb
             zipios::FileEntry::buffer_t buffer;
             for(int i(0); i < 65 * 1024; ++i)
             {
@@ -781,8 +788,10 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
                 }
             }
         }
+#endif
 
-        // check with a global comment that's too large
+#ifndef __clang__
+        // check with a global comment which is too large
         WHEN("we make sure that saving the file fails if the Zip (gloabl) comment is too large")
         {
             zipios::DirectoryCollection dc("file.bin");
@@ -803,8 +812,10 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
                 }
             }
         }
+#endif
     }
 
+#ifndef __clang__
     GIVEN("a very small file")
     {
         system("rm -f file.bin"); // clean up, just in case
@@ -837,7 +848,12 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
             }
         }
     }
+#endif
+}
 
+
+TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
+{
     SECTION("try one uncompressed file of many sizes")
     {
         system("rm -f file.bin"); // clean up, just in case
@@ -886,7 +902,7 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
             zipios_test::auto_unlink_t remove_bin1("file1.bin");
             zipios_test::auto_unlink_t remove_bin2("file2.bin");
             zipios_test::auto_unlink_t remove_bin3("file3.bin");
-            //zipios_test::auto_unlink_t remove_zip("file.zip");
+            zipios_test::auto_unlink_t remove_zip("file.zip");
 
             // create a file of various sizes (increasingly big though)
             {
@@ -915,7 +931,7 @@ SCENARIO("use Zipios++ to create  zip archives with 1 or 3 files each", "[ZipFil
             {
                 zipios::DirectoryEntry other_entry2(zipios::FilePath("file2.bin"));
                 dc.addEntry(other_entry2);
-                zipios::DirectoryEntry other_entry3(zipios::FilePath("file2.bin"));
+                zipios::DirectoryEntry other_entry3(zipios::FilePath("file3.bin"));
                 dc.addEntry(other_entry3);
             }
             zipios::FileEntry::vector_t v(dc.entries());
@@ -952,13 +968,13 @@ struct local_header_t
     uint32_t            m_signature;            // "PK 3.4"
     uint16_t            m_version;              // 10 or 20
     uint16_t            m_flags;                // generally zero ("general purpose field")
-    uint16_t            m_compression_method;   // zipios++ only supports STORED and DEFLATE
+    uint16_t            m_compression_method;   // Zipios++ only supports STORED and DEFLATE
     uint32_t            m_time_and_date;        // MS-DOS date and time
     uint32_t            m_crc32;                // CRC-32 of the file data
     uint32_t            m_compressed_size;      // size of data once compressed
     uint32_t            m_uncompressed_size;    // size of data uncompressed
     //uint16_t            m_filename_length;     // length name of this file
-    //uint16_t            m_extra_field_length;   // length of extra buffer, zipios++ ignore those
+    //uint16_t            m_extra_field_length;   // length of extra buffer, Zipios++ ignore those
     //uint8_t             m_filename[m_filename_length];
     std::string         m_filename;
     //uint8_t             m_extra_field[m_extra_field_length];
@@ -1043,7 +1059,7 @@ struct central_directory_header_t
     uint32_t            m_compressed_size;      // 14 -- size of data once compressed
     uint32_t            m_uncompressed_size;    // 18 -- size of data uncompressed
     //uint16_t            m_filename_length;      // 1C -- length name of this file
-    //uint16_t            m_extra_field_length;   // 1E -- length of extra buffer, zipios++ ignore those
+    //uint16_t            m_extra_field_length;   // 1E -- length of extra buffer, Zipios++ ignore those
     //uint16_t            m_file_comment_length;  // 20 -- length of comment
     uint16_t            m_disk_number_start;                // 22 -- disk number of split archives
     uint16_t            m_internal_file_attributes;         // 24 -- file attributes
@@ -1514,6 +1530,14 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         }
     }
 
+/** \TODO
+ * Once clang is fixed, remove those tests. clang does not clear the
+ * std::unchecked_exception() flag when we have a re-throw in a catch.
+ * In this case we have a problem with the exception raised in
+ * InflateInputStreambuf::underflow() when gzip finds an invalid
+ * input stream.
+ */
+#ifndef __clang__
     SECTION("create files with a compressed file, only save only 50% of the data")
     {
         for(int i(0); i < 10; ++i)
@@ -1596,6 +1620,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
             REQUIRE(amount_read != uncompressed_size);
         }
     }
+#endif
 }
 
 

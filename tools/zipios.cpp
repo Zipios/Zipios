@@ -7,7 +7,7 @@
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
+  version 2.1 of the License, or (at your option) any later version.
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,17 +16,21 @@
 
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /** \file
  * \brief A tool to test various things in a zip file.
  *
- * Also zipios can be used to determine the version of your zipios++
- * installation (this tool version, the libzipios++.so/dll version, etc.)
+ * Also zipios can be used to determine the version of your Zipios++
+ * installation (this tool version, the libzipios.so/dll version, etc.)
+ *
+ * \todo
+ * Actually make this tool really useful (as a simple replacement to
+ * zip and unzip for example).
  */
 
-#include "zipios++/zipfile.hpp"
+#include "zipios/zipfile.hpp"
 
 #include <cstring>
 
@@ -236,11 +240,11 @@ int main(int argc, char *argv[])
 }
 
 
-// vim: ts=4 sw=4 et
-
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et
