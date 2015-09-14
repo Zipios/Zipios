@@ -36,7 +36,7 @@
 #include <sstream>
 #include <stdint.h>
 
-#if !defined(ssize_t)
+#if defined( ZIPIOS_WINDOWS )
 typedef int32_t ssize_t;
 #endif
 
