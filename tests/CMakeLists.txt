@@ -30,6 +30,10 @@
 
 find_package( Catch )
 
+OPTION(BUILD_ZIPIOS_TESTS "Whether the zipios tests should be built. True by default." ON)
+
+if(BUILD_ZIPIOS_TESTS)
+
 if(CATCH_FOUND)
 
 project( zipios_tests )
@@ -77,6 +81,12 @@ add_custom_target(run_zipios_tests
 )
 
 endif(CATCH_FOUND)
+
+else(BUILD_ZIPIOS_TESTS)
+
+message("Tests are turned OFF. See BUILD_ZIPIOS_TESTS option.")
+
+endif(BUILD_ZIPIOS_TESTS)
 
 # Local Variables:
 # indent-tabs-mode: nil

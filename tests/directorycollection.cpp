@@ -236,7 +236,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
     for(int i(0); i < 6; ++i)
     {
         // create a directory tree starting in "tree"
-        system("rm -rf tree"); // clean up, just in case
+        REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
 
@@ -886,7 +886,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 TEST_CASE("DirectoryCollection with an existing directory that gets deleted", "[DirectoryCollection] [FileCollection]")
 {
     // create a directory
-    system("rm -rf tree"); // clean up, just in case
+    REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
     REQUIRE(mkdir("tree", 0777) == 0);
 
     // the initialization works as expected!
@@ -905,7 +905,7 @@ TEST_CASE("DirectoryCollection with an existing directory that gets deleted", "[
 TEST_CASE("DirectoryCollection with an empty directory", "[DirectoryCollection] [FileCollection]")
 {
     // create a directory
-    system("rm -rf tree"); // clean up, just in case
+    REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
     REQUIRE(mkdir("tree", 0777) == 0);
 
     SECTION("verify that the object looks as expected")

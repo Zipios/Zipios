@@ -144,11 +144,11 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
 {
     GIVEN("a tree directory")
     {
-        system("rm -rf tree"); // clean up, just in case
+        REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
         zipios_test::auto_unlink_t remove_zip("tree.zip");
-        system("zip -r tree.zip tree >/dev/null");
+        REQUIRE(system("zip -r tree.zip tree >/dev/null") == 0);
 
         // first, check that the object is setup as expected
         WHEN("we load the zip file")
@@ -388,7 +388,7 @@ SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
 {
     GIVEN("a tree directory")
     {
-        system("rm -rf tree tree.zip"); // clean up, just in case
+        REQUIRE(system("rm -rf tree tree.zip") == 0); // clean up, just in case
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
         zipios_test::auto_unlink_t remove_zip("tree.zip");
@@ -624,7 +624,7 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
 {
     GIVEN("a one file zip file")
     {
-        system("rm -f file.bin"); // clean up, just in case
+        REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
         {
             std::ofstream file_bin("file.bin", std::ios::out | std::ios::binary);
             file_bin << "this zip file contents.\n";
@@ -818,7 +818,7 @@ SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile
 #ifndef __clang__
     GIVEN("a very small file")
     {
-        system("rm -f file.bin"); // clean up, just in case
+        REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
         {
             // one byte file
             std::ofstream file_bin("file.bin", std::ios::out | std::ios::binary);
@@ -856,7 +856,7 @@ TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollectio
 {
     SECTION("try one uncompressed file of many sizes")
     {
-        system("rm -f file.bin"); // clean up, just in case
+        REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
         for(int sz(0); sz <= 128 * 1024; sz += sz < 10 ? 1 : rand() % (1024 * 4))
         {
             zipios_test::auto_unlink_t remove_bin("file.bin");
@@ -896,7 +896,7 @@ TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollectio
 
     SECTION("try three uncompressed files of many sizes")
     {
-        system("rm -f file.zip file?.bin"); // clean up, just in case
+        REQUIRE(system("rm -f file.zip file?.bin") == 0); // clean up, just in case
         for(int sz(0); sz <= 128 * 1024; sz += sz < 10 ? 1 : rand() % (1024 * 4))
         {
             zipios_test::auto_unlink_t remove_bin1("file1.bin");

@@ -1242,7 +1242,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
     GIVEN("test an existing directory and no comment")
     {
         // make sure the directory is gone before re-creating it
-        static_cast<void>(system("rm -rf filepath-test"));
+        REQUIRE(system("rm -rf filepath-test") == 0);
 
         // create a directory
         REQUIRE(mkdir("filepath-test", 0777) == 0);

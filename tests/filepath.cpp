@@ -623,11 +623,8 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
 
     GIVEN("an existing directory")
     {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-result"
         // make sure the directory is gone before re-creating it
-        system("rm -rf filepath-test");
-#pragma GCC diagnostic pop
+        REQUIRE(system("rm -rf filepath-test") == 0);
         // create a directory
         REQUIRE(mkdir("filepath-test", 0777) == 0);
 

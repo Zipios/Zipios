@@ -19,7 +19,7 @@ Requires **zlib** ([http://www.zlib.org](http://www.zlib.org)).
 
 To run the automatic unit test suite you need **Catch**
 ([https://github.com/philsquared/Catch](https://github.com/philsquared/Catch))
-The tests also require the command line *zip* tool.
+The tests also require the *zip* command line tool.
 
 To build the projects, we use a C++ compiler (tested with **g++** and
 **clang**) as well as **cmake**.
@@ -35,6 +35,7 @@ The following options are supported:
     - `BUILD_SHARED_LIBS` (ON by default)
     - `BUILD_DOCUMENTATION` (ON by default)
     - `zipios_project_COVERAGE` (OFF by default)
+    - `BUILD_ZIPIOS_TESTS` (ON by default)
 
 In order to build Zipios++ as a static library, specify:
 
@@ -48,6 +49,12 @@ In order to build the library with coverage support, use the coverage
 option and make sure to compile in Debug mode too:
 
     -Dzipios_project_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+
+By default tests get built if catch.hpp is available. However, you may
+have catch.hpp installed on your system but want to skip on building
+the tests (i.e. nightly build). In that case you may turn them off with:
+
+    -DBUILD_ZIPIOS_TESTS:BOOL=OFF
 
 ## Unix
 
