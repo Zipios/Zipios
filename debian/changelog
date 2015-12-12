@@ -1,3 +1,21 @@
+zipios (2.1.1~trusty) trusty; urgency=high
+
+  * Fixed a couple of classes initializations that were missing.
+  * Fixed a view system() call of which return values were not checked.
+  * Added a BUILD_ZIPIOS_TESTS cmake option flag.
+  * Fixed reference to README as README.md as it is called now.
+  * Allow for ZIPIOS_WINDOWS to compile under MS-Windows.
+  * Added an ssize_t definition for Windows.
+  * Removed the "catch_" prefix from all test names.
+  * Fixed some copyright notices.
+  * Cleaned up the coverage script.
+  * Added the BUILD_SHARED_LIBS and BUILD_DOCUMENTATION options to cmake.
+  * Fixed the FindZipIos.cmake file so it uses the correct names.
+  * Also make the destination directory for FindZipIos.cmake a variable.
+  * Enhanced the installation directory handling in cmake.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat, 12 Dec 2015 14:41:42 -0700
+
 zipios (2.1.0~trusty) trusty; urgency=high
 
   * Renamed the include directory to remove the '++'.

@@ -91,6 +91,9 @@ void writeZipCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, st
  */
 ZipOutputStreambuf::ZipOutputStreambuf(std::streambuf * outbuf)
     : DeflateOutputStreambuf(outbuf)
+    //, m_zip_comment("") -- auto-init
+    //, m_entries() -- auto-init
+    //, m_compression_level(FileEntry::COMPRESSION_LEVEL_DEFAULT) -- auto-init
     //, m_open_entry(false) -- auto-init
     //, m_open(true) -- auto-init
 {

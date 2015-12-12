@@ -68,10 +68,10 @@ DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf)
     //         The reason is that this class can be subclassed, and the
     //         subclass should get a chance to write to the buffer first.
 
-    // zlib init:
-    m_zs.zalloc = Z_NULL;
-    m_zs.zfree  = Z_NULL;
-    m_zs.opaque = Z_NULL;
+    // zlib init: (this is done in the class declaration)
+    //m_zs.zalloc = Z_NULL;
+    //m_zs.zfree  = Z_NULL;
+    //m_zs.opaque = Z_NULL;
 }
 
 

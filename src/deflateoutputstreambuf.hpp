@@ -68,7 +68,7 @@ private:
     void                    endDeflation();
     void                    flushOutvec();
 
-    z_stream                m_zs;
+    z_stream                m_zs = z_stream();
     bool                    m_zs_initialized = false;
 
     std::vector<char>       m_outvec;

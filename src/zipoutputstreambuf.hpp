@@ -62,7 +62,7 @@ private:
 
     std::string                 m_zip_comment;
     FileEntry::vector_t         m_entries;
-    FileEntry::CompressionLevel m_compression_level;
+    FileEntry::CompressionLevel m_compression_level = FileEntry::COMPRESSION_LEVEL_DEFAULT;
     bool                        m_open_entry = false;
     bool                        m_open = true;
 };
