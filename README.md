@@ -136,4 +136,4 @@ classes and files.
 # Bugs
 
 Submit bug reports and patches via
-[http://sourceforge.net/projects/zipios](http://sourceforge.net/projects/zipios)
+[https://github.com/Zipios/Zipios/issues](https://github.com/Zipios/Zipios/issues)
