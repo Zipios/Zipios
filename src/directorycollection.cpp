@@ -370,7 +370,7 @@ void DirectoryCollection::load(FilePath const& subdir)
             int const r(readdir_r(m_dir, &e, &entry));
             if(r != 0)
             {
-                throw IOException("an I/O error occured while reading a directory"); // LCOV_EXCL_LINE
+                throw IOException("an I/O error occurred while reading a directory"); // LCOV_EXCL_LINE
             }
             if(entry == NULL)
             {
