@@ -32,6 +32,8 @@ cmake_minimum_required(VERSION 2.8.4)
 
 project( zipios_project )
 
+enable_testing()
+
 set( ZIPIOS_VERSION_MAJOR 2 )
 set( ZIPIOS_VERSION_MINOR 1 )
 set( ZIPIOS_VERSION_PATCH 1 )
