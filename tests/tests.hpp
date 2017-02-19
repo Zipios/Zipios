@@ -34,6 +34,7 @@
 
 #include <catch.hpp>
 
+#include <memory>
 #include <sstream>
 
 #include <limits.h>
