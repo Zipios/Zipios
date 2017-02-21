@@ -2,7 +2,7 @@
   Zipios++ - a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015  Made to Order Software Corporation
+  Copyright (C) 2015-2017  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -51,10 +51,10 @@ namespace zipios
  *
  * \param[in] inbuf  The streambuf to use for input.
  */
-FilterInputStreambuf::FilterInputStreambuf(std::streambuf *inbuf)
+FilterInputStreambuf::FilterInputStreambuf(std::streambuf * inbuf)
     : m_inbuf(inbuf)
 {
-    if(!m_inbuf)
+    if(m_inbuf == nullptr)
     {
         throw InvalidStateException("FilterInputStreambuf::FilterInputStreambuf() was called with a null streambuf pointer");
     }

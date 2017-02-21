@@ -5,7 +5,7 @@
 #    make -C YOUR_BUILD_DIR/zipios/ zipios_code_analysis
 #
 # License:
-#      Copyright (c) 2011-2015 Made to Order Software Corp.
+#      Copyright (c) 2011-2017 Made to Order Software Corp.
 #      contact@m2osw.com
 #
 #      This program is free software; you can redistribute it and/or modify

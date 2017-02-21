@@ -2,7 +2,7 @@
   Zipios++ - a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015  Made to Order Software Corporation
+  Copyright (C) 2015-2017  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -131,8 +131,8 @@ void ZipOutputStream::putNextEntry(FileEntry::pointer_t entry)
     // if we do not yet have a ZipCentralDirectoryEntry object, create
     // one from the input entry (the input entry is actually expected
     // to be a DirectoryEntry!)
-    ZipCentralDirectoryEntry *central_directory_entry(dynamic_cast<ZipCentralDirectoryEntry *>(entry.get()));
-    if(!central_directory_entry)
+    ZipCentralDirectoryEntry * central_directory_entry(dynamic_cast<ZipCentralDirectoryEntry *>(entry.get()));
+    if(central_directory_entry == nullptr)
     {
         entry.reset(new ZipCentralDirectoryEntry(*entry));
     }

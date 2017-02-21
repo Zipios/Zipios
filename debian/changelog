@@ -1,3 +1,22 @@
+zipios (2.1.4.0~xenial) xenial; urgency=high
+
+  * Replaced readdir_r() with readdir().
+  * Removed a throw from a destructor, which g++ now reports with a warning.
+  * Fixed a few more "occurred".
+  * Moved dependencies, one per line.
+  * Fixed position of some vim comments.
+  * Bumped copyright notices to 2017.
+  * Fixed several return false which needed to be return node::pointer_t().
+  * Fixed a few if(!<pointer>) which should be != or == nullptr.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 19 Feb 2017 22:02:22 -0700
+
+zipios (2.1.3.0~xenial) xenial; urgency=high
+
+  * SNAP-110: Bumped version to get my test system to upgrade properly.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 13 Sep 2016 11:59:22 -0700
+
 zipios (2.1.1~trusty) trusty; urgency=high
 
   * Fixed a couple of classes initializations that were missing.

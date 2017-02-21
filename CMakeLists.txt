@@ -11,7 +11,7 @@
 # License:
 #      Zipios++ - a small C++ library that provides easy access to .zip files.
 #      Copyright (C) 2000-2007  Thomas Sondergaard
-#      Copyright (C) 2015  Made to Order Software Corporation
+#      Copyright (C) 2015-2017  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
 #      modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,7 @@ project( zipios_project )
 
 set( ZIPIOS_VERSION_MAJOR 2 )
 set( ZIPIOS_VERSION_MINOR 1 )
-set( ZIPIOS_VERSION_PATCH 1 )
+set( ZIPIOS_VERSION_PATCH 4 )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
@@ -115,11 +115,11 @@ else()
 endif()
 set(CMAKE_INSTALL_CMAKEMODULESDIR ${CMAKE_INSTALL_DATADIR}/cmake-2.8/Modules)
 
-set(BIN_INSTALL_DIR             ${CMAKE_INSTALL_BINDIR}             CACHE PATH "Location to install binaries relative to the install prefix.")
-set(INCLUDE_INSTALL_DIR         ${CMAKE_INSTALL_INCLUDEDIR}         CACHE PATH "Location to install headers relative to the install prefix.")
-set(LIB_INSTALL_DIR             ${CMAKE_INSTALL_LIBDIR}             CACHE PATH "Location to install libraries relative to the install prefix.")
-set(DATA_INSTALL_DIR            ${CMAKE_INSTALL_DATADIR}            CACHE PATH "Location to install data files relative to the install prefix.")
-set(CMAKE_MODULES_INSTALL_DIR   ${CMAKE_INSTALL_CMAKEMODULESDIR}    CACHE PATH "Location to install data files relative to the install prefix.")
+set(BIN_INSTALL_DIR             ${CMAKE_INSTALL_BINDIR}             CACHE PATH "Location to install binaries relative to the install prefix."   )
+set(INCLUDE_INSTALL_DIR         ${CMAKE_INSTALL_INCLUDEDIR}         CACHE PATH "Location to install headers relative to the install prefix."    )
+set(LIB_INSTALL_DIR             ${CMAKE_INSTALL_LIBDIR}             CACHE PATH "Location to install libraries relative to the install prefix."  )
+set(DATA_INSTALL_DIR            ${CMAKE_INSTALL_DATADIR}            CACHE PATH "Location to install data files relative to the install prefix." )
+set(CMAKE_MODULES_INSTALL_DIR   ${CMAKE_INSTALL_CMAKEMODULESDIR}    CACHE PATH "Location to install data files relative to the install prefix." )
 
 
 find_package( ZLIB REQUIRED )
@@ -132,10 +132,10 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.spec.in ${CMAKE_CURRE
 
 include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 
-add_subdirectory( src )
+add_subdirectory( src   )
 add_subdirectory( tools )
 add_subdirectory( tests )
-add_subdirectory( doc )
+add_subdirectory( doc   )
 
 install( DIRECTORY zipios
     DESTINATION ${INCLUDE_INSTALL_DIR}

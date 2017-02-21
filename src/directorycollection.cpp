@@ -2,7 +2,7 @@
   Zipios++ - a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015  Made to Order Software Corporation
+  Copyright (C) 2015-2017  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -182,7 +182,7 @@ FileEntry::pointer_t DirectoryCollection::getEntry(std::string const & name, Mat
  * This function returns a shared pointer to an istream defined from
  * the named entry, which is expected to be available in this collection.
  *
- * The function returns a NULL pointer if no FileEntry can be found from
+ * The function returns a null pointer if no FileEntry can be found from
  * the specified name or the FileEntry is marked as invalid.
  *
  * The returned istream represents a file on disk, although the filename
@@ -202,10 +202,10 @@ FileEntry::pointer_t DirectoryCollection::getEntry(std::string const & name, Mat
  * \sa FileCollection
  * \sa ZipFile
  */
-DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::string const& entry_name, MatchPath matchpath)
+DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::string const & entry_name, MatchPath matchpath)
 {
     FileEntry::pointer_t ent(getEntry(entry_name, matchpath));
-    if(!ent || ent->isDirectory())
+    if(ent == nullptr || ent->isDirectory())
     {
         return DirectoryCollection::stream_pointer_t();
     }
@@ -303,7 +303,7 @@ void DirectoryCollection::load(FilePath const& subdir)
                 }
                 else
                 {
-                    throw IOException("an I/O error occured while reading a directory");
+                    throw IOException("an I/O error occurred while reading a directory");
                 }
             }
         }
@@ -327,7 +327,7 @@ void DirectoryCollection::load(FilePath const& subdir)
                 {
                     if(errno != ENOENT)
                     {
-                        throw IOException("an I/O error occured while reading a directory");
+                        throw IOException("an I/O error occurred while reading a directory");
                     }
                     return std::string();
                 }
@@ -352,9 +352,9 @@ void DirectoryCollection::load(FilePath const& subdir)
         read_dir_t(FilePath const& path)
             : m_dir(opendir(static_cast<std::string>(path).c_str()))
         {
-            if(!m_dir)
+            if(m_dir == nullptr)
             {
-                throw IOException("an I/O error occured while trying to access directory");
+                throw IOException("an I/O error occurred while trying to access directory");
             }
         }
 
@@ -365,15 +365,20 @@ void DirectoryCollection::load(FilePath const& subdir)
 
         std::string next()
         {
+            // we must reset errno because readdir() does not change it
+            // when the end of the directory is reached
+            //
+            // Note: readdir() is expected to be thread safe as long as
+            //       each thread use a different m_dir parameter
+            //
             errno = 0;
-            struct dirent *entry, e;
-            int const r(readdir_r(m_dir, &e, &entry));
-            if(r != 0)
+            struct dirent * entry(readdir(m_dir));
+            if(entry == nullptr)
             {
-                throw IOException("an I/O error occurred while reading a directory"); // LCOV_EXCL_LINE
-            }
-            if(entry == NULL)
-            {
+                if(errno != 0)
+                {
+                    throw IOException("an I/O error occurred while reading a directory"); // LCOV_EXCL_LINE
+                }
                 return std::string();
             }
 

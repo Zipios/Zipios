@@ -2,7 +2,7 @@
   Zipios++ - a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015  Made to Order Software Corporation
+  Copyright (C) 2015-2017  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -175,8 +175,10 @@ file_t::~file_t()
     }
     else
     {
-        // throw in destructor?!
-        throw std::logic_error("unknown type of file"); // LCOV_EXCL_LINE
+        // we cannot throw in a destructor... (g++ 7.0+ detects that now!)
+        //throw std::logic_error("unknown type of file"); // LCOV_EXCL_LINE
+        std::cerr << "fatal error: unknown type of file" << std::endl; // LCOV_EXCL_LINE
+        std::terminate(); // LCOV_EXCL_LINE
     }
 }
 
@@ -328,7 +330,6 @@ void file_t::get_filenames(filenames_t& names, std::string const& parent) const
 
 
 } // zipios_tests namespace
-// vim: ts=4 sw=4 et
 
 // Local Variables:
 // mode: cpp
@@ -336,3 +337,5 @@ void file_t::get_filenames(filenames_t& names, std::string const& parent) const
 // c-basic-offset: 4
 // tab-width: 4
 // End:
+
+// vim: ts=4 sw=4 et

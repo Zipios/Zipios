@@ -2,7 +2,7 @@
   Zipios++ - a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015  Made to Order Software Corporation
+  Copyright (C) 2015-2017  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -235,7 +235,7 @@ bool CollectionCollection::addCollection(FileCollection const& collection)
  */
 bool CollectionCollection::addCollection(FileCollection::pointer_t collection)
 {
-    if(!collection)
+    if(collection == nullptr)
     {
         // TBD: should we return false instead?
         throw InvalidException("CollectionCollection::addCollection(): called with a null collection pointer");

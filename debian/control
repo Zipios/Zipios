@@ -2,7 +2,14 @@ Source: zipios
 Section: libs
 Priority: optional
 Maintainer: Masayuki Hatta (mhatta) <mhatta@debian.org>
-Build-Depends: cmake, debhelper (>> 4.0.0), doxygen, graphviz, graphicsmagick-imagemagick-compat, libcppunit-dev, libz-dev, catch
+Build-Depends: catch,
+    cmake,
+    debhelper (>> 4.0.0),
+    doxygen,
+    graphicsmagick-imagemagick-compat,
+    graphviz,
+    libcppunit-dev,
+    libz-dev
 Standards-Version: 3.9.4
 
 Package: libzipios-dev
