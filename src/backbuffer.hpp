@@ -41,9 +41,9 @@ namespace zipios
 class BackBuffer : public ::zipios::buffer_t
 {
 public:
-                            BackBuffer(std::istream& is, VirtualSeeker const& vs = VirtualSeeker(), ssize_t const chunk_size = 1024);
+                            BackBuffer(std::istream & is, VirtualSeeker const & vs = VirtualSeeker(), ssize_t const chunk_size = 1024);
 
-    ssize_t                 readChunk(ssize_t& read_pointer);
+    ssize_t                 readChunk(ssize_t & read_pointer);
 
 private:
     VirtualSeeker           m_vs;

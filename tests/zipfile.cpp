@@ -75,7 +75,9 @@ TEST_CASE("An Empty ZipFile", "[ZipFile] [FileCollection]")
 
 TEST_CASE("A ZipFile with an invalid name", "[ZipFile] [FileCollection]")
 {
-    REQUIRE_THROWS_AS(zipios::ZipFile zf("this/file/does/not/exists/so/the/constructor/throws"), zipios::IOException);
+    REQUIRE_THROWS_AS([&](){
+                    zipios::ZipFile zf("this/file/does/not/exists/so/the/constructor/throws");
+                }, zipios::IOException);
 }
 
 
@@ -92,7 +94,9 @@ TEST_CASE("A ZipFile with an invalid file", "[ZipFile] [FileCollection]")
             os << static_cast<char>(rand());
         }
     }
-    REQUIRE_THROWS_AS(zipios::ZipFile zf("invalid.zip"), zipios::FileCollectionException);
+    REQUIRE_THROWS_AS([&](){
+                    zipios::ZipFile zf("invalid.zip");
+                }, zipios::FileCollectionException);
 }
 
 
@@ -1240,7 +1244,9 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
             // truncate the file to 'i' size
             truncate("file.zip", i);
 
-            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
+            REQUIRE_THROWS_AS([&](){
+                            zipios::ZipFile zf("file.zip");
+                        }, zipios::FileCollectionException);
         }
     }
 
@@ -1267,7 +1273,9 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
             size_t const five(5);
             truncate("file.zip", (22 + comment_len) - (rand() % std::min(five, comment_len) + 1));
 
-            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::IOException);
+            REQUIRE_THROWS_AS([&](){
+                            zipios::ZipFile zf("file.zip");
+                        }, zipios::IOException);
         }
     }
 
@@ -1293,7 +1301,9 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 eocd.write(os);
             }
 
-            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
+            REQUIRE_THROWS_AS([&](){
+                        zipios::ZipFile zf("file.zip");
+                    }, zipios::FileCollectionException);
         }
     }
 
@@ -1320,7 +1330,9 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 eocd.write(os);
             }
 
-            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::IOException);
+            REQUIRE_THROWS_AS([&](){
+                        zipios::ZipFile zf("file.zip");
+                    }, zipios::IOException);
         }
     }
 
@@ -1346,7 +1358,9 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 eocd.write(os);
             }
 
-            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::IOException);
+            REQUIRE_THROWS_AS([&](){
+                        zipios::ZipFile zf("file.zip");
+                    }, zipios::IOException);
         }
     }
 
@@ -1483,7 +1497,9 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 eocd.write(os);
             }
 
-            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
+            REQUIRE_THROWS_AS([&](){
+                        zipios::ZipFile zf("file.zip");
+                    }, zipios::FileCollectionException);
         }
     }
 
@@ -1526,7 +1542,9 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 eocd.write(os);
             }
 
-            REQUIRE_THROWS_AS(zipios::ZipFile zf("file.zip"), zipios::FileCollectionException);
+            REQUIRE_THROWS_AS([&](){
+                        zipios::ZipFile zf("file.zip");
+                    }, zipios::FileCollectionException);
         }
     }
 

@@ -1,11 +1,11 @@
 # Introduction
 
-Zipios++ is a small C++ library for reading and writing zip files. The
+Zipios is a small C++ library for reading and writing zip files. The
 structure and public interface are based (somewhat loosely) on the
 `java.util.zip` package. The streams created to access the individual
 entries in a zip file are based on the standard iostream library.
 
-Zipios++ also provides a way for an application to support files from
+Zipios also provides a way for an application to support files from
 multiple sources (e.g. from zip files or from ordinary directories)
 transparently.
 
@@ -17,12 +17,48 @@ License (LGPL).
 
 Requires **zlib** ([http://www.zlib.org](http://www.zlib.org)).
 
+    # Debian/Ubuntu
+    sudo apt-get install zlib-dev
+
+    # Fedora/RPM based systems
+    sudo dnf install zlib-devel
+
 To run the automatic unit test suite you need **Catch**
 ([https://github.com/philsquared/Catch](https://github.com/philsquared/Catch))
+
+    # Debian/Ubuntu
+    sudo apt-get install catch
+
+    # Fedora/RPM based systems
+    sudo dnf install catch-devel
+
 The tests also require the *zip* command line tool.
+
+    # Debian/Ubuntu
+    sudo apt-get install zip
+
+    # Fedora/RPM based systems
+    sudo dnf install zip
 
 To build the projects, we use a C++ compiler (tested with **g++** and
 **clang**) as well as **cmake**.
+
+    # Debian/Ubuntu
+    sudo apt-get install g++
+    sudo apt-get install cmake
+
+    # Fedora/RPM based systems
+    sudo dnf install gcc-c++
+    sudo dnf install cmake
+
+By default, the CMakeLists.txt knows to skip building the documentation.
+This happens if `doxygen` and `graphviz` are not both installed.
+
+    # Debian/Ubuntu
+    sudo apt-get install doxygen graphviz
+
+    # Fedora/RPM based systems
+    sudo dnf install doxygen graphviz
 
 
 # Installation
@@ -37,7 +73,7 @@ The following options are supported:
     - `zipios_project_COVERAGE` (OFF by default)
     - `BUILD_ZIPIOS_TESTS` (ON by default)
 
-In order to build Zipios++ as a static library, specify:
+In order to build Zipios as a static library, specify:
 
     -DBUILD_SHARED_LIBS:BOOL=OFF
 
@@ -56,6 +92,7 @@ the tests (i.e. nightly build). In that case you may turn them off with:
 
     -DBUILD_ZIPIOS_TESTS:BOOL=OFF
 
+
 ## Unix
 
 Once you have `cmake` installed, you should be able to run the following
@@ -67,6 +104,8 @@ under Unix:
     cmake ../zipios
     make
     make install
+
+_(See the `zipios/dev/build` script for an example script.)_
 
 The project comes with a build script (see `dev/build`) that can be used
 to run those steps. It will assume that you do not mind to have your `BUILD`
@@ -82,7 +121,7 @@ For details about available installation configurations of cmake packages
 refer to the CMake documentation online
 [http://www.cmake.org/](http://www.cmake.org/)
 
-By default, `make install` installs the Zipios++ 2.1+ header files under
+By default, `make install` installs the Zipios 2.1+ header files under
 `/usr/include/zipios/` and the library `libzipios.so` under `/usr/lib/`.
 You can choose another base path than `/usr/` using the following option
 on the `cmake` command line:

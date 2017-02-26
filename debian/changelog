@@ -1,3 +1,13 @@
+zipios (2.1.5.0~xenial) xenial; urgency=high
+
+  * Applied fix using lambda for throwing constructors in our tests.
+    (Reference https://github.com/Zipios/Zipios/issues/5)
+  * Updated the README.md to include instructions on how to install each
+    dependency.
+  * Fixed the FindCatch.cmake for Fedora, the catch.hpp is in a sub-folder.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 19 Feb 2017 22:02:22 -0700
+
 zipios (2.1.4.0~xenial) xenial; urgency=high
 
   * Replaced readdir_r() with readdir().

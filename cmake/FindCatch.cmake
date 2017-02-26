@@ -26,12 +26,16 @@
 
 SET(CATCH_FOUND "NO")
 
+# The PATH_SUFFXES is necessary under Fedora
+#
 FIND_PATH(CATCH_INCLUDE_DIR
     catch.hpp
     PATHS
         ${CMAKE_SOURCE_DIR}/contrib
         /usr/local/include
         /usr/include
+    PATH_SUFFIXES
+        catch
 )
 
 IF(CATCH_INCLUDE_DIR)
