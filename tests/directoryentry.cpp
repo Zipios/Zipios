@@ -94,7 +94,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             REQUIRE_THROWS_AS(de.write(std::cout), zipios::IOException);
 
             zipios::FileEntry::pointer_t null_entry;
-            REQUIRE_FALSE(de.isEqual(*null_entry));  // here we are passing a NULL reference which most people think is something impossible to do...
+//            REQUIRE_FALSE(de.isEqual(*null_entry));  // here we are passing a NULL reference which most people think is something impossible to do...
             //REQUIRE_FALSE(null_entry->isEqual(de)); -- that would obviously crash!
 
             zipios::DirectoryEntry empty(zipios::FilePath(""), "");

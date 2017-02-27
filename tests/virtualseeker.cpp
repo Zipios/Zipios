@@ -75,15 +75,15 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         // attempt to create the seeker with invalid offsets
         REQUIRE_THROWS_AS([&](){
                         zipios::VirtualSeeker vs(start_offset, -end);
-                    }, zipios::InvalidException);
+                    }(), zipios::InvalidException);
         REQUIRE_THROWS_AS([&](){
                         zipios::VirtualSeeker vs(-start_offset, -end);
-                    }, zipios::InvalidException);
+                    }(), zipios::InvalidException);
         if(start_offset != 0)
         {
             REQUIRE_THROWS_AS([&](){
                             zipios::VirtualSeeker vs(-start_offset, end);
-                        }, zipios::InvalidException);
+                        }(), zipios::InvalidException);
         }
 
         // the end parameter to the VirtualSeeker is a "weird" position
