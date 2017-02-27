@@ -71,6 +71,8 @@ add_custom_target(run_zipios_tests
     COMMAND ./zipios_tests
 )
 
+add_test(zipios_tests ${PROJECT_NAME})
+
 else(CATCH_FOUND)
 
 message("No test will be created because you do not seem to have catch.hpp installed...")
