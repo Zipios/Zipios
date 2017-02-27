@@ -41,8 +41,8 @@ then
         ../BUILD/zipios/tests/zipios_tests -d yes "A ZipFile with an invalid file"
         ../BUILD/zipios/tests/zipios_tests -d yes "An empty ZipFile"
         ../BUILD/zipios/tests/zipios_tests -d yes "Scenario: ZipFile with a valid zip archive"
-        ../BUILD/zipios/tests/zipios_tests -d yes "Scenario: use Zipios++ to create a zip archive"
-        ../BUILD/zipios/tests/zipios_tests -d yes "Scenario: use Zipios++ to create zip archives with 1 or 3 files each"
+        ../BUILD/zipios/tests/zipios_tests -d yes "Scenario: use Zipios to create a zip archive"
+        ../BUILD/zipios/tests/zipios_tests -d yes "Scenario: use Zipios to create zip archives with 1 or 3 files each"
         ../BUILD/zipios/tests/zipios_tests -d yes "Simple Valid and Invalid ZipFile Archives"
         ../BUILD/zipios/tests/zipios_tests -d yes "Valid and Invalid ZipFile Archives"
 else
@@ -55,4 +55,3 @@ else
 	echo "../BUILD/zipios/tests/zipios_tests $*"
 	../BUILD/zipios/tests/zipios_tests $seed "$*"
 fi
-

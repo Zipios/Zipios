@@ -1,5 +1,5 @@
 /*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Zipios – a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
   Copyright (C) 2015-2017  Made to Order Software Corporation
@@ -110,7 +110,7 @@ size_t ZipEndOfCentralDirectory::getCentralDirectorySize() const
  * This function returns the number of entries that will be found
  * in the Central Directory.
  *
- * Since Zipios++ has no support for split Zip archive files (i.e. one
+ * Since Zipios has no support for split Zip archive files (i.e. one
  * large archive written on multiple disks), the total number of entries,
  * or the number of entries in this archive is always exactly the same.
  *

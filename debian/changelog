@@ -49,7 +49,7 @@ zipios (2.1.0~trusty) trusty; urgency=high
 
   * Renamed the include directory to remove the '++'.
   * Renamed the Debian package "zipios".
-  * Added a few scripts to help with publishing a new version of Zipios++.
+  * Added a few scripts to help with publishing a new version of Zipios.
   * Fixed and added some copyright notices.
   * Fixed the comments in the cmake/* files.
   * Fixed name of zipios_tool as just zipios once installed.
@@ -146,7 +146,7 @@ zipios (0.1.5.9+cvs.2007.04.28-3) unstable; urgency=low
 
   * Bumped to Standards-Version: 3.7.3.
   * Fixed various lintian warnings.
-  * Now provides libzipios++-doc and manpages in libzipios++-dev 
+  * Now provides libzipios++-doc and manpages in libzipios++-dev
     - closes: #288863
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Sun, 09 Dec 2007 06:33:47 +0900
@@ -154,7 +154,7 @@ zipios (0.1.5.9+cvs.2007.04.28-3) unstable; urgency=low
 zipios (0.1.5.9+cvs.2007.04.28-2) unstable; urgency=low
 
   * Fix for amd64 in -1 was incomplete.  Now fixed.
-  * src/zipinputstreambuf.cpp : Backported from the previous revision. 
+  * src/zipinputstreambuf.cpp : Backported from the previous revision.
   The changes made in the upstream breaks enigma's score reading - closes: #421498
 
  -- Masayuki Hatta (mhatta) <mhatta@debian.org>  Mon, 30 Apr 2007 10:21:50 +0900
@@ -174,7 +174,7 @@ zipios (0.1.5.9+cvs.2004.02.07-3.4) unstable; urgency=high
   * Non-maintainer upload.
   * Ship an empty zipios-config.h, since it isn't good to have stuff like
     HAVE_ macros or (more importantly) PACKAGE and VERSION leak into other
-    package's namespaces. Instead, the few #ifdefs in the headers that 
+    package's namespaces. Instead, the few #ifdefs in the headers that
     actually used these macros have been resolved manually in the source,
     as they are consistent across all Debian systems and not likely to change
     in the near future. (Closes: #363173)

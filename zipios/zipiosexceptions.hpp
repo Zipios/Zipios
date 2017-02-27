@@ -3,7 +3,7 @@
 #define ZIPIOS_ZIPIOSEXCEPTIONS_HPP
 
 /*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Zipios – a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
   Copyright (C) 2015-2017  Made to Order Software Corporation
@@ -24,11 +24,11 @@
 */
 
 /** \file
- * \brief Various exceptions used throughout the Zipios++ library, all
+ * \brief Various exceptions used throughout the Zipios library, all
  *        based on zipios::Exception.
  *
  * This header file defines a number of exceptions used throughout
- * the Zipios++ library. The declaration includes the implementation.
+ * the Zipios library. The declaration includes the implementation.
  * We really only offer a what() string along with the exceptions.
  * We may add some more exceptions to better separate the various
  * errors we generate.

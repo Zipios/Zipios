@@ -3,7 +3,7 @@
 #define CATCH_TESTS_HPP
 
 /*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Zipios – a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
   Copyright (C) 2015-2017  Made to Order Software Corporation
@@ -26,7 +26,7 @@
 /** \file
  * \brief Common header for all our catch tests.
  *
- * Zipios++ comes with a unit test suite. This header defines things
+ * Zipios comes with a unit test suite. This header defines things
  * that all the tests access, such as the catch.hpp header file.
  */
 

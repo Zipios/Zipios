@@ -1,5 +1,5 @@
 /*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Zipios – a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
   Copyright (C) 2015-2017  Made to Order Software Corporation
@@ -62,7 +62,7 @@ uint32_t const      g_signature = 0x04034b50;
 /** \brief A bit in the general purpose flags.
  *
  * This mask is used to know whether the size and CRC are saved in
- * the header or after the header. At this time Zipios++ does not
+ * the header or after the header. At this time Zipios does not
  * support such trailing data as it makes use of the compressed
  * and uncompressed sizes to properly stream the output data.
  *
@@ -305,7 +305,7 @@ void ZipLocalEntry::setCrc(uint32_t crc)
  * and uncompressed sizes set to zero.
  *
  * \note
- * Zipios++ does not support such a scheme.
+ * Zipios does not support such a scheme.
  *
  * \return true if this file makes use of a trailing data buffer.
  */

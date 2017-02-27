@@ -1,5 +1,5 @@
 /*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Zipios – a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
   Copyright (C) 2015-2017  Made to Order Software Corporation
@@ -21,7 +21,7 @@
 
 /** \file
  *
- * Zipios++ unit tests for the ZipFile class.
+ * Zipios unit tests for the ZipFile class.
  */
 
 #include "tests.hpp"
@@ -388,7 +388,7 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
 }
 
 
-SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
+SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]")
 {
     GIVEN("a tree directory")
     {
@@ -624,7 +624,7 @@ SCENARIO("use Zipios++ to create a zip archive", "[ZipFile] [FileCollection]")
 }
 
 
-SCENARIO("use Zipios++ to create zip archives with 1 or 3 files each", "[ZipFile] [FileCollection]")
+SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] [FileCollection]")
 {
     GIVEN("a one file zip file")
     {
@@ -972,13 +972,13 @@ struct local_header_t
     uint32_t            m_signature;            // "PK 3.4"
     uint16_t            m_version;              // 10 or 20
     uint16_t            m_flags;                // generally zero ("general purpose field")
-    uint16_t            m_compression_method;   // Zipios++ only supports STORED and DEFLATE
+    uint16_t            m_compression_method;   // Zipios only supports STORED and DEFLATE
     uint32_t            m_time_and_date;        // MS-DOS date and time
     uint32_t            m_crc32;                // CRC-32 of the file data
     uint32_t            m_compressed_size;      // size of data once compressed
     uint32_t            m_uncompressed_size;    // size of data uncompressed
     //uint16_t            m_filename_length;     // length name of this file
-    //uint16_t            m_extra_field_length;   // length of extra buffer, Zipios++ ignore those
+    //uint16_t            m_extra_field_length;   // length of extra buffer, Zipios ignore those
     //uint8_t             m_filename[m_filename_length];
     std::string         m_filename;
     //uint8_t             m_extra_field[m_extra_field_length];
@@ -1063,7 +1063,7 @@ struct central_directory_header_t
     uint32_t            m_compressed_size;      // 14 -- size of data once compressed
     uint32_t            m_uncompressed_size;    // 18 -- size of data uncompressed
     //uint16_t            m_filename_length;      // 1C -- length name of this file
-    //uint16_t            m_extra_field_length;   // 1E -- length of extra buffer, Zipios++ ignore those
+    //uint16_t            m_extra_field_length;   // 1E -- length of extra buffer, Zipios ignore those
     //uint16_t            m_file_comment_length;  // 20 -- length of comment
     uint16_t            m_disk_number_start;                // 22 -- disk number of split archives
     uint16_t            m_internal_file_attributes;         // 24 -- file attributes

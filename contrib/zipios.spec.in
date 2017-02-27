@@ -2,7 +2,7 @@
 
 Name: @PACKAGE@
 Version: @ZIPIOS_VERSION_MAJOR@.@ZIPIOS_VERSION_MINOR@.@ZIPIOS_VERSION_PATCH@
-Summary: Zipios++ is a small C++ library for reading zip files
+Summary: Zipios is a small C++ library for reading zip files
 Release: %{release}
 Source: %{name}-%{version}.tar.gz
 Group: Development/Libraries
@@ -14,20 +14,20 @@ Packager: "Thomas Sondergaard" <thomass@deltadata.dk>
 Distribution: RedHat 9 Contrib
 
 %description
-Zipios++ is a small C++ library for reading zip files. The structure and public interface are based
+Zipios is a small C++ library for reading zip files. The structure and public interface are based
 (somewhat loosely) on the java.util.zip package. The streams created to access the individual
 entries in a zip file are based on the standard iostream library.
 
-Zipios++ also provides a way for an application to support files from multiple sources (e.g. from
+Zipios also provides a way for an application to support files from multiple sources (e.g. from
 zip files or from ordinary directories) transparently.
 
 %package devel
-Summary: Zipios++ header files
+Summary: Zipios header files
 Group: Development/Libraries
 Requires: %name = %version
 
 %description devel
-Header files and documentation for Zipios++ development.
+Header files and documentation for Zipios development.
 
 %prep
 %__rm -rf $RPM_BUILD_ROOT

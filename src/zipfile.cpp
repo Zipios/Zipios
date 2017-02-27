@@ -1,5 +1,5 @@
 /*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Zipios – a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
   Copyright (C) 2015-2017  Made to Order Software Corporation
@@ -39,13 +39,13 @@
 #include <fstream>
 
 
-/** \brief The zipios namespace includes the Zipios++ library definitions.
+/** \brief The zipios namespace includes the Zipios library definitions.
  *
- * This namespace is used to clearly separate all the Zipios++ definitions.
+ * This namespace is used to clearly separate all the Zipios definitions.
  * Note that a very few definitions are found outside of the namespace.
  * Some of those are hidden in the source of the library, a very few
  * appear in the zipios-config.hpp file as they are used to support
- * Zipios++ on any platform.
+ * Zipios on any platform.
  *
  * Note that to ensure secure development, we do not make use of the
  * C++ "using ..." keyword. That way we can guarantee what's what.
@@ -54,15 +54,15 @@ namespace zipios
 {
 
 
-/** \mainpage Zipios++
+/** \mainpage Zipios
  *
- * \image html zipios++.jpg
+ * \image html zipios.jpg
  *
  * \section intro Introduction
  *
- * Zipios++ is a java.util.zip-like C++ library for reading and
+ * Zipios is a java.util.zip-like C++ library for reading and
  * writing Zip files (ZipFile). Access to individual entries is
- * provided through a Zipios++ class (FileEntry) for the meta data
+ * provided through a Zipios class (FileEntry) for the meta data
  * of the and a standard C++ iostreams for the contents of the file.
  *
  * A simple virtual file system that mounts regular directories and
@@ -90,7 +90,7 @@ namespace zipios
  * the loop never ends.) I have noticed that problem with the following
  * scenario, and it does not seem to be fixed yet (Apr 4, 2015):
  *
- * \li "use Zipios++ to create zip archives with 1 or 3 files each"
+ * \li "use Zipios to create zip archives with 1 or 3 files each"
  *
  * Spanned archives are not supported, and support is not planned.
  *
@@ -106,14 +106,17 @@ namespace zipios
  * The library v2.x has been compiled and appears to be working with:
  *
  * \li Ubuntu (starting with 14.04) -- full test suite working
+ * \li Debian (starting with Stretch)
+ * \li Fedora (starting with F25)
  * \li FreeBSD (starting with 10.01)
  * \li SunOS (starting with Open SunOS 11.2)
  * \li Cygwin (starting with 6.1)
  *
- * If you make Zipios++ work on other platforms, let us know by posting
- * a message on Sourceforge.net
+ * If you make Zipios work on other platforms, let us know by posting
+ * an issue on GitHub:
  *
- *   http://sourceforge.net/projects/zipios/
+ *    https://github.com/Zipios/Zipios/issues
+ *
  *
  * \section documentation Documentation
  *
@@ -145,7 +148,7 @@ namespace zipios
  * To access the entries in a collection, use the entries() function
  * which returns a vector of FileEntry objects. If you know the exact
  * filename of an entry, you may also use the getEntry() with that name.
- * This is particularly useful if you want to use Zipios++ as a way to
+ * This is particularly useful if you want to use Zipios as a way to
  * handle the resources of your executable (see the openEmbeddedZipFile()
  * function and the appendzip.cpp tool). Finally, you want to use
  * the getInputStream() function to read the data of a file defined in
@@ -167,13 +170,13 @@ namespace zipios
  *      zipios::FileCollection::stream_pointer_t in_stream(g_resources->getInputStream("my/resource/file.xml"));
  * \endcode
  *
- * zipios_example.cpp demonstrates the central elements of Zipios++ when used
+ * zipios_example.cpp demonstrates the central elements of Zipios when used
  * in read mode.
  *
  * \subsection filecollection FileCollection
  *
  * A ZipFile is actually just a special kind of FileCollection that
- * obtains its entries from a Zip archive. Zipios++ also implements
+ * obtains its entries from a Zip archive. Zipios also implements
  * a DirectoryCollection that obtains its entries from an on disk
  * directory and a CollectionCollection that obtains its entries from
  * other collections.
@@ -189,20 +192,20 @@ namespace zipios
  *
  * \section download Download
  *
- * Go to Zipios++ project page on SourceForge for tar balls, source code
+ * Go to Zipios project page on SourceForge for tar balls, source code
  * (CVS for v1.x and GIT for v2.x), and ChangeLog.
  * <a href="https://sourceforge.net/projects/zipios/" >
  * https://sourceforge.net/projects/zipios/</a>
  *
  * <a href="https://sourceforge.net/projects/zipios/files/latest/download"
- * rel="nofollow"><img alt="Download Zipios++"
+ * rel="nofollow"><img alt="Download Zipios"
  * src="https://img.shields.io/sourceforge/dt/zipios.svg"></a>
  *
  * \section development Development
  *
- * The Zipios++ project makes use of a few development tools and the
+ * The Zipios project makes use of a few development tools and the
  * tests require the zip utility, used to verify that an external tool
- * can generate a zip file that Zipios++ can read.
+ * can generate a zip file that Zipios can read.
  *
  * Under a Debian or Ubuntu system, you can run apt-get install with
  * the following list of packages:
@@ -221,17 +224,42 @@ namespace zipios
  *   apt-get install catch zip
  * \endcode
  *
+ * Under Fedora, you can use dnf (or yum for early versions):
+ *
+ * \code
+ *   # For source management (or download the .tar.gz file)
+ *   dnf install git
+ *
+ *   # For developement
+ *   dnf install gcc-c++ cmake zlib-devel
+ *
+ *   # For documentation (or download the -doc.tar.gz file)
+ *   dnf install doxygen graphviz
+ *
+ *   # For testing (optional, albeit recommended)
+ *   dnf install zip
+ * \endcode
+ *
+ * The Catch test framework is not packaged on Fedora (at least not yet).
+ * See https://github.com/philsquared/Catch for installation instructions.
+ * (The best way seems to be to clone the repository and then do a symbolic link:
+ *
+ *
+ *    cd <zipios-home>/contrib
+ *    ln -s <catch-home>/single_include/catch.hpp .
+ *
+ *
  * Other systems use tools with pretty much the same naming convention
  * so you should be able to make the correlation.
  *
  * \section links Links
  *
  * <a href="http://www.zlib.net/">zlib</a>.
- * The compression library that Zipios++ uses to perform the actual
+ * The compression library that Zipios uses to perform the actual
  * compression and decompression.
  *
  * <a href="http://www.oracle.com/technetwork/java/index.html">
- * Java</a>. Zipios++ version 1.0 is heavily inspired by the
+ * Java</a>. Zipios version 1.0 is heavily inspired by the
  * java.util.zip package. Version 2.0 is following the same
  * philosophy without (1) attempting to follow the interface one
  * to one and (2) without updating to the newer version, if there
@@ -270,7 +298,7 @@ namespace zipios
  * the zip file on 4 bytes. The offset must be written in zip-file
  * byte-order (little endian).
  *
- * The program appendzip, which is part of the Zipios++ distribution can
+ * The program appendzip, which is part of the Zipios distribution can
  * be used to append a Zip archive to a file, e.g. a binary program.
  *
  * The function may throw various exception if the named file does not

@@ -3,7 +3,7 @@
 #define ZIPIOS_ZIPFILE_HPP
 
 /*
-  Zipios++ - a small C++ library that provides easy access to .zip files.
+  Zipios – a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
   Copyright (C) 2015-2017  Made to Order Software Corporation
@@ -26,7 +26,7 @@
 /** \file
  * \brief Define the zipios::ZipFile class.
  *
- * This file defines the main class of the Zipios++ library. The
+ * This file defines the main class of the Zipios library. The
  * zipios::ZipFile class is the one used to read or write
  * Zip archives.
  *

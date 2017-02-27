@@ -6,7 +6,7 @@
 # CATCH_FOUND, If false, do not try to use Catch.
 #
 # License:
-#      Zipios++ - a small C++ library that provides easy access to .zip files.
+#      Zipios – a small C++ library that provides easy access to .zip files.
 #      Copyright (C) 2015  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
