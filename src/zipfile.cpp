@@ -237,16 +237,8 @@ namespace zipios
  *   dnf install doxygen graphviz
  *
  *   # For testing (optional, albeit recommended)
- *   dnf install zip
+ *   dnf install catch-devel zip
  * \endcode
- *
- * The Catch test framework is not packaged on Fedora (at least not yet).
- * See https://github.com/philsquared/Catch for installation instructions.
- * (The best way seems to be to clone the repository and then do a symbolic link:
- *
- *
- *    cd <zipios-home>/contrib
- *    ln -s <catch-home>/single_include/catch.hpp .
  *
  *
  * Other systems use tools with pretty much the same naming convention
