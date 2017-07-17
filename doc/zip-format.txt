@@ -288,7 +288,7 @@ Copyright (c) 1989 - 2014 PKWARE Inc., All Rights Reserved.
    records defined in this specification MAY be used as needed to support 
    storage requirements for individual ZIP files.
 
-   4.3.2 Each file placed into a ZIP file MUST be preceeded by  a "local 
+   4.3.2 Each file placed into a ZIP file MUST be preceded by  a "local 
    file header" record for that file.  Each "local file header" MUST be 
    accompanied by a corresponding "central directory header" record within 
    the central directory section of the ZIP file.
@@ -640,7 +640,7 @@ Copyright (c) 1989 - 2014 PKWARE Inc., All Rights Reserved.
         13 - Acorn Risc               14 - VFAT
         15 - alternate MVS            16 - BeOS
         17 - Tandem                   18 - OS/400
-        19 - OS X (Darwin)            20 thru 255 - unused
+        19 - OS X (Darwin)            20 through 255 - unused
 
         4.4.2.3 The lower byte indicates the ZIP specification version 
         (the version of this document) supported by the software 
@@ -1048,7 +1048,7 @@ Copyright (c) 1989 - 2014 PKWARE Inc., All Rights Reserved.
    The Header ID field indicates the type of data that is in
    the following data block.
 
-   Header IDs of 0 thru 31 are reserved for use by PKWARE.
+   Header IDs of 0 through 31 are reserved for use by PKWARE.
    The remaining IDs can be used by third party vendors for
    proprietary usage.
 
@@ -1960,7 +1960,7 @@ Copyright (c) 1989 - 2014 PKWARE Inc., All Rights Reserved.
         This would generate the original bit length array of:
         (3, 3, 3, 3, 3, 2, 4, 4)
 
-        There are 8 codes in this table for the values 0 thru 7.  Using 
+        There are 8 codes in this table for the values 0 through 7.  Using 
         the algorithm to obtain the Shannon-Fano codes produces:
 
                                       Reversed     Order     Original
@@ -2100,8 +2100,8 @@ Copyright (c) 1989 - 2014 PKWARE Inc., All Rights Reserved.
     of entries sent described by the 5 bits sent earlier.  There are up
     to 286 literal characters; the first 256 represent the respective 8
     bit character, code 256 represents the End-Of-Block code, the remaining
-    29 codes represent copy lengths of 3 thru 258.  There are up to 30
-    distance codes representing distances from 1 thru 32k as described
+    29 codes represent copy lengths of 3 through 258.  There are up to 30
+    distance codes representing distances from 1 through 32k as described
     below.
 
                                  Length Codes
@@ -2410,7 +2410,7 @@ Copyright (c) 1989 - 2014 PKWARE Inc., All Rights Reserved.
     data ineffective.
 
     Read the 12-byte encryption header into Buffer, in locations
-    Buffer(0) thru Buffer(11).
+    Buffer(0) through Buffer(11).
 
     loop for i <- 0 to 11
         C <- buffer(i) ^ decrypt_byte()

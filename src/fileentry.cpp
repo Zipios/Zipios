@@ -87,7 +87,7 @@ namespace zipios
 
 /** \brief Initialize a FileEntry object.
  *
- * This funciton initializes a FileEntry object. By default you may define
+ * This function initializes a FileEntry object. By default you may define
  * the filename of the FileEntry object.
  *
  * In case of an on disk directory, the filename should be the path to the
@@ -442,7 +442,7 @@ bool FileEntry::isEqual(FileEntry const & file_entry) const
  * flag that specifies whether the file entry is valid or not. If
  * it is not this method returns false.
  *
- * \return true if the FileEntry has been parsed succesfully.
+ * \return true if the FileEntry has been parsed successfully.
  */
 bool FileEntry::isValid() const
 {
@@ -485,7 +485,7 @@ void FileEntry::setCompressedSize(size_t size)
 
 /** \brief Save the CRC of the entry.
  *
- * This funciton savees the CRC field in this FileEntry field.
+ * This function savees the CRC field in this FileEntry field.
  *
  * \param crc value to set the crc field to.
  */
@@ -572,7 +572,7 @@ void FileEntry::setLevel(CompressionLevel level)
  * be compressed.
  *
  * The method is ignored in a file entry which cannot be compressed.
- * (or more precisly, the method is forced as STORED.)
+ * (or more precisely, the method is forced as STORED.)
  *
  * \exception InvalidStateException
  * This exception is raised if the \p method parameter does not represent

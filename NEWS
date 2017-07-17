@@ -60,7 +60,7 @@ Release notes for Zipios++ 0.1.4
 Bug fixes: 
   - A bug in a code fragment used in all the test programs for copying
     data from an istream to an ostream has been fixed
-  - A nasty and embarrasing bug in ZipInputStreambuf and
+  - A nasty and embarrassing bug in ZipInputStreambuf and
     InflateInputStreambuf that prevented zip entries containing the character
     255 from being correctly decompressed has been fixed
 

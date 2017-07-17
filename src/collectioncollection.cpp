@@ -40,7 +40,7 @@ namespace zipios
 namespace
 {
 
-/** \brief Seach for an entry.
+/** \brief Search for an entry.
  *
  * This function searchs for an entry that match the given name.
  * If that entry exists, the \p it parameter will be pointing
@@ -186,7 +186,7 @@ CollectionCollection::~CollectionCollection()
  *
  * \param[in] collection  The collection to add.
  *
- * \return true if the collection was added succesfully.
+ * \return true if the collection was added successfully.
  *
  * \sa addCollection(FileCollection::pointer_t collection);
  */
@@ -229,7 +229,7 @@ bool CollectionCollection::addCollection(FileCollection const& collection)
  *
  * \param[in] collection  A pointer to the collection to add.
  *
- * \return true if the collection was added succesfully.
+ * \return true if the collection was added successfully.
  *
  * \sa addCollection(FileCollection const& collection);
  */
