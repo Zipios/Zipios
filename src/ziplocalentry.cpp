@@ -272,7 +272,7 @@ void ZipLocalEntry::setCompressedSize(size_t size)
 
 /** \brief Save the CRC of the entry.
  *
- * This function savees the CRC field in this FileEntry field.
+ * This function saves the CRC field in this FileEntry field.
  *
  * This function has the side of setting the m_has_crc_32 flag
  * to true meaning that the CRC was defined as expected.
