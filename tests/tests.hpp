@@ -63,7 +63,7 @@ namespace zipios_test
 
 /** \brief Create a random number representing a size_t object.
  *
- * This function is used to accomodate 32 and 64 bit tests. It creates
+ * This function is used to accommodate 32 and 64 bit tests. It creates
  * a random number in a size_t variable. The result is expected to fill
  * all the bits in a random manner.
  *

@@ -83,7 +83,7 @@ uint16_t const      g_trailing_data_descriptor = 1 << 3;
  * \note
  * This structure is NOT used directly only for its sizeof() and
  * documentation because that way zipios can work on little and big
- * endians without the need to know the endianess of your computer.
+ * endians without the need to know the endianness of your computer.
  */
 struct ZipLocalEntryHeader
 {
@@ -272,7 +272,7 @@ void ZipLocalEntry::setCompressedSize(size_t size)
 
 /** \brief Save the CRC of the entry.
  *
- * This funciton savees the CRC field in this FileEntry field.
+ * This function savees the CRC field in this FileEntry field.
  *
  * This function has the side of setting the m_has_crc_32 flag
  * to true meaning that the CRC was defined as expected.

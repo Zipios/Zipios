@@ -93,7 +93,7 @@ uint16_t const   g_osx           = 0x1300;
  * \note
  * This structure is NOT used directly only for its sizeof() and
  * documentation because that way zipios can work on little and big
- * endians without the need to know the endianess of your computer.
+ * endians without the need to know the endianness of your computer.
  *
  * \bug
  * This structure is aligned on 4 bytes since it includes some uint32_t
@@ -151,7 +151,7 @@ ZipCentralDirectoryEntry::ZipCentralDirectoryEntry()
  *
  * This function initializes a ZipCentralDirectoryEntry from a FileEntry.
  *
- * The funtion copies all the data it may be interested in and then
+ * The function copies all the data it may be interested in and then
  * ignores the FileEntry.
  *
  * \param[in] entry  The entry to transform in a ZipCentralDirectoryEntry.

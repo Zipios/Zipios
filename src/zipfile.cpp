@@ -214,7 +214,7 @@ namespace zipios
  *   # For source management (or download the .tar.gz file)
  *   apt-get install git
  *
- *   # For developement
+ *   # For development
  *   apt-get install g++ cmake zlib1g-dev
  *
  *   # For documentation (or download the -doc.tar.gz file)
@@ -230,7 +230,7 @@ namespace zipios
  *   # For source management (or download the .tar.gz file)
  *   dnf install git
  *
- *   # For developement
+ *   # For development
  *   dnf install gcc-c++ cmake zlib-devel
  *
  *   # For documentation (or download the -doc.tar.gz file)
