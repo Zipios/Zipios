@@ -1,2 +1,2 @@
-usr/lib/*.so.*
-usr/bin
+debian/tmp/usr/lib/x86_64-linux-gnu/*.so.* usr/lib/x86_64-linux-gnu/
+debian/tmp/usr/bin                         usr/bin/
