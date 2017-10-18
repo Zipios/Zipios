@@ -9,7 +9,8 @@ Build-Depends: catch,
     graphicsmagick-imagemagick-compat,
     graphviz,
     libcppunit-dev,
-    libz-dev
+    libz-dev,
+    zip
 Standards-Version: 3.9.4
 
 Package: libzipios-dev
