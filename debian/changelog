@@ -1,6 +1,7 @@
-zipios (2.1.5.1~xenial) xenial; urgency=high
+zipios (2.1.5.2~xenial) xenial; urgency=high
 
-  * Tests require zip package.
+  * Packaging: Tests require zip package.
+  * Packaging: Install targets were not correct.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Wed, 18 Oct 2017 09:22:57 -0700
 
