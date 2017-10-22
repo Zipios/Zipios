@@ -1,15 +1,15 @@
-# - Try to find the Zipios (libzipios.so)
+# - Try to find the Zipios++ (libzipios.so)
 #
 # Once done this will define
 #
-# ZIPIOSCC_FOUND        - System has Zipios
+# ZIPIOSCC_FOUND        - System has Zipios++
 # ZIPIOSCC_INCLUDE_DIR  - The zipios include directories
-# ZIPIOSCC_LIBRARY      - The libraries needed to use Zipios (none)
-# ZIPIOSCC_DEFINITIONS  - Compiler switches required for using Zipios (none)
+# ZIPIOSCC_LIBRARY      - The libraries needed to use Zipios++ (none)
+# ZIPIOSCC_DEFINITIONS  - Compiler switches required for using Zipios++ (none)
 #
 # License:
-#      Zipios – a small C++ library that provides easy access to .zip files.
-#      Copyright (C) 2015  Made to Order Software Corporation
+#      Zipios++ - a small C++ library that provides easy access to .zip files.
+#      Copyright (C) 2015-2017  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
 #      modify it under the terms of the GNU Lesser General Public

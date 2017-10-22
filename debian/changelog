@@ -1,9 +1,29 @@
-zipios (2.1.5.2~xenial) xenial; urgency=high
+zipios (2.1.7.1~xenial) xenial; urgency=high
 
   * Packaging: Tests require zip package.
   * Packaging: Install targets were not correct.
+  * Packaging: Distributing better cmake module in correct area.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Wed, 18 Oct 2017 09:22:57 -0700
+
+zipios (2.1.7.0~xenial) xenial; urgency=high
+
+  * Packaging now puts all libraries and softlinks in the same folder.
+
+ -- Doug Barbieri <doug@dooglio.net>  Fri, 23 Jun 2017 18:18:09 -0700
+
+zipios (2.1.6.102~xenial) xenial; urgency=high
+
+  * Nightly build.
+
+ -- Build Server <build@m2osw.com>  Sun, 19 Mar 2017 02:00:58 -0700
+
+zipios (2.1.6.0~xenial) xenial; urgency=high
+
+  * SNAP-289: added a couple of try/catch in destructors to avoid potential
+    std::terminate() calls when an error is discovered in a compressed file.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 19 Mar 2017 22:02:22 -0700
 
 zipios (2.1.5.0~xenial) xenial; urgency=high
 
