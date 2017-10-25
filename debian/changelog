@@ -1,3 +1,9 @@
+zipios (2.1.7.3~xenial) xenial; urgency=high
+
+  * Nightly build.
+
+ -- R. Douglas Barbieri <doug@dooglio.net>  Tue, 24 Oct 2017 20:54:53 -0700
+
 zipios (2.1.7.1~xenial) xenial; urgency=high
 
   * Packaging: Tests require zip package.
