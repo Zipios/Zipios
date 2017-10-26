@@ -1,2 +1,2 @@
-debian/tmp/usr/lib/x86_64-linux-gnu/*.so.* usr/lib/x86_64-linux-gnu/
-debian/tmp/usr/bin                         usr/bin/
+debian/tmp/usr/lib/${DEB_HOST_MULTIARCH}/*.so.* usr/lib/${DEB_HOST_MULTIARCH}/
+debian/tmp/usr/bin                              usr/bin/
