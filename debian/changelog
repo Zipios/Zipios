@@ -1,4 +1,4 @@
-zipios (2.1.7.5~xenial) xenial; urgency=high
+zipios (2.1.7.6~xenial) xenial; urgency=high
 
   * Fixed packaging to use DEB_HOST_MULTIARCH for library.
 
