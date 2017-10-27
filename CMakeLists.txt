@@ -32,7 +32,10 @@ cmake_minimum_required(VERSION 2.8.4)
 
 project( zipios_project )
 
-enable_testing()
+option( RUN_TESTS "Enable CTest support and turn on the 'test' make target." OFF )
+if( ${RUN_TESTS} )
+    enable_testing()
+endif()
 
 set( ZIPIOS_VERSION_MAJOR 2 )
 set( ZIPIOS_VERSION_MINOR 1 )

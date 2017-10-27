@@ -1,4 +1,4 @@
 #! /usr/bin/dh-exec
-debian/tmp/usr/include/*                  usr/include/
-debian/tmp/usr/${DEB_HOST_MULTIARCH}/*.so usr/lib/${DEB_HOST_MULTIARCH}
-debian/tmp/usr/share/cmake/ZipIos/*       usr/share/cmake/ZipIos/
+debian/tmp/usr/include/*                      usr/include/
+debian/tmp/usr/lib/${DEB_HOST_MULTIARCH}/*.so usr/lib/${DEB_HOST_MULTIARCH}/
+debian/tmp/usr/share/cmake/ZipIos/*           usr/share/cmake/ZipIos/
