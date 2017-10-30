@@ -220,7 +220,7 @@ bool ZipLocalEntry::isEqual(FileEntry const & file_entry) const
 }
 
 
-/** \brief Retrive the size of the file when compressed.
+/** \brief Retrieve the size of the file when compressed.
  *
  * This function returns the compressed size of the entry. If the
  * entry is not stored in a compressed format, the uncompressed
