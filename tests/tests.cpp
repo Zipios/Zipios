@@ -28,7 +28,7 @@
  */
 
 // Prevent Catch from defining a default main() function in this file
-// but let it know this is the file that does containt the main() function
+// but let it know this is the file that does contain the main() function
 #define CATCH_CONFIG_RUNNER
 
 #include "tests.hpp"
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
         {
             if(i + 1 >= argc) // LCOV_EXCL_LINE
             {
-                std::cerr << "error: --seed need to be followed by the actual seed." << std::endl; // LCOV_EXCL_LINE
+                std::cerr << "error: --seed needs to be followed by the actual seed." << std::endl; // LCOV_EXCL_LINE
                 exit(1); // LCOV_EXCL_LINE
             }
             seed = atoll(argv[i + 1]); // LCOV_EXCL_LINE

@@ -430,7 +430,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // WARNING: the StorageMethod is a uint8_t so testing
             //          with negative and such would wrap the number...
-            //          (i.e. no need to do more than the followin)
+            //          (i.e. no need to do more than the following)
             for(int i(0); i < 256; ++i)
             {
                 switch(i)
@@ -686,7 +686,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             std::streampos r(zipios_test::rand_size_t());
             de.setEntryOffset(r);
 
-            THEN("we retrive the same value")
+            THEN("we retrieve the same value")
             {
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
