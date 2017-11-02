@@ -485,7 +485,7 @@ void FileEntry::setCompressedSize(size_t size)
 
 /** \brief Save the CRC of the entry.
  *
- * This function savees the CRC field in this FileEntry field.
+ * This function saves the CRC field in this FileEntry field.
  *
  * \param crc value to set the crc field to.
  */
