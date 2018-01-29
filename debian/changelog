@@ -1,14 +1,14 @@
+zipios (2.1.7.7~xenial) xenial; urgency=high
+
+  * Testing dput from make requires all changelog to have my email address.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Mon, 29 Jan 2018 00:42:44 -0700
+
 zipios (2.1.7.6~xenial) xenial; urgency=high
 
   * Fixed packaging to use DEB_HOST_MULTIARCH for library.
 
  -- R. Douglas Barbieri <doug@dooglio.net>  Thu, 26 Oct 2017 14:02:00 -0700
-
-zipios (2.1.7.3~xenial) xenial; urgency=high
-
-  * Nightly build.
-
- -- R. Douglas Barbieri <doug@dooglio.net>  Tue, 24 Oct 2017 20:54:53 -0700
 
 zipios (2.1.7.1~xenial) xenial; urgency=high
 
@@ -23,12 +23,6 @@ zipios (2.1.7.0~xenial) xenial; urgency=high
   * Packaging now puts all libraries and softlinks in the same folder.
 
  -- Doug Barbieri <doug@dooglio.net>  Fri, 23 Jun 2017 18:18:09 -0700
-
-zipios (2.1.6.102~xenial) xenial; urgency=high
-
-  * Nightly build.
-
- -- Build Server <build@m2osw.com>  Sun, 19 Mar 2017 02:00:58 -0700
 
 zipios (2.1.6.0~xenial) xenial; urgency=high
 
