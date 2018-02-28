@@ -34,8 +34,6 @@
 #include <fstream>
 
 #include <sys/stat.h>
-#include <unistd.h>
-
 
 /** \brief Local definitions used globally in the DirectoryEntry tests.
  *
@@ -61,6 +59,7 @@ zipios::FileEntry::CompressionLevel const g_directory_level(zipios::FileEntry::C
 
 } // no name namespace
 
+static const std::streampos ZEROPOS{ 0 };
 
 SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
 {
@@ -75,7 +74,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             REQUIRE(de.getComment().empty());
             REQUIRE(de.getCompressedSize() == 0);
             REQUIRE(de.getCrc() == 0);
-            REQUIRE(de.getEntryOffset() == 0);
+            REQUIRE(de.getEntryOffset() == ZEROPOS);
             REQUIRE(de.getExtra().empty());
             REQUIRE(de.getHeaderSize() == 0);
             REQUIRE(de.getLevel() == g_expected_level);
@@ -107,7 +106,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             REQUIRE(clone->getComment().empty());
             REQUIRE(clone->getCompressedSize() == 0);
             REQUIRE(clone->getCrc() == 0);
-            REQUIRE(clone->getEntryOffset() == 0);
+            REQUIRE(clone->getEntryOffset() == ZEROPOS);
             REQUIRE(clone->getExtra().empty());
             REQUIRE(clone->getHeaderSize() == 0);
             REQUIRE(clone->getLevel() == g_expected_level);
@@ -134,7 +133,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment() == "new comment");
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -159,7 +158,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment() == "new comment");
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -195,7 +194,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -224,7 +223,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -259,7 +258,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -284,7 +283,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -319,7 +318,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE_FALSE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -345,7 +344,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE_FALSE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -377,7 +376,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                     REQUIRE(de.getComment().empty());
                     REQUIRE(de.getCompressedSize() == 0);
                     REQUIRE(de.getCrc() == 0);
-                    REQUIRE(de.getEntryOffset() == 0);
+                    REQUIRE(de.getEntryOffset() == ZEROPOS);
                     REQUIRE(de.getExtra().empty());
                     REQUIRE(de.getHeaderSize() == 0);
                     REQUIRE(de.getLevel() == level);
@@ -402,7 +401,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                     REQUIRE(clone->getComment().empty());
                     REQUIRE(clone->getCompressedSize() == 0);
                     REQUIRE(clone->getCrc() == 0);
-                    REQUIRE(clone->getEntryOffset() == 0);
+                    REQUIRE(clone->getEntryOffset() == ZEROPOS);
                     REQUIRE(clone->getExtra().empty());
                     REQUIRE(clone->getHeaderSize() == 0);
                     REQUIRE(clone->getLevel() == level);
@@ -461,7 +460,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -486,7 +485,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -522,7 +521,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == r);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -547,7 +546,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == r);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -579,7 +578,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -604,7 +603,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -635,7 +634,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -660,7 +659,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -764,7 +763,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -785,7 +784,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -807,7 +806,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment() == "new comment");
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -828,7 +827,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment() == "new comment");
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -860,7 +859,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -881,7 +880,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -910,7 +909,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -931,7 +930,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -960,7 +959,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE_FALSE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -982,7 +981,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE_FALSE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -1014,7 +1013,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                         REQUIRE(de.getComment().empty());
                         REQUIRE(de.getCompressedSize() == file_size);
                         REQUIRE(de.getCrc() == 0);
-                        REQUIRE(de.getEntryOffset() == 0);
+                        REQUIRE(de.getEntryOffset() == ZEROPOS);
                         REQUIRE(de.getExtra().empty());
                         REQUIRE(de.getHeaderSize() == 0);
                         REQUIRE(de.getLevel() == level);
@@ -1046,7 +1045,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -1067,7 +1066,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -1096,7 +1095,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == r);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -1117,7 +1116,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == r);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -1148,7 +1147,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -1169,7 +1168,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -1194,7 +1193,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_expected_level);
@@ -1215,7 +1214,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_expected_level);
@@ -1242,10 +1241,14 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
     GIVEN("test an existing directory and no comment")
     {
         // make sure the directory is gone before re-creating it
-        REQUIRE(system("rm -rf filepath-test") == 0);
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("rmdir /Q /S filepath-test") == 0);
+#else
+       REQUIRE(system("rm -rf filepath-test") == 0);
+#endif       
 
         // create a directory
-        REQUIRE(mkdir("filepath-test", 0777) == 0);
+        REQUIRE(mkdir("filepath-test") == 0);
 
         zipios::DirectoryEntry de(zipios::FilePath("filepath-test"), "");
 
@@ -1258,7 +1261,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(de.getComment().empty());
             REQUIRE(de.getCompressedSize() == 0);
             REQUIRE(de.getCrc() == 0);
-            REQUIRE(de.getEntryOffset() == 0);
+            REQUIRE(de.getEntryOffset() == ZEROPOS);
             REQUIRE(de.getExtra().empty());
             REQUIRE(de.getHeaderSize() == 0);
             REQUIRE(de.getLevel() == g_directory_level);
@@ -1279,7 +1282,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(clone->getComment().empty());
             REQUIRE(clone->getCompressedSize() == 0);
             REQUIRE(clone->getCrc() == 0);
-            REQUIRE(clone->getEntryOffset() == 0);
+            REQUIRE(clone->getEntryOffset() == ZEROPOS);
             REQUIRE(clone->getExtra().empty());
             REQUIRE(clone->getHeaderSize() == 0);
             REQUIRE(clone->getLevel() == g_directory_level);
@@ -1304,7 +1307,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment() == "new comment");
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_directory_level);
@@ -1325,7 +1328,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment() == "new comment");
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_directory_level);
@@ -1359,7 +1362,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_directory_level);
@@ -1380,7 +1383,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_directory_level);
@@ -1413,7 +1416,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_directory_level);
@@ -1434,7 +1437,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_directory_level);
@@ -1467,7 +1470,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE_FALSE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_directory_level);
@@ -1489,7 +1492,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE_FALSE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_directory_level);
@@ -1520,7 +1523,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                     REQUIRE(de.getComment().empty());
                     REQUIRE(de.getCompressedSize() == 0);
                     REQUIRE(de.getCrc() == 0);
-                    REQUIRE(de.getEntryOffset() == 0);
+                    REQUIRE(de.getEntryOffset() == ZEROPOS);
                     REQUIRE(de.getExtra().empty());
                     REQUIRE(de.getHeaderSize() == 0);
                     REQUIRE(de.getLevel() == g_directory_level);
@@ -1556,7 +1559,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_directory_level);
@@ -1577,7 +1580,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_directory_level);
@@ -1611,7 +1614,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == r);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_directory_level);
@@ -1632,7 +1635,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == r);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_directory_level);
@@ -1662,7 +1665,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_directory_level);
@@ -1683,7 +1686,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_directory_level);
@@ -1712,7 +1715,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == 0);
                 REQUIRE(de.getCrc() == 0);
-                REQUIRE(de.getEntryOffset() == 0);
+                REQUIRE(de.getEntryOffset() == ZEROPOS);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
                 REQUIRE(de.getLevel() == g_directory_level);
@@ -1733,7 +1736,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == 0);
                 REQUIRE(clone->getCrc() == 0);
-                REQUIRE(clone->getEntryOffset() == 0);
+                REQUIRE(clone->getEntryOffset() == ZEROPOS);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
                 REQUIRE(clone->getLevel() == g_directory_level);

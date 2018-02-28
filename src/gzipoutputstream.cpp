@@ -61,9 +61,9 @@ namespace zipios
  * \param[in] compression_level  The compression level to use to compress.
  */
 GZIPOutputStream::GZIPOutputStream(std::ostream& os, FileEntry::CompressionLevel compression_level)
-    //: std::ostream() -- auto-init
+    : std::ostream(nullptr)
     //, m_ofs(nullptr) -- auto-init
-    : m_ozf(new GZIPOutputStreambuf(os.rdbuf(), compression_level))
+    , m_ozf(new GZIPOutputStreambuf(os.rdbuf(), compression_level))
 {
     init(m_ozf.get());
 }

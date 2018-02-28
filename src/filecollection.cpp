@@ -424,7 +424,7 @@ FileEntry::vector_t FileCollection::entries() const
 FileEntry::pointer_t FileCollection::getEntry(std::string const& name, MatchPath matchpath) const
 {
     // make sure the entries were loaded if necessary
-    entries();
+   loadEntries();
 
     mustBeValid();
 
@@ -474,7 +474,7 @@ std::string FileCollection::getName() const
 size_t FileCollection::size() const
 {
     // make sure the entries were loaded if necessary
-    entries();
+   loadEntries();
 
     mustBeValid();
     return m_entries.size();
@@ -532,7 +532,7 @@ void FileCollection::mustBeValid() const
 void FileCollection::setMethod(size_t limit, StorageMethod small_storage_method, StorageMethod large_storage_method)
 {
     // make sure the entries were loaded if necessary
-    entries();
+   loadEntries();
 
     mustBeValid();
 
@@ -567,7 +567,7 @@ void FileCollection::setMethod(size_t limit, StorageMethod small_storage_method,
 void FileCollection::setLevel(size_t limit, FileEntry::CompressionLevel small_compression_level, FileEntry::CompressionLevel large_compression_level)
 {
     // make sure the entries were loaded if necessary
-    entries();
+   loadEntries();
 
     mustBeValid();
 

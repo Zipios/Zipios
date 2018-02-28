@@ -44,7 +44,7 @@ namespace zipios
 {
 
 
-class InflateInputStreambuf : public FilterInputStreambuf
+class ZIPIOSDLL_API InflateInputStreambuf : public FilterInputStreambuf
 {
 public:
                             InflateInputStreambuf(std::streambuf *inbuf, offset_t s_pos = -1);

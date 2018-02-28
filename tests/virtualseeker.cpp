@@ -30,8 +30,17 @@
 #include "zipios/zipiosexceptions.hpp"
 
 #include <fstream>
+#include <algorithm>
 
+
+#ifdef ZIPIOS_WINDOWS
+#include <io.h>
+#include <direct.h>
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#else
 #include <unistd.h>
+#endif
 
 
 namespace
@@ -103,7 +112,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         {
             vs.vseekg(is, 0, std::ios::beg);
             REQUIRE(is.tellg() == start_offset);
-            REQUIRE(vs.vtellg(is) == 0);
+            REQUIRE(vs.vtellg(is) == zipios_test::ZEROPOS);
 
             size_t const sz(std::min(max_read, FOUR));
             is.read(buf, sz);
@@ -131,9 +140,9 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             {
                 vs.vseekg(is, 4, std::ios::cur);
                 REQUIRE(is.tellg() == start_offset + 8);
-                REQUIRE(vs.vtellg(is) == 8);
+                REQUIRE(vs.vtellg(is) == std::streampos(8));
 
-                size_t const sz2(std::min(max_read - 8UL, 4UL));
+                size_t const sz2(std::min(max_read - 8ULL, 4ULL));
                 is.read(buf, sz2);
                 REQUIRE(is);
                 if(sz2 > 0)
@@ -187,7 +196,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
             // try moving a little more (if max_read allows it)
             if(max_read >= 9UL && max_read - 8UL >= static_cast<size_t>(start_offset))
             {
-                ssize_t const sz2(std::min(max_read - 8UL, 4UL));
+                ssize_t const sz2(std::min(max_read - 8ULL, 4ULL));
 
                 vs.vseekg(is, -sz2 - sz, std::ios::cur);
                 std::streampos const expected_absolute_pos2(end_offset - sz2 - sz);
@@ -264,7 +273,7 @@ TEST_CASE("VirtualSeeker tests", "[zipios_common]")
 
         {
             vs.vseekg(is, 0, std::ios::beg);
-            REQUIRE(vs.vtellg(is) == 0);
+            REQUIRE(vs.vtellg(is) == zipios_test::ZEROPOS);
 
             size_t const sz(std::min(max_read2, FOUR));
             is.read(buf, sz);

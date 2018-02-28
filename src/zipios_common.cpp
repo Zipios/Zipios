@@ -48,7 +48,7 @@ namespace zipios
  * make sure MS-Windows is fully supported. The FilePath
  * should take care of that work though.
  */
-char const g_separator = '/';
+ZIPIOSDLL_API char const g_separator = '/';
 
 
 /** \typedef std::ostringstream OutputStringStream;
@@ -134,7 +134,7 @@ void zipRead(std::istream& is, buffer_t& buffer, ssize_t const count)
     buffer.resize(count);
     if(count > 0)
     {
-        if(!is.read(reinterpret_cast<char *>(&buffer[0]), count))
+        if(!is.read(reinterpret_cast<char *>(buffer.data()), count))
         {
             throw IOException("an I/O error while reading zip archive data from file.");
         }
@@ -279,7 +279,7 @@ void zipWrite(std::ostream& os, uint8_t const& value)
 
 void zipWrite(std::ostream& os, buffer_t const& buffer)
 {
-    if(!os.write(reinterpret_cast<char const *>(&buffer[0]), buffer.size()))
+    if(!os.write(reinterpret_cast<char const *>(buffer.data()), buffer.size()))
     {
         throw IOException("an I/O error occurred while writing to a zip archive file.");
     }
@@ -288,7 +288,7 @@ void zipWrite(std::ostream& os, buffer_t const& buffer)
 
 void zipWrite(std::ostream& os, std::string const& str)
 {
-    if(!os.write(&str[0], str.length()))
+    if(!os.write(str.data(), str.length()))
     {
         throw IOException("an I/O error occurred while writing to a zip archive file.");
     }

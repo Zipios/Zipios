@@ -30,6 +30,7 @@
 // Prevent Catch from defining a default main() function in this file
 // but let it know this is the file that does contain the main() function
 #define CATCH_CONFIG_RUNNER
+#include <catch.hpp>
 
 #include "tests.hpp"
 
@@ -46,6 +47,14 @@ char *g_progname;
 
 }
 
+#ifndef ZIPIOS_WINDOWS
+long GetCurrentProcessId()
+{
+   return getpid();
+}
+#else
+#include <Processthreadsapi.h>
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -87,7 +96,7 @@ int main(int argc, char *argv[])
         }
     }
     srand(seed);
-    std::cout << g_progname << "[" << getpid() << "]" << ": version " << ZIPIOS_VERSION_STRING << ", seed is " << seed << std::endl;
+    std::cout << g_progname << "[" << GetCurrentProcessId() << "]" << ": version " << ZIPIOS_VERSION_STRING << ", seed is " << seed << std::endl;
 
     if(help)
     {
@@ -96,11 +105,10 @@ int main(int argc, char *argv[])
                   << "  --seed <seed>    to force the seed at the start of the process to a specific value (i.e. to reproduce the exact same test over and over again)" << std::endl // LCOV_EXCL_LINE
                   << std::endl; // LCOV_EXCL_LINE
     }
-
-    return Catch::Session().run(argc, argv);
+    Catch::Session s;
+    auto result = s.run(argc, argv);
+    return result;
 }
-
-
 
 // Local Variables:
 // mode: cpp

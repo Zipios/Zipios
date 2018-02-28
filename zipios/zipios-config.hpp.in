@@ -74,7 +74,12 @@ inline size_t getBufferSize()
 // Disable class-browser warning about truncated template-names
 // Still needed? TBD
 //#pragma warning( disable : 4786 )
-
+//typedef int64_t ssize_t;
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#include "zipios/zipiosdll.h"
+#else
+#define ZIPIOSDLL_API
 #endif //_MSC_VER
 
 #ifdef WIN32

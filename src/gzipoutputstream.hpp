@@ -39,7 +39,7 @@ namespace zipios
 {
 
 
-class GZIPOutputStream : public std::ostream
+class ZIPIOSDLL_API GZIPOutputStream : public std::ostream
 {
 public:
                                             GZIPOutputStream(std::ostream& os, FileEntry::CompressionLevel compression_level);

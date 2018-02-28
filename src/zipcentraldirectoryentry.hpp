@@ -40,7 +40,7 @@ namespace zipios
 {
 
 
-class ZipCentralDirectoryEntry : public ZipLocalEntry
+class ZIPIOSDLL_API ZipCentralDirectoryEntry : public ZipLocalEntry
 {
 public:
                                 ZipCentralDirectoryEntry();

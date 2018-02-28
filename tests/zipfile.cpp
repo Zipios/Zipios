@@ -35,7 +35,15 @@
 #include <algorithm>
 #include <fstream>
 
+
+#ifdef ZIPIOS_WINDOWS
+#include <io.h>
+#include <direct.h>
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <zlib.h>
 
@@ -148,11 +156,22 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
 {
     GIVEN("a tree directory")
     {
-        REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("rmdir /Q /S tree") != -1);
+#else
+       REQUIRE(system("rm -rf tree") != -1); // clean up, just in case
+#endif
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
         zipios_test::auto_unlink_t remove_zip("tree.zip");
-        REQUIRE(system("zip -r tree.zip tree >/dev/null") == 0);
+
+        const char* zip_command =
+#ifdef ZIPIOS_WINDOWS
+           "powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tree', 'tree.zip'); }\"";
+#else
+           "zip -r tree.zip tree >/dev/null";
+#endif
+        REQUIRE(system(zip_command) == 0);
 
         // first, check that the object is setup as expected
         WHEN("we load the zip file")
@@ -392,7 +411,12 @@ SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]")
 {
     GIVEN("a tree directory")
     {
-        REQUIRE(system("rm -rf tree tree.zip") == 0); // clean up, just in case
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("rmdir /Q /S tree") != -1);
+       REQUIRE(system("del /Q /F tree.zip") != -1);
+#else
+       REQUIRE(system("rm -rf tree tree.zip") == 0); // clean up, just in case
+#endif
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
         zipios_test::auto_unlink_t remove_zip("tree.zip");
@@ -628,7 +652,11 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 {
     GIVEN("a one file zip file")
     {
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("del /Q /F file.bin") == 0);
+#else
         REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
+#endif
         {
             std::ofstream file_bin("file.bin", std::ios::out | std::ios::binary);
             file_bin << "this zip file contents.\n";
@@ -640,11 +668,15 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
         {
             zipios::DirectoryCollection dc("file.bin");
             zipios_test::auto_unlink_t remove_zip("file.zip");
+            try
             {
                 std::ofstream out("file.zip", std::ios::out | std::ios::binary);
                 zipios::ZipFile::saveCollectionToArchive(out, dc);
             }
+            catch (...)
+            {
 
+            }
             THEN("it is valid and includes the file as expected")
             {
                 zipios::ZipFile zf("file.zip");
@@ -822,7 +854,12 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 #ifndef __clang__
     GIVEN("a very small file")
     {
-        REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
+
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("del /Q /F file.bin") == 0);
+#else
+       REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
+#endif
         {
             // one byte file
             std::ofstream file_bin("file.bin", std::ios::out | std::ios::binary);
@@ -860,7 +897,12 @@ TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollectio
 {
     SECTION("try one uncompressed file of many sizes")
     {
-        REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
+
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("del /Q /F file.bin") == 0);
+#else
+       REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
+#endif
         for(int sz(0); sz <= 128 * 1024; sz += sz < 10 ? 1 : rand() % (1024 * 4))
         {
             zipios_test::auto_unlink_t remove_bin("file.bin");
@@ -900,7 +942,12 @@ TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollectio
 
     SECTION("try three uncompressed files of many sizes")
     {
-        REQUIRE(system("rm -f file.zip file?.bin") == 0); // clean up, just in case
+
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("del /Q /F file.zip file?.bin") == 0);
+#else
+       REQUIRE(system("rm -f file.zip file?.bin") == 0); // clean up, just in case
+#endif
         for(int sz(0); sz <= 128 * 1024; sz += sz < 10 ? 1 : rand() % (1024 * 4))
         {
             zipios_test::auto_unlink_t remove_bin1("file1.bin");
@@ -1044,7 +1091,7 @@ struct local_header_t
         os << static_cast<unsigned char>(extra_field_length >> 0);
         os << static_cast<unsigned char>(extra_field_length >> 8);
         os << m_filename;
-        os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+        os.write(reinterpret_cast<char const *>(m_extra_field.data()), m_extra_field.size());
     }
 };
 
@@ -1159,7 +1206,7 @@ struct central_directory_header_t
         os << static_cast<unsigned char>(m_relative_offset_to_local_header >> 16);
         os << static_cast<unsigned char>(m_relative_offset_to_local_header >> 24);
         os << m_filename;
-        os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+        os.write(reinterpret_cast<char const *>(m_extra_field.data()), m_extra_field.size());
         os << m_file_comment;
     }
 };
@@ -1225,7 +1272,42 @@ struct end_of_central_directory_t
     }
 };
 
+static int truncate(const char* filename, long length)
+{
+   int result = -1;
+   HANDLE hFile;
+   hFile = CreateFile(filename,// name of the write
+      GENERIC_WRITE,           // open for writing
+      0,                       // do not share
+      NULL,                    // default security
+      OPEN_EXISTING,           //
+      FILE_ATTRIBUTE_NORMAL,   // normal file
+      NULL);                   // no attr. template
+   try
+   {
+      if (hFile == INVALID_HANDLE_VALUE)
+      {
+         throw std::runtime_error(std::string("Terminal failure: Unable to open file \"") + filename + std::string("\" for write.\n"));
+      }
+      DWORD dwPtr = SetFilePointer(hFile,
+         length,
+         NULL,
+         FILE_BEGIN);
 
+      if (dwPtr == INVALID_SET_FILE_POINTER)
+      {
+         DWORD dwError = GetLastError();
+         throw std::runtime_error(std::string("Terminal failure: Unable to set file pointer \"") + filename + std::string("\" for write.\n"));
+      }
+      result = SetEndOfFile(hFile) ? length : -1;
+      CloseHandle(hFile);
+   } catch(...)
+   {
+      CloseHandle(hFile);
+      throw;
+   }
+   return result;
+}
 TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 {
     SECTION("create files with End of Central Directory that are tool small")
@@ -1240,7 +1322,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 end_of_central_directory_t eocd;
                 eocd.write(os);
             }
-
+            auto cwd = getcwd(nullptr, 0);
             // truncate the file to 'i' size
             truncate("file.zip", i);
 
@@ -1268,6 +1350,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 eocd.write(os);
             }
 
+            auto cwd = getcwd(nullptr, 0);
             // truncate the file to not include the whole comment
             // (truncate at least one character though)
             size_t const five(5);
@@ -1584,7 +1667,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 buffer_t compressed_buffer;
                 uLongf compressed_size(file_size * 2);
                 compressed_buffer.resize(compressed_size);
-                compress2(&compressed_buffer[0], &compressed_size, &file_buffer[0], file_size, 9);
+                compress2(compressed_buffer.data(), &compressed_size, file_buffer.data(), file_size, 9);
                 compressed_buffer.resize(compressed_size); // the new size!
                 std::fill(compressed_buffer.begin() + compressed_size / 2, compressed_buffer.end(), 0);
 
@@ -1592,14 +1675,14 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
                 lh.m_compression_method = static_cast<uint16_t>(zipios::StorageMethod::DEFLATED);
                 lh.m_compressed_size = compressed_size - 2;
                 lh.m_uncompressed_size = file_size;
-                lh.m_crc32 = crc32(0L, &file_buffer[0], file_size);
+                lh.m_crc32 = crc32(0L, file_buffer.data(), file_size);
                 lh.m_filename = "invalid";
                 lh.write(os);
 
                 // write the first 50% of the compressed data then zeroes
                 // make sure to skip the first 2 bytes which are the zlib
                 // marker (0x78 0x9C)
-                os.write(reinterpret_cast<char *>(&compressed_buffer[0]) + 2, (compressed_size - 2));
+                os.write(reinterpret_cast<char *>(compressed_buffer.data()) + 2, (compressed_size - 2));
 
                 eocd.m_central_directory_offset = os.tellp();
 

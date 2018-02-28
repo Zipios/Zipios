@@ -38,7 +38,7 @@ namespace zipios
 {
 
 
-class GZIPOutputStreambuf : public DeflateOutputStreambuf
+class ZIPIOSDLL_API GZIPOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
                   GZIPOutputStreambuf(std::streambuf * outbuf, FileEntry::CompressionLevel compression_level);

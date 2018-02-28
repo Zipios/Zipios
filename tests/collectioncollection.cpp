@@ -32,10 +32,12 @@
 
 #include <fstream>
 
-#include <string.h>
+// #include <string.h>
 
-
-
+// IGNORE defined to 0 in WinBase.h
+//#ifdef IGNORE
+//#undef IGNORE
+//#endif
 
 SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [FileCollection]")
 {
@@ -106,7 +108,11 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
             REQUIRE_FALSE(cc.addCollection(cc));
 
             // create a directory tree starting in "tree"
+#ifdef ZIPIOS_WINDOWS
+            REQUIRE(system("rmdir /Q /S tree") != -1);
+#else
             REQUIRE(system("rm -rf tree") != -1); // clean up, just in case
+#endif
             size_t start_count(rand() % 10 + 10); // pretty small, no need to waste too much time here
             zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
             zipios::DirectoryCollection dc("tree", true);

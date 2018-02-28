@@ -40,6 +40,18 @@
 #include <limits.h>
 
 
+#ifdef ZIPIOS_WINDOWS
+#include <windows.h>
+#include <io.h>
+#include <direct.h>
+#else
+#include <unistd.h>
+static int mkdir(const char* path)
+{
+    return mkdir(path, 0777);
+}
+#endif
+
 #if defined(__sun) || defined(__sun__) || defined(__SunOS) || defined(__CYGWIN__)
 namespace std
 {
@@ -59,7 +71,7 @@ std::string to_string(T v)
 
 namespace zipios_test
 {
-
+static const std::streampos ZEROPOS{ 0 };
 
 /** \brief Create a random number representing a size_t object.
  *

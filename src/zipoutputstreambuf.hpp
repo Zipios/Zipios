@@ -38,7 +38,7 @@ namespace zipios
 {
 
 
-class ZipOutputStreambuf : public DeflateOutputStreambuf
+class ZIPIOSDLL_API ZipOutputStreambuf : public DeflateOutputStreambuf
 {
 public:
                                 ZipOutputStreambuf(std::streambuf *outbuf);

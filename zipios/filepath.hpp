@@ -43,7 +43,7 @@ namespace zipios
 {
 
 
-class FilePath
+class ZIPIOSDLL_API FilePath
 {
 public:
                         FilePath(std::string const& path = "");
@@ -52,9 +52,9 @@ public:
     FilePath&           operator = (std::string const& path);
     FilePath            operator + (FilePath const& name) const;
     bool                operator == (char const *rhs) const;
-    friend bool         operator == (char const *lhs, FilePath const& rhs);
+    ZIPIOSDLL_API friend bool         operator == (char const *lhs, FilePath const& rhs);
     bool                operator == (std::string const& rhs) const;
-    friend bool         operator == (std::string const& lhs, FilePath const& rhs);
+    ZIPIOSDLL_API friend bool         operator == (std::string const& lhs, FilePath const& rhs);
     bool                operator == (FilePath const& rhs) const;
     // TBD: add all the other comparison operators for completeness
     std::string         filename() const;
@@ -80,7 +80,7 @@ private:
 };
 
 
-std::ostream& operator << (std::ostream& os, FilePath const& path);
+ZIPIOSDLL_API std::ostream& operator << (std::ostream& os, FilePath const& path);
 
 
 } // zipios namespace

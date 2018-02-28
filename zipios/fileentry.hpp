@@ -71,7 +71,7 @@ enum class StorageMethod : uint8_t
 };
 
 
-class FileEntry
+class ZIPIOSDLL_API FileEntry
 {
 public:
     typedef std::shared_ptr<FileEntry>      pointer_t;
@@ -142,7 +142,7 @@ protected:
 };
 
 
-std::ostream& operator << (std::ostream& os, FileEntry const& entry);
+ZIPIOSDLL_API std::ostream& operator << (std::ostream& os, FileEntry const& entry);
 
 
 } // zipios namespace

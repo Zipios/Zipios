@@ -37,7 +37,7 @@ namespace zipios
 {
 
 
-class CollectionCollection : public FileCollection
+class ZIPIOSDLL_API CollectionCollection : public FileCollection
 {
 public:
     explicit                        CollectionCollection();

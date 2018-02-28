@@ -32,13 +32,15 @@
 
 #include "zipios/filecollection.hpp"
 #include "zipios/directoryentry.hpp"
-
+#ifdef ZIPIOS_WINDOWS
+#include <io.h>
+#endif
 
 namespace zipios
 {
 
 
-class DirectoryCollection : public FileCollection
+class ZIPIOSDLL_API DirectoryCollection : public FileCollection
 {
 public:
                                     DirectoryCollection();
@@ -52,7 +54,7 @@ public:
     virtual stream_pointer_t        getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH) override;
 
 protected:
-    void                            loadEntries() const;
+    virtual void                    loadEntries() const override;
     void                            load(FilePath const& subdir);
 
     mutable bool                    m_entries_loaded = false;

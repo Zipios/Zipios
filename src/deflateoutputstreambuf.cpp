@@ -159,10 +159,10 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
 
     // m_zs.next_in and avail_in must be set according to
     // zlib.h (inline doc).
-    m_zs.next_in  = reinterpret_cast<unsigned char *>(&m_invec[0]);
+    m_zs.next_in  = reinterpret_cast<unsigned char *>(m_invec.data());
     m_zs.avail_in = 0;
 
-    m_zs.next_out  = reinterpret_cast<unsigned char *>(&m_outvec[0]);
+    m_zs.next_out  = reinterpret_cast<unsigned char *>(m_outvec.data());
     m_zs.avail_out = getBufferSize();
 
     //
@@ -182,7 +182,7 @@ bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
     }
 
     // streambuf init:
-    setp(&m_invec[0], &m_invec[0] + getBufferSize());
+    setp(m_invec.data(), m_invec.data() + getBufferSize());
 
     m_crc32 = crc32(0, Z_NULL, 0);
 
@@ -277,13 +277,13 @@ int DeflateOutputStreambuf::overflow(int c)
     int err(Z_OK);
 
     m_zs.avail_in = pptr() - pbase();
-    m_zs.next_in = reinterpret_cast<unsigned char *>(&m_invec[0]);
+    m_zs.next_in = reinterpret_cast<unsigned char *>(m_invec.data());
 
     if(m_zs.avail_in > 0)
     {
         m_crc32 = crc32(m_crc32, m_zs.next_in, m_zs.avail_in); // update crc32
 
-        m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
+        m_zs.next_out = reinterpret_cast<unsigned char *>(m_outvec.data());
         m_zs.avail_out = getBufferSize();
 
         // Deflate until m_invec is empty.
@@ -302,7 +302,7 @@ int DeflateOutputStreambuf::overflow(int c)
     flushOutvec();
 
     // Update 'put' pointers
-    setp(&m_invec[0], &m_invec[0] + getBufferSize());
+    setp(m_invec.data(), m_invec.data() + getBufferSize());
 
     if(err != Z_OK && err != Z_STREAM_END)
     {
@@ -358,7 +358,7 @@ void DeflateOutputStreambuf::flushOutvec()
     size_t deflated_bytes(getBufferSize() - m_zs.avail_out);
     if(deflated_bytes > 0)
     {
-        size_t const bc(m_outbuf->sputn(&m_outvec[0], deflated_bytes));
+        size_t const bc(m_outbuf->sputn(m_outvec.data(), deflated_bytes));
         if(deflated_bytes != bc)
         {
             // Without implementing our own stream in our test, this
@@ -368,7 +368,7 @@ void DeflateOutputStreambuf::flushOutvec()
         }
     }
 
-    m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
+    m_zs.next_out = reinterpret_cast<unsigned char *>(m_outvec.data());
     m_zs.avail_out = getBufferSize();
 }
 
@@ -383,7 +383,7 @@ void DeflateOutputStreambuf::endDeflation()
 {
     overflow();
 
-    m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
+    m_zs.next_out = reinterpret_cast<unsigned char *>(m_outvec.data());
     m_zs.avail_out = getBufferSize();
 
     // Deflate until _invec is empty.

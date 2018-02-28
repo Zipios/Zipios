@@ -43,7 +43,7 @@ namespace zipios
 {
 
 
-class VirtualSeeker
+class ZIPIOSDLL_API VirtualSeeker
 {
 public:
                     VirtualSeeker(offset_t start_offset = 0, offset_t end_offset = 0);

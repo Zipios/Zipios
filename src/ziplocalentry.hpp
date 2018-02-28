@@ -39,7 +39,7 @@ namespace zipios
 {
 
 
-class ZipLocalEntry : public FileEntry
+class ZIPIOSDLL_API ZipLocalEntry : public FileEntry
 {
 public:
     // Zip file format version

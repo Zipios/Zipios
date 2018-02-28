@@ -31,13 +31,18 @@
  */
 
 #include "zipios/fileentry.hpp"
+//#include <stdint.h>
 
+ // Yay, IGNORE is defined to 0 in WinBase.h
+#ifdef IGNORE
+#undef IGNORE
+#endif
 
 namespace zipios
 {
 
 
-class FileCollection
+class ZIPIOSDLL_API FileCollection
 {
 public:
     typedef std::shared_ptr<FileCollection> pointer_t;
@@ -65,6 +70,7 @@ public:
     virtual size_t                  size() const;
     bool                            isValid() const;
     virtual void                    mustBeValid() const;
+    virtual void                    loadEntries() const {}
     void                            setMethod(size_t limit, StorageMethod small_storage_method, StorageMethod large_storage_method);
     void                            setLevel(size_t limit, FileEntry::CompressionLevel small_compression_level, FileEntry::CompressionLevel large_compression_level);
 
@@ -75,7 +81,7 @@ protected:
 };
 
 
-std::ostream & operator << (std::ostream& os, FileCollection const& collection);
+ZIPIOSDLL_API std::ostream & operator << (std::ostream& os, FileCollection const& collection);
 
 
 } // zipios namespace

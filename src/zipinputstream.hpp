@@ -40,7 +40,7 @@ namespace zipios
 
 
 
-class ZipInputStream : public std::istream
+class ZIPIOSDLL_API ZipInputStream : public std::istream
 {
 public:
                     ZipInputStream(std::string const& filename, std::streampos pos = 0);

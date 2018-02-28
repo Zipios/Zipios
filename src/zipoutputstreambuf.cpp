@@ -216,7 +216,7 @@ void ZipOutputStreambuf::putNextEntry(FileEntry::pointer_t entry)
     switch(m_compression_level)
     {
     case FileEntry::COMPRESSION_LEVEL_NONE:
-        setp(&m_invec[0], &m_invec[0] + getBufferSize());
+        setp(m_invec.data(), m_invec.data() + getBufferSize());
         break;
 
     default:
@@ -283,7 +283,7 @@ int ZipOutputStreambuf::overflow(int c)
     {
         // Ok, we are STORED, so we handle it ourselves to avoid "side
         // effects" from zlib, which adds markers every now and then.
-        size_t const bc(m_outbuf->sputn(&m_invec[0], size));
+        size_t const bc(m_outbuf->sputn(m_invec.data(), size));
         if(size != bc)
         {
             // Without implementing our own stream in our test, this
@@ -291,7 +291,7 @@ int ZipOutputStreambuf::overflow(int c)
             // inside the same loop in ZipFile::saveCollectionToArchive()
             throw IOException("ZipOutputStreambuf::overflow(): write to buffer failed."); // LCOV_EXCL_LINE
         }
-        setp(&m_invec[0], &m_invec[0] + getBufferSize());
+        setp(m_invec.data(), m_invec.data() + getBufferSize());
 
         if(c != EOF)
         {

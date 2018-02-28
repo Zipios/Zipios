@@ -35,7 +35,12 @@
 
 #include <fstream>
 
+#ifdef ZIPIOS_WINDOWS
+#include <io.h>
+#include <direct.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 
 

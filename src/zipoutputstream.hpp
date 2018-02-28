@@ -38,7 +38,7 @@ namespace zipios
 
 class ZipOutputStreambuf;
 
-class ZipOutputStream : public std::ostream
+class ZIPIOSDLL_API ZipOutputStream : public std::ostream
 {
 public:
                     ZipOutputStream(std::ostream & os);

@@ -38,7 +38,7 @@ namespace zipios
 {
 
 
-class BackBuffer : public ::zipios::buffer_t
+class ZIPIOSDLL_API BackBuffer : public ::zipios::buffer_t
 {
 public:
                             BackBuffer(std::istream & is, VirtualSeeker const & vs = VirtualSeeker(), ssize_t const chunk_size = 1024);

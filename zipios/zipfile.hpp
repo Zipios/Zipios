@@ -44,7 +44,7 @@ namespace zipios
 {
 
 
-class ZipFile : public FileCollection
+class ZIPIOSDLL_API ZipFile : public FileCollection
 {
 public:
     static pointer_t            openEmbeddedZipFile(std::string const & name);

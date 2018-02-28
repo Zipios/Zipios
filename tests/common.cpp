@@ -32,7 +32,17 @@
 
 #include <fstream>
 
+
+#ifdef ZIPIOS_WINDOWS
+#include <io.h>
+namespace zipios {
+   ZIPIOSDLL_API char const g_separator = '\\';
+}
+#else
 #include <unistd.h>
+#include <dirent.h>
+#include <errno.h>
+#endif
 
 
 SCENARIO("Vector append", "[zipios_common]")
@@ -116,7 +126,11 @@ TEST_CASE("Verify the g_separator", "[zipios_common]")
 {
     // Not too sure why we have that as a variable since it is always
     // a slash (/) and never a backslash (\) but it is there...
+#ifndef ZIPIOS_WINDOWS
     REQUIRE(zipios::g_separator == '/');
+#else
+    REQUIRE(zipios::g_separator == '\\');
+#endif
 }
 
 
@@ -662,7 +676,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             {
                 std::ifstream is("io.bin", std::ios::in | std::ios::binary);
                 is.seekg(0, std::ios::end);
-                REQUIRE(is.tellg() == 8);
+                REQUIRE(is.tellg() == (std::streampos)8);
                 is.seekg(0, std::ios::beg);
 
                 char buf[8];
@@ -694,7 +708,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             {
                 std::ifstream is("io.bin", std::ios::in | std::ios::binary);
                 is.seekg(0, std::ios::end);
-                REQUIRE(is.tellg() == 8);
+                REQUIRE(is.tellg() == (std::streampos)8);
                 is.seekg(0, std::ios::beg);
 
                 char buf[8];
@@ -726,7 +740,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             {
                 std::ifstream is("io.bin", std::ios::in | std::ios::binary);
                 is.seekg(0, std::ios::end);
-                REQUIRE(is.tellg() == 10);
+                REQUIRE(is.tellg() == (std::streampos)10);
                 is.seekg(0, std::ios::beg);
 
                 char buf[10];
@@ -759,7 +773,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             {
                 std::ifstream is("io.bin", std::ios::in | std::ios::binary);
                 is.seekg(0, std::ios::end);
-                REQUIRE(is.tellg() == 6);
+                REQUIRE(is.tellg() == (std::streampos)6);
                 is.seekg(0, std::ios::beg);
 
                 char buf[6];
@@ -790,7 +804,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             {
                 std::ifstream is("io.bin", std::ios::in | std::ios::binary);
                 is.seekg(0, std::ios::end);
-                REQUIRE(is.tellg() == 7);
+                REQUIRE(is.tellg() == (std::streampos)7);
                 is.seekg(0, std::ios::beg);
 
                 char buf[7];
@@ -830,7 +844,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             {
                 std::ifstream is("io.bin", std::ios::in | std::ios::binary);
                 is.seekg(0, std::ios::end);
-                REQUIRE(is.tellg() == 13);
+                REQUIRE(is.tellg() == (std::streampos)13);
                 is.seekg(0, std::ios::beg);
 
                 char buf[13];
@@ -868,7 +882,7 @@ SCENARIO("Write to file", "[zipios_common] [io]")
             {
                 std::ifstream is("io.bin", std::ios::in | std::ios::binary);
                 is.seekg(0, std::ios::end);
-                REQUIRE(is.tellg() == 9);
+                REQUIRE(is.tellg() == std::streampos(9));
                 is.seekg(0, std::ios::beg);
 
                 char buf[9];

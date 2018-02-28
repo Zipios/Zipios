@@ -27,6 +27,7 @@
  * \brief Header file that defines zipios::FilterInputStreambuf.
  */
 
+#include "zipios/zipios-config.hpp"
 #include <iostream>
 
 
@@ -34,7 +35,7 @@ namespace zipios
 {
 
 
-class FilterInputStreambuf : public std::streambuf
+class ZIPIOSDLL_API FilterInputStreambuf : public std::streambuf
 {
 public:
                                 FilterInputStreambuf(std::streambuf *inbuf);

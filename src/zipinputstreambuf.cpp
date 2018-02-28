@@ -28,6 +28,7 @@
 #include "zipinputstreambuf.hpp"
 
 #include "zipios/zipiosexceptions.hpp"
+#include <algorithm>
 
 
 namespace zipios
@@ -78,7 +79,7 @@ ZipInputStreambuf::ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
     case StorageMethod::STORED:
         m_remain = m_current_entry.getSize();
         // Force underflow on first read:
-        setg(&m_outvec[0], &m_outvec[0] + getBufferSize(), &m_outvec[0] + getBufferSize());
+        setg(m_outvec.data(), m_outvec.data() + getBufferSize(), m_outvec.data() + getBufferSize());
 //std::cerr << "stored" << std::endl;
         break;
 
@@ -131,8 +132,8 @@ std::streambuf::int_type ZipInputStreambuf::underflow()
     {
         // Ok, we are STORED, so we handle it ourselves.
         offset_t const num_b(std::min(m_remain, static_cast<offset_t>(getBufferSize())));
-        std::streamsize const g(m_inbuf->sgetn(&m_outvec[0], num_b));
-        setg(&m_outvec[0], &m_outvec[0], &m_outvec[0] + g);
+        std::streamsize const g(m_inbuf->sgetn(m_outvec.data(), num_b));
+        setg(m_outvec.data(), m_outvec.data(), m_outvec.data() + g);
         m_remain -= g;
         if(g > 0)
         {

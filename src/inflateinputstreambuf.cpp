@@ -138,7 +138,7 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
 
     // Prepare _outvec and get array pointers
     m_zs.avail_out = getBufferSize();
-    m_zs.next_out = reinterpret_cast<unsigned char *>(&m_outvec[0]);
+    m_zs.next_out = reinterpret_cast<unsigned char *>(m_outvec.data());
 
     // Inflate until _outvec is full
     // eof (or I/O prob) on _inbuf will break out of loop too.
@@ -148,11 +148,11 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
         if(m_zs.avail_in == 0)
         {
             // fill m_invec
-            std::streamsize const bc(m_inbuf->sgetn(&m_invec[0], getBufferSize()));
+            std::streamsize const bc(m_inbuf->sgetn(m_invec.data(), getBufferSize()));
             /** \FIXME
              * Add I/O error handling while inflating data from a file.
              */
-            m_zs.next_in = reinterpret_cast<unsigned char *>(&m_invec[0]);
+            m_zs.next_in = reinterpret_cast<unsigned char *>(m_invec.data());
             m_zs.avail_in = bc;
             // If we could not read any new data (bc == 0) and inflate is not
             // done it will return Z_BUF_ERROR and thus breaks out of the
@@ -168,7 +168,7 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
     // more input from the _inbuf streambuf, we end up with
     // less.
     offset_t const inflated_bytes = getBufferSize() - m_zs.avail_out;
-    setg(&m_outvec[0], &m_outvec[0], &m_outvec[0] + inflated_bytes);
+    setg(m_outvec.data(), m_outvec.data(), m_outvec.data() + inflated_bytes);
 
     /** \FIXME
      * Look at the error returned from inflate here, if there is
@@ -222,7 +222,7 @@ bool InflateInputStreambuf::reset(offset_t stream_position)
 
     // m_zs.next_in and avail_in must be set according to
     // zlib.h (inline doc).
-    m_zs.next_in = reinterpret_cast<Bytef *>(&m_invec[0]);
+    m_zs.next_in = reinterpret_cast<Bytef *>(m_invec.data());
     m_zs.avail_in = 0;
 
     int err(Z_OK);
@@ -249,7 +249,7 @@ bool InflateInputStreambuf::reset(offset_t stream_position)
     // - the pointers are not NULL (which would mean unbuffered)
     // - and that gptr() is not less than egptr() (so we trigger underflow
     //   the first time data is read).
-    setg(&m_outvec[0], &m_outvec[0] + getBufferSize(), &m_outvec[0] + getBufferSize());
+    setg(m_outvec.data(), m_outvec.data() + getBufferSize(), m_outvec.data() + getBufferSize());
 
     return err == Z_OK;
 }

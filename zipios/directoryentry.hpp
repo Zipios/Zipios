@@ -39,7 +39,7 @@
 namespace zipios
 {
 
-class DirectoryEntry : public FileEntry
+class ZIPIOSDLL_API DirectoryEntry : public FileEntry
 {
 public:
                             DirectoryEntry(FilePath const & filename, std::string const & comment = std::string());

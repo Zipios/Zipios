@@ -624,9 +624,13 @@ SCENARIO("FilePath against existing files on disk", "[FilePath]")
     GIVEN("an existing directory")
     {
         // make sure the directory is gone before re-creating it
-        REQUIRE(system("rm -rf filepath-test") == 0);
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("rmdir /Q /S filepath-test") == 0);
+#else
+       REQUIRE(system("rm -rf filepath-test") == 0);
+#endif
         // create a directory
-        REQUIRE(mkdir("filepath-test", 0777) == 0);
+        REQUIRE(mkdir("filepath-test") == 0);
 
         WHEN("creating a FilePath object")
         {

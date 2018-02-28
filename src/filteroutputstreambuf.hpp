@@ -32,12 +32,13 @@
 
 #include <iostream>
 
+#include "zipios/zipios-config.hpp"
 
 namespace zipios
 {
 
 
-class FilterOutputStreambuf : public std::streambuf
+class ZIPIOSDLL_API FilterOutputStreambuf : public std::streambuf
 {
 public:
                                     FilterOutputStreambuf(std::streambuf *outbuf);

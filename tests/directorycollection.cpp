@@ -35,9 +35,12 @@
 #include <memory>
 #include <vector>
 
-#include <unistd.h>
 #include <string.h>
 
+ // IGNORE defined to 0 in WinBase.h
+#ifdef IGNORE
+#undef IGNORE
+#endif
 
 
 
@@ -236,7 +239,11 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
     for(int i(0); i < 6; ++i)
     {
         // create a directory tree starting in "tree"
-        REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
+#ifdef ZIPIOS_WINDOWS
+       REQUIRE(system("rmdir /Q /S tree") == 0);
+#else
+       REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
+#endif
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
 
@@ -278,7 +285,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
                         REQUIRE((*it)->getCrc() == 0);
-                        REQUIRE((*it)->getEntryOffset() == 0);
+                        REQUIRE((*it)->getEntryOffset() == zipios_test::ZEROPOS);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
@@ -339,7 +346,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
                         REQUIRE((*it)->getCrc() == 0);
-                        REQUIRE((*it)->getEntryOffset() == 0);
+                        REQUIRE((*it)->getEntryOffset() == zipios_test::ZEROPOS);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
@@ -396,7 +403,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
                         REQUIRE((*it)->getCrc() == 0);
-                        REQUIRE((*it)->getEntryOffset() == 0);
+                        REQUIRE((*it)->getEntryOffset() == zipios_test::ZEROPOS);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
@@ -453,7 +460,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
                         REQUIRE((*it)->getCrc() == 0);
-                        REQUIRE((*it)->getEntryOffset() == 0);
+                        REQUIRE((*it)->getEntryOffset() == zipios_test::ZEROPOS);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
@@ -609,7 +616,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
                         REQUIRE((*it)->getCrc() == 0);
-                        REQUIRE((*it)->getEntryOffset() == 0);
+                        REQUIRE((*it)->getEntryOffset() == zipios_test::ZEROPOS);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
@@ -663,7 +670,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
                         REQUIRE((*it)->getCrc() == 0);
-                        REQUIRE((*it)->getEntryOffset() == 0);
+                        REQUIRE((*it)->getEntryOffset() == zipios_test::ZEROPOS);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
@@ -718,7 +725,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
                         REQUIRE((*it)->getCrc() == 0);
-                        REQUIRE((*it)->getEntryOffset() == 0);
+                        REQUIRE((*it)->getEntryOffset() == zipios_test::ZEROPOS);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
@@ -773,7 +780,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
                         REQUIRE((*it)->getCrc() == 0);
-                        REQUIRE((*it)->getEntryOffset() == 0);
+                        REQUIRE((*it)->getEntryOffset() == zipios_test::ZEROPOS);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
@@ -886,8 +893,12 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 TEST_CASE("DirectoryCollection with an existing directory that gets deleted", "[DirectoryCollection] [FileCollection]")
 {
     // create a directory
-    REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
-    REQUIRE(mkdir("tree", 0777) == 0);
+#ifdef ZIPIOS_WINDOWS
+   REQUIRE(system("rmdir /Q /S tree") == 0);
+#else
+   REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
+#endif
+    REQUIRE(mkdir("tree") == 0);
 
     // the initialization works as expected!
     zipios::DirectoryCollection dc(zipios::DirectoryCollection("tree", false));
@@ -905,8 +916,12 @@ TEST_CASE("DirectoryCollection with an existing directory that gets deleted", "[
 TEST_CASE("DirectoryCollection with an empty directory", "[DirectoryCollection] [FileCollection]")
 {
     // create a directory
-    REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
-    REQUIRE(mkdir("tree", 0777) == 0);
+#ifdef ZIPIOS_WINDOWS
+   REQUIRE(system("rmdir /Q /S tree") == 0);
+#else
+   REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
+#endif
+    REQUIRE(mkdir("tree") == 0);
 
     SECTION("verify that the object looks as expected")
     {
@@ -938,7 +953,7 @@ TEST_CASE("DirectoryCollection with an empty directory", "[DirectoryCollection] 
                 REQUIRE((*it)->getComment().empty());
                 REQUIRE((*it)->getCompressedSize() == 0);
                 REQUIRE((*it)->getCrc() == 0);
-                REQUIRE((*it)->getEntryOffset() == 0);
+                REQUIRE(0 == (*it)->getEntryOffset());
                 REQUIRE((*it)->getExtra().empty());
                 REQUIRE((*it)->getHeaderSize() == 0);
                 REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);

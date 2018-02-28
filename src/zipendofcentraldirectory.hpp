@@ -42,7 +42,7 @@ namespace zipios
 {
 
 
-class ZipEndOfCentralDirectory
+class ZIPIOSDLL_API ZipEndOfCentralDirectory
 {
 public:
                         ZipEndOfCentralDirectory(std::string const& zip_comment = "");

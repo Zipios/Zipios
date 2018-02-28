@@ -36,6 +36,11 @@
  * \note
  * This uses C code.
  */
+#ifdef _MSC_VER
+#include "zipios/zipiosdll.h"
+#else
+#define ZIPIOSDLL_API
+#endif
 
 #include <time.h>
 #include <inttypes.h>
@@ -49,11 +54,11 @@ extern "C"
 
 typedef uint32_t  dostime_t;
 
-dostime_t   mindostime();
-dostime_t   maxdostime();
-time_t      dos2unixtime(dostime_t dostime);
-dostime_t   dostime(int year, int month, int day, int hour, int minute, int second);
-dostime_t   unix2dostime(time_t unix_time);
+dostime_t ZIPIOSDLL_API mindostime();
+dostime_t ZIPIOSDLL_API maxdostime();
+time_t    ZIPIOSDLL_API dos2unixtime(dostime_t dostime);
+dostime_t ZIPIOSDLL_API dostime(int year, int month, int day, int hour, int minute, int second);
+dostime_t ZIPIOSDLL_API unix2dostime(time_t unix_time);
 
 
 #ifdef __cplusplus
