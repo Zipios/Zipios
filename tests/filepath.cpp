@@ -31,7 +31,9 @@
 #include <fstream>
 
 #include <sys/stat.h>
+#ifndef ZIPIOS_WINDOWS
 #include <unistd.h>
+#endif
 
 
 SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")

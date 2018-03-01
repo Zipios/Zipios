@@ -1271,7 +1271,7 @@ struct end_of_central_directory_t
         os << m_comment;
     }
 };
-
+#ifdef ZIPIOS_WINDOWS
 static int truncate(const char* filename, long length)
 {
    int result = -1;
@@ -1308,6 +1308,8 @@ static int truncate(const char* filename, long length)
    }
    return result;
 }
+#endif
+
 TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 {
     SECTION("create files with End of Central Directory that are tool small")

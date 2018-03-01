@@ -27,10 +27,11 @@
 #include "tests.hpp"
 
 #include <fstream>
-//
-#include <unistd.h>
-#include <sys/stat.h>
 
+#include <sys/stat.h>
+#ifndef ZIPIOS_WINDOWS
+#include <unistd.h>
+#endif
 
 namespace zipios_test
 {

@@ -32,12 +32,8 @@
 
 #include <fstream>
 
-// #include <string.h>
+#include <string.h>
 
-// IGNORE defined to 0 in WinBase.h
-//#ifdef IGNORE
-//#undef IGNORE
-//#endif
 
 SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [FileCollection]")
 {
