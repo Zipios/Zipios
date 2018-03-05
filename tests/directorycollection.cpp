@@ -497,7 +497,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                 {
                     std::string const name(*it);
 
-                    if(!name.empty() && name.back() == '/')  // Directory?
+                    if(!name.empty() && name.back() == zipios::g_separator)  // Directory?
                     {
                         // directories cannot be attached to an istream
                         zipios::DirectoryCollection::stream_pointer_t is1(dc.getInputStream(name));
@@ -512,7 +512,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry_match(dc.getEntry(name.substr(0, name.length() - 1), zipios::FileCollection::MatchPath::MATCH));
                         REQUIRE(entry_match);
 
-                        std::string::size_type pos(name.rfind('/', name.length() - 2));
+                        std::string::size_type pos(name.rfind(zipios::g_separator, name.length() - 2));
                         if(pos == std::string::npos)
                         {
                             pos = 0;
@@ -555,7 +555,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         zipios::FileEntry::pointer_t entry_match(dc.getEntry(name, zipios::FileCollection::MatchPath::MATCH));
                         REQUIRE(entry_match);
 
-                        std::string::size_type pos(name.rfind('/'));
+                        std::string::size_type pos(name.rfind(zipios::g_separator));
                         if(pos == std::string::npos)
                         {
                             pos = 0; // LCOV_EXCL_LINE
