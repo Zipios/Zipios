@@ -136,7 +136,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                     {
                         std::string const name(*it);
 
-                        if(!name.empty() && name.back() == '/')  // Directory?
+                        if(!name.empty() && name.back() == zipios::g_separator) //'/')  // Directory?
                         {
                             // directories cannot be attached to an istream
                             zipios::DirectoryCollection::stream_pointer_t is1a(dc.getInputStream(name));
@@ -158,7 +158,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             zipios::FileEntry::pointer_t entry_match_b(cc.getEntry(name.substr(0, name.length() - 1), zipios::FileCollection::MatchPath::MATCH));
                             REQUIRE(entry_match_b);
 
-                            std::string::size_type pos(name.rfind('/', name.length() - 2));
+                            std::string::size_type pos(name.rfind(zipios::g_separator, name.length() - 2));
                             if(pos == std::string::npos)
                             {
                                 pos = 0;
@@ -209,7 +209,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             zipios::FileEntry::pointer_t entry_match_b(cc.getEntry(name, zipios::FileCollection::MatchPath::MATCH));
                             REQUIRE(entry_match_b);
 
-                            std::string::size_type pos(name.rfind('/'));
+                            std::string::size_type pos(name.rfind(zipios::g_separator));
                             if(pos == std::string::npos)
                             {
                                 pos = 0; // LCOV_EXCL_LINE
@@ -247,7 +247,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                     {
                         std::string const name(*it);
 
-                        if(!name.empty() && name.back() == '/')  // Directory?
+                        if(!name.empty() && name.back() == zipios::g_separator)  // Directory?
                         {
                             // directories cannot be attached to an istream
                             zipios::CollectionCollection::stream_pointer_t is1(copy_constructor.getInputStream(name));
@@ -263,7 +263,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             zipios::FileEntry::pointer_t entry_match(copy_constructor.getEntry(name.substr(0, name.length() - 1), zipios::FileCollection::MatchPath::MATCH));
                             REQUIRE(entry_match);
 
-                            std::string::size_type pos(name.rfind('/', name.length() - 2));
+                            std::string::size_type pos(name.rfind(zipios::g_separator, name.length() - 2));
                             if(pos == std::string::npos)
                             {
                                 pos = 0;
@@ -310,7 +310,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             zipios::FileEntry::pointer_t entry_match(copy_constructor.getEntry(name, zipios::FileCollection::MatchPath::MATCH));
                             REQUIRE(entry_match);
 
-                            std::string::size_type pos(name.rfind('/'));
+                            std::string::size_type pos(name.rfind(zipios::g_separator));
                             if(pos == std::string::npos)
                             {
                                 pos = 0; // LCOV_EXCL_LINE
@@ -347,7 +347,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                     {
                         std::string const name(*it);
 
-                        if(!name.empty() && name.back() == '/')  // Directory?
+                        if(!name.empty() && name.back() == zipios::g_separator)  // Directory?
                         {
                             // directories cannot be attached to an istream
                             zipios::CollectionCollection::stream_pointer_t is1(copy_assignment.getInputStream(name));
@@ -363,7 +363,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             zipios::FileEntry::pointer_t entry_match(copy_assignment.getEntry(name.substr(0, name.length() - 1), zipios::FileCollection::MatchPath::MATCH));
                             REQUIRE(entry_match);
 
-                            std::string::size_type pos(name.rfind('/', name.length() - 2));
+                            std::string::size_type pos(name.rfind(zipios::g_separator, name.length() - 2));
                             if(pos == std::string::npos)
                             {
                                 pos = 0;
@@ -407,7 +407,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             zipios::FileEntry::pointer_t entry_match(copy_assignment.getEntry(name, zipios::FileCollection::MatchPath::MATCH));
                             REQUIRE(entry_match);
 
-                            std::string::size_type pos(name.rfind('/'));
+                            std::string::size_type pos(name.rfind(zipios::g_separator));
                             if(pos == std::string::npos)
                             {
                                 pos = 0; // LCOV_EXCL_LINE
@@ -444,7 +444,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                     {
                         std::string const name(*it);
 
-                        if(!name.empty() && name.back() == '/')  // Directory?
+                        if(!name.empty() && name.back() == zipios::g_separator)  // Directory?
                         {
                             // directories cannot be attached to an istream
                             zipios::CollectionCollection::stream_pointer_t is1(clone->getInputStream(name));
@@ -460,7 +460,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             zipios::FileEntry::pointer_t entry_match(clone->getEntry(name.substr(0, name.length() - 1), zipios::FileCollection::MatchPath::MATCH));
                             REQUIRE(entry_match);
 
-                            std::string::size_type pos(name.rfind('/', name.length() - 2));
+                            std::string::size_type pos(name.rfind(zipios::g_separator, name.length() - 2));
                             if(pos == std::string::npos)
                             {
                                 pos = 0;
@@ -504,7 +504,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             zipios::FileEntry::pointer_t entry_match(clone->getEntry(name, zipios::FileCollection::MatchPath::MATCH));
                             REQUIRE(entry_match);
 
-                            std::string::size_type pos(name.rfind('/'));
+                            std::string::size_type pos(name.rfind(zipios::g_separator));
                             if(pos == std::string::npos)
                             {
                                 pos = 0; // LCOV_EXCL_LINE
@@ -604,13 +604,13 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                         {
                             std::string const name(*it);
 
-                            if(!name.empty() && name.back() == '/')  // Directory?
+                            if(!name.empty() && name.back() == zipios::g_separator)  // Directory?
                             {
                                 // directories cannot be attached to an istream
                                 zipios::CollectionCollection::stream_pointer_t is1(cc.getInputStream(name));
                                 REQUIRE(!is1);
 
-                                // also test without the ending '/', just in case
+                                // also test without the ending zipios::g_separator, just in case
                                 zipios::CollectionCollection::stream_pointer_t is2(cc.getInputStream(name.substr(0, name.length() - 1)));
                                 REQUIRE(!is2);
 
@@ -620,7 +620,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                                 zipios::FileEntry::pointer_t entry_match(cc.getEntry(name.substr(0, name.length() - 1), zipios::FileCollection::MatchPath::MATCH));
                                 REQUIRE(entry_match);
 
-                                std::string::size_type pos(name.rfind('/', name.length() - 2));
+                                std::string::size_type pos(name.rfind(zipios::g_separator, name.length() - 2));
                                 if(pos == std::string::npos)
                                 {
                                     pos = 0;
@@ -667,7 +667,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                                 zipios::FileEntry::pointer_t entry_match(cc.getEntry(name, zipios::FileCollection::MatchPath::MATCH));
                                 REQUIRE(entry_match);
 
-                                std::string::size_type pos(name.rfind('/'));
+                                std::string::size_type pos(name.rfind(zipios::g_separator));
                                 if(pos == std::string::npos)
                                 {
                                     pos = 0; // LCOV_EXCL_LINE
@@ -713,7 +713,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                             {
                                 std::string const name(*it);
 
-                                if(!name.empty() && name.back() == '/')  // Directory?
+                                if(!name.empty() && name.back() == zipios::g_separator)  // Directory?
                                 {
                                     // directories cannot be attached to an istream
                                     zipios::CollectionCollection::stream_pointer_t is1(clone->getInputStream(name));
@@ -729,7 +729,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                                     zipios::FileEntry::pointer_t entry_match(clone->getEntry(name.substr(0, name.length() - 1), zipios::FileCollection::MatchPath::MATCH));
                                     REQUIRE(entry_match);
 
-                                    std::string::size_type pos(name.rfind('/', name.length() - 2));
+                                    std::string::size_type pos(name.rfind(zipios::g_separator, name.length() - 2));
                                     if(pos == std::string::npos)
                                     {
                                         pos = 0;
@@ -773,7 +773,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
                                     zipios::FileEntry::pointer_t entry_match(clone->getEntry(name, zipios::FileCollection::MatchPath::MATCH));
                                     REQUIRE(entry_match);
 
-                                    std::string::size_type pos(name.rfind('/'));
+                                    std::string::size_type pos(name.rfind(zipios::g_separator));
                                     if(pos == std::string::npos)
                                     {
                                         pos = 0; // LCOV_EXCL_LINE

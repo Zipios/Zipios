@@ -85,10 +85,6 @@ void ZIPIOSDLL_API operator += (std::vector<Type>& v1, std::vector<Type> const& 
 namespace zipios
 {
 
-
-ZIPIOSDLL_API extern char const g_separator;
-
-
 typedef std::ostringstream OutputStringStream;
 
 

@@ -36,21 +36,6 @@ namespace zipios
 {
 
 
-/** \brief The character used as the filename separator.
- *
- * This character is used to separate filename segments in a path
- * in a Zip archive.
- *
- * \todo
- * It is "inadvertendly" also used as the separator
- * between filename segments of the file system. We
- * certainly want to support both "/" and "\\" to
- * make sure MS-Windows is fully supported. The FilePath
- * should take care of that work though.
- */
-ZIPIOSDLL_API char const g_separator = '/';
-
-
 /** \typedef std::ostringstream OutputStringStream;
  * \brief An output stream using strings.
  *

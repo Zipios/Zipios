@@ -25,12 +25,13 @@
  */
 
 #include "tests.hpp"
-
+#include "src/zipios_common.hpp"
 #include <fstream>
 
 #include <sys/stat.h>
 #ifndef ZIPIOS_WINDOWS
 #include <unistd.h>
+#include <string.h>
 #endif
 
 namespace zipios_test
@@ -58,7 +59,7 @@ char const g_letters[66]{
  * This file class creates a regular file in a directory.
  */
 
-
+static unsigned long long int filename_count = 1000000000000000LL;
 /** \brief Create a file.
  *
  * This function creates a file. If the creation fails, then an error
@@ -84,11 +85,13 @@ file_t::file_t(type_t t, int children_count, std::string const& new_filename)
     {
         for(;;)
         {
-            size_t const l(rand() % 100 + 1);
-            for(size_t idx(0); idx < l; ++idx)
+            size_t const l(rand() % 20 + 10);
+            /*for(size_t idx(0); idx < l; ++idx)
             {
                 m_filename += g_letters[rand() % sizeof(g_letters)];
-            }
+            }*/
+            m_filename = std::to_string(filename_count);
+            ++filename_count;
             struct stat buf;
             if(m_filename != "inexistant" // very unlikely, but just in case...
             && stat(m_filename.c_str(), &buf) != 0)
@@ -110,22 +113,36 @@ file_t::file_t(type_t t, int children_count, std::string const& new_filename)
         // create a regular file
         // (the STL is expected to throw if the create fails from the constructor)
         std::ofstream os(m_filename, std::ios::out | std::ios::binary);
-        size_t count(rand() % (100 * 1024 + 1)); // 0 to 100Kb
-        for(size_t sz(0); sz < count; ++sz)
+        if (os)
         {
-            os << static_cast<unsigned char>(rand());
+           //try {
+           //   os.exceptions(os.failbit);
+           //}
+           //catch (const std::ios_base::failure& e)
+           //{
+           //   std::cout << "Caught an ios_base::failure.\n"
+           //      << "Explanatory string: " << e.what() << '\n'
+           //      << "Error code: " << e.code() << '\n'
+           //      << "Strerror: " << strerror(errno) << '\n';
+           //}
+           size_t count(rand() % (100 * 1024 + 1)); // 0 to 100Kb
+           for (size_t sz(0); sz < count; ++sz)
+           {
+              os << static_cast<unsigned char>(rand());
+           }
         }
-        if(!os)
+        else
         {
             unlink(m_filename.c_str()); // LCOV_EXCL_LINE
-            throw std::runtime_error("failed creating regular file"); // LCOV_EXCL_LINE
+            auto msg = "failed creating regular file \"" + m_filename + "\"" + std::string(strerror(errno));
+            throw std::runtime_error(msg); // LCOV_EXCL_LINE
         }
     }
     else if(t == type_t::DIRECTORY)
     {
-        if(mkdir(m_filename.c_str(), 0777) != 0)
+        if(mkdir(m_filename.c_str()) != 0)
         {
-            throw std::runtime_error("failed creating directory"); // LCOV_EXCL_LINE
+            throw std::runtime_error("failed creating directory\"" + m_filename + "\""); // LCOV_EXCL_LINE
         }
         chdir(m_filename.c_str());
         for(int i(0); i < children_count; ++i)
@@ -263,7 +280,7 @@ size_t file_t::size()
  */
 file_t::type_t file_t::find(std::string const& name)
 {
-    std::string::size_type const pos(name.find('/'));
+   std::string::size_type const pos(name.find(zipios::g_separator));// '/'));
 
     std::string const segment(pos == std::string::npos ? name : name.substr(0, pos));
 
@@ -315,7 +332,7 @@ void file_t::get_filenames(filenames_t& names, std::string const& parent) const
     if(m_type == type_t::DIRECTORY)
     {
         // mark directories as such
-        names.push_back(parent + "/");
+        names.push_back(parent + zipios::g_separator);
     }
     else
     {
@@ -324,7 +341,7 @@ void file_t::get_filenames(filenames_t& names, std::string const& parent) const
     for(auto it(m_children.begin()); it != m_children.end(); ++it)
     {
         file_t::pointer_t f(*it);
-        std::string p(parent + "/" + f->filename());
+        std::string p(parent + zipios::g_separator + f->filename());
         f->get_filenames(names, p);
     }
 }

@@ -45,29 +45,6 @@
 #define    ZIPIOS_VERSION_PATCH   @ZIPIOS_VERSION_PATCH@
 #define    ZIPIOS_VERSION_STRING  "@ZIPIOS_VERSION_MAJOR@.@ZIPIOS_VERSION_MINOR@.@ZIPIOS_VERSION_PATCH@"
 
-
-namespace zipios
-{
-
-
-inline char const *getVersion()
-{
-    return ZIPIOS_VERSION_STRING;
-}
-
-
-typedef std::streamoff      offset_t;
-
-
-inline size_t getBufferSize()
-{
-    return BUFSIZ;
-}
-
-
-} // zipios namespace
-
-
 // Visual C++
 #ifdef _MSC_VER
 
@@ -100,6 +77,44 @@ typedef struct stat     os_stat_t;
 typedef struct stat     os_stat_t;
 
 #endif
+
+namespace zipios
+{
+
+   inline char const *getVersion()
+   {
+      return ZIPIOS_VERSION_STRING;
+   }
+
+
+   typedef std::streamoff      offset_t;
+
+
+   inline size_t getBufferSize()
+   {
+      return BUFSIZ;
+   }
+
+
+   /** \brief The character used as the filename separator.
+   *
+   * This character is used to separate filename segments in a path
+   * in a Zip archive.
+   *
+   * \todo
+   * It is "inadvertendly" also used as the separator
+   * between filename segments of the file system. We
+   * certainly want to support both "/" and "\\" to
+   * make sure MS-Windows is fully supported. The FilePath
+   * should take care of that work though.
+   */
+
+#ifdef ZIPIOS_WINDOWS
+   static char const g_separator = '\\';
+#else
+   static char const g_separator = '/';
+#endif
+} // zipios namespace
 
 // vim: ts=4 sw=4 et
 #endif

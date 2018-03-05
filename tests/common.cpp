@@ -35,9 +35,6 @@
 
 #ifdef ZIPIOS_WINDOWS
 #include <io.h>
-namespace zipios {
-   ZIPIOSDLL_API char const g_separator = '\\';
-}
 #else
 #include <unistd.h>
 #include <dirent.h>
@@ -124,8 +121,6 @@ SCENARIO("Vector append", "[zipios_common]")
 
 TEST_CASE("Verify the g_separator", "[zipios_common]")
 {
-    // Not too sure why we have that as a variable since it is always
-    // a slash (/) and never a backslash (\) but it is there...
 #ifndef ZIPIOS_WINDOWS
     REQUIRE(zipios::g_separator == '/');
 #else
