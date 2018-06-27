@@ -1,3 +1,9 @@
+zipios (2.1.7.8~xenial) xenial; urgency=high
+
+  * Bump version to recompile with the -fsanitizer flags.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 26 Jun 2018 20:03:27 -0800
+
 zipios (2.1.7.7~xenial) xenial; urgency=high
 
   * Testing dput from make requires all changelog to have my email address.
