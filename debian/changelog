@@ -1,3 +1,9 @@
+zipios (2.1.7.10~xenial) xenial; urgency=high
+
+  * Bump version to get a recompile on launchpad.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Fri, 27 Jul 2018 00:45:54 -0800
+
 zipios (2.1.7.9~xenial) xenial; urgency=high
 
   * Bump version to recompile without the -fsanitizer flags.
