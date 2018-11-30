@@ -32,6 +32,8 @@ FIND_PATH(CATCH_INCLUDE_DIR
     catch.hpp
     PATHS
         ${CMAKE_SOURCE_DIR}/contrib
+        /usr/local/include/catch2
+        /usr/include/catch2
         /usr/local/include
         /usr/include
     PATH_SUFFIXES
