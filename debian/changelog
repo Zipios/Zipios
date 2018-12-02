@@ -1,3 +1,10 @@
+zipios (2.1.7.11~xenial) xenial; urgency=high
+
+  * Include a fix that allows for catch v2 to be used for our tests.
+  * Fixed version in CMakeLists.txt as well.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat,  1 Dec 2018 16:50:51 -0800
+
 zipios (2.1.7.10~xenial) xenial; urgency=high
 
   * Bump version to get a recompile on launchpad.
