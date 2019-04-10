@@ -370,7 +370,7 @@ void ZipLocalEntry::read(std::istream& is)
     zipRead(is, extra_field_len);                   // 16
     zipRead(is, filename, filename_len);            // string
     zipRead(is, m_extra_field, extra_field_len);    // buffer
-    /** \TODO add support for zip64, some of those parameters
+    /** \todo add support for zip64, some of those parameters
      *        may be 0xFFFFF...FFFF in which case the 64 bit
      *        header should be read
      */
@@ -410,7 +410,7 @@ void ZipLocalEntry::write(std::ostream& os)
         throw InvalidStateException("ZipLocalEntry::write(): file name or extra field too large to save in a Zip file.");
     }
 
-    /** TODO: add support for 64 bit zip archive
+    /** todo: add support for 64 bit zip archive
      */
 // Solaris defines _ILP32 for 32 bit platforms
 #if !defined(_ILP32)

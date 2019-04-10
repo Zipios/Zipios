@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -287,7 +287,7 @@ void DirectoryCollection::load(FilePath const& subdir)
             //, m_fileinfo() -- initialized below
             //, m_read_first(false) -- auto-init
         {
-            /** \TODO
+            /** \todo
              * Make necessary changes to support 64 bit and Unicode
              * (require utf8 -> wchar_t, then use _wfindfirsti64().)
              * We'll have to update the next() function too, of course.

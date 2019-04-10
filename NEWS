@@ -1,3 +1,16 @@
+Release notes for Zipios++ 2.2.0
+--------------------------------
+
+As per [issue #28 on Github](https://github.com/Zipios/Zipios/issues/28),
+there was a discrepancy in licenses because of the dostime.c and dostime.h
+files.
+
+These two files were removed and replaced by a DOSDateTime class instead.
+It's all C++ and uses a structure with field to convert the data as required.
+
+The license was also updated and copyright file fixed up to match the newer
+version.
+
 Release notes for Zipios++ 2.1.0
 --------------------------------
 

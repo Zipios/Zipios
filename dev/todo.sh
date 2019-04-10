@@ -5,7 +5,8 @@
 #    make -C YOUR_BUILD_DIR/zipios/ zipios_code_analysis
 #
 # License:
-#      Copyright (c) 2011-2017 Made to Order Software Corp.
+#      Zipios -- a small C++ library that provides easy access to .zip files.
+#      Copyright (c) 2011-2019 Made to Order Software Corp.
 #      contact@m2osw.com
 #
 #      This program is free software; you can redistribute it and/or modify
@@ -44,6 +45,6 @@ echo "TBD: questions that need testing to be answered" >>$OUTPUT
 find . -type f -exec grep TBD {} \; | wc -l >>$OUTPUT
 
 echo "todo: long term, nice to have things defined in Doxygen" >>$OUTPUT
-find . -type f -exec grep "todo:" {} \; | wc -l >>$OUTPUT
+find . -type f -exec grep "todo:\|\\todo" {} \; | wc -l >>$OUTPUT
 
 # vim: ts=4 sw=4 et

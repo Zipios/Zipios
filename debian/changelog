@@ -7,6 +7,10 @@ zipios (2.2.0.0~xenial) xenial; urgency=high
     remove the 1h difference test to accomodate standard/saving time periods.)
   * Made enhancements to the `mk` script so I can use it in zipios or Snap C++.
   * Updated copyright notices to say 2019.
+  * Fixed the debian/copyright file.
+  * I removed the UTF-8 long dashes and replace them with "--".
+  * I updated the version in the main CMakeFile.txt.
+  * I applied cleanups as detected by the code analyzis tools.
 
  -- Alexis Wilke <alexis@m2osw.com>  Tue,  9 Apr 2019 19:40:36 -0800
 

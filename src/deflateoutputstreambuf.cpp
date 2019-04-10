@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -352,7 +352,7 @@ void DeflateOutputStreambuf::flushOutvec()
 {
     /** \TODO
      * We need to redesign the class to allow for STORED files to
-     * flow through without the need have this crap of bytes to
+     * flow through without the need to have this crap of bytes to
      * skip...
      */
     size_t deflated_bytes(getBufferSize() - m_zs.avail_out);

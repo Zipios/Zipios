@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -312,7 +312,7 @@ ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const& name)
         std::ifstream ifs(name, std::ios::in | std::ios::binary);
         ifs.seekg(-4, std::ios::end);
         zipRead(ifs, start_offset);
-        // TODO: add support for 64 bit (files of more than 4Gb)
+        // todo: add support for 64 bit (files of more than 4Gb)
     }
     return ZipFile::pointer_t(new ZipFile(name, start_offset, 4));
 }
@@ -417,8 +417,10 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     for(auto it = m_entries.begin(); it != m_entries.end(); ++it)
     {
         /** \TODO
-         * Make sure the entry offset is properly defined by ZipCentralDirectoryEntry.
-         * Also the isEqual() is a quite advance test here!
+         * Make sure the entry offset is properly defined by
+         * ZipCentralDirectoryEntry.
+         *
+         * Also the isEqual() is a quite advanced (slow) test here!
          */
         m_vs.vseekg(zipfile, (*it)->getEntryOffset(), std::ios::beg);
         ZipLocalEntry zlh;

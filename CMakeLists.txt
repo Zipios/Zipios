@@ -9,9 +9,9 @@
 #      See the CMake documentation.
 #
 # License:
-#      Zipios++ - a small C++ library that provides easy access to .zip files.
+#      Zipios -- a small C++ library that provides easy access to .zip files.
 #      Copyright (C) 2000-2007  Thomas Sondergaard
-#      Copyright (C) 2015-2017  Made to Order Software Corporation
+#      Copyright (C) 2015-2019  Made to Order Software Corporation
 #
 #      This library is free software; you can redistribute it and/or
 #      modify it under the terms of the GNU Lesser General Public
@@ -38,9 +38,9 @@ if( ${RUN_TESTS} )
 endif()
 
 set( ZIPIOS_VERSION_MAJOR 2 )
-set( ZIPIOS_VERSION_MINOR 1 )
-set( ZIPIOS_VERSION_PATCH 7 )
-set( ZIPIOS_VERSION_BUILD 11 )
+set( ZIPIOS_VERSION_MINOR 2 )
+set( ZIPIOS_VERSION_PATCH 0 )
+set( ZIPIOS_VERSION_BUILD 0 )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 
@@ -153,7 +153,7 @@ install( FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
     DESTINATION ${INCLUDE_INSTALL_DIR}/zipios
 )
 
-# TODO: how do we determine the correct destination?
+# todo: how do we determine the correct destination?
 #       (i.e. 3.x is now out and 2.8 will probably fail for those users)
 #install( DIRECTORY cmake/
 #    DESTINATION ${CMAKE_MODULES_INSTALL_DIR}
@@ -163,10 +163,6 @@ add_custom_target(zipios_code_analysis
     # Make sure we have an output folder
     COMMAND mkdir -p ${PROJECT_BINARY_DIR}/analysis
 
-    # Boost inspect tool that reports various problems in the source
-    COMMAND echo "inspect -- output ${PROJECT_BINARY_DIR}/analysis/inspect.html"
-    COMMAND inspect -tab -crlf -end -path_name -ascii -minmax -assert_macro -deprecated_macro -unnamed -copyright >"${PROJECT_BINARY_DIR}/analysis/inspect.html"
-
     # Count the number of TODO, XXX, TBD, FIXME, and \todo
     COMMAND echo "TODO -- output ${PROJECT_BINARY_DIR}/analysis/todo.txt"
     COMMAND sh dev/todo.sh "${PROJECT_BINARY_DIR}/analysis"
@@ -174,6 +170,12 @@ add_custom_target(zipios_code_analysis
     # Search for files with "invalid" (unwanted really) spaces
     COMMAND echo "Spaces -- output ${PROJECT_BINARY_DIR}/analysis/spaces.txt"
     COMMAND sh dev/spaces.sh "${PROJECT_BINARY_DIR}/analysis"
+
+    # Boost inspect tool that reports various problems in the source
+    # Note: I use `... || true` because inspect attempts an SVN check which
+    #       obviously is going to fail here
+    COMMAND echo "inspect -- output ${PROJECT_BINARY_DIR}/analysis/inspect.html"
+    COMMAND inspect -tab -crlf -end -path_name -ascii -minmax -assert_macro -deprecated_macro -unnamed -copyright >"${PROJECT_BINARY_DIR}/analysis/inspect.html" || true
 
     # All of these are expected to work on source code so make sure we are
     # in the source code top directory

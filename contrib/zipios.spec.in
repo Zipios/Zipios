@@ -1,4 +1,4 @@
-%define release	2
+%define release 2
 
 Name: @PACKAGE@
 Version: @ZIPIOS_VERSION_MAJOR@.@ZIPIOS_VERSION_MINOR@.@ZIPIOS_VERSION_PATCH@
@@ -40,8 +40,8 @@ Header files and documentation for Zipios development.
 %install
 %makeinstall
 
-%post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %clean
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && %__rm -rf $RPM_BUILD_ROOT $RPM_BUILD_DIR/%{name}-%{version}

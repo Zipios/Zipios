@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -138,11 +138,13 @@ void GZIPOutputStreambuf::writeHeader()
                 | (m_comment.empty()  ? 0x00 : 0x10)
             );
 
-    /** \TODO:
+    /** \TODO
      * We need to know of the last modification time instead of
      * saving all zeros for MTIME values.
-     *
-     * Also, I am thinking that the OS should be 3 under Unices.
+     */
+
+    /** \todo:
+     * I am thinking that the OS should be 3 under Unices.
      */
 
     std::ostream os(m_outbuf) ;
@@ -181,7 +183,7 @@ void GZIPOutputStreambuf::writeTrailer()
 
 void GZIPOutputStreambuf::writeInt(uint32_t i)
 {
-    /** \TODO: add support for 64 bit files if it exists? */
+    /** \todo: add support for 64 bit files if it exists? */
     std::ostream os(m_outbuf);
     os << static_cast<unsigned char>( i        & 0xFF);
     os << static_cast<unsigned char>((i >>  8) & 0xFF);

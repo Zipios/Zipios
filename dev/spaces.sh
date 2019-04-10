@@ -5,7 +5,9 @@
 #    make -C YOUR_BUILD_DIR/zipios/ zipios_code_analysis
 #
 # License:
-#      Copyright (c) 2011-2017 Made to Order Software Corp.
+#      Zipios -- a small C++ library that provides easy access to .zip files.
+#
+#      Copyright (c) 2011-2019 Made to Order Software Corp.
 #      contact@m2osw.com
 #
 #      This library is free software; you can redistribute it and/or

@@ -737,9 +737,10 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
             }
         }
 
-/** \TODO
- * Once clang is fixed, remove those tests. clang does not clear the
- * std::unchecked_exception() flag when we have a re-throw in a catch.
+/** \todo
+ * Once clang is fixed, remove those #if/#endif boundaries. clang does not
+ * clear the std::unchecked_exception() flag when we have a re-throw in a
+ * catch.
  */
 #ifndef __clang__
         // test with a comment that's too large
@@ -1467,7 +1468,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         }
     }
 
-    /** \TODO
+    /** \todo
      * We need to write a similar test that verifies each and every field
      * that proves there is an error and all the fields that do not prove
      * anything.
@@ -1555,7 +1556,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         }
     }
 
-/** \TODO
+/** \todo
  * Once clang is fixed, remove those tests. clang does not clear the
  * std::unchecked_exception() flag when we have a re-throw in a catch.
  * In this case we have a problem with the exception raised in

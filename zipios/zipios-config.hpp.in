@@ -3,10 +3,10 @@
 #define ZIPIOS_CONFIG_HPP
 
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -87,7 +87,7 @@ inline size_t getBufferSize()
 #define S_ISSOCK(mode)  0
 #define S_ISFIFO(mode)  (((mode) & _S_IFIFO) == _S_IFIFO)
 
-// TODO: change to _stat64 or whatever is required to get full 64 bit support
+// todo: change to _stat64 or whatever is required to get full 64 bit support
 typedef struct stat     os_stat_t;
 
 #else

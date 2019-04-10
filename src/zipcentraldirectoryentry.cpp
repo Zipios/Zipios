@@ -180,7 +180,7 @@ ZipCentralDirectoryEntry::~ZipCentralDirectoryEntry()
  */
 size_t ZipCentralDirectoryEntry::getHeaderSize() const
 {
-    /** \TODO
+    /** \todo
      * Add support for 64 bit Zip. At this time this function returns
      * an invalid size if the filename, extra field, or file comment
      * sizes are more than allowed in an older version of the Zip format.
@@ -278,7 +278,7 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
     zipRead(is, filename, filename_len);            // string
     zipRead(is, m_extra_field, extra_field_len);    // buffer
     zipRead(is, m_comment, file_comment_len);       // string
-    /** \TODO check whether this was a 64 bit header and make sure
+    /** \todo check whether this was a 64 bit header and make sure
      *        to read the 64 bit header too if so
      */
 
@@ -327,7 +327,7 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
  */
 void ZipCentralDirectoryEntry::write(std::ostream& os)
 {
-    /** \TODO add support for 64 bit entries
+    /** \todo add support for 64 bit entries
      *        (zip64 is available, just need to add a 64 bit header...)
      */
     if(m_filename.length()  > 0x10000
@@ -353,8 +353,7 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     // including the "compatibility" code
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
     // MS-Windows
-    /** \TODO should we use g_msdos instead?
-     */
+    // TBD: should we use g_msdos instead?
     writer_version |= g_windows;
 #elif defined(__APPLE__) && defined(__MACH__)
     // OS/X
