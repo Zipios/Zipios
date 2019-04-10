@@ -1,4 +1,4 @@
-zipios (2.1.7.12~xenial) xenial; urgency=high
+zipios (2.2.0.0~xenial) xenial; urgency=high
 
   * Replaced the dostime.h/c with dosdatetime.hpp/cpp to eliminate the GPL
     dependency.
