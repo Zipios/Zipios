@@ -159,9 +159,9 @@ bool DOSDateTime::isValid() const
  * then the function returns -1 to indicate an error.
  *
  * The number of days is always 30 or 31 except for the month of February
- * in which case the function may return 28 or 29. For this reason, you
- * date must have the year you want to use to get a valid result when
- * calling this function.
+ * in which case the function may return 28 or 29. For this reason, your
+ * date must have the month and year you want to use to get a valid result
+ * when calling this function.
  *
  * \note
  * This function is used to verify that the date month day is valid.
