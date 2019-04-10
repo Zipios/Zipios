@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -28,8 +28,7 @@
 
 #include "zipios/directorycollection.hpp"
 #include "zipios/zipiosexceptions.hpp"
-
-#include "src/dostime.h"
+#include "zipios/dosdatetime.hpp"
 
 #include <fstream>
 #include <memory>
@@ -284,7 +283,9 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                         //REQUIRE((*it)->getName() == ...);
                         //REQUIRE((*it)->getFileName() == ...);
-                        REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                        zipios::DOSDateTime dt;
+                        dt.setUnixTimestamp(file_stats.st_mtime);
+                        REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
@@ -345,7 +346,9 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                         //REQUIRE((*it)->getName() == ...);
                         //REQUIRE((*it)->getFileName() == ...);
-                        REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                        zipios::DOSDateTime dt;
+                        dt.setUnixTimestamp(file_stats.st_mtime);
+                        REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
@@ -402,7 +405,9 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                         //REQUIRE((*it)->getName() == ...);
                         //REQUIRE((*it)->getFileName() == ...);
-                        REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                        zipios::DOSDateTime dt;
+                        dt.setUnixTimestamp(file_stats.st_mtime);
+                        REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
@@ -459,7 +464,9 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                         //REQUIRE((*it)->getName() == ...);
                         //REQUIRE((*it)->getFileName() == ...);
-                        REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                        zipios::DOSDateTime dt;
+                        dt.setUnixTimestamp(file_stats.st_mtime);
+                        REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
@@ -615,7 +622,9 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                         //REQUIRE((*it)->getName() == ...);
                         //REQUIRE((*it)->getFileName() == ...);
-                        REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                        zipios::DOSDateTime dt;
+                        dt.setUnixTimestamp(file_stats.st_mtime);
+                        REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
@@ -669,7 +678,9 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                         //REQUIRE((*it)->getName() == ...);
                         //REQUIRE((*it)->getFileName() == ...);
-                        REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                        zipios::DOSDateTime dt;
+                        dt.setUnixTimestamp(file_stats.st_mtime);
+                        REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
@@ -724,7 +735,9 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                         //REQUIRE((*it)->getName() == ...);
                         //REQUIRE((*it)->getFileName() == ...);
-                        REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                        zipios::DOSDateTime dt;
+                        dt.setUnixTimestamp(file_stats.st_mtime);
+                        REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
@@ -779,7 +792,9 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                         //REQUIRE((*it)->getName() == ...);
                         //REQUIRE((*it)->getFileName() == ...);
-                        REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                        zipios::DOSDateTime dt;
+                        dt.setUnixTimestamp(file_stats.st_mtime);
+                        REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
@@ -944,7 +959,9 @@ TEST_CASE("DirectoryCollection with an empty directory", "[DirectoryCollection] 
                 REQUIRE((*it)->getMethod() == zipios::StorageMethod::STORED);
                 REQUIRE((*it)->getName() == "tree");
                 REQUIRE((*it)->getFileName() == "tree");
-                REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
+                zipios::DOSDateTime t;
+                t.setUnixTimestamp(file_stats.st_mtime);
+                REQUIRE((*it)->getTime() == t.getDOSDateTime());
                 REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE((*it)->hasCrc());
                 REQUIRE((*it)->isDirectory());

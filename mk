@@ -1,10 +1,21 @@
 #!/bin/sh
+# You can consider this file as being in the public domain.
+
+# Determine the location of the BUILD folder
+if test -d ../BUILD
+then
+	BUILD=../BUILD/zipios
+else
+	BUILD=../../../BUILD/contrib/zipios
+fi
+
 if test "$1" = "-d"
 then
-	# Rebuild documentation on the spot
-	rm -rf ../BUILD/zipios/doc/zipios-doc-2.0*
-	make -C ../BUILD/zipios/ zipios_Documentation
-	make -C ../BUILD/zipios/ install
+	# Force a rebuild of the documentation
+	#
+	rm -rf ${BUILD}/doc/zipios-doc-2.0*
+	make -C ${BUILD} zipios_Documentation
+	make -C ${BUILD} install
 else
-	make -C ../BUILD/zipios/
+	make -C ${BUILD}
 fi

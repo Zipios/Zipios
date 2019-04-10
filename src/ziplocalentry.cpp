@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -29,8 +29,8 @@
 #include "ziplocalentry.hpp"
 
 #include "zipios/zipiosexceptions.hpp"
+#include "zipios/dosdatetime.hpp"
 
-#include "dostime.h"
 #include "zipios_common.hpp"
 
 
@@ -91,7 +91,7 @@ struct ZipLocalEntryHeader
     uint16_t            m_extract_version;
     uint16_t            m_general_purpose_bitfield;
     uint16_t            m_compress_method;
-    uint32_t            m_dostime;
+    uint32_t            m_dosdatetime;
     uint32_t            m_crc_32;
     uint32_t            m_compressed_size;
     uint32_t            m_uncompressed_size;
@@ -351,7 +351,7 @@ void ZipLocalEntry::read(std::istream& is)
     }
 
     uint16_t compress_method(0);
-    uint32_t dostime(0);
+    uint32_t dosdatetime(0);
     uint32_t compressed_size(0);
     uint32_t uncompressed_size(0);
     uint16_t filename_len(0);
@@ -362,7 +362,7 @@ void ZipLocalEntry::read(std::istream& is)
     zipRead(is, m_extract_version);                 // 16
     zipRead(is, m_general_purpose_bitfield);        // 16
     zipRead(is, compress_method);                   // 16
-    zipRead(is, dostime);                           // 32
+    zipRead(is, dosdatetime);                       // 32
     zipRead(is, m_crc_32);                          // 32
     zipRead(is, compressed_size);                   // 32
     zipRead(is, uncompressed_size);                 // 32
@@ -380,7 +380,9 @@ void ZipLocalEntry::read(std::istream& is)
     m_is_directory = !filename.empty() && filename.back() == g_separator;
 
     m_compress_method = static_cast<StorageMethod>(compress_method);
-    m_unix_time = dos2unixtime(dostime);
+    DOSDateTime t;
+    t.setDOSDateTime(dosdatetime);
+    m_unix_time = t.getUnixTimestamp();
     m_compressed_size = compressed_size;
     m_uncompressed_size = uncompressed_size;
     m_filename = FilePath(filename);
@@ -436,7 +438,9 @@ void ZipLocalEntry::write(std::ostream& os)
         compress_method = static_cast<uint8_t>(StorageMethod::STORED);
     }
 
-    uint32_t dostime(unix2dostime(m_unix_time));
+    DOSDateTime t;
+    t.setUnixTimestamp(m_unix_time);
+    uint32_t dosdatetime(t.getDOSDateTime());       // type could use DOSDateTime::dosdatetime_t
     uint32_t compressed_size(m_compressed_size);
     uint32_t uncompressed_size(m_uncompressed_size);
     uint16_t filename_len(filename.length());
@@ -447,7 +451,7 @@ void ZipLocalEntry::write(std::ostream& os)
     zipWrite(os, m_extract_version);            // 16
     zipWrite(os, m_general_purpose_bitfield);   // 16
     zipWrite(os, compress_method);              // 16
-    zipWrite(os, dostime);                      // 32
+    zipWrite(os, dosdatetime);                  // 32
     zipWrite(os, m_crc_32);                     // 32
     zipWrite(os, compressed_size);              // 32
     zipWrite(os, uncompressed_size);            // 32

@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -23,10 +23,10 @@
  * \brief Define a command line tool to convert Unix/DOS times.
  *
  * A small utility to offer a command line tool that converts Unix to
- * DOS time and vice versa.
+ * DOS Date & Time and vice versa.
  */
 
-#include "src/dostime.h"
+#include "zipios/dosdatetime.hpp"
 #include "zipios/zipios-config.hpp"
 
 #include <cstring>
@@ -132,19 +132,22 @@ int main(int argc, char *argv[])
             int64_t const t(atoll(argv[i]));
             int64_t r(0);
             time_t dt(t);
+            zipios::DOSDateTime conv;
             switch(mode)
             {
             case time_mode_t::DOS:
-                r = unix2dostime(t);
+                conv.setUnixTimestamp(t);
+                r = conv.getDOSDateTime();
                 break;
 
             case time_mode_t::UNIX:
-                r = dos2unixtime(t);
+                conv.setDOSDateTime(t);
+                r = conv.getUnixTimestamp();
                 dt = r;
                 break;
 
             }
-            struct tm *dtm(localtime(&dt));
+            struct tm *dtm(gmtime(&dt));
             char buf[256];
             if(dt == -1)
             {

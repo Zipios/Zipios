@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,6 @@
 
 #include "zipios/fileentry.hpp"
 
-#include "dostime.h"
 #include "zipios/zipiosexceptions.hpp"
 
 #include "zipios_common.hpp"
@@ -346,9 +345,16 @@ size_t FileEntry::getSize() const
  *
  * \return The date and time of the entry in MS-DOS format.
  */
-FileEntry::dostime_t FileEntry::getTime() const
+DOSDateTime::dosdatetime_t FileEntry::getTime() const
 {
-    return unix2dostime(m_unix_time);
+    if(m_unix_time == 0)
+    {
+        return 0;
+    }
+
+    DOSDateTime t;
+    t.setUnixTimestamp(m_unix_time);
+    return t.getDOSDateTime();
 }
 
 
@@ -642,17 +648,19 @@ void FileEntry::setSize(size_t size)
 
 /** \brief Set the FileEntry time using a DOS time.
  *
- * This function saves the specified \p dostime value as the last modification
- * date and time of this entry. This is generally used when reading that information
- * from a Zip archive. Otherwise you probably want to use the setUnixTime()
- * instead since it is one to one compatible with the value handle by time(),
- * stat(), and other OS functions.
+ * This function saves the specified \p dosdatetime value as the last modification
+ * date and time of this entry. This is generally used when reading that
+ * information * from a Zip archive. Otherwise you probably want to use
+ * the setUnixTime() instead since it is one to one compatible with the
+ * value handle by time(), stat(), and other OS functions.
  *
- * \param[in] dostime  Set time field as is using this MSDOS date/time value.
+ * \param[in] dosdatetime  Set time field as is using this MSDOS date/time value.
  */
-void FileEntry::setTime(dostime_t dostime)
+void FileEntry::setTime(DOSDateTime::dosdatetime_t dosdatetime)
 {
-    setUnixTime(dos2unixtime(dostime));
+    DOSDateTime t;
+    t.setDOSDateTime(dosdatetime);
+    setUnixTime(t.getUnixTimestamp());
 }
 
 

@@ -1,3 +1,15 @@
+zipios (2.1.7.12~xenial) xenial; urgency=high
+
+  * Replaced the dostime.h/c with dosdatetime.hpp/cpp to eliminate the GPL
+    dependency.
+  * Updated the tests accordingly.
+  * Fixed the dosdatetime test so it matches the hours properly (I could
+    remove the 1h difference test to accomodate standard/saving time periods.)
+  * Made enhancements to the `mk` script so I can use it in zipios or Snap C++.
+  * Updated copyright notices to say 2019.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue,  9 Apr 2019 19:40:36 -0800
+
 zipios (2.1.7.11~xenial) xenial; urgency=high
 
   * Include a fix that allows for catch v2 to be used for our tests.

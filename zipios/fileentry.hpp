@@ -3,10 +3,10 @@
 #define ZIPIOS_FILEENTRY_HPP
 
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -35,6 +35,7 @@
  */
 
 #include "zipios/filepath.hpp"
+#include "zipios/dosdatetime.hpp"
 
 #include <memory>
 #include <vector>
@@ -78,7 +79,6 @@ public:
     typedef std::vector<pointer_t>          vector_t;
     typedef std::vector<unsigned char>      buffer_t;
     typedef uint32_t                        crc32_t;
-    typedef uint32_t                        dostime_t;
 
     // we use our own compression level type, it gets converted as
     // required when the level is to be used by a compression scheme
@@ -106,7 +106,8 @@ public:
     virtual std::string         getName() const;
     virtual std::string         getFileName() const;
     virtual size_t              getSize() const;
-    virtual dostime_t           getTime() const;
+    virtual DOSDateTime::dosdatetime_t
+                                getTime() const;
     virtual std::time_t         getUnixTime() const;
     bool                        hasCrc() const;
     virtual bool                isDirectory() const;
@@ -120,7 +121,7 @@ public:
     virtual void                setLevel(CompressionLevel level);
     virtual void                setMethod(StorageMethod method);
     virtual void                setSize(size_t size);
-    virtual void                setTime(dostime_t time);
+    virtual void                setTime(DOSDateTime::dosdatetime_t time);
     virtual void                setUnixTime(std::time_t time);
     virtual std::string         toString() const;
 

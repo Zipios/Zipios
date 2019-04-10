@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -28,8 +28,7 @@
 
 #include "zipios/directoryentry.hpp"
 #include "zipios/zipiosexceptions.hpp"
-
-#include "src/dostime.h"
+#include "zipios/dosdatetime.hpp"
 
 #include <fstream>
 
@@ -570,9 +569,11 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time numbers are not linear so we test until we get one
             // that works...
-            time_t t((static_cast<time_t>(zipios_test::rand_size_t())) % (4354848000LL - 315561600LL) + 315561600);
-            dostime_t r(unix2dostime(t));
-            de.setTime(r);
+            //
+            std::time_t t((static_cast<std::time_t>(zipios_test::rand_size_t())) % (4354848000LL - 315561600LL) + 315561600);
+            zipios::DOSDateTime r;
+            r.setUnixTimestamp(t);
+            de.setTime(r.getDOSDateTime());
 
             THEN("we take it as is")
             {
@@ -587,8 +588,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == r);
-                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(de.getTime() == r.getDOSDateTime());
+                REQUIRE(de.getUnixTime() == r.getUnixTimestamp());
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(!de.isValid());
@@ -612,8 +613,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == r);
-                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(clone->getTime() == r.getDOSDateTime());
+                REQUIRE(clone->getUnixTime() == r.getUnixTimestamp());
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(!clone->isValid());
@@ -627,8 +628,11 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            time_t r((static_cast<time_t>(zipios_test::rand_size_t())) % (4354848000LL - 315561600LL) + 315561600);
+            std::time_t r((static_cast<std::time_t>(zipios_test::rand_size_t())) % (4354848000LL - 315561600LL) + 315561600);
             de.setUnixTime(r);
+
+            zipios::DOSDateTime dt;
+            dt.setUnixTimestamp(r);
 
             THEN("we take it as is")
             {
@@ -643,7 +647,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(de.getFileName() == "period.txt");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == unix2dostime(r));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
@@ -668,7 +672,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "/this/file/really/should/not/exist/period.txt");
                 REQUIRE(clone->getFileName() == "period.txt");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == unix2dostime(r));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
@@ -759,6 +763,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
             struct stat file_stats;
             REQUIRE(stat("filepath-test.txt", &file_stats) == 0);
+            zipios::DOSDateTime dt;
+            dt.setUnixTimestamp(file_stats.st_mtime);
 
             {
                 REQUIRE(de.getComment().empty());
@@ -772,7 +778,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
@@ -793,7 +799,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
@@ -815,7 +821,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
@@ -836,7 +842,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
@@ -868,7 +874,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
@@ -889,7 +895,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
@@ -918,7 +924,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
@@ -939,7 +945,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
@@ -968,7 +974,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(de.hasCrc());
                 REQUIRE_FALSE(de.isDirectory());
@@ -990,7 +996,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE_FALSE(clone->isDirectory());
@@ -1022,7 +1028,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                         REQUIRE(de.getName() == "filepath-test.txt");
                         REQUIRE(de.getFileName() == "filepath-test.txt");
                         REQUIRE(de.getSize() == file_size);
-                        REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                        REQUIRE(de.getTime() == dt.getDOSDateTime());
                         REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                         REQUIRE_FALSE(de.hasCrc());
                         REQUIRE_FALSE(de.isDirectory());
@@ -1054,7 +1060,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(de.hasCrc());
                 REQUIRE_FALSE(de.isDirectory());
@@ -1075,7 +1081,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE_FALSE(clone->isDirectory());
@@ -1104,7 +1110,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == r);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
@@ -1125,7 +1131,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == r);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
@@ -1141,9 +1147,10 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 //
                 // Jan 1, 1980 at 00:00:00  is  315561600   (min)
                 // Dec 31, 2107 at 23:59:59  is 4354847999  (max)
-                time_t t(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
-                dostime_t r(unix2dostime(t));
-                de.setTime(r);
+                std::time_t t(static_cast<std::time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
+                zipios::DOSDateTime r;
+                r.setUnixTimestamp(t);
+                de.setTime(r.getDOSDateTime());
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
@@ -1156,8 +1163,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == r);
-                REQUIRE(de.getUnixTime() == dos2unixtime(r)); // WARNING: r is not always equal to t because setTime() may use the next even second
+                REQUIRE(de.getTime() == r.getDOSDateTime());
+                REQUIRE(de.getUnixTime() == r.getUnixTimestamp()); // WARNING: this is not always equal to t because setTime() may use the next even second
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
@@ -1177,8 +1184,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == r);
-                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(clone->getTime() == r.getDOSDateTime());
+                REQUIRE(clone->getUnixTime() == r.getUnixTimestamp());
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
@@ -1188,7 +1195,9 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
             {
                 // DOS time are limited to a smaller range and on every other
                 // second so we get a valid DOS time and convert it to a Unix time
-                time_t r(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
+                std::time_t r(static_cast<std::time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
+                zipios::DOSDateTime dr;
+                dr.setUnixTimestamp(r);
                 de.setUnixTime(r);
 
                 REQUIRE(de.getComment().empty());
@@ -1202,7 +1211,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test.txt");
                 REQUIRE(de.getFileName() == "filepath-test.txt");
                 REQUIRE(de.getSize() == file_size);
-                REQUIRE(de.getTime() == unix2dostime(r));
+                REQUIRE(de.getTime() == dr.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(!de.isDirectory());
@@ -1223,7 +1232,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test.txt");
                 REQUIRE(clone->getFileName() == "filepath-test.txt");
                 REQUIRE(clone->getSize() == file_size);
-                REQUIRE(clone->getTime() == unix2dostime(r));
+                REQUIRE(clone->getTime() == dr.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
@@ -1252,6 +1261,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         struct stat file_stats;
         REQUIRE(stat("filepath-test", &file_stats) == 0);
 
+        zipios::DOSDateTime dt;
+        dt.setUnixTimestamp(file_stats.st_mtime);
+
         // first, check that the object is setup as expected
         SECTION("verify that the object looks as expected")
         {
@@ -1266,7 +1278,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(de.getName() == "filepath-test");
             REQUIRE(de.getFileName() == "filepath-test");
             REQUIRE(de.getSize() == 0);
-            REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+            REQUIRE(de.getTime() == dt.getDOSDateTime());
             REQUIRE(de.getUnixTime() == file_stats.st_mtime);
             REQUIRE(!de.hasCrc());
             REQUIRE(de.isDirectory());
@@ -1287,7 +1299,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(clone->getName() == "filepath-test");
             REQUIRE(clone->getFileName() == "filepath-test");
             REQUIRE(clone->getSize() == 0);
-            REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+            REQUIRE(clone->getTime() == dt.getDOSDateTime());
             REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
             REQUIRE_FALSE(clone->hasCrc());
             REQUIRE(clone->isDirectory());
@@ -1312,7 +1324,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(de.hasCrc());
                 REQUIRE(de.isDirectory());
@@ -1333,7 +1345,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE(clone->isDirectory());
@@ -1367,7 +1379,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(de.hasCrc());
                 REQUIRE(de.isDirectory());
@@ -1388,7 +1400,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE(clone->isDirectory());
@@ -1421,7 +1433,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(de.isDirectory());
@@ -1442,7 +1454,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(clone->isDirectory());
@@ -1475,7 +1487,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(de.isDirectory());
@@ -1497,7 +1509,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(clone->isDirectory());
@@ -1528,7 +1540,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                     REQUIRE(de.getName() == "filepath-test");
                     REQUIRE(de.getFileName() == "filepath-test");
                     REQUIRE(de.getSize() == 0);
-                    REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                    REQUIRE(de.getTime() == dt.getDOSDateTime());
                     REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                     REQUIRE_FALSE(de.hasCrc());
                     REQUIRE(de.isDirectory());
@@ -1564,7 +1576,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(de.hasCrc());
                 REQUIRE(de.isDirectory());
@@ -1585,7 +1597,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE(clone->isDirectory());
@@ -1619,7 +1631,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == r);
-                REQUIRE(de.getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(de.isDirectory());
@@ -1640,7 +1652,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == r);
-                REQUIRE(clone->getTime() == unix2dostime(file_stats.st_mtime));
+                REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(clone->isDirectory());
@@ -1653,9 +1665,10 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time numbers are not linear so we test until we get one
             // that works...
-            time_t t(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
-            dostime_t r(unix2dostime(t));
-            de.setTime(r);
+            std::time_t t(static_cast<std::time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
+            zipios::DOSDateTime r;
+            r.setUnixTimestamp(t);
+            de.setTime(r.getDOSDateTime());
 
             THEN("we take it as is")
             {
@@ -1670,8 +1683,8 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == r);
-                REQUIRE(de.getUnixTime() == dos2unixtime(r));
+                REQUIRE(de.getTime() == r.getDOSDateTime());
+                REQUIRE(de.getUnixTime() == r.getUnixTimestamp());
                 REQUIRE(!de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
@@ -1691,8 +1704,8 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == r);
-                REQUIRE(clone->getUnixTime() == dos2unixtime(r));
+                REQUIRE(clone->getTime() == r.getDOSDateTime());
+                REQUIRE(clone->getUnixTime() == r.getUnixTimestamp());
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());
@@ -1704,8 +1717,11 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
         {
             // DOS time are limited to a smaller range and on every other
             // second so we get a valid DOS time and convert it to a Unix time
-            time_t r(static_cast<time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
+            std::time_t r(static_cast<std::time_t>(zipios_test::rand_size_t()) % (4354848000LL - 315561600LL) + 315561600);
             de.setUnixTime(r);
+
+            zipios::DOSDateTime dr;
+            dr.setUnixTimestamp(r);
 
             THEN("we take it as is")
             {
@@ -1720,8 +1736,8 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getName() == "filepath-test");
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
-                REQUIRE(de.getTime() == unix2dostime(r));
-                REQUIRE(de.getUnixTime() == r);
+                REQUIRE(de.getTime() == dr.getDOSDateTime());
+                REQUIRE(de.getUnixTime() == dr.getUnixTimestamp());
                 REQUIRE(!de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
@@ -1741,8 +1757,8 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getName() == "filepath-test");
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
-                REQUIRE(clone->getTime() == unix2dostime(r));
-                REQUIRE(clone->getUnixTime() == r);
+                REQUIRE(clone->getTime() == dr.getDOSDateTime());
+                REQUIRE(clone->getUnixTime() == dr.getUnixTimestamp());
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());

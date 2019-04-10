@@ -1,8 +1,8 @@
 /*
-  Zipios – a small C++ library that provides easy access to .zip files.
+  Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2017  Made to Order Software Corporation
+  Copyright (C) 2015-2019  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -29,8 +29,7 @@
 #include "zipios/zipfile.hpp"
 #include "zipios/directorycollection.hpp"
 #include "zipios/zipiosexceptions.hpp"
-
-#include "src/dostime.h"
+#include "zipios/dosdatetime.hpp"
 
 #include <algorithm>
 #include <fstream>
@@ -208,8 +207,10 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     }
                     //REQUIRE((*it)->getName() == ...);
                     //REQUIRE((*it)->getFileName() == ...);
-                    REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
-                    size_t ut(dos2unixtime(unix2dostime(file_stats.st_mtime)));
+                    zipios::DOSDateTime dt;
+                    dt.setUnixTimestamp(file_stats.st_mtime);
+                    REQUIRE((*it)->getTime() == dt.getDOSDateTime());
+                    std::time_t ut(dt.getUnixTimestamp());
                     REQUIRE((*it)->getUnixTime() == ut);
                     REQUIRE_FALSE((*it)->hasCrc());
                     REQUIRE((*it)->isValid());
@@ -320,8 +321,10 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     }
                     //REQUIRE((*it)->getName() == ...);
                     //REQUIRE((*it)->getFileName() == ...);
-                    REQUIRE((*it)->getTime() == unix2dostime(file_stats.st_mtime));  // invalid date
-                    size_t ut(dos2unixtime(unix2dostime(file_stats.st_mtime)));
+                    zipios::DOSDateTime dt;
+                    dt.setUnixTimestamp(file_stats.st_mtime);
+                    REQUIRE((*it)->getTime() == dt.getDOSDateTime());  // invalid date
+                    std::time_t ut(dt.getUnixTimestamp());
                     REQUIRE((*it)->getUnixTime() == ut);
                     REQUIRE_FALSE((*it)->hasCrc());
                     REQUIRE((*it)->isValid());
@@ -459,10 +462,10 @@ SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]")
                     }
                     //REQUIRE((*it)->getName() == ...);
                     //REQUIRE((*it)->getFileName() == ...);
-                    time_t const dostime(unix2dostime(file_stats.st_mtime));
-                    REQUIRE((*it)->getTime() == dostime);  // invalid date
-                    size_t const ut(dos2unixtime(dostime));
-                    REQUIRE((*it)->getUnixTime() == ut);
+                    zipios::DOSDateTime dt;
+                    dt.setUnixTimestamp(file_stats.st_mtime);
+                    REQUIRE((*it)->getTime() == dt.getDOSDateTime());
+                    REQUIRE((*it)->getUnixTime() == dt.getUnixTimestamp());
                     REQUIRE_FALSE((*it)->hasCrc());
                     REQUIRE((*it)->isValid());
                     //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -572,10 +575,10 @@ SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]")
                     }
                     //REQUIRE((*it)->getName() == ...);
                     //REQUIRE((*it)->getFileName() == ...);
-                    time_t const dostime(unix2dostime(file_stats.st_mtime));
-                    REQUIRE((*it)->getTime() == dostime);  // invalid date
-                    size_t const ut(dos2unixtime(dostime));
-                    REQUIRE((*it)->getUnixTime() == ut);
+                    zipios::DOSDateTime dt;
+                    dt.setUnixTimestamp(file_stats.st_mtime);
+                    REQUIRE((*it)->getTime() == dt.getDOSDateTime());
+                    REQUIRE((*it)->getUnixTime() == dt.getUnixTimestamp());
                     REQUIRE_FALSE((*it)->hasCrc());
                     REQUIRE((*it)->isValid());
                     //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -693,10 +696,10 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
                     }
                     //REQUIRE((*it)->getName() == ...);
                     //REQUIRE((*it)->getFileName() == ...);
-                    time_t const dostime(unix2dostime(file_stats.st_mtime));
-                    REQUIRE((*it)->getTime() == dostime);  // invalid date
-                    size_t const ut(dos2unixtime(dostime));
-                    REQUIRE((*it)->getUnixTime() == ut);
+                    zipios::DOSDateTime dt;
+                    dt.setUnixTimestamp(file_stats.st_mtime);
+                    REQUIRE((*it)->getTime() == dt.getDOSDateTime());
+                    REQUIRE((*it)->getUnixTime() == dt.getUnixTimestamp());
                     REQUIRE_FALSE((*it)->hasCrc());
                     REQUIRE((*it)->isValid());
                     //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -989,13 +992,15 @@ struct local_header_t
         , m_version(10)
         , m_flags(0)
         , m_compression_method(0)   // 0 == STORED
-        , m_time_and_date(unix2dostime(time(nullptr)))
         , m_crc32(0)
         , m_compressed_size(0)      // undefined is compression method is 0
         , m_uncompressed_size(0)
         //, m_filename("") -- auto-init
         //, m_extra_field() -- auto-init
     {
+        zipios::DOSDateTime dt;
+        dt.setUnixTimestamp(time(nullptr));
+        m_time_and_date = dt.getDOSDateTime();
     }
 
     void write(std::ostream& os)
@@ -1082,7 +1087,6 @@ struct central_directory_header_t
         , m_extract_version(10)
         , m_flags(0)
         , m_compression_method(0)   // 0 == STORED
-        , m_time_and_date(unix2dostime(time(nullptr)))
         , m_crc32(0)
         , m_compressed_size(0)      // undefined is compression method is 0
         , m_uncompressed_size(0)
@@ -1094,6 +1098,9 @@ struct central_directory_header_t
         //, m_extra_field() -- auto-init
         //, m_file_comment("") -- auto-init
     {
+        zipios::DOSDateTime dt;
+        dt.setUnixTimestamp(time(nullptr));
+        m_time_and_date = dt.getDOSDateTime();
     }
 
     void write(std::ostream& os)
