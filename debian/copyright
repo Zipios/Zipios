@@ -2,6 +2,7 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: zipios
 Source: https://github.com/Zipios/Zipios Website: https://snapwebsites.org/project/zipios
 Upstream-Contact: Alexis Wilke <alexis@m2osw.com>
+
 Files: *
 Copyright: Copyright (c) 2000-2007 Thomas Sondergaard, All Rights Reserved.
            Copyright (c) 2015-2019 Made to Order Software Corporation, All Rights Reserved.
@@ -24,6 +25,10 @@ License: LGPL-2+
  .
  On Debian GNU/Linux systems, the complete text of the GNU Lesser General
  Public License can be found in `/usr/share/common-licenses/LGPL'.
+
+Files: mk dev/check
+License: public-domain
+
 Comment: Packages of the new version of the library can be found here:
  https://launchpad.net/~snapcpp/+archive/ubuntu/ppa/+packages
  .
