@@ -122,6 +122,191 @@ TEST_CASE("dosdatetime_minmax", "[dosdatetime]")
 }
 
 
+TEST_CASE("invalid_dosdatetime", "[dosdatetime]")
+{
+    SECTION("daysInMonth() when month is invalid")
+    {
+        // by default the date is 0 which means the month is 0 and
+        // trying to call daysInMonth() fails with -1
+        //
+        zipios::DOSDateTime d;
+        REQUIRE(d.daysInMonth() == -1);
+    }
+
+    SECTION("get/set seconds")
+    {
+        for(int i = 0; i < 60; ++i)
+        {
+            zipios::DOSDateTime t;
+            t.setSecond(i);
+            REQUIRE(t.getSecond() == (i & -2));
+        }
+        for(int i = -20; i < 0; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 60);
+            t.setSecond(r);
+            REQUIRE(t.getSecond() == (r & -2));
+            REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException);
+            REQUIRE(t.getSecond() == (r & -2));
+        }
+        for(int i = 60; i <= 80; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 60);
+            t.setSecond(r);
+            REQUIRE(t.getSecond() == (r & -2));
+            REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException);
+            REQUIRE(t.getSecond() == (r & -2));
+        }
+    }
+
+    SECTION("get/set minutes")
+    {
+        for(int i = 0; i < 60; ++i)
+        {
+            zipios::DOSDateTime t;
+            t.setMinute(i);
+            REQUIRE(t.getMinute() == i);
+        }
+        for(int i = -20; i < 0; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 60);
+            t.setMinute(r);
+            REQUIRE(t.getMinute() == r);
+            REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException);
+            REQUIRE(t.getMinute() == r);
+        }
+        for(int i = 60; i <= 80; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 60);
+            t.setMinute(r);
+            REQUIRE(t.getMinute() == r);
+            REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException);
+            REQUIRE(t.getMinute() == r);
+        }
+    }
+
+    SECTION("get/set hours")
+    {
+        for(int i = 0; i < 24; ++i)
+        {
+            zipios::DOSDateTime t;
+            t.setHour(i);
+            REQUIRE(t.getHour() == i);
+        }
+        for(int i = -20; i < 0; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 24);
+            t.setHour(r);
+            REQUIRE(t.getHour() == r);
+            REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException);
+            REQUIRE(t.getHour() == r);
+        }
+        for(int i = 24; i <= 44; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 24);
+            t.setHour(r);
+            REQUIRE(t.getHour() == r);
+            REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException);
+            REQUIRE(t.getHour() == r);
+        }
+    }
+
+    // day is limited between 1 and 31 on a setMDay()
+    // use the isValid() to know whether it is valid for the current month
+    // and year
+    //
+    SECTION("get/set day of the month")
+    {
+        for(int i = 1; i < 32; ++i)
+        {
+            zipios::DOSDateTime t;
+            t.setMDay(i);
+            REQUIRE(t.getMDay() == i);
+        }
+        for(int i = -20; i <= 0; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 31 + 1);
+            t.setMDay(r);
+            REQUIRE(t.getMDay() == r);
+            REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException);
+            REQUIRE(t.getMDay() == r);
+        }
+        for(int i = 32; i <= 52; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 31 + 1);
+            t.setMDay(r);
+            REQUIRE(t.getMDay() == r);
+            REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException);
+            REQUIRE(t.getMDay() == r);
+        }
+    }
+
+    SECTION("get/set month")
+    {
+        for(int i = 1; i < 12; ++i)
+        {
+            zipios::DOSDateTime t;
+            t.setMonth(i);
+            REQUIRE(t.getMonth() == i);
+        }
+        for(int i = -20; i <= 0; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 12 + 1);
+            t.setMonth(r);
+            REQUIRE(t.getMonth() == r);
+            REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException);
+            REQUIRE(t.getMonth() == r);
+        }
+        for(int i = 13; i <= 33; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % 12 + 1);
+            t.setMonth(r);
+            REQUIRE(t.getMonth() == r);
+            REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException);
+            REQUIRE(t.getMonth() == r);
+        }
+    }
+
+    SECTION("get/set year")
+    {
+        for(int i = 1980; i <= 2107; ++i)
+        {
+            zipios::DOSDateTime t;
+            t.setYear(i);
+            REQUIRE(t.getYear() == i);
+        }
+        for(int i = 1000; i < 1980; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % (2107 - 1980 + 1) + 1980);
+            t.setYear(r);
+            REQUIRE(t.getYear() == r);
+            REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException);
+            REQUIRE(t.getYear() == r);
+        }
+        for(int i = 2108; i <= 2200; ++i)
+        {
+            zipios::DOSDateTime t;
+            int const r(rand() % (2107 - 1980 + 1) + 1980);
+            t.setYear(r);
+            REQUIRE(t.getYear() == r);
+            REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException);
+            REQUIRE(t.getYear() == r);
+        }
+    }
+}
+
+
 #if 0
 // this test is too long, which is why it is commented out by default
 // still, it is great if you want to verify that all possible DOS Time & Date

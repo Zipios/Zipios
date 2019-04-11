@@ -458,7 +458,7 @@ void DOSDateTime::setMonth(int month)
  */
 void DOSDateTime::setYear(int year)
 {
-    if(year < 1908
+    if(year < 1980
     || year > 2107)
     {
         throw InvalidException("Year out of range for an MS-DOS Date & Time object. Range is [1980, 2107].");
