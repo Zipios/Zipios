@@ -62,11 +62,11 @@
 <body>
 <div class="header">
 	<ul class="menu">
-		<li class="no-button"><a href="/" title="Zipios Home Page"><img src="zipios-v1/zipios.jpg" style="width: auto; height: 40px;"/></a></li>
+		<li class="no-button"><a href="/" title="Zipios Home Page"><img src="/images/zipios.jpg" style="width: auto; height: 40px;"/></a></li>
 		<li><a href="http://zipios.sourceforge.net/" title="Home page of the Zipios library">Zipios</a></li>
-		<li><a href="/zipios-v2.0/" title="Documentation of the most current version of Zipios">Documentation</a></li>
-		<li><a href="https://sourceforge.net/projects/zipios/support/" title="Get support for the Zipios library">Support</a></li>
-		<li><a href="https://sourceforge.net/p/zipios/git-code/" title="Source code of the Zipios 2.x library">Source Code (v2.x)</a></li>
+		<li><a href="/zipios-v2.2/" title="Documentation of the most current version of Zipios">Documentation</a></li>
+		<li><a href="https://github.com/Zipios/Zipios/issues" title="Get support for the Zipios library">Support</a></li>
+		<li><a href="https://github.com/Zipios/Zipios" title="Source code of the Zipios 2.x library">Source Code (v2.x)</a></li>
 		<li><a href="https://sourceforge.net/p/zipios/news/" title="Latest news of the Zipios library">News</a></li>
 		<li><strong><a href="https://sourceforge.net/projects/zipios/files/" title="Download the latest published Zipios tarballs (source and documentation)">Download</a></strong></li>
 	</ul>
@@ -80,10 +80,30 @@
 		having more than one version of the documentation.
 	</p>
 	<ul>
+		<li><a href="/zipios-v2.2/">Documentation of version 2.2 of the Zipios library</a></li>
+		<li><a href="/zipios-v2.1/">Documentation of version 2.1 of the Zipios library</a></li>
 		<li><a href="/zipios-v2.0/">Documentation of version 2.0 of the Zipios library</a></li>
 		<li><a href="/coverage/">Test Coverage Information (version 2.x only)</a></li>
 		<li><a href="/zipios-v1/">Documentation of version 1.x of the Zipios library</a></li>
 	</ul>
+	<h2>Binary Packages</h2>
+	<p>
+		We create a Debian compatible package on Launchpad. This
+		can be found here:
+		<a href="https://launchpad.net/~snapcpp/+archive/ubuntu/ppa/+packages">Zipios and other Snap! C++ packages</a>.
+	</p>
+	<p>
+		Note: the list of packages includes many others that are
+		used with <a href="https://snapwebsites.org/">Snap! C++</a>.
+		Zipios is likely to be the one at the bottom. Click on the
+		name and it should open with a list of packages you can
+		download. You should also be able to install that package
+		repository with APT and then simply use
+		`apt-get install libzipios` and
+		`apt-get install libzipios-dev` as may be required by your
+		environment. The documentation can be retrieved with
+		`apt-get install libzipios-doc`.
+	</p>
 	<h2>Running the unit tests (v2.x)</h2>
 	<p>
 		Testing on various systesm, I determined that to all the unit
@@ -102,7 +122,7 @@
 		multiple source files at once; it is very fast anyway.)
 	</p>
 </div>
-<footer style="margin: 0 20px; border-top: 1px solid #ccc;">
+<footer style="margin: 0 20px; padding-bottom: 50px; border-top: 1px solid #ccc;">
 	<p style="font-size: 90%; font-style: italic; padding-left: 10px;">
 		Copyright (c) 2000-2007 Thomas Sondergaard, All Rights Reserved.<br/>
 		Copyright (c) 2015-2019 <a href="https://www.m2osw.com/">Made to Order Software Corporation</a>, All Rights Reserved.

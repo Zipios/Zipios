@@ -94,7 +94,7 @@ void init_min_max()
 
 
 
-TEST_CASE("dosdatetime_minmax", "[dosdatetime]")
+TEST_CASE("DOS Date & Time Min/Max", "[dosdatetime]")
 {
     SECTION("DOS time minimum")
     {
@@ -122,7 +122,7 @@ TEST_CASE("dosdatetime_minmax", "[dosdatetime]")
 }
 
 
-TEST_CASE("invalid_dosdatetime", "[dosdatetime]")
+TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
 {
     SECTION("daysInMonth() when month is invalid")
     {
@@ -311,7 +311,7 @@ TEST_CASE("invalid_dosdatetime", "[dosdatetime]")
 // this test is too long, which is why it is commented out by default
 // still, it is great if you want to verify that all possible DOS Time & Date
 //
-TEST_CASE("valid_dosdatetime", "[dosdatetime]")
+TEST_CASE("All Valid DOS Date & Time", "[dosdatetime]")
 {
     if(sizeof(std::time_t) < sizeof(uint64_t))
     {
@@ -349,7 +349,7 @@ TEST_CASE("valid_dosdatetime", "[dosdatetime]")
 #endif
 
 
-TEST_CASE("small_dosdatetime", "[dosdatetime]")
+TEST_CASE("Small DOS Date & Time", "[dosdatetime]")
 {
     if(sizeof(std::time_t) < sizeof(uint64_t))
     {
@@ -402,7 +402,7 @@ TEST_CASE("small_dosdatetime", "[dosdatetime]")
 }
 
 
-TEST_CASE("large_dosdatetime", "[dosdatetime]")
+TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
 {
     if(sizeof(std::time_t) < sizeof(uint64_t))
     {
@@ -457,7 +457,7 @@ TEST_CASE("large_dosdatetime", "[dosdatetime]")
 }
 
 
-TEST_CASE("random_dosdatetime", "[dosdatetime]")
+TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
 {
     init_min_max();
 

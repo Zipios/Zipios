@@ -78,11 +78,12 @@ then
 	exit 1;
 fi
 
-# Always copy the main files
+# Copy the main files if --main was used
 if $main
 then
 	echo "Copy main files ($FULL_VERSION)"
 	scp doc/www/*.* $username@web.sourceforge.net:/home/project-web/zipios/htdocs/
+	scp -r doc/images $username@web.sourceforge.net:/home/project-web/zipios/htdocs/
 else
 	echo "Ignore main"
 fi
@@ -90,7 +91,12 @@ fi
 # Copy the documentation if --documentation used and docs are available
 if $documentation
 then
-	if test -d ../BUILD/dist/share/doc/zipios/html
+	DOCS=../BUILD/dist/share/doc/zipios
+	if test ! -d ${DOCS}/html
+	then
+		DOCS=../../../BUILD/dist/share/doc/zipios
+	fi
+	if test -d ${DOCS}/html
 	then
 		echo "Copy documentation ($VERSION)"
 		#
@@ -100,9 +106,9 @@ then
 		#   (we should use a trap to make sure to restore the
 		#   name but well... this is a sloppy script anyway.)
 		#
-		mv ../BUILD/dist/share/doc/zipios/html ../BUILD/dist/share/doc/zipios/zipios-v$VERSION
-		scp -r ../BUILD/dist/share/doc/zipios/zipios-v$VERSION $username@web.sourceforge.net:/home/project-web/zipios/htdocs/
-		mv ../BUILD/dist/share/doc/zipios/zipios-v$VERSION ../BUILD/dist/share/doc/zipios/html
+		mv ${DOCS}/html ${DOCS}/zipios-v$VERSION
+		scp -r ${DOCS}/zipios-v$VERSION $username@web.sourceforge.net:/home/project-web/zipios/htdocs/
+		mv ${DOCS}/zipios-v$VERSION ${DOCS}/html
 	else
 		echo "Documentation not available."
 	fi
