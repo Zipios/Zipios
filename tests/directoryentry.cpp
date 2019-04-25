@@ -1737,7 +1737,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getFileName() == "filepath-test");
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == dr.getDOSDateTime());
-                REQUIRE(de.getUnixTime() == dr.getUnixTimestamp());
+                REQUIRE(de.getUnixTime() == r);
                 REQUIRE(!de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
@@ -1758,7 +1758,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getFileName() == "filepath-test");
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == dr.getDOSDateTime());
-                REQUIRE(clone->getUnixTime() == dr.getUnixTimestamp());
+                REQUIRE(clone->getUnixTime() == r);
                 REQUIRE(!clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());

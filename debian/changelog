@@ -1,3 +1,11 @@
+zipios (2.2.1.0~xenial) xenial; urgency=high
+
+  * Fixed the "DirectoryEntry for a valid directory" test as the FileEntry
+    object saves a Unix timestamp as a time_t and therefore with a full
+    range precision. (#29)
+
+ -- Alexis Wilke <alexis@m2osw.com>  Wed, 24 Apr 2019 13:45:20 -0800
+
 zipios (2.2.0.0~xenial) xenial; urgency=high
 
   * Replaced the dostime.h/c with dosdatetime.hpp/cpp to eliminate the GPL
