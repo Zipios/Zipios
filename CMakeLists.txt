@@ -3,7 +3,7 @@
 #      CMakeLists.txt
 #
 # Description:
-#      Build the Zipios++ library, tools, packages, tests, documentation.
+#      Build the Zipios library, tools, packages, tests, documentation.
 #
 # Documentation:
 #      See the CMake documentation.
@@ -28,7 +28,7 @@
 #      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 2.8.5)
 
 project( zipios_project )
 
@@ -39,7 +39,7 @@ endif()
 
 set( ZIPIOS_VERSION_MAJOR 2 )
 set( ZIPIOS_VERSION_MINOR 2 )
-set( ZIPIOS_VERSION_PATCH 0 )
+set( ZIPIOS_VERSION_PATCH 1 )
 set( ZIPIOS_VERSION_BUILD 0 )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
@@ -111,21 +111,12 @@ endif()
 #
 # Default install locations, override cache variables to change.
 #
-if(NOT CMAKE_VERSION VERSION_GREATER "2.8.4")
-    set(CMAKE_INSTALL_BINDIR  bin)
-    set(CMAKE_INSTALL_INCLUDE include)
-    set(CMAKE_INSTALL_LIBDIR  lib)
-    set(CMAKE_INSTALL_DATADIR share)
-else()
-    include(GNUInstallDirs)
-endif()
-#set(CMAKE_INSTALL_CMAKEMODULESDIR ${CMAKE_INSTALL_DATADIR}/cmake-2.8/Modules)
-
-set(BIN_INSTALL_DIR             ${CMAKE_INSTALL_BINDIR}             CACHE PATH "Location to install binaries relative to the install prefix."   )
-set(INCLUDE_INSTALL_DIR         ${CMAKE_INSTALL_INCLUDEDIR}         CACHE PATH "Location to install headers relative to the install prefix."    )
-set(LIB_INSTALL_DIR             ${CMAKE_INSTALL_LIBDIR}             CACHE PATH "Location to install libraries relative to the install prefix."  )
-set(DATA_INSTALL_DIR            ${CMAKE_INSTALL_DATADIR}            CACHE PATH "Location to install data files relative to the install prefix." )
-#set(CMAKE_MODULES_INSTALL_DIR   ${CMAKE_INSTALL_CMAKEMODULESDIR}    CACHE PATH "Location to install data files relative to the install prefix." )
+include(GNUInstallDirs)
+set(BIN_INSTALL_DIR             ${CMAKE_INSTALL_BINDIR}             CACHE PATH "Location to install binaries relative to the install prefix."     )
+set(INCLUDE_INSTALL_DIR         ${CMAKE_INSTALL_INCLUDEDIR}         CACHE PATH "Location to install headers relative to the install prefix."      )
+set(LIB_INSTALL_DIR             ${CMAKE_INSTALL_LIBDIR}             CACHE PATH "Location to install libraries relative to the install prefix."    )
+set(DATA_INSTALL_DIR            ${CMAKE_INSTALL_DATADIR}            CACHE PATH "Location to install data files relative to the install prefix."   )
+set(CMAKE_MODULE_INSTALL_DIR    ${LIB_INSTALL_DIR}/cmake/Zipios     CACHE PATH "Location to install cmake module relative to the install prefix." )
 
 
 find_package( ZLIB REQUIRED )
@@ -138,7 +129,6 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.spec.in ${CMAKE_CURRE
 
 include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 
-add_subdirectory( cmake )
 add_subdirectory( src   )
 add_subdirectory( tools )
 add_subdirectory( tests )
@@ -153,11 +143,9 @@ install( FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
     DESTINATION ${INCLUDE_INSTALL_DIR}/zipios
 )
 
-# todo: how do we determine the correct destination?
-#       (i.e. 3.x is now out and 2.8 will probably fail for those users)
-#install( DIRECTORY cmake/
-#    DESTINATION ${CMAKE_MODULES_INSTALL_DIR}
-#)
+install( FILES cmake/ZipiosConfig.cmake
+    DESTINATION ${CMAKE_MODULE_INSTALL_DIR}
+)
 
 add_custom_target(zipios_code_analysis
     # Make sure we have an output folder
