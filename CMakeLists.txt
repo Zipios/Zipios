@@ -123,9 +123,11 @@ find_package( ZLIB REQUIRED )
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios/zipios-config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/zipios/zipios-config.hpp )
 
-# Generate the RPM package specification file
+# Generate the RPM package specification file and metainfo file
 set(PACKAGE "libzipios")
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.spec )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.metainfo.xml.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.metainfo.xml )
+
 
 include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 
@@ -146,6 +148,12 @@ install( FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
 install( FILES cmake/ZipiosConfig.cmake
     DESTINATION ${CMAKE_MODULE_INSTALL_DIR}
 )
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    install( FILES ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.metainfo.xml
+        DESTINATION ${DATA_INSTALL_DIR}/metainfo
+    )
+endif()
 
 add_custom_target(zipios_code_analysis
     # Make sure we have an output folder

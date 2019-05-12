@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Severin Glöckner -->
+<component>
+  <id>zipios</id>
+  <name>Zipios</name>
+  <summary>Small C++ library for reading and writing zip files</summary>
+  <description>
+      <p>Zipios is a small C++ library for reading and writing zip files. The structure and public interface are based (somewhat loosely) on the java.util.zip package. The streams created to access the individual entries in a zip file are based on the standard iostream library.</p>⁠
+      <p>Zipios also provides a way for an application to support files from multiple sources (e.g. from zip files or from ordinary directories) transparently.</p>
+  </description>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LGPL-2.1-or-later</project_license>
+  <update_contact>alexis_AT_m2osw.com</update_contact>
+  <url type="homepage">https://snapwebsites.org/project/zipios</url>
+  <url type="bugtracker">https://github.com/Zipios/Zipios/issues</url>
+  <url type="help">http://zipios.sourceforge.net</url>
+
+  <provides>
+    <library>libzipios.so.@ZIPIOS_VERSION_MAJOR@.@ZIPIOS_VERSION_MINOR@</library>
+    <binary>appendzip</binary>
+    <binary>dostime</binary>
+    <binary>zipios</binary>
+  </provides>
+</component>
