@@ -1,5 +1,5 @@
 #
-# Find the Catch.hpp header file
+# Find the catch.hpp header file
 #
 # This module defines
 # CATCH_INCLUDE_DIR, where to find catch.hpp
@@ -24,11 +24,11 @@
 #      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
-SET(CATCH_FOUND "NO")
+set(CATCH_FOUND "NO")
 
 # The PATH_SUFFXES is necessary under Fedora
 #
-FIND_PATH(CATCH_INCLUDE_DIR
+find_path(CATCH_INCLUDE_DIR
     catch.hpp
     PATHS
         ${CMAKE_SOURCE_DIR}/contrib
@@ -40,16 +40,12 @@ FIND_PATH(CATCH_INCLUDE_DIR
         catch
 )
 
-IF(CATCH_INCLUDE_DIR)
-    IF(CATCH_FIND_REQUIRED)
-        MESSAGE(SEND_ERROR "Could not find library Catch.")
-    ELSE(CATCH_FIND_REQUIRED)
-        SET(CATCH_FOUND "YES")
-    ENDIF(CATCH_FIND_REQUIRED)
-ELSE(CATCH_INCLUDE_DIR)
-    IF(CATCH_FIND_REQUIRED)
-        MESSAGE(SEND_ERROR "Could not find library Catch.")
-    ENDIF(CATCH_FIND_REQUIRED)
-ENDIF(CATCH_INCLUDE_DIR)
+if(CATCH_INCLUDE_DIR)
+    set(CATCH_FOUND "YES")
+else(CATCH_INCLUDE_DIR)
+    if(Catch_FIND_REQUIRED)
+        message(SEND_ERROR "Could not find library Catch.")
+    endif(Catch_FIND_REQUIRED)
+endif(CATCH_INCLUDE_DIR)
 
 # vim: ts=4 sw=4 et

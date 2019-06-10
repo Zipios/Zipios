@@ -1,3 +1,9 @@
+zipios (2.2.2.0~xenial) xenial; urgency=high
+
+  * Fixed the FindCatch.cmake, the REQUIRED was not properly tested.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Mon, 10 Jun 2019 16:42:26 -0700
+
 zipios (2.2.1.0~xenial) xenial; urgency=high
 
   * Fixed the "DirectoryEntry for a valid directory" test as the FileEntry
