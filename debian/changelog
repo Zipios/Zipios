@@ -1,3 +1,11 @@
+zipios (2.2.3.0~xenial) xenial; urgency=high
+
+  * Added in=C++ to the MAPPING_EXTENSION.
+  * Updated the doxy file to 1.8.11.
+  * Removed one more UTF-8 emdash character.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 11 Jun 2019 23:58:58 -0800
+
 zipios (2.2.2.0~xenial) xenial; urgency=high
 
   * Fixed the FindCatch.cmake, the REQUIRED was not properly tested.
