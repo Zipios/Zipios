@@ -3,6 +3,9 @@ zipios (2.2.3.0~xenial) xenial; urgency=high
   * Added in=C++ to the MAPPING_EXTENSION.
   * Updated the doxy file to 1.8.11.
   * Removed one more UTF-8 emdash character.
+  * Made a few changes in link with the website and CVE-2019-13453 in the old
+    zipios library.
+  * Added a favicon for the website.
 
  -- Alexis Wilke <alexis@m2osw.com>  Tue, 11 Jun 2019 23:58:58 -0800
 

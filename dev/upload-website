@@ -25,6 +25,11 @@
 #      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
+echo "WARNING: I switch from HTTP to HTTPS since sourceforge now offers such."
+echo "         It could be that this script will not work without a few tweaks"
+echo "         once it takes (right now it still works with the HTTP... I'm not"
+echo "         sure whether it takes some time or I'm doing something wrong.)"
+
 . dev/version
 
 username=alexis_wilke

@@ -3,6 +3,7 @@
 <head>
 	<title>Zipios</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" type="image/x-icon" href="/snap-favicon.ico">
 	<style>
 		body
 		{
@@ -84,7 +85,7 @@
 		<li><a href="/zipios-v2.1/">Documentation of version 2.1 of the Zipios library</a></li>
 		<li><a href="/zipios-v2.0/">Documentation of version 2.0 of the Zipios library</a></li>
 		<li><a href="/coverage/">Test Coverage Information (version 2.x only)</a></li>
-		<li><a href="/zipios-v1/">Documentation of version 1.x of the Zipios library</a></li>
+		<li><a href="/zipios-v0.1/">Documentation of version 0.1 of the Zipios library</a></li>
 	</ul>
 	<h2>Binary Packages</h2>
 	<p>
@@ -118,8 +119,35 @@
 		since we do not offer a multithreaded version of the tests.
 		However, since we use cmake, you can compile using any
 		number of processors and that will make it a lot faster.
-		(i.e. use the -J command line option with make to compile
-		multiple source files at once; it is very fast anyway.)
+		(i.e. use the <code>-j</code> command line option with make
+		to compile multiple source files at once, as in
+		<code>make -j16 -C BUILD</code>; it is very fast anyway.)
+	</p>
+	<h2>CVE-2019-13453</h2>
+	<p>
+		Mike Salvadore found a bug in version 0.1.5 where a loop
+		would never check for the end of the file flag or any
+		other I/O error. As a result the loop would become infinite
+		when that happened (which it could if you were to pass an
+		invalid Zip file as input.)
+	</p>
+	<p>
+		Mike offered a patch, which I ameliorated a bit (a second
+		loop was also affected) and got report
+		<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-13453">CVE-2019-13453</a>
+		as a result.
+	</p>
+	<p>
+		The patch info are in file infinite_loop.patch and version
+		0.1.7 is the new official version with that patch included
+		in it.
+	</p>
+	<p>
+		<b>WARNING:</b> sourceforge.net does not offer a way to
+		edit the CVS so the newest version is in the GIT repository
+		instead. Make sure to switch to the GIT repository if you
+		are directly using the source. Otherwise, just switch to
+		the newer tarball version (0.1.7).
 	</p>
 </div>
 <footer style="margin: 0 20px; padding-bottom: 50px; border-top: 1px solid #ccc;">
