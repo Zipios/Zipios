@@ -315,7 +315,7 @@ int DOSDateTime::getYear() const
  * is saved without bit 0. In other words, only an even number of second
  * is saved. In other words, 0, 2, 4, 6, up to 58.
  *
- * \important
+ * \attention
  * Leap seconds are not supported. Trying to pass 60 to this function
  * raises an InvalidException error.
  *
@@ -525,7 +525,7 @@ void DOSDateTime::setDOSDateTime(dosdatetime_t datetime)
  * the maximum is around 2037, about 70 years short. This maximum date
  * represents Dec 31, 2107 at 23:59:59, local time.
  *
- * \important
+ * \attention
  * The DOSDateTime object only holds even seconds. Odd seconds are lost
  * at the time this function gets called.
  *
