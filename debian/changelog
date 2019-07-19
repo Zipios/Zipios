@@ -1,3 +1,9 @@
+zipios (2.2.4.0~xenial) xenial; urgency=high
+
+  * Applied fix to some tests so they compile with g++ 8.3.x
+
+ -- Alexis Wilke <alexis@m2osw.com>  Fri, 19 Jul 2019 16:08:48 -0800
+
 zipios (2.2.3.0~xenial) xenial; urgency=high
 
   * Added in=C++ to the MAPPING_EXTENSION.

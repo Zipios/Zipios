@@ -71,7 +71,7 @@ SCENARIO("BackBuffer read a file", "[BackBuffer]")
                 {
                     REQUIRE_THROWS_AS([&](){
                                 zipios::BackBuffer bb(is, zipios::VirtualSeeker(), i);
-                            }(), zipios::InvalidException);
+                            }(), zipios::InvalidException &);
                 }
             }
 
@@ -81,11 +81,11 @@ SCENARIO("BackBuffer read a file", "[BackBuffer]")
                 // first time the seek fails
                 REQUIRE_THROWS_AS([&](){
                                 zipios::BackBuffer bb(is);
-                            }(), zipios::IOException);
+                            }(), zipios::IOException &);
                 // second time the file is marked as invalid
                 REQUIRE_THROWS_AS([&](){
                                 zipios::BackBuffer bb(is);
-                            }(), zipios::InvalidException);
+                            }(), zipios::InvalidException &);
             }
         }
     }
