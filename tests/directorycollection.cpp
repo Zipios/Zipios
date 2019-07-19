@@ -186,7 +186,7 @@ TEST_CASE("DirectoryCollection with a valid file, but not a directory", "[Direct
 
         // not valid because it is not a directory
         REQUIRE_FALSE(dc.isValid());
-        REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException);
+        REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException &);
         REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
         REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
         REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
