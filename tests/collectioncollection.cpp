@@ -852,7 +852,7 @@ SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [File
             cc.close();
 
             // adding a collection to itself fails
-            REQUIRE_THROWS_AS(cc.addCollection(cc), zipios::InvalidStateException);
+            REQUIRE_THROWS_AS(cc.addCollection(cc), zipios::InvalidStateException &);
 
             THEN("it is now invalid")
             {
