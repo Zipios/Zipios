@@ -89,8 +89,8 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             REQUIRE_FALSE(de.isValid());
             REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
 
-            REQUIRE_THROWS_AS(de.read(std::cin), zipios::IOException);
-            REQUIRE_THROWS_AS(de.write(std::cout), zipios::IOException);
+            REQUIRE_THROWS_AS(de.read(std::cin), zipios::IOException &);
+            REQUIRE_THROWS_AS(de.write(std::cout), zipios::IOException &);
 
             zipios::FileEntry::pointer_t null_entry;
 //            REQUIRE_FALSE(de.isEqual(*null_entry));  // here we are passing a NULL reference which most people think is something impossible to do...
@@ -420,7 +420,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 }
                 else
                 {
-                    REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException);
+                    REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException &);
                 }
             }
         }
@@ -439,7 +439,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                     break;
 
                 default:
-                    REQUIRE_THROWS_AS(de.setMethod(static_cast<zipios::StorageMethod>(i)), zipios::InvalidStateException);
+                    REQUIRE_THROWS_AS(de.setMethod(static_cast<zipios::StorageMethod>(i)), zipios::InvalidStateException &);
                     break;
 
                 }
@@ -1037,7 +1037,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                     }
                     else
                     {
-                        REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException);
+                        REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException &);
                     }
                 }
 
@@ -1549,7 +1549,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 }
                 else
                 {
-                    REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException);
+                    REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException &);
                 }
             }
 

@@ -76,7 +76,7 @@ TEST_CASE("A ZipFile with an invalid name", "[ZipFile] [FileCollection]")
 {
     REQUIRE_THROWS_AS([&](){
                     zipios::ZipFile zf("this/file/does/not/exists/so/the/constructor/throws");
-                }(), zipios::IOException);
+                }(), zipios::IOException &);
 }
 
 
@@ -95,7 +95,7 @@ TEST_CASE("A ZipFile with an invalid file", "[ZipFile] [FileCollection]")
     }
     REQUIRE_THROWS_AS([&](){
                     zipios::ZipFile zf("invalid.zip");
-                }(), zipios::FileCollectionException);
+                }(), zipios::FileCollectionException &);
 }
 
 
@@ -251,8 +251,8 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     }
 
                     // I don't think we will test those directly...
-                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
-                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
+                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
                 }
             }
 
@@ -365,8 +365,8 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     }
 
                     // I don't think we will test those directly...
-                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
-                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
+                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
                 }
             }
 
@@ -505,8 +505,8 @@ SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]")
                     }
 
                     // I don't think we will test those directly...
-                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
-                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
+                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
                 }
             }
         }
@@ -618,8 +618,8 @@ SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]")
                     }
 
                     // I don't think we will test those directly...
-                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
-                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
+                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
                 }
             }
         }
@@ -731,8 +731,8 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
                     REQUIRE_FALSE(*is);
 
                     // I don't think we will test those directly...
-                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
-                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
+                    //REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
+                    //REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
                 }
             }
         }
@@ -763,7 +763,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
                 zipios_test::auto_unlink_t remove_zip("file.zip");
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
-                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException);
+                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
                     REQUIRE_FALSE(out);
                 }
             }
@@ -791,7 +791,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
                 zipios_test::auto_unlink_t remove_zip("file.zip");
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
-                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException);
+                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
                     REQUIRE_FALSE(out);
                 }
             }
@@ -815,7 +815,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
                 zipios_test::auto_unlink_t remove_zip("file.zip");
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
-                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc, comment), zipios::InvalidStateException);
+                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc, comment), zipios::InvalidStateException &);
                     REQUIRE_FALSE(out);
                 }
             }
@@ -851,7 +851,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
                 zipios_test::auto_unlink_t remove_zip("file.zip");
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
-                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException);
+                    REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
                 }
             }
         }
@@ -1254,7 +1254,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 
             REQUIRE_THROWS_AS([&](){
                             zipios::ZipFile zf("file.zip");
-                        }(), zipios::FileCollectionException);
+                        }(), zipios::FileCollectionException &);
         }
     }
 
@@ -1283,7 +1283,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 
             REQUIRE_THROWS_AS([&](){
                             zipios::ZipFile zf("file.zip");
-                        }(), zipios::IOException);
+                        }(), zipios::IOException &);
         }
     }
 
@@ -1311,7 +1311,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 
             REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::FileCollectionException);
+                    }(), zipios::FileCollectionException &);
         }
     }
 
@@ -1340,7 +1340,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 
             REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::IOException);
+                    }(), zipios::IOException &);
         }
     }
 
@@ -1368,7 +1368,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 
             REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::IOException);
+                    }(), zipios::IOException &);
         }
     }
 
@@ -1426,7 +1426,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
             }
 
             zipios::ZipFile zf("file.zip");
-            REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException);
+            REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException &);
         }
     }
 
@@ -1464,7 +1464,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
             }
 
             zipios::ZipFile zf("file.zip");
-            REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException);
+            REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException &);
         }
     }
 
@@ -1507,7 +1507,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 
             REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::FileCollectionException);
+                    }(), zipios::FileCollectionException &);
         }
     }
 
@@ -1552,7 +1552,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
 
             REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::FileCollectionException);
+                    }(), zipios::FileCollectionException &);
         }
     }
 

@@ -147,7 +147,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 60);
             t.setSecond(r);
             REQUIRE(t.getSecond() == (r & -2));
-            REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException &);
             REQUIRE(t.getSecond() == (r & -2));
         }
         for(int i = 60; i <= 80; ++i)
@@ -156,7 +156,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 60);
             t.setSecond(r);
             REQUIRE(t.getSecond() == (r & -2));
-            REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException &);
             REQUIRE(t.getSecond() == (r & -2));
         }
     }
@@ -175,7 +175,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 60);
             t.setMinute(r);
             REQUIRE(t.getMinute() == r);
-            REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException &);
             REQUIRE(t.getMinute() == r);
         }
         for(int i = 60; i <= 80; ++i)
@@ -184,7 +184,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 60);
             t.setMinute(r);
             REQUIRE(t.getMinute() == r);
-            REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException &);
             REQUIRE(t.getMinute() == r);
         }
     }
@@ -203,7 +203,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 24);
             t.setHour(r);
             REQUIRE(t.getHour() == r);
-            REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException &);
             REQUIRE(t.getHour() == r);
         }
         for(int i = 24; i <= 44; ++i)
@@ -212,7 +212,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 24);
             t.setHour(r);
             REQUIRE(t.getHour() == r);
-            REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException &);
             REQUIRE(t.getHour() == r);
         }
     }
@@ -235,7 +235,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 31 + 1);
             t.setMDay(r);
             REQUIRE(t.getMDay() == r);
-            REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException &);
             REQUIRE(t.getMDay() == r);
         }
         for(int i = 32; i <= 52; ++i)
@@ -244,7 +244,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 31 + 1);
             t.setMDay(r);
             REQUIRE(t.getMDay() == r);
-            REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException &);
             REQUIRE(t.getMDay() == r);
         }
     }
@@ -263,7 +263,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 12 + 1);
             t.setMonth(r);
             REQUIRE(t.getMonth() == r);
-            REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException &);
             REQUIRE(t.getMonth() == r);
         }
         for(int i = 13; i <= 33; ++i)
@@ -272,7 +272,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 12 + 1);
             t.setMonth(r);
             REQUIRE(t.getMonth() == r);
-            REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException &);
             REQUIRE(t.getMonth() == r);
         }
     }
@@ -291,7 +291,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % (2107 - 1980 + 1) + 1980);
             t.setYear(r);
             REQUIRE(t.getYear() == r);
-            REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException &);
             REQUIRE(t.getYear() == r);
         }
         for(int i = 2108; i <= 2200; ++i)
@@ -300,7 +300,7 @@ TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % (2107 - 1980 + 1) + 1980);
             t.setYear(r);
             REQUIRE(t.getYear() == r);
-            REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException);
+            REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException &);
             REQUIRE(t.getYear() == r);
         }
     }
@@ -367,7 +367,7 @@ TEST_CASE("Small DOS Date & Time", "[dosdatetime]")
         {
             zipios::DOSDateTime td;
             REQUIRE_FALSE(td.isValid());
-            REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException);
+            REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException &);
             REQUIRE_FALSE(td.isValid());
         }
     }
@@ -448,7 +448,7 @@ TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
             zipios::DOSDateTime td;
             REQUIRE(td.getDOSDateTime() == 0);
             REQUIRE_FALSE(td.isValid());
-            REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException);
+            REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException &);
             REQUIRE_FALSE(td.isValid());
             REQUIRE(td.getDOSDateTime() == 0);
             REQUIRE(td.getUnixTimestamp() == 0);
@@ -473,7 +473,7 @@ TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
             || t > g_maximum_unix)
             {
                 zipios::DOSDateTime td;
-                REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException);
+                REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException &);
             }
             else
             {

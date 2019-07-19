@@ -2,11 +2,11 @@
 # You can consider this file as being in the public domain.
 
 # Determine the location of the BUILD folder
-if test -d ../BUILD
+if test -d ../../../BUILD/contrib/zipios
 then
-	BUILD=../BUILD/zipios
-else
 	BUILD=../../../BUILD/contrib/zipios
+else
+	BUILD=../BUILD/zipios
 fi
 
 if test "$1" = "-d"

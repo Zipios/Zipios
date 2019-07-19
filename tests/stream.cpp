@@ -57,7 +57,7 @@ TEST_CASE("An input filter", "[Buffer]")
 
     SECTION("Invalid input stream buffer")
     {
-        REQUIRE_THROWS_AS(new zipios::FilterInputStreambuf(nullptr), zipios::InvalidStateException);
+        REQUIRE_THROWS_AS(new zipios::FilterInputStreambuf(nullptr), zipios::InvalidStateException &);
     }
 }
 
@@ -74,7 +74,7 @@ TEST_CASE("An output filter", "[Buffer]")
 
     SECTION("Invalid output stream buffer")
     {
-        REQUIRE_THROWS_AS(new zipios::FilterOutputStreambuf(nullptr), zipios::InvalidStateException);
+        REQUIRE_THROWS_AS(new zipios::FilterOutputStreambuf(nullptr), zipios::InvalidStateException &);
     }
 }
 
