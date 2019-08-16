@@ -21,7 +21,7 @@
 
 /** \file
  *
- * Zipios unit tests used to verify the various funtions defined in
+ * Zipios unit tests used to verify the various functions defined in
  * zipios_common.hpp.
  */
 
@@ -47,7 +47,7 @@ SCENARIO("Vector append", "[zipios_common]")
 
             es += os;
 
-            THEN("the result is still an emtpy vector")
+            THEN("the result is still an empty vector")
             {
                 REQUIRE(es.empty());
             }

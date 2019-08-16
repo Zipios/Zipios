@@ -126,7 +126,7 @@ int const g_ydays[12] = {
  * Remember that Zip file Date & Time are saved in an old MS-DOS format
  * which did not respect UTC. It instead represents local time. This
  * function returns true when the local time is valid, since the same
- * time will be shared around the globe, it will alway sbe considered
+ * time will be shared around the globe, it will always be considered
  * valid, but the Unix timestamp can look like a mismatch (the minimum
  * and maximum possible time stamps represented in a Unix time_t variable
  * will vary depending on your timezone settings.)

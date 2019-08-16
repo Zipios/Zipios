@@ -42,7 +42,7 @@ namespace
 
 /** \brief Search for an entry.
  *
- * This function searchs for an entry that match the given name.
+ * This function searches for an entry that match the given name.
  * If that entry exists, the \p it parameter will be pointing
  * to it.
  *
@@ -329,7 +329,7 @@ FileEntry::vector_t CollectionCollection::entries() const
  * The collection must be valid or the function raises an exception.
  *
  * \param[in] name  A string containing the name of the entry to get.
- * \param[in] matchpath  Speficy MatchPath::MATCH, if the path should match
+ * \param[in] matchpath  Specify MatchPath::MATCH, if the path should match
  *                       as well, specify MatchPath::IGNORE, if the path
  *                       should be ignored.
  *

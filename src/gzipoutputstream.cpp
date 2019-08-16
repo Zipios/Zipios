@@ -72,7 +72,7 @@ GZIPOutputStream::GZIPOutputStream(std::ostream& os, FileEntry::CompressionLevel
 /** \brief Create a named ZIP stream for output.
  *
  * \note
- * The fielname is not automatically saved as part of the stream.
+ * The filename is not automatically saved as part of the stream.
  * To do so, call the setFilename() function.
  *
  * \param[in] filename  Name of the file where the zip archive is to

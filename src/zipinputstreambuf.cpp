@@ -91,7 +91,7 @@ ZipInputStreambuf::ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
 
 
 /** \fn ZipInputStreambuf::ZipInputStreambuf(ZipInputStreambuf const & src);
- * \brief The copy contructor is deleted.
+ * \brief The copy constructor is deleted.
  *
  * ZipInputStreambuf objects cannot be copied so the copy constructor
  * is deleted.

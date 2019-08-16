@@ -41,7 +41,7 @@ namespace zipios
  *
  * DirectoryEntry is a FileEntry that is suitable as a base class for
  * basic entries, that do not support any form of compression and
- * in most cases represent a file in a directtory.
+ * in most cases represent a file in a directory.
  */
 
 

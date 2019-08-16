@@ -20,7 +20,7 @@
 */
 
 /** \file
- * \brief Declare zipios::ZipEndOfCentralDirectory whichs handles entries found
+ * \brief Declare zipios::ZipEndOfCentralDirectory which handles entries found
  *        in a Zip archive directory.
  *
  * This header file contains the zipios::ZipLocalEntry, which is used
