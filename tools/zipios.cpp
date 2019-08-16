@@ -40,7 +40,7 @@
 
 /** \brief A few static variables and functions.
  *
- * This namesapce includes various declarations, variables, and funtions
+ * This namesapce includes various declarations, variables, and functions
  * that are specific to the zipios tool, not to be shared with anyone else.
  */
 namespace

@@ -209,7 +209,7 @@ std::streampos FileEntry::getEntryOffset() const
  * This function returns a copy of the vector of bytes of extra data
  * that are stored with the entry.
  *
- * This buffer should be generated using the still non-existant
+ * This buffer should be generated using the still non-existent
  * ZipExtra class. This includes definitions of additional meta
  * data necessary on various operating systems. For example, Linux
  * makes use of the "UT" (Universal Time) to save the atime, ctime,
@@ -336,7 +336,7 @@ size_t FileEntry::getSize() const
 
 /** \brief Get the MS-DOS date/time of this entry.
  *
- * This function returns the date and time of the entry in MSDOS
+ * This function returns the date and time of the entry in MS-DOS
  * date/time format.
  *
  * \note
@@ -654,7 +654,7 @@ void FileEntry::setSize(size_t size)
  * the setUnixTime() instead since it is one to one compatible with the
  * value handle by time(), stat(), and other OS functions.
  *
- * \param[in] dosdatetime  Set time field as is using this MSDOS date/time value.
+ * \param[in] dosdatetime  Set time field as is using this MS-DOS date/time value.
  */
 void FileEntry::setTime(DOSDateTime::dosdatetime_t dosdatetime)
 {

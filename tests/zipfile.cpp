@@ -800,7 +800,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 
 #ifndef __clang__
         // check with a global comment which is too large
-        WHEN("we make sure that saving the file fails if the Zip (gloabl) comment is too large")
+        WHEN("we make sure that saving the file fails if the Zip (global) comment is too large")
         {
             zipios::DirectoryCollection dc("file.bin");
             // generate a random comment of 65Kb

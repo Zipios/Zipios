@@ -1143,7 +1143,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
             {
                 // DOS time numbers are not linear so we use a Unix date and
-                // convert to DOS time (since we know our convertor works)
+                // convert to DOS time (since we know our converter works)
                 //
                 // Jan 1, 1980 at 00:00:00  is  315561600   (min)
                 // Dec 31, 2107 at 23:59:59  is 4354847999  (max)

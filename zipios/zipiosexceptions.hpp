@@ -44,7 +44,7 @@ namespace zipios
 {
 
 
-/** \brief Base exception of the zipios environement
+/** \brief Base exception of the zipios environment
  *
  * Unfortunately, all exceptions are marked as runtime_error.
  *

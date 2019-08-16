@@ -283,7 +283,7 @@ namespace zipios
 
 
 
-/** \brief Open a zip archive that was previously appened to another file.
+/** \brief Open a zip archive that was previously appended to another file.
  *
  * Opens a Zip archive embedded in another file, by writing the zip
  * archive to the end of the file followed by the start offset of
