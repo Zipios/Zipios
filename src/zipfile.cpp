@@ -198,8 +198,7 @@ namespace zipios
  * https://sourceforge.net/projects/zipios/</a>
  *
  * <a href="https://sourceforge.net/projects/zipios/files/latest/download"
- * rel="nofollow"><img alt="Download Zipios"
- * src="https://img.shields.io/sourceforge/dt/zipios.svg"></a>
+ * rel="nofollow">Download Zipios</a>
  *
  * \section development Development
  *
@@ -268,7 +267,7 @@ namespace zipios
  *
  * \htmlonly
  * Project hosted by <a href="http://sourceforge.net">
- * <img style="vertical-align: middle;" src="http://sourceforge.net/sflogo.php?group_id=5418&type=1">
+ * http://sourceforge.net
  * </a>
  * \endhtmlonly
  */
