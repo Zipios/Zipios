@@ -1,3 +1,9 @@
+zipios (2.2.7.0~xenial) xenial; urgency=high
+
+  * Applied a few fixes to avoid some warnings when compiling in 32 bits.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Wed, 30 Sep 2020 23:47:46 -0700
+
 zipios (2.2.6.0~xenial) xenial; urgency=high
 
   * Applied pull request 34 (https://github.com/Zipios/Zipios/pull/34)

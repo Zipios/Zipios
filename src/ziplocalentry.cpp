@@ -413,7 +413,7 @@ void ZipLocalEntry::write(std::ostream& os)
     /** todo: add support for 64 bit zip archive
      */
 // Solaris defines _ILP32 for 32 bit platforms
-#if !defined(_ILP32)
+#if INTPTR_MAX != INT32_MAX
     if(m_compressed_size   >= 0x100000000UL
     || m_uncompressed_size >= 0x100000000UL)
     {

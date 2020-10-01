@@ -319,7 +319,7 @@ void ZipEndOfCentralDirectory::write(std::ostream& os)
         throw InvalidStateException("the number of entries in the Zip archive is too large");
     }
 // Solaris defines _ILP32 for 32 bit platforms
-#if !defined(_ILP32)
+#if INTPTR_MAX != INT32_MAX
     if(m_central_directory_size   >= 0x100000000UL
     || m_central_directory_offset >= 0x100000000L)
     {
