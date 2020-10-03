@@ -3,7 +3,7 @@
 #      CMakeLists.txt
 #
 # Description:
-#      Build the Zipios++ library, tools, packages, tests, documentation.
+#      Build the Zipios library, tools, packages, tests, documentation.
 #
 # Documentation:
 #      See the CMake documentation.
@@ -186,7 +186,7 @@ add_custom_target(zipios_code_analysis
 ## To pack the source
 ##
 set(CPACK_PACKAGE_NAME "zipios")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Zipios++ is a small C++ library for reading and writing zip files.")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Zipios is a small C++ library for reading and writing zip files.")
 set(CPACK_PACKAGE_VENDOR "Made to Order Software Corporation")
 set(CPACK_PACKAGE_CONTACT "alexis@m2osw.com")
 set(CPACK_RESOURCE_FILE_LICENSE "${zipios_project_SOURCE_DIR}/COPYING")

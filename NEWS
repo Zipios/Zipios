@@ -1,4 +1,4 @@
-Release notes for Zipios++ 2.2.0
+Release notes for Zipios 2.2.0
 --------------------------------
 
 As per [issue #28 on Github](https://github.com/Zipios/Zipios/issues/28),
@@ -11,7 +11,7 @@ It's all C++ and uses a structure with field to convert the data as required.
 The license was also updated and copyright file fixed up to match the newer
 version.
 
-Release notes for Zipios++ 2.1.0
+Release notes for Zipios 2.1.0
 --------------------------------
 
 Moving the header files from /usr/include/zipios++ to /usr/include/zipios
@@ -21,7 +21,7 @@ Various fixes such as copyright notices, zipios_tool renamed, manual
 pages.
 
 
-Release notes for Zipios++ 2.0.0
+Release notes for Zipios 2.0.0
 --------------------------------
 
 This new release is a big change to make use of modern C++ (c++11 for now)
