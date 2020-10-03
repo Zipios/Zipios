@@ -28,7 +28,7 @@
 #      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 2.8.5)
 
 project( zipios_project )
 
@@ -39,7 +39,7 @@ endif()
 
 set( ZIPIOS_VERSION_MAJOR 2 )
 set( ZIPIOS_VERSION_MINOR 2 )
-set( ZIPIOS_VERSION_PATCH 0 )
+set( ZIPIOS_VERSION_PATCH 7 )
 set( ZIPIOS_VERSION_BUILD 0 )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
@@ -111,16 +111,7 @@ endif()
 #
 # Default install locations, override cache variables to change.
 #
-if(NOT CMAKE_VERSION VERSION_GREATER "2.8.4")
-    set(CMAKE_INSTALL_BINDIR  bin)
-    set(CMAKE_INSTALL_INCLUDE include)
-    set(CMAKE_INSTALL_LIBDIR  lib)
-    set(CMAKE_INSTALL_DATADIR share)
-else()
-    include(GNUInstallDirs)
-endif()
-#set(CMAKE_INSTALL_CMAKEMODULESDIR ${CMAKE_INSTALL_DATADIR}/cmake-2.8/Modules)
-
+include(GNUInstallDirs)
 set(BIN_INSTALL_DIR             ${CMAKE_INSTALL_BINDIR}             CACHE PATH "Location to install binaries relative to the install prefix."   )
 set(INCLUDE_INSTALL_DIR         ${CMAKE_INSTALL_INCLUDEDIR}         CACHE PATH "Location to install headers relative to the install prefix."    )
 set(LIB_INSTALL_DIR             ${CMAKE_INSTALL_LIBDIR}             CACHE PATH "Location to install libraries relative to the install prefix."  )
@@ -135,6 +126,7 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios/zipios-config.hpp.in ${CMAKE_
 # Generate the RPM package specification file
 set(PACKAGE "libzipios")
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.spec )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.metainfo.xml.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.metainfo.xml )
 
 include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 
@@ -144,14 +136,23 @@ add_subdirectory( tools )
 add_subdirectory( tests )
 add_subdirectory( doc   )
 
-install( DIRECTORY zipios
+install(
+    DIRECTORY zipios
     DESTINATION ${INCLUDE_INSTALL_DIR}
     PATTERN "*.in" EXCLUDE
 )
 
-install( FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
+install(
+    FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
     DESTINATION ${INCLUDE_INSTALL_DIR}/zipios
 )
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    install(
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.metainfo.xml
+        DESTINATION ${DATA_INSTALL_DIR}/metainfo
+    )
+endif()
 
 # todo: how do we determine the correct destination?
 #       (i.e. 3.x is now out and 2.8 will probably fail for those users)
