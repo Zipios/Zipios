@@ -192,14 +192,9 @@ namespace zipios
  *
  * \section download Download
  *
- * Go to Zipios project page on SourceForge for tar balls, source code
- * (CVS for v1.x and GIT for v2.x), and ChangeLog.
- * <a href="https://sourceforge.net/projects/zipios/" >
- * https://sourceforge.net/projects/zipios/</a>
- *
- * <a href="https://sourceforge.net/projects/zipios/files/latest/download"
- * rel="nofollow"><img alt="Download Zipios"
- * src="https://img.shields.io/sourceforge/dt/zipios.svg"></a>
+ * The <a href="https://github.com/Zipios/Zipios">Zipios project</a> is now
+ * on github. You can find the source files, tarballs and changelog files
+ * there.
  *
  * \section development Development
  *
