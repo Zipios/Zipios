@@ -1,3 +1,16 @@
+zipios (2.2.6.0~xenial) xenial; urgency=high
+
+  * Applied a few fixes to avoid some warnings when compiling in 32 bits.
+  * Commented out tests which verify dates outside of the 32 bit range
+    (i.e. time_t is a 32 bit signed integer on a 32 bit OS).
+  * Fixed the docs Bugs and Links and Issue Sections.
+  * Removed some ++ from Zipios because the name changed and we removed the ++.
+  * Applied most of pull request 30, added the metainfo.xml file.
+  * Applied pull request 34 (https://github.com/Zipios/Zipios/pull/34)
+    (remove path from all filenames)
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 15 Sep 2020 14:40:28 -0700
+
 zipios (2.2.5.0~xenial) xenial; urgency=high
 
   * Applied pull request 31 (https://github.com/Zipios/Zipios/pull/31)

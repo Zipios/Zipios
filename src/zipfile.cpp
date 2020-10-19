@@ -192,14 +192,9 @@ namespace zipios
  *
  * \section download Download
  *
- * Go to Zipios project page on SourceForge for tar balls, source code
- * (CVS for v1.x and GIT for v2.x), and ChangeLog.
- * <a href="https://sourceforge.net/projects/zipios/" >
- * https://sourceforge.net/projects/zipios/</a>
- *
- * <a href="https://sourceforge.net/projects/zipios/files/latest/download"
- * rel="nofollow"><img alt="Download Zipios"
- * src="https://img.shields.io/sourceforge/dt/zipios.svg"></a>
+ * The <a href="https://github.com/Zipios/Zipios">Zipios project</a> is now
+ * on github. You can find the source files, tarballs and changelog files
+ * there.
  *
  * \section development Development
  *
@@ -244,33 +239,29 @@ namespace zipios
  * Other systems use tools with pretty much the same naming convention
  * so you should be able to make the correlation.
  *
- * \section links Links
+ * \section history History
  *
  * <a href="http://www.zlib.net/">zlib</a>.
  * The compression library that Zipios uses to perform the actual
  * compression and decompression.
  *
- * <a href="http://www.oracle.com/technetwork/java/index.html">
- * Java</a>. Zipios version 1.0 is heavily inspired by the
- * java.util.zip package. Version 2.0 is following the same
- * philosophy without (1) attempting to follow the interface one
- * to one and (2) without updating to the newer version, if there
- * were changes...
+ * Zipios version 1.0 is heavily inspired by the java.util.zip package.
+ * Version 2.0 is following the same philosophy without (1) attempting
+ * to follow the interface one to one and (2) without updating to the
+ * newer version, if there were changes...
  *
  * You will find a text file in the doc directory named zip-format.txt
  * with a complete description of the zip file format as of October 1, 2014.
  *
  * \section bugs Bugs
  *
- * Submit bug reports and patches on:
+ * <a href="https://github.com/Zipios/Zipios/issues">Submit bug reports
+ * and patches on github.</a>
  *
- *   http://sourceforge.net/projects/zipios/
+ * \section source Source
  *
- * \htmlonly
- * Project hosted by <a href="http://sourceforge.net">
- * <img style="vertical-align: middle;" src="http://sourceforge.net/sflogo.php?group_id=5418&type=1">
- * </a>
- * \endhtmlonly
+ * The <a href="https://github.com/Zipios/Zipios">source code is available
+ * on github</a>.
  */
 
 

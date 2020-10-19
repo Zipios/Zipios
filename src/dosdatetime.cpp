@@ -461,7 +461,7 @@ void DOSDateTime::setYear(int year)
     if(year < 1980
     || year > 2107)
     {
-        throw InvalidException("Year out of range for an MS-DOS Date & Time object. Range is [1980, 2107].");
+        throw InvalidException("Year out of range for an MS-DOS Date & Time object. Range is [1980, 2107] (1).");
     }
 
     dosdatetime_convert_t conv;
@@ -557,7 +557,7 @@ void DOSDateTime::setUnixTimestamp(std::time_t unix_timestamp)
     if(t.tm_year < 1980 - 1900
     || t.tm_year > 2107 - 1900)
     {
-        throw InvalidException("Year out of range for an MS-DOS Date & Time object. Range is [1980, 2107].");
+        throw InvalidException("Year out of range for an MS-DOS Date & Time object. Range is [1980, 2107] (2).");
     }
 
     dosdatetime_convert_t conv;

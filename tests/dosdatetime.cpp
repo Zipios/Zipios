@@ -457,6 +457,9 @@ TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
 }
 
 
+#if INTPTR_MAX != INT32_MAX
+// at this time only check on 64 bit computers because the DOS date can
+// go out of range in a Unix date when we're on a 32 bit computer
 TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
 {
     init_min_max();
@@ -497,6 +500,7 @@ TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
         }
     }
 }
+#endif
 
 
 

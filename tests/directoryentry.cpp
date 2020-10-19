@@ -565,6 +565,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
             }
         }
 
+#if INTPTR_MAX != INT32_MAX
+// at this time only check on 64 bit computers because the DOS date can
+// go out of range in a Unix date when we're on a 32 bit computer
         WHEN("setting the DOS time")
         {
             // DOS time numbers are not linear so we test until we get one
@@ -682,6 +685,7 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.isEqual(*clone));
             }
         }
+#endif
 
         WHEN("setting the entry offset")
         {
@@ -1141,6 +1145,9 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 de.setSize(file_size);
             }
 
+#if INTPTR_MAX != INT32_MAX
+// at this time only check on 64 bit computers because the DOS date can
+// go out of range in a Unix date when we're on a 32 bit computer
             {
                 // DOS time numbers are not linear so we use a Unix date and
                 // convert to DOS time (since we know our converter works)
@@ -1239,6 +1246,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
             }
+#endif
         }
 
         unlink("filepath-test.txt");
@@ -1661,6 +1669,9 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             }
         }
 
+#if INTPTR_MAX != INT32_MAX
+// at this time only check on 64 bit computers because the DOS date can
+// go out of range in a Unix date when we're on a 32 bit computer
         WHEN("setting the DOS time")
         {
             // DOS time numbers are not linear so we test until we get one
@@ -1765,6 +1776,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->toString() == "filepath-test (directory)");
             }
         }
+#endif
 
         rmdir("filepath-test");
     }

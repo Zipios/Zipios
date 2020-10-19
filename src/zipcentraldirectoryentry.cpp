@@ -338,7 +338,7 @@ void ZipCentralDirectoryEntry::write(std::ostream& os)
     }
 
 // Solaris defines _ILP32 for 32 bit platforms
-#if !defined(_ILP32)
+#if INTPTR_MAX != INT32_MAX
     if(m_compressed_size   >= 0x100000000ULL
     || m_uncompressed_size >= 0x100000000ULL
     || m_entry_offset      >= 0x100000000LL)
