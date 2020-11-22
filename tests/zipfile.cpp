@@ -965,6 +965,27 @@ TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollectio
     }
 }
 
+#ifdef __unix__
+TEST_CASE("Check saveCollectionToArchive with DirectoryCollection")
+{
+    REQUIRE(system("mkdir -p test_dir") == 0);
+
+    {
+        std::ofstream file_bin("test_dir/file1.bin", std::ios::out | std::ios::binary);
+        for(int pos(0); pos < 1024; ++pos)
+        {
+            file_bin << static_cast<char>(rand());
+        }
+    }
+
+    zipios::DirectoryCollection directoryCollection("test_dir");
+    std::ofstream tempZipStream("test.zip", std::ios_base::binary | std::ios::out);
+    zipios::ZipFile::saveCollectionToArchive(tempZipStream, directoryCollection);
+    tempZipStream.close();
+
+    REQUIRE(system("unzip -o test.zip") == 0);
+}
+#endif
 
 // For this one we have a set of structures and we "manually"
 // create Zip archive files that we can thus tweak with totally

@@ -276,7 +276,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-                        REQUIRE((*it)->getCrc() == 0);
                         REQUIRE((*it)->getEntryOffset() == 0);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
@@ -287,16 +286,19 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         dt.setUnixTimestamp(file_stats.st_mtime);
                         REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                            REQUIRE((*it)->getCrc() == 0);
+                            REQUIRE_FALSE((*it)->hasCrc());
                         }
                         else
                         {
                             REQUIRE_FALSE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == file_stats.st_size);
+                            REQUIRE((*it)->getCrc() != 0);
+                            REQUIRE((*it)->hasCrc());
                         }
                         REQUIRE((*it)->isValid());
                         //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -339,7 +341,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-                        REQUIRE((*it)->getCrc() == 0);
                         REQUIRE((*it)->getEntryOffset() == 0);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
@@ -350,16 +351,19 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         dt.setUnixTimestamp(file_stats.st_mtime);
                         REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                            REQUIRE((*it)->getCrc() == 0);
+                            REQUIRE_FALSE((*it)->hasCrc());
                         }
                         else
                         {
                             REQUIRE_FALSE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == file_stats.st_size);
+                            REQUIRE((*it)->getCrc() != 0);
+                            REQUIRE((*it)->hasCrc());
                         }
                         REQUIRE((*it)->isValid());
                         //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -398,7 +402,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-                        REQUIRE((*it)->getCrc() == 0);
                         REQUIRE((*it)->getEntryOffset() == 0);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
@@ -409,16 +412,19 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         dt.setUnixTimestamp(file_stats.st_mtime);
                         REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                            REQUIRE((*it)->getCrc() == 0);
+                            REQUIRE_FALSE((*it)->hasCrc());
                         }
                         else
                         {
                             REQUIRE_FALSE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == file_stats.st_size);
+                            REQUIRE((*it)->getCrc() != 0);
+                            REQUIRE((*it)->hasCrc());
                         }
                         REQUIRE((*it)->isValid());
                         //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -457,7 +463,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-                        REQUIRE((*it)->getCrc() == 0);
                         REQUIRE((*it)->getEntryOffset() == 0);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
@@ -468,16 +473,19 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         dt.setUnixTimestamp(file_stats.st_mtime);
                         REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                            REQUIRE((*it)->getCrc() == 0);
+                            REQUIRE_FALSE((*it)->hasCrc());
                         }
                         else
                         {
                             REQUIRE_FALSE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == file_stats.st_size);
+                            REQUIRE((*it)->getCrc() != 0);
+                            REQUIRE((*it)->hasCrc());
                         }
                         REQUIRE((*it)->isValid());
                         //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -615,7 +623,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-                        REQUIRE((*it)->getCrc() == 0);
                         REQUIRE((*it)->getEntryOffset() == 0);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
@@ -626,16 +633,19 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         dt.setUnixTimestamp(file_stats.st_mtime);
                         REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                            REQUIRE((*it)->getCrc() == 0);
+                            REQUIRE_FALSE((*it)->hasCrc());
                         }
                         else
                         {
                             REQUIRE_FALSE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == file_stats.st_size);
+                            REQUIRE((*it)->getCrc() != 0);
+                            REQUIRE((*it)->hasCrc());
                         }
                         REQUIRE((*it)->isValid());
                         //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -671,7 +681,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-                        REQUIRE((*it)->getCrc() == 0);
                         REQUIRE((*it)->getEntryOffset() == 0);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
@@ -682,16 +691,19 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         dt.setUnixTimestamp(file_stats.st_mtime);
                         REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                            REQUIRE((*it)->getCrc() == 0);
+                            REQUIRE_FALSE((*it)->hasCrc());
                         }
                         else
                         {
                             REQUIRE_FALSE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == file_stats.st_size);
+                            REQUIRE((*it)->getCrc() != 0);
+                            REQUIRE((*it)->hasCrc());
                         }
                         REQUIRE((*it)->isValid());
                         //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -728,7 +740,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-                        REQUIRE((*it)->getCrc() == 0);
                         REQUIRE((*it)->getEntryOffset() == 0);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
@@ -739,16 +750,19 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         dt.setUnixTimestamp(file_stats.st_mtime);
                         REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                            REQUIRE((*it)->getCrc() == 0);
+                            REQUIRE_FALSE((*it)->hasCrc());
                         }
                         else
                         {
                             REQUIRE_FALSE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == file_stats.st_size);
+                            REQUIRE((*it)->getCrc() != 0);
+                            REQUIRE((*it)->hasCrc());
                         }
                         REQUIRE((*it)->isValid());
                         //REQUIRE((*it)->toString() == "... (0 bytes)");
@@ -785,7 +799,6 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
 
                         REQUIRE((*it)->getComment().empty());
                         REQUIRE((*it)->getCompressedSize() == (*it)->getSize());
-                        REQUIRE((*it)->getCrc() == 0);
                         REQUIRE((*it)->getEntryOffset() == 0);
                         REQUIRE((*it)->getExtra().empty());
                         REQUIRE((*it)->getHeaderSize() == 0);
@@ -796,16 +809,19 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                         dt.setUnixTimestamp(file_stats.st_mtime);
                         REQUIRE((*it)->getTime() == dt.getDOSDateTime());
                         REQUIRE((*it)->getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE((*it)->hasCrc());
                         if(t == zipios_test::file_t::type_t::DIRECTORY)
                         {
                             REQUIRE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == 0); // size is zero for directories
+                            REQUIRE((*it)->getCrc() == 0);
+                            REQUIRE_FALSE((*it)->hasCrc());
                         }
                         else
                         {
                             REQUIRE_FALSE((*it)->isDirectory());
                             REQUIRE((*it)->getSize() == file_stats.st_size);
+                            REQUIRE((*it)->getCrc() != 0);
+                            REQUIRE((*it)->hasCrc());
                         }
                         REQUIRE((*it)->isValid());
                         //REQUIRE((*it)->toString() == "... (0 bytes)");

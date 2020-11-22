@@ -366,7 +366,10 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
     // update fields in m_entries.back()
     FileEntry::pointer_t entry(m_entries.back());
     entry->setSize(getSize());
-    entry->setCrc(getCrc32());
+    if(!entry->hasCrc())
+    {
+        entry->setCrc(getCrc32());
+    }
     /** \TODO
      * Rethink the design as we have to force a call to the correct
      * getHeaderSize() function?

@@ -32,6 +32,8 @@
 
 #include "zipios_common.hpp"
 
+#include <zlib.h>
+#include <fstream>
 
 namespace zipios
 {
@@ -63,6 +65,29 @@ DirectoryEntry::DirectoryEntry(FilePath const & filename, std::string const & co
     {
         m_uncompressed_size = m_filename.isDirectory() ? 0 : m_filename.fileSize();
         m_unix_time = m_filename.lastModificationTime();
+
+        computeCRC32();
+    }
+}
+
+void DirectoryEntry::computeCRC32()
+{
+    if(!m_filename.isDirectory())
+    {
+        std::ifstream fileStream(m_filename);
+        if(fileStream.bad())
+        {
+            throw IOException("Can't open the file.");
+        }
+
+        m_crc_32 = 0;
+        char c = 0;
+        while(fileStream.get(c))
+        {
+            m_crc_32 = crc32(m_crc_32, reinterpret_cast<unsigned char *>(&c), 1);
+        }
+
+        m_has_crc_32 = true;
     }
 }
 

@@ -773,7 +773,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
             {
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -784,7 +784,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
@@ -794,7 +794,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -805,7 +805,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
@@ -816,7 +816,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(de.getComment() == "new comment");
                 REQUIRE(de.getCompressedSize() == file_size);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -827,7 +827,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
@@ -837,7 +837,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment() == "new comment");
                 REQUIRE(clone->getCompressedSize() == file_size);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -848,7 +848,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
@@ -869,7 +869,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -880,7 +880,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
@@ -890,7 +890,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -901,7 +901,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
@@ -919,7 +919,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -930,7 +930,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
@@ -940,7 +940,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -951,7 +951,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
@@ -969,7 +969,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE_FALSE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -980,7 +980,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
@@ -991,7 +991,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE_FALSE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -1002,7 +1002,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
@@ -1023,7 +1023,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                         REQUIRE(de.getComment().empty());
                         REQUIRE(de.getCompressedSize() == file_size);
-                        REQUIRE(de.getCrc() == 0);
+                        REQUIRE(de.getCrc() != 0);
                         REQUIRE(de.getEntryOffset() == 0);
                         REQUIRE(de.getExtra().empty());
                         REQUIRE(de.getHeaderSize() == 0);
@@ -1034,7 +1034,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                         REQUIRE(de.getSize() == file_size);
                         REQUIRE(de.getTime() == dt.getDOSDateTime());
                         REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                        REQUIRE_FALSE(de.hasCrc());
+                        REQUIRE(de.hasCrc());
                         REQUIRE_FALSE(de.isDirectory());
                         REQUIRE(de.isValid());
                         REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
@@ -1055,7 +1055,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -1066,7 +1066,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
@@ -1076,7 +1076,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -1087,7 +1087,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
@@ -1105,7 +1105,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == r);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -1116,7 +1116,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == r);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(r) + " bytes)");
@@ -1126,7 +1126,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == r);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -1137,7 +1137,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == r);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(r) + " bytes)");
@@ -1161,7 +1161,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -1172,7 +1172,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == r.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r.getUnixTimestamp()); // WARNING: this is not always equal to t because setTime() may use the next even second
-                REQUIRE(!de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
@@ -1182,7 +1182,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -1193,7 +1193,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == r.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r.getUnixTimestamp());
-                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
@@ -1209,7 +1209,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(de.getComment().empty());
                 REQUIRE(de.getCompressedSize() == file_size);
-                REQUIRE(de.getCrc() == 0);
+                REQUIRE(de.getCrc() != 0);
                 REQUIRE(de.getEntryOffset() == 0);
                 REQUIRE(de.getExtra().empty());
                 REQUIRE(de.getHeaderSize() == 0);
@@ -1220,7 +1220,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dr.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r);
-                REQUIRE(!de.hasCrc());
+                REQUIRE(de.hasCrc());
                 REQUIRE(!de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
@@ -1230,7 +1230,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
 
                 REQUIRE(clone->getComment().empty());
                 REQUIRE(clone->getCompressedSize() == file_size);
-                REQUIRE(clone->getCrc() == 0);
+                REQUIRE(clone->getCrc() != 0);
                 REQUIRE(clone->getEntryOffset() == 0);
                 REQUIRE(clone->getExtra().empty());
                 REQUIRE(clone->getHeaderSize() == 0);
@@ -1241,7 +1241,7 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dr.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE(clone->hasCrc());
                 REQUIRE(!clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");

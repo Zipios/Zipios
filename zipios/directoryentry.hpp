@@ -47,6 +47,9 @@ public:
     virtual                 ~DirectoryEntry() override;
 
     virtual bool            isEqual(FileEntry const & file_entry) const override;
+
+private:
+    void computeCRC32();
 };
 
 
