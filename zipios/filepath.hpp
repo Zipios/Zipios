@@ -57,9 +57,11 @@ public:
     friend bool         operator == (std::string const& lhs, FilePath const& rhs);
     bool                operator == (FilePath const& rhs) const;
     // TBD: add all the other comparison operators for completeness
+    void                clear();
     std::string         filename() const;
     size_t              length() const;
     size_t              size() const;
+    bool                empty() const;
     bool                exists() const;
     bool                isRegular() const;
     bool                isDirectory() const;

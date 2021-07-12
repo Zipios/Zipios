@@ -343,6 +343,10 @@ size_t FileEntry::getSize() const
  * An MS-DOS date is limited to 127 years starting on 1980.
  * So it will be over after Dec 31, 2107.
  *
+ * \note
+ * In 32 bits, the Unix date is limited to 03:14:07 on Tuesday,
+ * 19 January 2038. Please switch to a 64 bit OS soon.
+ *
  * \return The date and time of the entry in MS-DOS format.
  */
 DOSDateTime::dosdatetime_t FileEntry::getTime() const
@@ -373,7 +377,7 @@ DOSDateTime::dosdatetime_t FileEntry::getTime() const
  * \note
  * Unless you have an old 32 bit system that defines time_t
  * as a 32 bit value, a Unix date can be considered infinite.
- * Otherwise it is limited to some time in 2068.
+ * Otherwise it is limited to some time in 2038.
  *
  * \return The date and time of the entry as a time_t value.
  */
@@ -416,10 +420,13 @@ bool FileEntry::isDirectory() const
  * This function compares most of the fields between two file
  * entries to see whether they are equal or not.
  *
+ * Note that this does not compare the file contents, only the
+ * file entry meta data.
+ *
  * \warning
  * The Extra buffer is ignored in the comparison. There are two
  * reasons for this: (1) it is unlikely that such a parameter
- * should could in the comparison (just like the compressed
+ * should count in the comparison (just like the compressed
  * size of the file) and (2) the comparison is not trivial as
  * each chunk in the buffer needs to be separately compared
  * (we may offer that capability once we have a ZipExtra class.)
@@ -555,7 +562,7 @@ void FileEntry::setLevel(CompressionLevel level)
 {
     if(level < COMPRESSION_LEVEL_DEFAULT || level > COMPRESSION_LEVEL_MAXIMUM)
     {
-        throw InvalidStateException("level must be between COMPRESSION_LEVEL_DEFAULT and COMPRESSION_LEVEL_MAXIMUM");
+        throw InvalidStateException("level must be between COMPRESSION_LEVEL_DEFAULT and COMPRESSION_LEVEL_MAXIMUM inclusive");
     }
     if(isDirectory())
     {
@@ -623,7 +630,7 @@ void FileEntry::setMethod(StorageMethod method)
 
     if(isDirectory())
     {
-        // force uncompressed for directories
+        // never compress directories
         m_compress_method = StorageMethod::STORED;
     }
     else

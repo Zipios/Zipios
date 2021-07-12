@@ -79,7 +79,7 @@ DirectoryEntry::DirectoryEntry(FilePath const & filename, std::string const & co
  */
 DirectoryEntry::pointer_t DirectoryEntry::clone() const
 {
-    return DirectoryEntry::pointer_t(new DirectoryEntry(*this));
+    return std::make_shared<DirectoryEntry>(*this);
 }
 
 

@@ -90,7 +90,7 @@ DirectoryCollection::DirectoryCollection()
  *                  directory the created DirectoryCollection is
  *                  marked as being invalid.
  * \param[in] recursive  Whether to load all the files found in
- *                       sub-direcotries.
+ *                       sub-directories.
  */
 DirectoryCollection::DirectoryCollection(std::string const & path, bool recursive)
     //: m_entries_loaded(false) -- auto-init
@@ -98,7 +98,7 @@ DirectoryCollection::DirectoryCollection(std::string const & path, bool recursiv
     , m_filepath(path)
 {
     m_filename = m_filepath;
-    m_valid = m_filepath.isDirectory() | m_filepath.isRegular();
+    m_valid = m_filepath.isDirectory() || m_filepath.isRegular();
 }
 
 
@@ -120,7 +120,7 @@ DirectoryCollection::~DirectoryCollection()
 void DirectoryCollection::close()
 {
     m_entries_loaded = false;
-    m_filepath = "";
+    m_filepath.clear();
 
     FileCollection::close();
 }
@@ -210,7 +210,7 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::s
         return DirectoryCollection::stream_pointer_t();
     }
 
-    DirectoryCollection::stream_pointer_t p(new std::ifstream(ent->getName(), std::ios::in | std::ios::binary));
+    DirectoryCollection::stream_pointer_t p(std::make_shared<std::ifstream>(ent->getName(), std::ios::in | std::ios::binary));
     return p;
 }
 
@@ -224,7 +224,7 @@ DirectoryCollection::stream_pointer_t DirectoryCollection::getInputStream(std::s
  */
 FileCollection::pointer_t DirectoryCollection::clone() const
 {
-    return FileCollection::pointer_t(new DirectoryCollection(*this));
+    return std::make_shared<DirectoryCollection>(*this);
 }
 
 
@@ -237,7 +237,7 @@ FileCollection::pointer_t DirectoryCollection::clone() const
  */
 void DirectoryCollection::loadEntries() const
 {
-    // WARNING: this has to stay here because the collection could get close()'s...
+    // WARNING: this has to stay here because the collection could get close()'d...
     mustBeValid();
 
     if(!m_entries_loaded)
@@ -250,7 +250,7 @@ void DirectoryCollection::loadEntries() const
         try
         {
             // include the root directory
-            FileEntry::pointer_t entry(new DirectoryEntry(m_filepath, ""));
+            FileEntry::pointer_t entry(std::make_shared<DirectoryEntry>(m_filepath, ""));
             const_cast<DirectoryCollection *>(this)->m_entries.push_back(entry);
 
             // now read the data inside that directory
@@ -403,7 +403,7 @@ void DirectoryCollection::load(FilePath const& subdir)
         // a Zip archive
         if(name != "." && name != "..")
         {
-            FileEntry::pointer_t entry(new DirectoryEntry(m_filepath + subdir + name, ""));
+            FileEntry::pointer_t entry(std::make_shared<DirectoryEntry>(m_filepath + subdir + name, ""));
             m_entries.push_back(entry);
 
             if(m_recursive && entry->isDirectory())

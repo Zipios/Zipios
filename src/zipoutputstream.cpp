@@ -134,7 +134,7 @@ void ZipOutputStream::putNextEntry(FileEntry::pointer_t entry)
     ZipCentralDirectoryEntry * central_directory_entry(dynamic_cast<ZipCentralDirectoryEntry *>(entry.get()));
     if(central_directory_entry == nullptr)
     {
-        entry.reset(new ZipCentralDirectoryEntry(*entry));
+        entry = std::make_shared<ZipCentralDirectoryEntry>(*entry);
     }
 
     m_ozf->putNextEntry(entry);

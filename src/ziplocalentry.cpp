@@ -412,7 +412,6 @@ void ZipLocalEntry::write(std::ostream& os)
 
     /** todo: add support for 64 bit zip archive
      */
-// Solaris defines _ILP32 for 32 bit platforms
 #if INTPTR_MAX != INT32_MAX
     if(m_compressed_size   >= 0x100000000UL
     || m_uncompressed_size >= 0x100000000UL)
@@ -422,7 +421,7 @@ void ZipLocalEntry::write(std::ostream& os)
         // Note: The compressed size is known at the end, we seek back to
         //       this header and resave it with the info; thus the error
         //       is caught then if it was not out of bounds earlier.
-        throw InvalidStateException("The size of this file is too large to fit in a zip archive."); // LCOV_EXCL_LINE
+        throw InvalidStateException("The size of this file is too large to fit in a 32 bit zip archive."); // LCOV_EXCL_LINE
     }
 #endif
 

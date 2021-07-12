@@ -154,6 +154,7 @@ void FilePath::check() const
 FilePath& FilePath::operator = (std::string const& path)
 {
     m_path = pruneTrailingSeparator(path);
+    m_checked = false;
     return *this;
 }
 
@@ -296,6 +297,17 @@ bool FilePath::operator == (FilePath const& rhs) const
 }
 
 
+/** \brief Clear the filename.
+ *
+ * This function clears the path to an empty string.
+ */
+void FilePath::clear()
+{
+    m_path.clear();
+    m_checked = false;
+}
+
+
 /** \brief Retrieve the basename.
  *
  * This function returns the filename part of the FilePath
@@ -347,6 +359,31 @@ size_t FilePath::length() const
 size_t FilePath::size() const
 {
     return length();
+}
+
+
+/** \brief Check whether the filename is empty.
+ *
+ * This function returns true if the filename is empty. In other words, this
+ * function returns true if the filename is not currently defined.
+ *
+ * \note
+ * This function returns true after a call to the clear() function.
+ *
+ * \warning
+ * If you are trying to know whether the file itself is empty, please use
+ * the fileSize() instead and check whether it is zero or not:
+ *
+ *     if(file_path.fileSize() == 0) ...empty file...
+ *
+ * \return true when the file path is empty.
+ *
+ * \sa clear()
+ * \sa fileSize()
+ */
+bool FilePath::empty() const
+{
+    return m_path.empty();
 }
 
 
