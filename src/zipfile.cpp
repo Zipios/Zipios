@@ -22,7 +22,7 @@
 /** \file
  * \brief The implementation of zipios::ZipFile.
  *
- * This file contrains the high level functions used to read or write
+ * This file contains the high level functions used to read or write
  * a Zip archive file.
  */
 
@@ -505,7 +505,7 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name,
  * This function is expected to be used with a DirectoryCollection
  * that you created to save the collection in an archive.
  *
- * \param[in,out] os  The output stream where the Zip archive is saed.
+ * \param[in,out] os  The output stream where the Zip archive is saved.
  * \param[in] collection  The collection to save in this output stream.
  * \param[in] zip_comment  The global comment of the Zip archive.
  */
@@ -532,7 +532,7 @@ void ZipFile::saveCollectionToArchive(std::ostream & os, FileCollection & collec
             }
         }
 
-        // clean up mantually so we can get any exception
+        // clean up manually so we can get any exception
         // (so we avoid having exceptions gobbled by the destructor)
         output_stream.closeEntry();
         output_stream.finish();

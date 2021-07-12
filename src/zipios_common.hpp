@@ -41,7 +41,7 @@ typedef int32_t ssize_t;
 #endif
 
 
-/** \brief Contatenate two vectors together.
+/** \brief Concatenate two vectors together.
  *
  * This function appends vector v2 to vector v1 using a push_back()
  * of all the elements of v2.

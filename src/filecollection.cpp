@@ -157,7 +157,7 @@ private:
 /** \class FileCollection
  * \brief Base class for various file collections.
  *
- * FileCollection is an abstract baseclass that represents a
+ * FileCollection is an abstract base class that represents a
  * collection of files. The specializations of FileCollection
  * represents different origins of file collections, such as
  * directories, simple filename lists and compressed archives.

@@ -22,7 +22,7 @@
 /** \file
  * \brief Implementation of zipios::FileEntry.
  *
- * This file includes the implementation of the Fzipios::ileEntry.
+ * This file includes the implementation of the zipios::FileEntry.
  * Many of the functions in zipios::FileEntry are pure virtual so
  * only their documentation appears here.
  *

@@ -65,8 +65,8 @@ DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf)
 {
     // NOTICE: It is important that this constructor and the methods it
     //         calls does not do anything with the output streambuf m_outbuf.
-    //         The reason is that this class can be subclassed, and the
-    //         subclass should get a chance to write to the buffer first.
+    //         The reason is that this class can be sub-classed, and the
+    //         sub-class should get a chance to write to the buffer first.
 
     // zlib init: (this is done in the class declaration)
     //m_zs.zalloc = Z_NULL;

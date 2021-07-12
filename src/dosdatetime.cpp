@@ -428,7 +428,7 @@ void DOSDateTime::setMDay(int mday)
  * \exception InvalidException
  * The month is expected to be set to a number between 1 and 12 inclusive.
  *
- * \param[in] month  The ne DOSDateTime month.
+ * \param[in] month  The new DOSDateTime month.
  */
 void DOSDateTime::setMonth(int month)
 {

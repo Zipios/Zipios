@@ -419,7 +419,7 @@ void ZipLocalEntry::write(std::ostream& os)
         // these are really big files, we do not currently test such so ignore in coverage
         //
         // Note: The compressed size is known at the end, we seek back to
-        //       this header and resave it with the info; thus the error
+        //       this header and re-save it with the info; thus the error
         //       is caught then if it was not out of bounds earlier.
         throw InvalidStateException("The size of this file is too large to fit in a 32 bit zip archive."); // LCOV_EXCL_LINE
     }

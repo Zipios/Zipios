@@ -167,7 +167,7 @@ FileCollection::pointer_t CollectionCollection::clone() const
 /** \brief Clean up this CollectionCollection object.
  *
  * This function ensures that the CollectionCollection object
- * is cleaned up before deallcoating the memory.
+ * is cleaned up before deallocating the memory.
  */
 CollectionCollection::~CollectionCollection()
 {
@@ -261,7 +261,7 @@ void CollectionCollection::close()
 {
     // make sure to close all the children first
     // (although I would imagine that the m_collections.clear() should
-    // be enough, unless someone else has a refenrence to another one
+    // be enough, unless someone else has a reference to another one
     // of the sub-collections--but I do not think one can get such as
     // reference at this point, remember that the addCollection()
     // creates a clone of the collection being added.)
@@ -343,10 +343,10 @@ FileEntry::pointer_t CollectionCollection::getEntry(std::string const& name, Mat
     mustBeValid();
 
     // Returns the first matching entry.
-    FileCollection::pointer_t file_colection;
+    FileCollection::pointer_t file_collection;
     FileEntry::pointer_t cep;
 
-    matchEntry(m_collections, name, cep, file_colection, matchpath);
+    matchEntry(m_collections, name, cep, file_collection, matchpath);
 
     return cep;
 }

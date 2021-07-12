@@ -77,7 +77,7 @@ InflateInputStreambuf::InflateInputStreambuf(std::streambuf *inbuf, offset_t sta
     // NOTICE: It is important that this constructor and the methods it
     // calls doesn't do anything with the input streambuf inbuf, other
     // than repositioning it to the specified position. The reason is
-    // that this class can be subclassed, and the subclass should get a
+    // that this class can be sub-classed, and the sub-class should get a
     // chance to read from the buffer first)
 
     // zlib init:
@@ -88,7 +88,7 @@ InflateInputStreambuf::InflateInputStreambuf(std::streambuf *inbuf, offset_t sta
     reset(start_pos);
     // We are not checking the return value of reset() and throwing
     // an exception in case of an error, because we cannot catch the exception
-    // in the constructors of subclasses with all compilers.
+    // in the constructors of sub-classes with all compilers.
 }
 
 

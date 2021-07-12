@@ -1,12 +1,12 @@
 zipios (2.2.7.0~xenial) xenial; urgency=high
 
   * Added the clear() and empty() functions to the FilePath class.
+  * Correctly clear the m_checked flag on a change of the FilePath.
   * Fixed a logical or (`||` instead of `|`).
   * Use clear() instead of setting string to "".
   * Replaced many `new ...` with `std::make_shared<>()`.
   * Fixed a few comments (spelling/grammar, missing/invalid info.).
-  * Correctly clear the m_checked flag on a change of the FilePath.
-  * Added the clear() & empty() functions on the FilePath class.
+  * Ran ispell against the library which includes the docs.
 
  -- Alexis Wilke <alexis@m2osw.com>  Tue, 03 Nov 2020 07:16:34 -0800
 
