@@ -15,7 +15,7 @@ License (LGPL).
 
 # Dependencies
 
-Requires **zlib** ([http://www.zlib.org](http://www.zlib.org)).
+Requires **zlib** ([https://zlib.net](https://zlib.net/)).
 
     # Debian/Ubuntu
     sudo apt-get install zlib-dev
@@ -24,7 +24,7 @@ Requires **zlib** ([http://www.zlib.org](http://www.zlib.org)).
     sudo dnf install zlib-devel
 
 To run the automatic unit test suite you need **Catch**
-([https://github.com/philsquared/Catch](https://github.com/philsquared/Catch))
+([https://github.com/catchorg/Catch2](https://github.com/catchorg/Catch2))
 
     # Debian/Ubuntu
     sudo apt-get install catch
@@ -119,7 +119,7 @@ source tree with something like:
 
 For details about available installation configurations of cmake packages
 refer to the CMake documentation online
-[http://www.cmake.org/](http://www.cmake.org/)
+[https://cmake.org/](https://cmake.org/)
 
 By default, `make install` installs the Zipios 2.1+ header files under
 `/usr/include/zipios/` and the library `libzipios.so` under `/usr/lib/`.
@@ -142,7 +142,7 @@ under `dev/check` for an example.)
 CMake comes with a graphical tool one can use under MS-Windows to
 configure and generate a project supporting cmake. You will find more
 information about cmake on their official website
-[http://www.cmake.org/](http://www.cmake.org/).
+[https://cmake.org/](https://cmake.org).
 
 The output of CMake can be projects and a solution for Visual Studio C++
 or a set of `nmake` files. cmake also supports other formats such as JOM.
@@ -158,7 +158,7 @@ variable before you install anything.
 # Status and Documentation
 
 Please refer to the online documentation at
-[http://zipios.sourceforge.net/](http://zipios.sourceforge.net/)
+[https://zipios.sourceforge.io](https://zipios.sourceforge.io)
 
 At this time, we generate the HTML and Latex version of the documentation.
 It is pretty big, but we'll do our best to offer a .tar.gz of the
