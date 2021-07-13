@@ -144,7 +144,7 @@ std::streambuf::int_type ZipInputStreambuf::underflow()
         return traits_type::eof();
     }
 
-    default:
+    default: // LCOV_EXCL_LINE
         // This should NEVER be reached or the constructor let something
         // go through that should not have gone through
         throw std::logic_error("ZipInputStreambuf::underflow(): unknown storage method"); // LCOV_EXCL_LINE
