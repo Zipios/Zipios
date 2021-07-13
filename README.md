@@ -13,6 +13,12 @@ The source code is released under the GNU Lesser General Public
 License (LGPL).
 
 
+# Important Note
+
+I renamed the root branch as "main" instead of "master". If you created
+a fork or wanted to clone the project, make sure to use "main" now.
+
+
 # Dependencies
 
 Requires **zlib** ([https://zlib.net](https://zlib.net/)).
