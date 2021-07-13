@@ -58,7 +58,10 @@ zipios::StorageMethod const g_supported_storage_methods[]
 
 TEST_CASE("The library version", "[Version]")
 {
-    REQUIRE(system("dev/version") == 0);
+    std::string cmd("cd ");
+    cmd += zipios_test::g_source_path;
+    cmd += " && dev/version";
+    REQUIRE(system(cmd.c_str()) == 0);
 }
 
 

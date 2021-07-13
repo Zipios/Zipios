@@ -42,9 +42,19 @@
 namespace
 {
 
-char *g_progname;
+char * g_progname;
 
 }
+
+
+namespace zipios_test
+{
+
+std::string     g_source_path;
+
+} // zipios_test namespace
+
+
 
 
 int main(int argc, char *argv[])
@@ -79,6 +89,21 @@ int main(int argc, char *argv[])
             }
             seed = atoll(argv[i + 1]); // LCOV_EXCL_LINE
             // remove the --seed and <value>
+            for(int j(i); j + 2 < argc; ++j) // LCOV_EXCL_LINE
+            {
+                argv[j] = argv[j + 2]; // LCOV_EXCL_LINE
+            }
+            argc -= 2; // LCOV_EXCL_LINE
+        }
+        else if(strcmp(argv[i], "--source-path") == 0)
+        {
+            if(i + 1 >= argc) // LCOV_EXCL_LINE
+            {
+                std::cerr << "error: --source-path needs to be followed by the actual path." << std::endl; // LCOV_EXCL_LINE
+                exit(1); // LCOV_EXCL_LINE
+            }
+            zipios_test::g_source_path = argv[i + 1];
+            // remove the --source-path and <value>
             for(int j(i); j + 2 < argc; ++j) // LCOV_EXCL_LINE
             {
                 argv[j] = argv[j + 2]; // LCOV_EXCL_LINE

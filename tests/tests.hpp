@@ -61,6 +61,9 @@ namespace zipios_test
 {
 
 
+extern std::string     g_source_path;
+
+
 /** \brief Create a random number representing a size_t object.
  *
  * This function is used to accommodate 32 and 64 bit tests. It creates

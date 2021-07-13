@@ -15,9 +15,9 @@
 #      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 #      Lesser General Public License for more details.
 #
-#      You should have received a copy of the GNU Lesser General Public
-#      License along with this library; if not, write to the Free Software
-#      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#      You should have received a copy of the GNU Lesser General Public License
+#      along with this library; if not, write to the Free Software Foundation,
+#      Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
 set -e
@@ -76,6 +76,7 @@ echo "*** run (`date`)"
 echo "***"
 # todo:
 # Catch does not give us such... we may want to bypass the limitation...
+# For now I have a catch_version.cpp test at least
 #if test `tests/zipios_tests --version` != "$FULL_VERSION"
 #then
 #    echo "the version of zipios_tests (`BUILD/tests/zipios_tests --version`) is not equal to the project version ($FULL_VERSION)"
@@ -87,7 +88,7 @@ then
     echo "Start running the tests on `date`" >test_log.txt
     echo >>test_log.txt
     # --success generates way too much output for HTML
-    tests/zipios_tests --durations yes 2>&1 | tee -a test_log.txt; test ${PIPESTATUS[0]} -eq 0
+    tests/zipios_tests --source-path "${SOURCE_PATH}" --durations yes 2>&1 | tee -a test_log.txt; test ${PIPESTATUS[0]} -eq 0
     echo >>test_log.txt
     echo "Finished running the tests on `date`" >>test_log.txt
 else
@@ -95,9 +96,9 @@ else
     if test "$1" == "--all" -o -z "$1"
     then
         # Do it all, but not published
-        tests/zipios_tests
+        tests/zipios_tests --source-path "${SOURCE_PATH}"
     else
-        tests/zipios_tests $1
+        tests/zipios_tests --source-path "${SOURCE_PATH}" $1
     fi
     # just in case, remove the log file if there is one
     rm -f test_log.txt

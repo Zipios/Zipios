@@ -22,6 +22,12 @@
 #      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
+if test ! -f CMakeLists.txt -o ! -f debian/changelog
+then
+	echo "error: can't find CMakeLists.txt or debian/changelog to extract version information."
+	exit 1
+fi
+
 MAJOR=`grep 'set( ZIPIOS_VERSION_MAJOR ' CMakeLists.txt | sed -e 's/.*ZIPIOS_VERSION_MAJOR //' -e 's/ .*//'`
 MINOR=`grep 'set( ZIPIOS_VERSION_MINOR ' CMakeLists.txt | sed -e 's/.*ZIPIOS_VERSION_MINOR //' -e 's/ .*//'`
 PATCH=`grep 'set( ZIPIOS_VERSION_PATCH ' CMakeLists.txt | sed -e 's/.*ZIPIOS_VERSION_PATCH //' -e 's/ .*//'`
