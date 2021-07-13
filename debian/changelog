@@ -1,4 +1,4 @@
-zipios (2.3.0.0~xenial) xenial; urgency=high
+zipios (2.3.0.0~bionic) bionic; urgency=high
 
   * Added the clear() and empty() functions to the FilePath class.
   * Correctly clear the m_checked flag on a change of the FilePath.
