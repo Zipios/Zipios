@@ -55,6 +55,7 @@ add_executable( ${PROJECT_NAME}
     dosdatetime.cpp
     filepath.cpp
     stream.cpp
+    catch_version.cpp
     virtualseeker.cpp
     zipfile.cpp
 

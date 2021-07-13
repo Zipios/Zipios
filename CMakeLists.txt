@@ -23,50 +23,50 @@
 #      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 #      Lesser General Public License for more details.
 #
-#      You should have received a copy of the GNU Lesser General Public
-#      License along with this library; if not, write to the Free Software
-#      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#      You should have received a copy of the GNU Lesser General Public License
+#      along with this library; if not, write to the Free Software Foundation,
+#      Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
 cmake_minimum_required(VERSION 2.8.5)
 
-project( zipios_project )
+project(zipios_project)
 
-option( RUN_TESTS "Enable CTest support and turn on the 'test' make target." OFF )
-if( ${RUN_TESTS} )
+option(RUN_TESTS "Enable CTest support and turn on the 'test' make target." OFF)
+if(${RUN_TESTS})
     enable_testing()
 endif()
 
 set( ZIPIOS_VERSION_MAJOR 2 )
-set( ZIPIOS_VERSION_MINOR 2 )
-set( ZIPIOS_VERSION_PATCH 6 )
+set( ZIPIOS_VERSION_MINOR 3 )
+set( ZIPIOS_VERSION_PATCH 0 )
 set( ZIPIOS_VERSION_BUILD 0 )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-if( MSVC )
-    set( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS"              )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS" )
-    add_definitions( -DZIPIOS_WINDOWS )
+if(MSVC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS")
+    add_definitions(-DZIPIOS_WINDOWS)
 else()
-    if( BORLAND )
-        message( FATAL_ERROR "Borland compiler not supported!" )
+    if(BORLAND)
+        message(FATAL_ERROR "Borland compiler not supported!")
     endif()
 
     # SUNOS is not set by cmake
-    string( REGEX MATCH "SunOS" SUNOS ${CMAKE_SYSTEM_NAME} )
+    string(REGEX MATCH "SunOS" SUNOS ${CMAKE_SYSTEM_NAME})
 
-    set( CMAKE_C_FLAGS           "${CMAKE_C_FLAGS} -fwrapv -fPIC"                                  )
-    set( CMAKE_C_FLAGS_DEBUG     "${CMAKE_C_FLAGS_DEBUG} -Werror -Wall -Wextra -Wunused-parameter" )
-    set( CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} -O3"                                    )
+    set(CMAKE_C_FLAGS           "${CMAKE_C_FLAGS} -fwrapv -fPIC"                                 )
+    set(CMAKE_C_FLAGS_DEBUG     "${CMAKE_C_FLAGS_DEBUG} -Werror -Wall -Wextra -Wunused-parameter")
+    set(CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} -O3"                                   )
     #
-    if( CYGWIN )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11"     )
+    if(CYGWIN)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
     else()
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC" )
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
     endif()
-    set( CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fdiagnostics-show-option -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -Wunused-parameter -Wfloat-equal -Wold-style-cast -Wnoexcept" )
-    set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
+    set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fdiagnostics-show-option -Werror -Wall -Wextra -pedantic -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Winit-self -Wlogical-op -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=4 -Wundef -Wno-unused -Wunused-variable -Wno-variadic-macros -Wno-parentheses -Wno-unknown-pragmas -Wwrite-strings -Wswitch -Wunused-parameter -Wfloat-equal -Wold-style-cast -Wnoexcept")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 endif()
 
 option(BUILD_SHARED_LIBS "Build the ${PROJECT_NAME} libraries shared." ON)

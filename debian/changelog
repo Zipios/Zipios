@@ -1,4 +1,4 @@
-zipios (2.2.7.0~xenial) xenial; urgency=high
+zipios (2.3.0.0~xenial) xenial; urgency=high
 
   * Added the clear() and empty() functions to the FilePath class.
   * Correctly clear the m_checked flag on a change of the FilePath.
@@ -11,6 +11,7 @@ zipios (2.2.7.0~xenial) xenial; urgency=high
   * Added a function to compute CRC32 of local disk files.
   * Made tests delete files upfront too (in case it breaks part way).
   * Fixed path to BUILD folder in ./mk script.
+  * Added a test for the version (CMakelists.txt vs debian/changelog).
   * Bumped copyright notice date to 2021.
 
  -- Alexis Wilke <alexis@m2osw.com>  Tue, 03 Nov 2020 07:16:34 -0800
