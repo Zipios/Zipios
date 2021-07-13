@@ -6,9 +6,9 @@
 PROCESSORS=`nproc`
 
 # Determine the location of the BUILD folder
-if test -d ../../../BUILD/contrib/zipios
+if test -d ../../BUILD/Debug/contrib/zipios
 then
-	BUILD=../../../BUILD/contrib/zipios
+	BUILD=../../BUILD/Debug/contrib/zipios
 else
 	BUILD=../BUILD/zipios
 fi

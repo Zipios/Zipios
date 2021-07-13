@@ -2,7 +2,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -531,9 +531,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == r);
                 REQUIRE(de.getTime() == 0);  // invalid date
                 REQUIRE(de.getUnixTime() == 0);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
-                REQUIRE(!de.isValid());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (" + std::to_string(r) + " bytes)");
 
                 zipios::DirectoryEntry other(zipios::FilePath("really/.should"), "");
@@ -556,9 +556,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == r);
                 REQUIRE(clone->getTime() == 0);  // invalid date
                 REQUIRE(clone->getUnixTime() == 0);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
-                REQUIRE(!clone->isValid());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (" + std::to_string(r) + " bytes)");
                 REQUIRE(clone->isEqual(de));
                 REQUIRE(de.isEqual(*clone));
@@ -593,9 +593,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == r.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r.getUnixTimestamp());
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
-                REQUIRE(!de.isValid());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
 
                 zipios::DirectoryEntry other(zipios::FilePath("other-name.txt"), "");
@@ -618,9 +618,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == r.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r.getUnixTimestamp());
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
-                REQUIRE(!clone->isValid());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
                 REQUIRE(clone->isEqual(de));
                 REQUIRE(de.isEqual(*clone));
@@ -652,9 +652,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
-                REQUIRE(!de.isValid());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
+                REQUIRE_FALSE(de.isValid());
                 REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
 
                 zipios::DirectoryEntry other(zipios::FilePath("path/incorrect"), "");
@@ -677,9 +677,9 @@ SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
-                REQUIRE(!clone->isValid());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
+                REQUIRE_FALSE(clone->isValid());
                 REQUIRE(clone->toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
                 REQUIRE(clone->isEqual(de));
                 REQUIRE(de.isEqual(*clone));
@@ -784,8 +784,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
 
@@ -805,8 +805,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
             }
@@ -827,8 +827,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
 
@@ -848,8 +848,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
 
@@ -880,8 +880,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
 
@@ -901,8 +901,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
             }
@@ -930,8 +930,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
 
@@ -951,8 +951,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_stats.st_size) + " bytes)");
             }
@@ -1116,8 +1116,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == r);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(r) + " bytes)");
 
@@ -1137,8 +1137,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == r);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(r) + " bytes)");
 
@@ -1172,8 +1172,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == r.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r.getUnixTimestamp()); // WARNING: this is not always equal to t because setTime() may use the next even second
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
 
@@ -1193,8 +1193,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == r.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r.getUnixTimestamp());
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
             }
@@ -1220,8 +1220,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == file_size);
                 REQUIRE(de.getTime() == dr.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r);
-                REQUIRE(!de.hasCrc());
-                REQUIRE(!de.isDirectory());
+                REQUIRE_FALSE(de.hasCrc());
+                REQUIRE_FALSE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
 
@@ -1241,8 +1241,8 @@ TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == file_size);
                 REQUIRE(clone->getTime() == dr.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r);
-                REQUIRE(!clone->hasCrc());
-                REQUIRE(!clone->isDirectory());
+                REQUIRE_FALSE(clone->hasCrc());
+                REQUIRE_FALSE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test.txt (" + std::to_string(file_size) + " bytes)");
             }
@@ -1288,7 +1288,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
             REQUIRE(de.getSize() == 0);
             REQUIRE(de.getTime() == dt.getDOSDateTime());
             REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-            REQUIRE(!de.hasCrc());
+            REQUIRE_FALSE(de.hasCrc());
             REQUIRE(de.isDirectory());
             REQUIRE(de.isValid());
             REQUIRE(de.toString() == "filepath-test (directory)");
@@ -1443,7 +1443,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
+                REQUIRE_FALSE(de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test (directory)");
@@ -1464,7 +1464,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test (directory)");
@@ -1497,7 +1497,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
+                REQUIRE_FALSE(de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test (directory)");
@@ -1519,7 +1519,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test (directory)");
@@ -1641,7 +1641,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == r);
                 REQUIRE(de.getTime() == dt.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!de.hasCrc());
+                REQUIRE_FALSE(de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test (directory)");
@@ -1662,7 +1662,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == r);
                 REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test (directory)");
@@ -1696,7 +1696,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == r.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r.getUnixTimestamp());
-                REQUIRE(!de.hasCrc());
+                REQUIRE_FALSE(de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test (directory)");
@@ -1717,7 +1717,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == r.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r.getUnixTimestamp());
-                REQUIRE(!clone->hasCrc());
+                REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test (directory)");
@@ -1749,7 +1749,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(de.getSize() == 0);
                 REQUIRE(de.getTime() == dr.getDOSDateTime());
                 REQUIRE(de.getUnixTime() == r);
-                REQUIRE(!de.hasCrc());
+                REQUIRE_FALSE(de.hasCrc());
                 REQUIRE(de.isDirectory());
                 REQUIRE(de.isValid());
                 REQUIRE(de.toString() == "filepath-test (directory)");
@@ -1770,7 +1770,7 @@ SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
                 REQUIRE(clone->getSize() == 0);
                 REQUIRE(clone->getTime() == dr.getDOSDateTime());
                 REQUIRE(clone->getUnixTime() == r);
-                REQUIRE(!clone->hasCrc());
+                REQUIRE_FALSE(clone->hasCrc());
                 REQUIRE(clone->isDirectory());
                 REQUIRE(clone->isValid());
                 REQUIRE(clone->toString() == "filepath-test (directory)");

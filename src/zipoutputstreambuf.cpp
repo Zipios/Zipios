@@ -2,7 +2,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -42,7 +42,7 @@ namespace
 {
 
 
-/** \brief Help function used to write the central directory.
+/** \brief Helper function used to write the central directory.
  *
  * When you create a Zip archive, it includes a central directory where
  * all the meta data about each file is saved. This function saves an
@@ -53,7 +53,7 @@ namespace
  * \param[in] entries  The array of entries to save in this central directory.
  * \param[in] comment  The zip archive global comment.
  */
-void writeZipCentralDirectory(std::ostream &os, FileEntry::vector_t& entries, std::string const& comment)
+void writeZipCentralDirectory(std::ostream & os, FileEntry::vector_t & entries, std::string const & comment)
 {
     ZipEndOfCentralDirectory eocd(comment);
     eocd.setOffset(os.tellp());  // start position
@@ -253,7 +253,7 @@ void ZipOutputStreambuf::putNextEntry(FileEntry::pointer_t entry)
  *
  * \param[in] comment  The comment to save in the Zip archive.
  */
-void ZipOutputStreambuf::setComment(std::string const& comment)
+void ZipOutputStreambuf::setComment(std::string const & comment)
 {
     m_zip_comment = comment;
 }
@@ -269,6 +269,10 @@ void ZipOutputStreambuf::setComment(std::string const& comment)
  * there is no more room in the output buffer. The buffer is expected
  * to flush the data to disk and reset the buffer availability.
  *
+ * \exception IOException
+ * This function generates an exception if saving the data to the output
+ * fails.
+ *
  * \param[in] c  The character that made it all happen. Maybe EOF.
  *
  * \return EOF if the function fails, 0 otherwise.
@@ -283,6 +287,7 @@ int ZipOutputStreambuf::overflow(int c)
     {
         // Ok, we are STORED, so we handle it ourselves to avoid "side
         // effects" from zlib, which adds markers every now and then.
+        m_crc32 = crc32(m_crc32, reinterpret_cast<Bytef const *>(&m_invec[0]), size); // update crc32
         size_t const bc(m_outbuf->sputn(&m_invec[0], size));
         if(size != bc)
         {

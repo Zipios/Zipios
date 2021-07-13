@@ -2,7 +2,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -47,7 +47,7 @@ size_t const FOUR(4);
 TEST_CASE("VirtualSeeker tests", "[zipios_common]")
 {
     // create a file of 256 bytes
-    zipios_test::auto_unlink_t auto_unlink("file256.bin");
+    zipios_test::auto_unlink_t auto_unlink("file256.bin", true);
     {
         std::ofstream os("file256.bin", std::ios::out | std::ios::binary);
         for(int i(0); i < 256; ++i)

@@ -5,7 +5,7 @@ Upstream-Contact: Alexis Wilke <alexis@m2osw.com>
 
 Files: *
 Copyright: Copyright (c) 2000-2007 Thomas Sondergaard, All Rights Reserved.
-           Copyright (c) 2015-2019 Made to Order Software Corporation, All Rights Reserved.
+           Copyright (c) 2015-2021 Made to Order Software Corporation, All Rights Reserved.
 Disclaimer: At this time this is not part of Debian because we have not
  had someone who would like to maintain this new version of the library.
 License: LGPL-2+

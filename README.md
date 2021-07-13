@@ -162,7 +162,7 @@ Please refer to the online documentation at
 
 At this time, we generate the HTML and Latex version of the documentation.
 It is pretty big, but we'll do our best to offer a .tar.gz of the
-documentation on SourceForge.net each time we offer a new version of
+documentation on SourceForge.io each time we offer a new version of
 the library.
 
 If you have Doxygen installed, then the documentation will automatically

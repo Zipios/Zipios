@@ -2,7 +2,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -84,7 +84,7 @@ TEST_CASE("A ZipFile with an invalid file", "[ZipFile] [FileCollection]")
 {
     // create a totally random file which means there is still a very slight
     // chance that it represents a valid ZipFile, but frankly... no.
-    zipios_test::auto_unlink_t auto_unlink("invalid.zip");
+    zipios_test::auto_unlink_t auto_unlink("invalid.zip", true);
     {
         std::ofstream os("invalid.zip", std::ios::out | std::ios::binary);
         size_t const max_size(rand() % 1024 + 1024);
@@ -103,7 +103,7 @@ TEST_CASE("An empty ZipFile", "[ZipFile] [FileCollection]")
 {
     // this is a special case where the file is composed of one
     // End of Central Directory with 0 entries
-    zipios_test::auto_unlink_t auto_unlink("empty.zip");
+    zipios_test::auto_unlink_t auto_unlink("empty.zip", true);
     {
         std::ofstream os("empty.zip", std::ios::out | std::ios::binary);
         os << static_cast<char>(0x50);
@@ -147,10 +147,10 @@ SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
 {
     GIVEN("a tree directory")
     {
-        REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
+        REQUIRE(system("rm -rf tree tree.zip") == 0); // clean up, just in case
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
-        zipios_test::auto_unlink_t remove_zip("tree.zip");
+        zipios_test::auto_unlink_t remove_zip("tree.zip", false);
         REQUIRE(system("zip -r tree.zip tree >/dev/null") == 0);
 
         // first, check that the object is setup as expected
@@ -398,7 +398,7 @@ SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]")
         REQUIRE(system("rm -rf tree tree.zip") == 0); // clean up, just in case
         size_t const start_count(rand() % 40 + 80);
         zipios_test::file_t tree(zipios_test::file_t::type_t::DIRECTORY, start_count, "tree");
-        zipios_test::auto_unlink_t remove_zip("tree.zip");
+        zipios_test::auto_unlink_t remove_zip("tree.zip", false);
         zipios::DirectoryCollection dc("tree");
 
         // first, check that the object is setup as expected
@@ -631,18 +631,17 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 {
     GIVEN("a one file zip file")
     {
-        REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
+        zipios_test::auto_unlink_t remove_bin("file.bin", true); // clean up, just in case
         {
             std::ofstream file_bin("file.bin", std::ios::out | std::ios::binary);
             file_bin << "this zip file contents.\n";
         }
-        zipios_test::auto_unlink_t remove_bin("file.bin");
 
         // first, check that the object is setup as expected
         WHEN("we save the file in a .zip")
         {
             zipios::DirectoryCollection dc("file.bin");
-            zipios_test::auto_unlink_t remove_zip("file.zip");
+            zipios_test::auto_unlink_t remove_zip("file.zip", true);
             {
                 std::ofstream out("file.zip", std::ios::out | std::ios::binary);
                 zipios::ZipFile::saveCollectionToArchive(out, dc);
@@ -760,7 +759,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 
             THEN("it is invalid and fails as expected")
             {
-                zipios_test::auto_unlink_t remove_zip("file.zip");
+                zipios_test::auto_unlink_t remove_zip("file.zip", true);
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
                     REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
@@ -788,7 +787,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 
             THEN("it is invalid and fails as expected")
             {
-                zipios_test::auto_unlink_t remove_zip("file.zip");
+                zipios_test::auto_unlink_t remove_zip("file.zip", true);
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
                     REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
@@ -812,7 +811,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 
             THEN("it is invalid and fails as expected")
             {
-                zipios_test::auto_unlink_t remove_zip("file.zip");
+                zipios_test::auto_unlink_t remove_zip("file.zip", true);
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
                     REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc, comment), zipios::InvalidStateException &);
@@ -826,13 +825,12 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 #ifndef __clang__
     GIVEN("a very small file")
     {
-        REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
+        zipios_test::auto_unlink_t remove_bin("file.bin", true); // clean up, just in case
         {
             // one byte file
             std::ofstream file_bin("file.bin", std::ios::out | std::ios::binary);
             file_bin << "1";
         }
-        zipios_test::auto_unlink_t remove_bin("file.bin");
 
         // first, check that the object is setup as expected
         WHEN("we add it more than 64Kb times to the directory")
@@ -848,7 +846,7 @@ SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] 
 
             THEN("the creating of the zip archive fails: too many file entries")
             {
-                zipios_test::auto_unlink_t remove_zip("file.zip");
+                zipios_test::auto_unlink_t remove_zip("file.zip", true);
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
                     REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
@@ -864,11 +862,10 @@ TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollectio
 {
     SECTION("try one uncompressed file of many sizes")
     {
-        REQUIRE(system("rm -f file.bin") == 0); // clean up, just in case
         for(int sz(0); sz <= 128 * 1024; sz += sz < 10 ? 1 : rand() % (1024 * 4))
         {
-            zipios_test::auto_unlink_t remove_bin("file.bin");
-            zipios_test::auto_unlink_t remove_zip("file.zip");
+            zipios_test::auto_unlink_t remove_bin("file.bin", true); // clean up, just in case
+            zipios_test::auto_unlink_t remove_zip("file.zip", true);
 
             // create a file of various sizes (increasingly big though)
             {
@@ -904,13 +901,12 @@ TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollectio
 
     SECTION("try three uncompressed files of many sizes")
     {
-        REQUIRE(system("rm -f file.zip file?.bin") == 0); // clean up, just in case
         for(int sz(0); sz <= 128 * 1024; sz += sz < 10 ? 1 : rand() % (1024 * 4))
         {
-            zipios_test::auto_unlink_t remove_bin1("file1.bin");
-            zipios_test::auto_unlink_t remove_bin2("file2.bin");
-            zipios_test::auto_unlink_t remove_bin3("file3.bin");
-            zipios_test::auto_unlink_t remove_zip("file.zip");
+            zipios_test::auto_unlink_t remove_bin1("file1.bin", true);
+            zipios_test::auto_unlink_t remove_bin2("file2.bin", true);
+            zipios_test::auto_unlink_t remove_bin3("file3.bin", true);
+            zipios_test::auto_unlink_t remove_zip("file.zip", true);
 
             // create a file of various sizes (increasingly big though)
             {
@@ -1241,7 +1237,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(ssize_t i(22 - 1); i >= 0; --i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
 
@@ -1263,7 +1259,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             size_t const comment_len(rand() % 20 + 5);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
@@ -1292,7 +1288,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             size_t const size1(rand() & 0xFFFF);
             size_t size2;
             do
@@ -1320,7 +1316,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
 
@@ -1349,7 +1345,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
 
@@ -1377,7 +1373,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
 
@@ -1435,7 +1431,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
 
@@ -1478,7 +1474,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
 
@@ -1516,7 +1512,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
 
@@ -1569,7 +1565,7 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         for(int i(0); i < 10; ++i)
         {
             // create an empty header in the file
-            zipios_test::auto_unlink_t auto_unlink("file.zip");
+            zipios_test::auto_unlink_t auto_unlink("file.zip", true);
             size_t uncompressed_size(0);
             {
                 std::ofstream os("file.zip", std::ios::out | std::ios::binary);
@@ -1647,6 +1643,50 @@ TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
         }
     }
 #endif
+}
+
+
+TEST_CASE("Check saveCollectionToArchive with DirectoryCollection", "[ZipFile] [DirectoryCollection]")
+{
+    //zipios_test::auto_unlink_t auto_unlink("test.zip", true);
+
+    REQUIRE(system("mkdir -p test_dir") == 0);
+
+    {
+        std::ofstream file_bin("test_dir/file1.bin", std::ios::out | std::ios::binary);
+        size_t const size(512 + rand() % 512);
+        for(size_t pos(0); pos < size; ++pos)
+        {
+            file_bin << static_cast<char>(rand());
+        }
+
+        std::ofstream file_empty("test_dir/file2.empty", std::ios::out | std::ios::binary);
+
+        std::ofstream file_text("test_dir/file3.text", std::ios::out | std::ios::binary);
+        size_t const length(512 + rand() % 512);
+        for(size_t pos(0); pos < length; ++pos)
+        {
+            char c(rand() % 26 + 'a');
+            file_text << c;
+            if(pos % 40 == 39)
+            {
+                file_text << '\n';
+            }
+        }
+
+    }
+
+    zipios::DirectoryCollection directoryCollection("test_dir");
+    std::ofstream tempZipStream("test.zip", std::ios_base::binary | std::ios::out);
+    zipios::ZipFile::saveCollectionToArchive(tempZipStream, directoryCollection);
+    tempZipStream.close();
+
+    REQUIRE(system("unzip -o test.zip >/dev/null") == 0);
+
+    if(system("rm -rf test_dir") != 0)
+    {
+        std::cerr << "error: problem cleaning up test_dir\n";
+    }
 }
 
 

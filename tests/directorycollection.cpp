@@ -2,7 +2,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -501,11 +501,11 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                     {
                         // directories cannot be attached to an istream
                         zipios::DirectoryCollection::stream_pointer_t is1(dc.getInputStream(name));
-                        REQUIRE(!is1);
+                        REQUIRE_FALSE(is1);
 
                         // also test without the ending '/', just in case
                         zipios::DirectoryCollection::stream_pointer_t is2(dc.getInputStream(name.substr(0, name.length() - 1)));
-                        REQUIRE(!is2);
+                        REQUIRE_FALSE(is2);
 
                         // now also test the getEntry() which works with MATCH
                         // or IGNORE -- prove it!
@@ -547,8 +547,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                             REQUIRE(memcmp(buf1, buf2, sz1) == 0);
                         }
 
-                        REQUIRE(!in);
-                        REQUIRE(!*is);
+                        REQUIRE_FALSE(in);
+                        REQUIRE_FALSE(*is);
 
                         // now also test the getEntry() which works with MATCH
                         // or IGNORE -- prove it!
@@ -829,7 +829,7 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                     {
                         // directories cannot be attached to an istream
                         zipios::DirectoryCollection::stream_pointer_t is1(dc.getInputStream(f->filename()));
-                        REQUIRE(!is1);
+                        REQUIRE_FALSE(is1);
                     }
                     else
                     {
@@ -872,8 +872,8 @@ TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection
                                 REQUIRE(memcmp(buf1, buf2, sz1) == 0);
                             }
 
-                            REQUIRE(!in);
-                            REQUIRE(!*is);
+                            REQUIRE_FALSE(in);
+                            REQUIRE_FALSE(*is);
                         }
                     }
                 }

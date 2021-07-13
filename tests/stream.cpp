@@ -2,7 +2,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ TEST_CASE("An input filter", "[Buffer]")
 {
     SECTION("Valid input stream buffer")
     {
-        zipios_test::auto_unlink_t auto_unlink("input.buf");
+        zipios_test::auto_unlink_t auto_unlink("input.buf", true);
         {
             std::ofstream out("input.buf", std::ios::out | std::ios::binary);
             out << "Test file" << std::endl;
@@ -66,7 +66,7 @@ TEST_CASE("An output filter", "[Buffer]")
 {
     SECTION("Valid output stream buffer")
     {
-        zipios_test::auto_unlink_t auto_unlink("output.buf");
+        zipios_test::auto_unlink_t auto_unlink("output.buf", true);
 
         std::ofstream out("output.buf", std::ios::out | std::ios::binary);
         std::unique_ptr<zipios::FilterOutputStreambuf> buf_ptr(new zipios::FilterOutputStreambuf(out.rdbuf()));

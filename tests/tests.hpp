@@ -6,7 +6,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -86,7 +86,7 @@ inline size_t rand_size_t()
 class auto_unlink_t
 {
 public:
-                            auto_unlink_t(std::string const& filename);
+                            auto_unlink_t(std::string const & filename, bool delete_on_creation);
                             ~auto_unlink_t();
 
 private:
@@ -108,17 +108,17 @@ public:
         DIRECTORY
     };
 
-    file_t(type_t t, int children_count, std::string const& new_filename = "");
+    file_t(type_t t, int children_count, std::string const & new_filename = "");
     ~file_t();
     type_t type() const;
-    std::string const& filename() const;
-    vector_t const& children() const;
+    std::string const & filename() const;
+    vector_t const & children() const;
     size_t size();
-    type_t find(std::string const& name);
+    type_t find(std::string const & name);
     filenames_t get_all_filenames() const;
 
 private:
-    void get_filenames(filenames_t& names, std::string const& parent) const;
+    void get_filenames(filenames_t & names, std::string const & parent) const;
 
     std::string     m_filename;
     vector_t        m_children;

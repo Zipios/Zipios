@@ -6,7 +6,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -47,6 +47,7 @@ public:
     virtual                 ~DirectoryEntry() override;
 
     virtual bool            isEqual(FileEntry const & file_entry) const override;
+    uint32_t                computeCRC32() const;
 };
 
 

@@ -2,7 +2,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -33,9 +33,13 @@ namespace zipios_test
 {
 
 
-auto_unlink_t::auto_unlink_t(std::string const& filename)
+auto_unlink_t::auto_unlink_t(std::string const & filename, bool delete_on_creation)
     : m_filename(filename)
 {
+    if(delete_on_creation)
+    {
+        unlink(m_filename.c_str());
+    }
 }
 
 auto_unlink_t::~auto_unlink_t()

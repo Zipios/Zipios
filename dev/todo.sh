@@ -6,7 +6,7 @@
 #
 # License:
 #      Zipios -- a small C++ library that provides easy access to .zip files.
-#      Copyright (c) 2011-2019 Made to Order Software Corp.
+#      Copyright (C) 2011-2021  Made to Order Software Corporation
 #      contact@m2osw.com
 #
 #      This program is free software; you can redistribute it and/or modify

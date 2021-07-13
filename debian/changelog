@@ -6,7 +6,12 @@ zipios (2.2.7.0~xenial) xenial; urgency=high
   * Use clear() instead of setting string to "".
   * Replaced many `new ...` with `std::make_shared<>()`.
   * Fixed a few comments (spelling/grammar, missing/invalid info.).
-  * Ran ispell against the library which includes the docs.
+  * Fixed missing CRC32 computation as presented in #38.
+  * Added a new test to make sure issue #38 was fixed.
+  * Added a function to compute CRC32 of local disk files.
+  * Made tests delete files upfront too (in case it breaks part way).
+  * Fixed path to BUILD folder in ./mk script.
+  * Bumped copyright notice date to 2021.
 
  -- Alexis Wilke <alexis@m2osw.com>  Tue, 03 Nov 2020 07:16:34 -0800
 

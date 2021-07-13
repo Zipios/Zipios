@@ -2,7 +2,7 @@
   Zipios -- a small C++ library that provides easy access to .zip files.
 
   Copyright (C) 2000-2007  Thomas Sondergaard
-  Copyright (C) 2015-2019  Made to Order Software Corporation
+  Copyright (C) 2015-2021  Made to Order Software Corporation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -308,8 +308,8 @@ int DeflateOutputStreambuf::overflow(int c)
     {
         // Throw an exception to make istream set badbit
         //
-        // This is marked as not cover-able because the calls that
-        // access this function only happen in an internal loop and
+        // This is marked as not cover-able by tests because the calls
+        // that access this function only happen in an internal loop and
         // even if we were to write a direct test, I do not see how
         // we could end up with an error here
         OutputStringStream msgs; // LCOV_EXCL_LINE
