@@ -28,8 +28,6 @@
 #      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
-cmake_minimum_required(VERSION 2.8)
-
 if (BUILD_DOCUMENTATION)
 
 project( zipios_documentation )
@@ -38,8 +36,10 @@ project( zipios_documentation )
 # Copy of the AddDoxygenTarget from the Snap! C++ project
 # https://sourceforge.net/projects/snapcpp/
 #
-find_package( Doxygen )
+find_package( Doxygen QUIET )
 function( AddDoxygenTarget TARGET_NAME VERSION_MAJOR VERSION_MINOR VERSION_PATCH )
+    cmake_parse_arguments(PARSE_ARGV 4 ADD_DOXY "QUIET" "" "")
+
     project( ${TARGET_NAME}_Documentation )
 
     set( VERSION "${VERSION_MAJOR}.${VERSION_MINOR}" )
@@ -94,13 +94,15 @@ function( AddDoxygenTarget TARGET_NAME VERSION_MAJOR VERSION_MINOR VERSION_PATCH
                 DESTINATION ${DATA_INSTALL_DIR}/man/man3
         )
     else()
-        message( WARNING "You do not seem to have doxygen installed on this system, no documentation will be generated." )
+        if(NOT ADD_DOXY_QUIET)
+            message( WARNING "You do not seem to have doxygen installed on this system, no documentation will be generated." )
+        endif()
     endif()
 endfunction()
 
 configure_file( ${CMAKE_SOURCE_DIR}/doc/zipios.doxy.in ${CMAKE_BINARY_DIR}/doc/zipios.doxy )
 
-AddDoxygenTarget( zipios ${ZIPIOS_VERSION_MAJOR} ${ZIPIOS_VERSION_MINOR} ${ZIPIOS_VERSION_PATCH} )
+AddDoxygenTarget( zipios ${ZIPIOS_VERSION_MAJOR} ${ZIPIOS_VERSION_MINOR} ${ZIPIOS_VERSION_PATCH} QUIET )
 
 else(BUILD_DOCUMENTATION)
 
