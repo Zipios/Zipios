@@ -28,7 +28,7 @@
 #      Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 3.10.2)
 
 project(zipios_project)
 
