@@ -24,17 +24,17 @@
  * Zipios unit tests for the BackBuffer class.
  */
 
-#include "tests.hpp"
+#include "catch_main.hpp"
 
-#include "src/backbuffer.hpp"
-#include "zipios/zipiosexceptions.hpp"
+#include <src/backbuffer.hpp>
+#include <zipios/zipiosexceptions.hpp>
 
 #include <fstream>
 
 
-SCENARIO("BackBuffer read a file", "[BackBuffer]")
+CATCH_SCENARIO("BackBuffer read a file", "[BackBuffer]")
 {
-    GIVEN("a binary file of 256 bytes")
+    CATCH_GIVEN("a binary file of 256 bytes")
     {
         // create a file of 256 bytes
         zipios_test::auto_unlink_t auto_unlink("file256.bin", true);
@@ -46,46 +46,46 @@ SCENARIO("BackBuffer read a file", "[BackBuffer]")
             }
         }
 
-        WHEN("setting up a backbuffer")
+        CATCH_WHEN("setting up a backbuffer")
         {
             std::ifstream is("file256.bin", std::ios::in | std::ios::binary);
             zipios::BackBuffer back_buffer(is, zipios::VirtualSeeker(), 16);
 
-            THEN("we can read the file going backward")
+            CATCH_THEN("we can read the file going backward")
             {
                 ssize_t read_pointer(0);
                 for(int i(0), j(256 - 16); i < 256; i += 16, j -= 16)
                 {
                     back_buffer.readChunk(read_pointer);
-                    REQUIRE(read_pointer == i + 16);
+                    CATCH_REQUIRE(read_pointer == i + 16);
                     for(int k(0); k < 16; ++k)
                     {
-                        REQUIRE(back_buffer[k] == j + k);
+                        CATCH_REQUIRE(back_buffer[k] == j + k);
                     }
                 }
             }
 
-            THEN("try with an invalid chunk size")
+            CATCH_THEN("try with an invalid chunk size")
             {
                 for(int i(-16); i <= 0; ++i)
                 {
-                    REQUIRE_THROWS_AS([&](){
+                    CATCH_REQUIRE_THROWS_AS([&](){
                                 zipios::BackBuffer bb(is, zipios::VirtualSeeker(), i);
-                            }(), zipios::InvalidException &);
+                            }(), zipios::InvalidException);
                 }
             }
 
-            THEN("we close the file and we get an exception")
+            CATCH_THEN("we close the file and we get an exception")
             {
                 is.close();
                 // first time the seek fails
-                REQUIRE_THROWS_AS([&](){
+                CATCH_REQUIRE_THROWS_AS([&](){
                                 zipios::BackBuffer bb(is);
-                            }(), zipios::IOException &);
+                            }(), zipios::IOException);
                 // second time the file is marked as invalid
-                REQUIRE_THROWS_AS([&](){
+                CATCH_REQUIRE_THROWS_AS([&](){
                                 zipios::BackBuffer bb(is);
-                            }(), zipios::InvalidException &);
+                            }(), zipios::InvalidException);
             }
         }
     }

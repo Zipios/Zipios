@@ -30,9 +30,9 @@
  * that all the tests access, such as the catch.hpp header file.
  */
 
-#include "zipios/zipios-config.hpp"
+#include <zipios/zipios-config.hpp>
 
-#include <catch.hpp>
+#include <snapcatch2.hpp>
 
 #include <memory>
 #include <sstream>

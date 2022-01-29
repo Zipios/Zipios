@@ -30,33 +30,33 @@
 
 project(zipios_tests)
 
-find_package(Catch)
-
 OPTION(BUILD_ZIPIOS_TESTS "Whether the zipios tests should be built. True by default." ON)
 
 if(BUILD_ZIPIOS_TESTS)
 
     message("Tests are turned ON.")
 
-    if(CATCH_FOUND)
+    find_package(SnapCatch2)
+
+    if(SNAPCATCH2_FOUND)
 
         add_executable(${PROJECT_NAME}
-            tests.cpp
+            catch_main.cpp
 
-            backbuffer.cpp
-            collectioncollection.cpp
-            common.cpp
-            directorycollection.cpp
-            directoryentry.cpp
-            dosdatetime.cpp
-            filepath.cpp
-            stream.cpp
+            catch_backbuffer.cpp
+            catch_collectioncollection.cpp
+            catch_common.cpp
+            catch_directorycollection.cpp
+            catch_directoryentry.cpp
+            catch_dosdatetime.cpp
+            catch_filepath.cpp
+            catch_stream.cpp
             catch_version.cpp
-            virtualseeker.cpp
-            zipfile.cpp
+            catch_virtualseeker.cpp
+            catch_zipfile.cpp
 
-            directory_helper.cpp
-            raii_helper.cpp
+            catch_directory_helper.cpp
+            catch_raii_helper.cpp
         )
 
         target_include_directories(${PROJECT_NAME}
@@ -77,7 +77,7 @@ if(BUILD_ZIPIOS_TESTS)
 
         add_test(zipios_tests ${PROJECT_NAME})
 
-    else(CATCH_FOUND)
+    else(SNAPCATCH2_FOUND)
 
         message("No test will be created because you do not seem to have catch.hpp installed...")
 
@@ -86,7 +86,7 @@ if(BUILD_ZIPIOS_TESTS)
             COMMAND echo "No tests were built because it looks like you are missing Catch."
         )
 
-    endif(CATCH_FOUND)
+    endif(SNAPCATCH2_FOUND)
 
 else(BUILD_ZIPIOS_TESTS)
 

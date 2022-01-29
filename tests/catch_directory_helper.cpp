@@ -24,7 +24,7 @@
  * Zipios unit tests for the DirectoryCollection class.
  */
 
-#include "tests.hpp"
+#include "catch_main.hpp"
 
 #include <fstream>
 //

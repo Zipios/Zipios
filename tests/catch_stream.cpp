@@ -24,13 +24,13 @@
  * Zipios unit tests for various stream and buffer classes.
  */
 
-#include "tests.hpp"
+#include "catch_main.hpp"
 
-#include "zipios/zipfile.hpp"
-#include "zipios/zipiosexceptions.hpp"
+#include <zipios/zipfile.hpp>
+#include <zipios/zipiosexceptions.hpp>
 
-#include "src/filterinputstreambuf.hpp"
-#include "src/filteroutputstreambuf.hpp"
+#include <src/filterinputstreambuf.hpp>
+#include <src/filteroutputstreambuf.hpp>
 
 #include <fstream>
 
@@ -41,9 +41,9 @@
 
 
 
-TEST_CASE("An input filter", "[Buffer]")
+CATCH_TEST_CASE("An input filter", "[Buffer]")
 {
-    SECTION("Valid input stream buffer")
+    CATCH_START_SECTION("Valid input stream buffer")
     {
         zipios_test::auto_unlink_t auto_unlink("input.buf", true);
         {
@@ -55,16 +55,16 @@ TEST_CASE("An input filter", "[Buffer]")
         std::unique_ptr<zipios::FilterInputStreambuf> buf_ptr(new zipios::FilterInputStreambuf(in_ptr->rdbuf()));
     }
 
-    SECTION("Invalid input stream buffer")
+    CATCH_START_SECTION("Invalid input stream buffer")
     {
-        REQUIRE_THROWS_AS(new zipios::FilterInputStreambuf(nullptr), zipios::InvalidStateException &);
+        CATCH_REQUIRE_THROWS_AS(new zipios::FilterInputStreambuf(nullptr), zipios::InvalidStateException &);
     }
 }
 
 
-TEST_CASE("An output filter", "[Buffer]")
+CATCH_TEST_CASE("An output filter", "[Buffer]")
 {
-    SECTION("Valid output stream buffer")
+    CATCH_START_SECTION("Valid output stream buffer")
     {
         zipios_test::auto_unlink_t auto_unlink("output.buf", true);
 
@@ -72,9 +72,9 @@ TEST_CASE("An output filter", "[Buffer]")
         std::unique_ptr<zipios::FilterOutputStreambuf> buf_ptr(new zipios::FilterOutputStreambuf(out.rdbuf()));
     }
 
-    SECTION("Invalid output stream buffer")
+    CATCH_START_SECTION("Invalid output stream buffer")
     {
-        REQUIRE_THROWS_AS(new zipios::FilterOutputStreambuf(nullptr), zipios::InvalidStateException &);
+        CATCH_REQUIRE_THROWS_AS(new zipios::FilterOutputStreambuf(nullptr), zipios::InvalidStateException &);
     }
 }
 

@@ -24,7 +24,7 @@
  * Zipios RAII objects used in various unit tests.
  */
 
-#include "tests.hpp"
+#include "catch_main.hpp"
 
 #include <unistd.h>
 

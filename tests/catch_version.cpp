@@ -24,12 +24,12 @@
  * Zipios unit tests for the ZipFile class.
  */
 
-#include "tests.hpp"
+#include "catch_main.hpp"
 
-#include "zipios/zipfile.hpp"
-#include "zipios/directorycollection.hpp"
-#include "zipios/zipiosexceptions.hpp"
-#include "zipios/dosdatetime.hpp"
+#include <zipios/zipfile.hpp>
+#include <zipios/directorycollection.hpp>
+#include <zipios/zipiosexceptions.hpp>
+#include <zipios/dosdatetime.hpp>
 
 #include <algorithm>
 #include <fstream>
@@ -56,12 +56,12 @@ zipios::StorageMethod const g_supported_storage_methods[]
 
 
 
-TEST_CASE("The library version", "[Version]")
+CATCH_TEST_CASE("The library version", "[Version]")
 {
     std::string cmd("cd ");
     cmd += zipios_test::g_source_path;
     cmd += " && dev/version";
-    REQUIRE(system(cmd.c_str()) == 0);
+    CATCH_REQUIRE(system(cmd.c_str()) == 0);
 }
 
 
