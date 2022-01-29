@@ -5,7 +5,7 @@
 /*
   Zipios -- a small C++ library that provides easy access to .zip files.
 
-  Copyright (C) 2019-2021  Made to Order Software Corporation
+  Copyright (c) 2019-2022  Made to Order Software Corp.  All Rights Reserved
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
