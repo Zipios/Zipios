@@ -75,15 +75,15 @@ CATCH_TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         // attempt to create the seeker with invalid offsets
         CATCH_REQUIRE_THROWS_AS([&](){
                         zipios::VirtualSeeker vs(start_offset, -end);
-                    }(), zipios::InvalidException &);
+                    }(), zipios::InvalidException);
         CATCH_REQUIRE_THROWS_AS([&](){
                         zipios::VirtualSeeker vs(-start_offset, -end);
-                    }(), zipios::InvalidException &);
+                    }(), zipios::InvalidException);
         if(start_offset != 0)
         {
             CATCH_REQUIRE_THROWS_AS([&](){
                             zipios::VirtualSeeker vs(-start_offset, end);
-                        }(), zipios::InvalidException &);
+                        }(), zipios::InvalidException);
         }
 
         // the end parameter to the VirtualSeeker is a "weird" position
@@ -225,11 +225,11 @@ CATCH_TEST_CASE("VirtualSeeker tests", "[zipios_common]")
         // note that the "gap" may be zero
 
         // try setting the offsets with invalid values
-        CATCH_REQUIRE_THROWS_AS(vs.setOffsets(-start_offset2, -end2), zipios::InvalidException &);
-        CATCH_REQUIRE_THROWS_AS(vs.setOffsets(start_offset2, -end2), zipios::InvalidException &);
+        CATCH_REQUIRE_THROWS_AS(vs.setOffsets(-start_offset2, -end2), zipios::InvalidException);
+        CATCH_REQUIRE_THROWS_AS(vs.setOffsets(start_offset2, -end2), zipios::InvalidException);
         if(start_offset2 != 0)
         {
-            CATCH_REQUIRE_THROWS_AS(vs.setOffsets(-start_offset2, -end2), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(vs.setOffsets(-start_offset2, -end2), zipios::InvalidException);
         }
 
         // then change it to a valid value
@@ -256,7 +256,7 @@ CATCH_TEST_CASE("VirtualSeeker tests", "[zipios_common]")
                 break;
 
             default:
-                CATCH_REQUIRE_THROWS_AS(vs.vseekg(is, 0, static_cast<std::ios::seekdir>(invalid_seek_direction)), std::logic_error &);
+                CATCH_REQUIRE_THROWS_AS(vs.vseekg(is, 0, static_cast<std::ios::seekdir>(invalid_seek_direction)), std::logic_error);
                 break;
 
             }

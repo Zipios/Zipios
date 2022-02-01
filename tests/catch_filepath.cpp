@@ -76,6 +76,7 @@ CATCH_SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             ss << fp;
             CATCH_REQUIRE(ss.str() == "/this/file/really/should/not/exist/period.txt");
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("and changing the path to something else as unexistant with assignment operator works too")
         {
@@ -270,6 +271,7 @@ CATCH_SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             ss << fp;
             CATCH_REQUIRE(ss.str().empty());
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("we can concatenate another empty path to it")
         {
@@ -403,6 +405,7 @@ CATCH_SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             ss << fp;
             CATCH_REQUIRE(ss.str() == "this/is/a/relative/path/file1.txt");
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("we can concatenate an empty path to it")
         {
@@ -535,6 +538,7 @@ CATCH_SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
             ss << fp;
             CATCH_REQUIRE(ss.str() == "this/is/a/relative/path");
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("we can concatenate another path, it also prune the /")
         {
@@ -695,7 +699,7 @@ CATCH_TEST_CASE("Test with regular files of various sizes", "[FilePath]")
 
             CATCH_REQUIRE(fp.length() == 17);
             CATCH_REQUIRE(fp.size() == 17);
-            CATCH_REQUIRE(fp.fileSize() == file_size);
+            CATCH_REQUIRE(fp.fileSize() == static_cast<std::size_t>(file_size));
 
             struct stat file_stats;
             CATCH_REQUIRE(stat("filepath-test.txt", &file_stats) == 0);

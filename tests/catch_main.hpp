@@ -32,7 +32,7 @@
 
 #include <zipios/zipios-config.hpp>
 
-#include <snapcatch2.hpp>
+#include <catch2/snapcatch2.hpp>
 
 #include <memory>
 #include <sstream>

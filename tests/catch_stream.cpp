@@ -54,11 +54,13 @@ CATCH_TEST_CASE("An input filter", "[Buffer]")
         std::unique_ptr<std::ifstream> in_ptr(new std::ifstream("input.buf", std::ios::in | std::ios::binary));
         std::unique_ptr<zipios::FilterInputStreambuf> buf_ptr(new zipios::FilterInputStreambuf(in_ptr->rdbuf()));
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("Invalid input stream buffer")
     {
-        CATCH_REQUIRE_THROWS_AS(new zipios::FilterInputStreambuf(nullptr), zipios::InvalidStateException &);
+        CATCH_REQUIRE_THROWS_AS(new zipios::FilterInputStreambuf(nullptr), zipios::InvalidStateException);
     }
+    CATCH_END_SECTION()
 }
 
 
@@ -71,11 +73,13 @@ CATCH_TEST_CASE("An output filter", "[Buffer]")
         std::ofstream out("output.buf", std::ios::out | std::ios::binary);
         std::unique_ptr<zipios::FilterOutputStreambuf> buf_ptr(new zipios::FilterOutputStreambuf(out.rdbuf()));
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("Invalid output stream buffer")
     {
-        CATCH_REQUIRE_THROWS_AS(new zipios::FilterOutputStreambuf(nullptr), zipios::InvalidStateException &);
+        CATCH_REQUIRE_THROWS_AS(new zipios::FilterOutputStreambuf(nullptr), zipios::InvalidStateException);
     }
+    CATCH_END_SECTION()
 }
 
 

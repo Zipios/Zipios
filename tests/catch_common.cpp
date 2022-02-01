@@ -279,7 +279,7 @@ CATCH_SCENARIO("Read from file", "[zipios_common] [io]")
                 CATCH_REQUIRE(d == 0x0F0E0D0C);
 
                 uint8_t e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException);
             }
         }
 
@@ -299,7 +299,7 @@ CATCH_SCENARIO("Read from file", "[zipios_common] [io]")
                 CATCH_REQUIRE(d == 0x0F0E0D0C);
 
                 uint16_t e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException);
             }
         }
 
@@ -319,7 +319,7 @@ CATCH_SCENARIO("Read from file", "[zipios_common] [io]")
                 CATCH_REQUIRE(d == 0x0F0E0D0C);
 
                 uint32_t e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e), zipios::IOException);
             }
         }
 
@@ -336,7 +336,7 @@ CATCH_SCENARIO("Read from file", "[zipios_common] [io]")
 
                 // we have 8 bytes left, trying to read 12 fails
                 std::string e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e, 12), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e, 12), zipios::IOException);
             }
         }
 
@@ -353,7 +353,7 @@ CATCH_SCENARIO("Read from file", "[zipios_common] [io]")
 
                 // we have 8 bytes left, trying to read 12 fails
                 zipios::buffer_t e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e, 12), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e, 12), zipios::IOException);
             }
         }
 
@@ -547,7 +547,7 @@ CATCH_SCENARIO("Read from buffer", "[zipios_common] [io]")
                 CATCH_REQUIRE(d == 0x0F0E0D0C);
 
                 uint8_t e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException);
             }
         }
 
@@ -572,7 +572,7 @@ CATCH_SCENARIO("Read from buffer", "[zipios_common] [io]")
                 CATCH_REQUIRE(d == 0x0F0E0D0C);
 
                 uint16_t e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException);
             }
         }
 
@@ -597,7 +597,7 @@ CATCH_SCENARIO("Read from buffer", "[zipios_common] [io]")
                 CATCH_REQUIRE(d == 0x0F0E0D0C);
 
                 uint32_t e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e), zipios::IOException);
             }
         }
 
@@ -617,7 +617,7 @@ CATCH_SCENARIO("Read from buffer", "[zipios_common] [io]")
 
                 // we have 8 bytes left, trying to read 12 fails
                 std::string e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e, 12), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e, 12), zipios::IOException);
             }
         }
 
@@ -637,7 +637,7 @@ CATCH_SCENARIO("Read from buffer", "[zipios_common] [io]")
 
                 // we have 8 bytes left, trying to read 12 fails
                 zipios::buffer_t e;
-                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e, 12), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, pos, e, 12), zipios::IOException);
             }
         }
     }
@@ -898,7 +898,7 @@ CATCH_SCENARIO("Write to file", "[zipios_common] [io]")
             CATCH_THEN("writing a 8 bit value fails")
             {
                 uint8_t c(0xFF);
-                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
             }
         }
 
@@ -914,7 +914,7 @@ CATCH_SCENARIO("Write to file", "[zipios_common] [io]")
             CATCH_THEN("writing a 16 bit value fails")
             {
                 uint16_t c(0xFFEE);
-                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
             }
         }
 
@@ -930,7 +930,7 @@ CATCH_SCENARIO("Write to file", "[zipios_common] [io]")
             CATCH_THEN("writing a 32 bit value fails")
             {
                 uint32_t c(0xFFEEDDCC);
-                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException  &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
             }
         }
 
@@ -946,7 +946,7 @@ CATCH_SCENARIO("Write to file", "[zipios_common] [io]")
             CATCH_THEN("writing a string fails")
             {
                 std::string c("TEST");
-                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
             }
         }
 
@@ -966,7 +966,7 @@ CATCH_SCENARIO("Write to file", "[zipios_common] [io]")
                 c.push_back('A');
                 c.push_back('I');
                 c.push_back('L');
-                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
             }
         }
 

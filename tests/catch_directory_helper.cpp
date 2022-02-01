@@ -126,7 +126,7 @@ file_t::file_t(type_t t, int children_count, std::string const& new_filename)
         {
             throw std::runtime_error("failed creating directory"); // LCOV_EXCL_LINE
         }
-        chdir(m_filename.c_str());
+        CATCH_REQUIRE(chdir(m_filename.c_str()) == 0);
         for(int i(0); i < children_count; ++i)
         {
             try
@@ -136,12 +136,12 @@ file_t::file_t(type_t t, int children_count, std::string const& new_filename)
             catch(...)
             {
                 m_children.clear();
-                chdir("..");
+                CATCH_REQUIRE(chdir("..") == 0);
                 rmdir(m_filename.c_str());
                 throw;
             }
         }
-        chdir("..");
+        CATCH_REQUIRE(chdir("..") == 0);
     }
     else
     {

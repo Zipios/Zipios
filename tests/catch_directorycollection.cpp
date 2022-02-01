@@ -95,6 +95,7 @@ CATCH_SCENARIO("DirectoryCollection with invalid paths", "[DirectoryCollection] 
             CATCH_REQUIRE(clone->size() == 1);
             clone->mustBeValid();
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("closing the directory")
         {
@@ -103,49 +104,49 @@ CATCH_SCENARIO("DirectoryCollection with invalid paths", "[DirectoryCollection] 
             CATCH_THEN("it is still the same")
             {
                 CATCH_REQUIRE_FALSE(dc.isValid());
-                CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException &);   // default name is "-"
-                CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException &);
+                CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException);   // default name is "-"
+                CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException);
 
                 zipios::DirectoryCollection copy_constructor(dc);
                 CATCH_REQUIRE_FALSE(copy_constructor.isValid());
-                CATCH_REQUIRE_THROWS_AS(copy_constructor.entries().empty(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_constructor.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_constructor.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_constructor.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_constructor.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_constructor.getName(), zipios::InvalidStateException &);   // copy name as is
-                CATCH_REQUIRE_THROWS_AS(copy_constructor.size(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_constructor.mustBeValid(), zipios::InvalidStateException &);
+                CATCH_REQUIRE_THROWS_AS(copy_constructor.entries().empty(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_constructor.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_constructor.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_constructor.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_constructor.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_constructor.getName(), zipios::InvalidStateException);   // copy name as is
+                CATCH_REQUIRE_THROWS_AS(copy_constructor.size(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_constructor.mustBeValid(), zipios::InvalidStateException);
 
                 zipios::DirectoryCollection copy_assignment;
                 copy_assignment = dc;
                 CATCH_REQUIRE_FALSE(copy_assignment.isValid());
-                CATCH_REQUIRE_THROWS_AS(copy_assignment.entries().empty(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_assignment.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_assignment.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_assignment.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_assignment.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_assignment.getName(), zipios::InvalidStateException &);   // copy name as is
-                CATCH_REQUIRE_THROWS_AS(copy_assignment.size(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(copy_assignment.mustBeValid(), zipios::InvalidStateException &);
+                CATCH_REQUIRE_THROWS_AS(copy_assignment.entries().empty(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_assignment.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_assignment.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_assignment.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_assignment.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_assignment.getName(), zipios::InvalidStateException);   // copy name as is
+                CATCH_REQUIRE_THROWS_AS(copy_assignment.size(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(copy_assignment.mustBeValid(), zipios::InvalidStateException);
 
                 zipios::FileCollection::pointer_t clone(dc.clone());
                 CATCH_REQUIRE(dynamic_cast<zipios::DirectoryCollection *>(clone.get()));
                 CATCH_REQUIRE_FALSE(clone->isValid());
-                CATCH_REQUIRE_THROWS_AS(clone->entries().empty(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(clone->getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(clone->getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(clone->getName(), zipios::InvalidStateException &);   // copy name as is
-                CATCH_REQUIRE_THROWS_AS(clone->size(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(clone->mustBeValid(), zipios::InvalidStateException &);
+                CATCH_REQUIRE_THROWS_AS(clone->entries().empty(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(clone->getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(clone->getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(clone->getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(clone->getName(), zipios::InvalidStateException);   // copy name as is
+                CATCH_REQUIRE_THROWS_AS(clone->size(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(clone->mustBeValid(), zipios::InvalidStateException);
             }
         }
     }
@@ -186,15 +187,16 @@ CATCH_TEST_CASE("DirectoryCollection with a valid file, but not a directory", "[
 
         // not valid because it is not a directory
         CATCH_REQUIRE_FALSE(dc.isValid());
-        CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException &);
+        CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException);
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("verify that the object looks as expected in non-recursive mode")
     {
@@ -216,15 +218,16 @@ CATCH_TEST_CASE("DirectoryCollection with a valid file, but not a directory", "[
 
         // not valid because it is not a directory
         CATCH_REQUIRE_FALSE(dc.isValid());
-        CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException &);
-        CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException &);
+        CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException);
+        CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException);
     }
+    CATCH_END_SECTION()
 
     unlink("directory-collection-test.txt");
 }
@@ -296,13 +299,13 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
                         else
                         {
                             CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                            CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                            CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
                         }
                         CATCH_REQUIRE((*it)->isValid());
                         //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
-                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
                     expected_output << "}";
 
@@ -359,13 +362,13 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
                         else
                         {
                             CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                            CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                            CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
                         }
                         CATCH_REQUIRE((*it)->isValid());
                         //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
-                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
                 }
             }
@@ -418,13 +421,13 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
                         else
                         {
                             CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                            CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                            CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
                         }
                         CATCH_REQUIRE((*it)->isValid());
                         //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
-                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
                 }
             }
@@ -477,13 +480,13 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
                         else
                         {
                             CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                            CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                            CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
                         }
                         CATCH_REQUIRE((*it)->isValid());
                         //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
-                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
                 }
             }
@@ -575,14 +578,14 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
 
                 // not valid because it was closed
                 CATCH_REQUIRE_FALSE(dc.isValid());
-                CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException &);
+                CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException);
             }
         }
 
@@ -635,13 +638,13 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
                         else
                         {
                             CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                            CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                            CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
                         }
                         CATCH_REQUIRE((*it)->isValid());
                         //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
-                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
                 }
 
@@ -691,13 +694,13 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
                         else
                         {
                             CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                            CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                            CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
                         }
                         CATCH_REQUIRE((*it)->isValid());
                         //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
-                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
                 }
 
@@ -748,13 +751,13 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
                         else
                         {
                             CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                            CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                            CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
                         }
                         CATCH_REQUIRE((*it)->isValid());
                         //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
-                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
                 }
 
@@ -805,13 +808,13 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
                         else
                         {
                             CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                            CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                            CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
                         }
                         CATCH_REQUIRE((*it)->isValid());
                         //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
-                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                        CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                        CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                     }
                 }
             }
@@ -884,14 +887,14 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
 
                 // not valid because it is not a directory
                 CATCH_REQUIRE_FALSE(dc.isValid());
-                CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException &);
-                CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException &);
+                CATCH_REQUIRE_THROWS_AS(dc.entries().empty(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getEntry("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::MATCH), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getInputStream("inexistant", zipios::FileCollection::MatchPath::IGNORE), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.getName(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::InvalidStateException);
+                CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException);
             }
         }
     }
@@ -912,7 +915,7 @@ CATCH_TEST_CASE("DirectoryCollection with an existing directory that gets delete
     CATCH_REQUIRE(rmdir("tree") == 0);
 
     // attempt the get the size, it throws
-    CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::IOException &);
+    CATCH_REQUIRE_THROWS_AS(dc.size(), zipios::IOException);
     CATCH_REQUIRE_FALSE(dc.isValid());
 }
 
@@ -974,11 +977,12 @@ CATCH_TEST_CASE("DirectoryCollection with an empty directory", "[DirectoryCollec
                 output << **it;
                 CATCH_REQUIRE(output.str() == "tree (directory)");
 
-                CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
             }
         }
     }
+    CATCH_END_SECTION()
 
     rmdir("tree");
 }

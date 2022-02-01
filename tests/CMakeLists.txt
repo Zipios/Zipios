@@ -61,11 +61,12 @@ if(BUILD_ZIPIOS_TESTS)
 
         target_include_directories(${PROJECT_NAME}
             PUBLIC
-                ${CATCH_INCLUDE_DIR}
+                ${SNAPCATCH2_INCLUDE_DIRS}
         )
 
         target_link_libraries(${PROJECT_NAME}
             zipios
+            ${SNAPCATCH2_LIBRARIES}
         )
 
         add_custom_target(run_zipios_tests

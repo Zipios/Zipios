@@ -89,8 +89,8 @@ CATCH_SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry
             CATCH_REQUIRE_FALSE(de.isValid());
             CATCH_REQUIRE(de.toString() == "/this/file/really/should/not/exist/period.txt (0 bytes)");
 
-            CATCH_REQUIRE_THROWS_AS(de.read(std::cin), zipios::IOException &);
-            CATCH_REQUIRE_THROWS_AS(de.write(std::cout), zipios::IOException &);
+            CATCH_REQUIRE_THROWS_AS(de.read(std::cin), zipios::IOException);
+            CATCH_REQUIRE_THROWS_AS(de.write(std::cout), zipios::IOException);
 
             zipios::FileEntry::pointer_t null_entry;
 //            CATCH_REQUIRE_FALSE(de.isEqual(*null_entry));  // here we are passing a NULL reference which most people think is something impossible to do...
@@ -123,6 +123,7 @@ CATCH_SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry
             CATCH_REQUIRE(clone->isEqual(de));
             CATCH_REQUIRE(de.isEqual(*clone));
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("setting the comment")
         {
@@ -420,10 +421,11 @@ CATCH_SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry
                 }
                 else
                 {
-                    CATCH_REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException &);
+                    CATCH_REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException);
                 }
             }
         }
+        CATCH_END_SECTION()
 
         CATCH_START_SECTION("setting an invalid method")
         {
@@ -439,12 +441,13 @@ CATCH_SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry
                     break;
 
                 default:
-                    CATCH_REQUIRE_THROWS_AS(de.setMethod(static_cast<zipios::StorageMethod>(i)), zipios::InvalidStateException &);
+                    CATCH_REQUIRE_THROWS_AS(de.setMethod(static_cast<zipios::StorageMethod>(i)), zipios::InvalidStateException);
                     break;
 
                 }
             }
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("setting the method")
         {
@@ -772,7 +775,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
 
             {
                 CATCH_REQUIRE(de.getComment().empty());
-                CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getCrc() == 0);
                 CATCH_REQUIRE(de.getEntryOffset() == 0);
                 CATCH_REQUIRE(de.getExtra().empty());
@@ -781,7 +784,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                 CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(de.getSize() == file_size);
+                CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -793,7 +796,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 CATCH_REQUIRE(clone->getComment().empty());
-                CATCH_REQUIRE(clone->getCompressedSize() == file_size);
+                CATCH_REQUIRE(clone->getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getCrc() == 0);
                 CATCH_REQUIRE(clone->getEntryOffset() == 0);
                 CATCH_REQUIRE(clone->getExtra().empty());
@@ -802,7 +805,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(clone->getName() == "filepath-test.txt");
                 CATCH_REQUIRE(clone->getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(clone->getSize() == file_size);
+                CATCH_REQUIRE(clone->getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(clone->hasCrc());
@@ -815,7 +818,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 de.setComment("new comment");
 
                 CATCH_REQUIRE(de.getComment() == "new comment");
-                CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getCrc() == 0);
                 CATCH_REQUIRE(de.getEntryOffset() == 0);
                 CATCH_REQUIRE(de.getExtra().empty());
@@ -824,7 +827,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                 CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(de.getSize() == file_size);
+                CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -836,7 +839,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 CATCH_REQUIRE(clone->getComment() == "new comment");
-                CATCH_REQUIRE(clone->getCompressedSize() == file_size);
+                CATCH_REQUIRE(clone->getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getCrc() == 0);
                 CATCH_REQUIRE(clone->getEntryOffset() == 0);
                 CATCH_REQUIRE(clone->getExtra().empty());
@@ -845,7 +848,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(clone->getName() == "filepath-test.txt");
                 CATCH_REQUIRE(clone->getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(clone->getSize() == file_size);
+                CATCH_REQUIRE(clone->getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(clone->hasCrc());
@@ -868,7 +871,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 de.setCompressedSize(r);
 
                 CATCH_REQUIRE(de.getComment().empty());
-                CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getCrc() == 0);
                 CATCH_REQUIRE(de.getEntryOffset() == 0);
                 CATCH_REQUIRE(de.getExtra().empty());
@@ -877,7 +880,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                 CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(de.getSize() == file_size);
+                CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -889,7 +892,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 CATCH_REQUIRE(clone->getComment().empty());
-                CATCH_REQUIRE(clone->getCompressedSize() == file_size);
+                CATCH_REQUIRE(clone->getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getCrc() == 0);
                 CATCH_REQUIRE(clone->getEntryOffset() == 0);
                 CATCH_REQUIRE(clone->getExtra().empty());
@@ -898,7 +901,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(clone->getName() == "filepath-test.txt");
                 CATCH_REQUIRE(clone->getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(clone->getSize() == file_size);
+                CATCH_REQUIRE(clone->getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(clone->hasCrc());
@@ -918,7 +921,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 de.setCrc(rand());
 
                 CATCH_REQUIRE(de.getComment().empty());
-                CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getCrc() == 0);
                 CATCH_REQUIRE(de.getEntryOffset() == 0);
                 CATCH_REQUIRE(de.getExtra().empty());
@@ -927,7 +930,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                 CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(de.getSize() == file_size);
+                CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -939,7 +942,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 CATCH_REQUIRE(clone->getComment().empty());
-                CATCH_REQUIRE(clone->getCompressedSize() == file_size);
+                CATCH_REQUIRE(clone->getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getCrc() == 0);
                 CATCH_REQUIRE(clone->getEntryOffset() == 0);
                 CATCH_REQUIRE(clone->getExtra().empty());
@@ -948,7 +951,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(clone->getName() == "filepath-test.txt");
                 CATCH_REQUIRE(clone->getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(clone->getSize() == file_size);
+                CATCH_REQUIRE(clone->getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(clone->hasCrc());
@@ -968,7 +971,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 de.setExtra(b);
 
                 CATCH_REQUIRE(de.getComment().empty());
-                CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getCrc() == 0);
                 CATCH_REQUIRE(de.getEntryOffset() == 0);
                 CATCH_REQUIRE_FALSE(de.getExtra().empty());
@@ -977,7 +980,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                 CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(de.getSize() == file_size);
+                CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -990,7 +993,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 CATCH_REQUIRE(clone->getComment().empty());
-                CATCH_REQUIRE(clone->getCompressedSize() == file_size);
+                CATCH_REQUIRE(clone->getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getCrc() == 0);
                 CATCH_REQUIRE(clone->getEntryOffset() == 0);
                 CATCH_REQUIRE_FALSE(clone->getExtra().empty());
@@ -999,7 +1002,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(clone->getMethod() == zipios::StorageMethod::STORED);
                 CATCH_REQUIRE(clone->getName() == "filepath-test.txt");
                 CATCH_REQUIRE(clone->getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(clone->getSize() == file_size);
+                CATCH_REQUIRE(clone->getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(clone->hasCrc());
@@ -1022,7 +1025,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                         de.setLevel(level);
 
                         CATCH_REQUIRE(de.getComment().empty());
-                        CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                        CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                         CATCH_REQUIRE(de.getCrc() == 0);
                         CATCH_REQUIRE(de.getEntryOffset() == 0);
                         CATCH_REQUIRE(de.getExtra().empty());
@@ -1031,7 +1034,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                         CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::STORED);
                         CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                         CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                        CATCH_REQUIRE(de.getSize() == file_size);
+                        CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                         CATCH_REQUIRE(de.getTime() == dt.getDOSDateTime());
                         CATCH_REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                         CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -1041,20 +1044,21 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                     }
                     else
                     {
-                        CATCH_REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException &);
+                        CATCH_REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException);
                     }
                 }
 
                 // restore before continuing test
                 de.setLevel(g_expected_level);
             }
+            CATCH_END_SECTION()
 
             {
                 // set a method other than STORED, which is 1, so just us % 8 instead of % 9 and do a +1
                 de.setMethod(zipios::StorageMethod::DEFLATED);
 
                 CATCH_REQUIRE(de.getComment().empty());
-                CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getCrc() == 0);
                 CATCH_REQUIRE(de.getEntryOffset() == 0);
                 CATCH_REQUIRE(de.getExtra().empty());
@@ -1063,7 +1067,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::DEFLATED);
                 CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                 CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(de.getSize() == file_size);
+                CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(de.getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -1075,7 +1079,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 CATCH_REQUIRE(clone->getComment().empty());
-                CATCH_REQUIRE(clone->getCompressedSize() == file_size);
+                CATCH_REQUIRE(clone->getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getCrc() == 0);
                 CATCH_REQUIRE(clone->getEntryOffset() == 0);
                 CATCH_REQUIRE(clone->getExtra().empty());
@@ -1084,7 +1088,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(clone->getMethod() == zipios::StorageMethod::DEFLATED);
                 CATCH_REQUIRE(clone->getName() == "filepath-test.txt");
                 CATCH_REQUIRE(clone->getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(clone->getSize() == file_size);
+                CATCH_REQUIRE(clone->getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getTime() == dt.getDOSDateTime());
                 CATCH_REQUIRE(clone->getUnixTime() == file_stats.st_mtime);
                 CATCH_REQUIRE_FALSE(clone->hasCrc());
@@ -1160,7 +1164,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 de.setTime(r.getDOSDateTime());
 
                 CATCH_REQUIRE(de.getComment().empty());
-                CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getCrc() == 0);
                 CATCH_REQUIRE(de.getEntryOffset() == 0);
                 CATCH_REQUIRE(de.getExtra().empty());
@@ -1169,7 +1173,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::DEFLATED);
                 CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                 CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(de.getSize() == file_size);
+                CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getTime() == r.getDOSDateTime());
                 CATCH_REQUIRE(de.getUnixTime() == r.getUnixTimestamp()); // WARNING: this is not always equal to t because setTime() may use the next even second
                 CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -1181,7 +1185,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 CATCH_REQUIRE(clone->getComment().empty());
-                CATCH_REQUIRE(clone->getCompressedSize() == file_size);
+                CATCH_REQUIRE(clone->getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getCrc() == 0);
                 CATCH_REQUIRE(clone->getEntryOffset() == 0);
                 CATCH_REQUIRE(clone->getExtra().empty());
@@ -1190,7 +1194,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(clone->getMethod() == zipios::StorageMethod::DEFLATED);
                 CATCH_REQUIRE(clone->getName() == "filepath-test.txt");
                 CATCH_REQUIRE(clone->getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(clone->getSize() == file_size);
+                CATCH_REQUIRE(clone->getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getTime() == r.getDOSDateTime());
                 CATCH_REQUIRE(clone->getUnixTime() == r.getUnixTimestamp());
                 CATCH_REQUIRE_FALSE(clone->hasCrc());
@@ -1208,7 +1212,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 de.setUnixTime(r);
 
                 CATCH_REQUIRE(de.getComment().empty());
-                CATCH_REQUIRE(de.getCompressedSize() == file_size);
+                CATCH_REQUIRE(de.getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getCrc() == 0);
                 CATCH_REQUIRE(de.getEntryOffset() == 0);
                 CATCH_REQUIRE(de.getExtra().empty());
@@ -1217,7 +1221,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(de.getMethod() == zipios::StorageMethod::DEFLATED);
                 CATCH_REQUIRE(de.getName() == "filepath-test.txt");
                 CATCH_REQUIRE(de.getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(de.getSize() == file_size);
+                CATCH_REQUIRE(de.getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(de.getTime() == dr.getDOSDateTime());
                 CATCH_REQUIRE(de.getUnixTime() == r);
                 CATCH_REQUIRE_FALSE(de.hasCrc());
@@ -1229,7 +1233,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 zipios::DirectoryEntry::pointer_t clone(de.clone());
 
                 CATCH_REQUIRE(clone->getComment().empty());
-                CATCH_REQUIRE(clone->getCompressedSize() == file_size);
+                CATCH_REQUIRE(clone->getCompressedSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getCrc() == 0);
                 CATCH_REQUIRE(clone->getEntryOffset() == 0);
                 CATCH_REQUIRE(clone->getExtra().empty());
@@ -1238,7 +1242,7 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
                 CATCH_REQUIRE(clone->getMethod() == zipios::StorageMethod::DEFLATED);
                 CATCH_REQUIRE(clone->getName() == "filepath-test.txt");
                 CATCH_REQUIRE(clone->getFileName() == "filepath-test.txt");
-                CATCH_REQUIRE(clone->getSize() == file_size);
+                CATCH_REQUIRE(clone->getSize() == static_cast<std::size_t>(file_size));
                 CATCH_REQUIRE(clone->getTime() == dr.getDOSDateTime());
                 CATCH_REQUIRE(clone->getUnixTime() == r);
                 CATCH_REQUIRE_FALSE(clone->hasCrc());
@@ -1314,6 +1318,7 @@ CATCH_SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEn
             CATCH_REQUIRE(clone->isValid());
             CATCH_REQUIRE(clone->toString() == "filepath-test (directory)");
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("setting the comment")
         {
@@ -1557,13 +1562,14 @@ CATCH_SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEn
                 }
                 else
                 {
-                    CATCH_REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException &);
+                    CATCH_REQUIRE_THROWS_AS(de.setLevel(level), zipios::InvalidStateException);
                 }
             }
 
             // restore before continuing test
             de.setLevel(g_expected_level);
         }
+        CATCH_END_SECTION()
 
         CATCH_WHEN("setting the method")
         {

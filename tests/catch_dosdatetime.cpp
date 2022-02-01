@@ -107,6 +107,7 @@ CATCH_TEST_CASE("DOS Date & Time Min/Max", "[dosdatetime]")
         t.setSecond(0);
         CATCH_REQUIRE(zipios::DOSDateTime::g_min_dosdatetime == t.getDOSDateTime());
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("DOS time maximum")
     {
@@ -119,6 +120,7 @@ CATCH_TEST_CASE("DOS Date & Time Min/Max", "[dosdatetime]")
         t.setSecond(59);
         CATCH_REQUIRE(zipios::DOSDateTime::g_max_dosdatetime == t.getDOSDateTime());
     }
+    CATCH_END_SECTION()
 }
 
 
@@ -132,6 +134,7 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
         zipios::DOSDateTime d;
         CATCH_REQUIRE(d.daysInMonth() == -1);
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("get/set seconds")
     {
@@ -147,7 +150,7 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 60);
             t.setSecond(r);
             CATCH_REQUIRE(t.getSecond() == (r & -2));
-            CATCH_REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getSecond() == (r & -2));
         }
         for(int i = 60; i <= 80; ++i)
@@ -156,10 +159,11 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 60);
             t.setSecond(r);
             CATCH_REQUIRE(t.getSecond() == (r & -2));
-            CATCH_REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setSecond(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getSecond() == (r & -2));
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("get/set minutes")
     {
@@ -175,7 +179,7 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 60);
             t.setMinute(r);
             CATCH_REQUIRE(t.getMinute() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getMinute() == r);
         }
         for(int i = 60; i <= 80; ++i)
@@ -184,10 +188,11 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 60);
             t.setMinute(r);
             CATCH_REQUIRE(t.getMinute() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setMinute(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getMinute() == r);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("get/set hours")
     {
@@ -203,7 +208,7 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 24);
             t.setHour(r);
             CATCH_REQUIRE(t.getHour() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getHour() == r);
         }
         for(int i = 24; i <= 44; ++i)
@@ -212,10 +217,11 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 24);
             t.setHour(r);
             CATCH_REQUIRE(t.getHour() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setHour(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getHour() == r);
         }
     }
+    CATCH_END_SECTION()
 
     // day is limited between 1 and 31 on a setMDay()
     // use the isValid() to know whether it is valid for the current month
@@ -235,7 +241,7 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 31 + 1);
             t.setMDay(r);
             CATCH_REQUIRE(t.getMDay() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getMDay() == r);
         }
         for(int i = 32; i <= 52; ++i)
@@ -244,10 +250,11 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 31 + 1);
             t.setMDay(r);
             CATCH_REQUIRE(t.getMDay() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setMDay(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getMDay() == r);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("get/set month")
     {
@@ -263,7 +270,7 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 12 + 1);
             t.setMonth(r);
             CATCH_REQUIRE(t.getMonth() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getMonth() == r);
         }
         for(int i = 13; i <= 33; ++i)
@@ -272,10 +279,11 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % 12 + 1);
             t.setMonth(r);
             CATCH_REQUIRE(t.getMonth() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setMonth(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getMonth() == r);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("get/set year")
     {
@@ -291,7 +299,7 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % (2107 - 1980 + 1) + 1980);
             t.setYear(r);
             CATCH_REQUIRE(t.getYear() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getYear() == r);
         }
         for(int i = 2108; i <= 2200; ++i)
@@ -300,10 +308,11 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
             int const r(rand() % (2107 - 1980 + 1) + 1980);
             t.setYear(r);
             CATCH_REQUIRE(t.getYear() == r);
-            CATCH_REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(t.setYear(i), zipios::InvalidException);
             CATCH_REQUIRE(t.getYear() == r);
         }
     }
+    CATCH_END_SECTION()
 }
 
 
@@ -367,10 +376,11 @@ CATCH_TEST_CASE("Small DOS Date & Time", "[dosdatetime]")
         {
             zipios::DOSDateTime td;
             CATCH_REQUIRE_FALSE(td.isValid());
-            CATCH_REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException);
             CATCH_REQUIRE_FALSE(td.isValid());
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("just around minimum, but valid")
     {
@@ -399,6 +409,7 @@ CATCH_TEST_CASE("Small DOS Date & Time", "[dosdatetime]")
             CATCH_REQUIRE(u == et);
         }
     }
+    CATCH_END_SECTION()
 }
 
 
@@ -436,6 +447,7 @@ CATCH_TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
             CATCH_REQUIRE(u == et);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("just a bit too large")
     {
@@ -443,17 +455,16 @@ CATCH_TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
         //
         for(std::time_t t(g_maximum_unix + 1); t <= g_maximum_unix + 20; ++t)
         {
-            std::time_t et((t + 1) & ~1);
-
             zipios::DOSDateTime td;
             CATCH_REQUIRE(td.getDOSDateTime() == 0);
             CATCH_REQUIRE_FALSE(td.isValid());
-            CATCH_REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException &);
+            CATCH_REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException);
             CATCH_REQUIRE_FALSE(td.isValid());
             CATCH_REQUIRE(td.getDOSDateTime() == 0);
             CATCH_REQUIRE(td.getUnixTimestamp() == 0);
         }
     }
+    CATCH_END_SECTION()
 }
 
 
@@ -476,7 +487,7 @@ CATCH_TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
             || t > g_maximum_unix)
             {
                 zipios::DOSDateTime td;
-                CATCH_REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException &);
+                CATCH_REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException);
             }
             else
             {
@@ -496,9 +507,11 @@ CATCH_TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
                 tu.setDOSDateTime(d);
 
                 std::time_t const u(tu.getUnixTimestamp());
+                CATCH_REQUIRE(u == et);
             }
         }
     }
+    CATCH_END_SECTION()
 }
 #endif
 

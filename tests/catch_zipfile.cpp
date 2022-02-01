@@ -76,7 +76,7 @@ CATCH_TEST_CASE("A ZipFile with an invalid name", "[ZipFile] [FileCollection]")
 {
     CATCH_REQUIRE_THROWS_AS([&](){
                     zipios::ZipFile zf("this/file/does/not/exists/so/the/constructor/throws");
-                }(), zipios::IOException &);
+                }(), zipios::IOException);
 }
 
 
@@ -95,7 +95,7 @@ CATCH_TEST_CASE("A ZipFile with an invalid file", "[ZipFile] [FileCollection]")
     }
     CATCH_REQUIRE_THROWS_AS([&](){
                     zipios::ZipFile zf("invalid.zip");
-                }(), zipios::FileCollectionException &);
+                }(), zipios::FileCollectionException);
 }
 
 
@@ -224,7 +224,7 @@ CATCH_SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     else
                     {
                         CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                        CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                        CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
 
                         // now read both files (if not a directory) and make sure
                         // they are equal
@@ -251,8 +251,8 @@ CATCH_SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     }
 
                     // I don't think we will test those directly...
-                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                 }
             }
 
@@ -338,7 +338,7 @@ CATCH_SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     else
                     {
                         CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                        CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                        CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
 
                         // now read both files (if not a directory) and make sure
                         // they are equal
@@ -365,8 +365,8 @@ CATCH_SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
                     }
 
                     // I don't think we will test those directly...
-                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                 }
             }
 
@@ -478,7 +478,7 @@ CATCH_SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]
                     else
                     {
                         CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                        CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                        CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
 
                         // now read both files (if not a directory) and make sure
                         // they are equal
@@ -505,8 +505,8 @@ CATCH_SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]
                     }
 
                     // I don't think we will test those directly...
-                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                 }
             }
         }
@@ -591,7 +591,7 @@ CATCH_SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]
                     else
                     {
                         CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                        CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                        CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
 
                         // now read both files (if not a directory) and make sure
                         // they are equal
@@ -618,11 +618,12 @@ CATCH_SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]
                     }
 
                     // I don't think we will test those directly...
-                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                 }
             }
         }
+        CATCH_END_SECTION()
     }
 }
 
@@ -704,7 +705,7 @@ CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[Zip
                     //CATCH_REQUIRE((*it)->toString() == "... (0 bytes)");
 
                     CATCH_REQUIRE_FALSE((*it)->isDirectory());
-                    CATCH_REQUIRE((*it)->getSize() == file_stats.st_size);
+                    CATCH_REQUIRE((*it)->getSize() == static_cast<std::size_t>(file_stats.st_size));
 
                     // now read both files (if not a directory) and make sure
                     // they are equal
@@ -730,8 +731,8 @@ CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[Zip
                     CATCH_REQUIRE_FALSE(*is);
 
                     // I don't think we will test those directly...
-                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException &);
-                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException &);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->read(std::cin), zipios::IOException);
+                    //CATCH_REQUIRE_THROWS_AS((*it)->write(std::cout), zipios::IOException);
                 }
             }
         }
@@ -762,7 +763,7 @@ CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[Zip
                 zipios_test::auto_unlink_t remove_zip("file.zip", true);
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
-                    CATCH_REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
+                    CATCH_REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException);
                     CATCH_REQUIRE_FALSE(out);
                 }
             }
@@ -790,7 +791,7 @@ CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[Zip
                 zipios_test::auto_unlink_t remove_zip("file.zip", true);
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
-                    CATCH_REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
+                    CATCH_REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException);
                     CATCH_REQUIRE_FALSE(out);
                 }
             }
@@ -814,7 +815,7 @@ CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[Zip
                 zipios_test::auto_unlink_t remove_zip("file.zip", true);
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
-                    CATCH_REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc, comment), zipios::InvalidStateException &);
+                    CATCH_REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc, comment), zipios::InvalidStateException);
                     CATCH_REQUIRE_FALSE(out);
                 }
             }
@@ -849,7 +850,7 @@ CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[Zip
                 zipios_test::auto_unlink_t remove_zip("file.zip", true);
                 {
                     std::ofstream out("file.zip", std::ios::out | std::ios::binary);
-                    CATCH_REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException &);
+                    CATCH_REQUIRE_THROWS_AS(zipios::ZipFile::saveCollectionToArchive(out, dc), zipios::InvalidStateException);
                 }
             }
         }
@@ -898,6 +899,7 @@ CATCH_TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCol
             zf.mustBeValid(); // not throwing
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("try three uncompressed files of many sizes")
     {
@@ -959,6 +961,7 @@ CATCH_TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCol
             zf.mustBeValid(); // not throwing
         }
     }
+    CATCH_END_SECTION()
 }
 
 
@@ -1246,13 +1249,14 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
             }
 
             // truncate the file to 'i' size
-            truncate("file.zip", i);
+            CATCH_REQUIRE(truncate("file.zip", i) == 0);
 
             CATCH_REQUIRE_THROWS_AS([&](){
                             zipios::ZipFile zf("file.zip");
-                        }(), zipios::FileCollectionException &);
+                        }(), zipios::FileCollectionException);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("create files with End of Central Directory file except for the comment")
     {
@@ -1275,13 +1279,14 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
             // truncate the file to not include the whole comment
             // (truncate at least one character though)
             size_t const five(5);
-            truncate("file.zip", (22 + comment_len) - (rand() % std::min(five, comment_len) + 1));
+            CATCH_REQUIRE(truncate("file.zip", (22 + comment_len) - (rand() % std::min(five, comment_len) + 1)) == 0);
 
             CATCH_REQUIRE_THROWS_AS([&](){
                             zipios::ZipFile zf("file.zip");
-                        }(), zipios::IOException &);
+                        }(), zipios::IOException);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("create files with End of Central Directory using counts that differ")
     {
@@ -1307,9 +1312,10 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
 
             CATCH_REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::FileCollectionException &);
+                    }(), zipios::FileCollectionException);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("create files with one Local Entry using an invalid signature")
     {
@@ -1336,9 +1342,10 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
 
             CATCH_REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::IOException &);
+                    }(), zipios::IOException);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("create files with a valid central directory but no local entries")
     {
@@ -1364,9 +1371,10 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
 
             CATCH_REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::IOException &);
+                    }(), zipios::IOException);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("create files with one an unsupported compression method")
     {
@@ -1422,9 +1430,10 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
             }
 
             zipios::ZipFile zf("file.zip");
-            CATCH_REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException &);
+            CATCH_REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("create files with a trailing data descriptor")
     {
@@ -1460,9 +1469,10 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
             }
 
             zipios::ZipFile zf("file.zip");
-            CATCH_REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException &);
+            CATCH_REQUIRE_THROWS_AS(zf.getInputStream("invalid"), zipios::FileCollectionException);
         }
     }
+    CATCH_END_SECTION()
 
     /** \todo
      * We need to write a similar test that verifies each and every field
@@ -1503,9 +1513,10 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
 
             CATCH_REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::FileCollectionException &);
+                    }(), zipios::FileCollectionException);
         }
     }
+    CATCH_END_SECTION()
 
     CATCH_START_SECTION("create files with a trailing data descriptor")
     {
@@ -1548,9 +1559,10 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
 
             CATCH_REQUIRE_THROWS_AS([&](){
                         zipios::ZipFile zf("file.zip");
-                    }(), zipios::FileCollectionException &);
+                    }(), zipios::FileCollectionException);
         }
     }
+    CATCH_END_SECTION()
 
 /** \todo
  * Once clang is fixed, remove those tests. clang does not clear the
@@ -1642,6 +1654,7 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
             CATCH_REQUIRE(amount_read != uncompressed_size);
         }
     }
+    CATCH_END_SECTION()
 #endif
 }
 
