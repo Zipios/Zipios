@@ -1,3 +1,9 @@
+zipios (2.3.1.0~bionic) bionic; urgency=high
+
+  * Updated the tests to work with SnapCatch2 v3.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Mon, 31 Jan 2022 18:14:26 -0800
+
 zipios (2.3.0.0~bionic) bionic; urgency=high
 
   * Added the clear() and empty() functions to the FilePath class.
