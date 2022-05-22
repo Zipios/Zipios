@@ -1,3 +1,9 @@
+zipios (2.3.1.1~bionic) bionic; urgency=high
+
+  * Updated the compat to v10.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat, 21 May 2022 20:20:30 -0700
+
 zipios (2.3.1.0~bionic) bionic; urgency=high
 
   * Updated the tests to work with SnapCatch2 v3.
