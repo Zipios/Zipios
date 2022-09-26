@@ -55,8 +55,13 @@ public:
     virtual pointer_t           clone() const override;
     virtual                     ~ZipFile() override;
 
-    virtual stream_pointer_t    getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH) override;
-    static void                 saveCollectionToArchive(std::ostream & os, FileCollection & collection, std::string const & zip_comment = "");
+    virtual stream_pointer_t    getInputStream(
+                                          std::string const & entry_name
+                                        , MatchPath matchpath = MatchPath::MATCH) override;
+    static void                 saveCollectionToArchive(
+                                          std::ostream & os
+                                        , FileCollection & collection
+                                        , std::string const & zip_comment = std::string());
 
 private:
     void                        init(std::istream & is);
