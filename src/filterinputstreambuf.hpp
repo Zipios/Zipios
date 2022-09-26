@@ -37,13 +37,14 @@ namespace zipios
 class FilterInputStreambuf : public std::streambuf
 {
 public:
-                                FilterInputStreambuf(std::streambuf *inbuf);
-                                FilterInputStreambuf(FilterInputStreambuf const& src) = delete;
-    FilterInputStreambuf const& operator = (FilterInputStreambuf const& src) = delete;
+                                FilterInputStreambuf(std::streambuf * inbuf);
+                                FilterInputStreambuf(FilterInputStreambuf const & rhs) = delete;
     virtual                     ~FilterInputStreambuf();
 
+    FilterInputStreambuf &      operator = (FilterInputStreambuf const & rhs) = delete;
+
 protected:
-    std::streambuf *            m_inbuf;
+    std::streambuf *            m_inbuf = nullptr;
 };
 
 

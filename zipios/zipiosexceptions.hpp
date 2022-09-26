@@ -57,7 +57,7 @@ namespace zipios
 class Exception : public std::runtime_error
 {
 public:
-    Exception(std::string const& msg) : runtime_error(msg) {}
+    Exception(std::string const & msg) : runtime_error(msg) {}
 };
 
 
@@ -70,7 +70,7 @@ public:
 class IOException : public Exception
 {
 public:
-    IOException(std::string const& msg) : Exception(msg) {}
+    IOException(std::string const & msg) : Exception(msg) {}
 };
 
 
@@ -82,7 +82,7 @@ public:
 class InvalidException : public Exception
 {
 public:
-    InvalidException(std::string const& msg) : Exception(msg) {}
+    InvalidException(std::string const & msg) : Exception(msg) {}
 };
 
 
@@ -94,7 +94,7 @@ public:
 class FileCollectionException : public Exception
 {
 public:
-    FileCollectionException(std::string const& msg) : Exception(msg) {}
+    FileCollectionException(std::string const & msg) : Exception(msg) {}
 };
 
 
@@ -107,7 +107,7 @@ public:
 class InvalidStateException : public Exception
 {
 public:
-    InvalidStateException(std::string const& msg) : Exception(msg) {}
+    InvalidStateException(std::string const & msg) : Exception(msg) {}
 };
 
 

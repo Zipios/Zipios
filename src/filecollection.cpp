@@ -47,7 +47,7 @@ namespace
  * This string represents the default m_filename value when a collection
  * is created without a filename.
  */
-char const *g_default_filename = "-";
+char const * g_default_filename = "-";
 
 
 /** \brief Class object used with the std::find_if() function.
@@ -69,7 +69,7 @@ public:
      *
      * \param[in] name  The name of the file being searched.
      */
-    explicit MatchName(std::string const& name)
+    explicit MatchName(std::string const & name)
         : m_name(name)
     {
     }
@@ -122,7 +122,7 @@ public:
      *
      * \param[in] name  The name of the file being searched.
      */
-    explicit MatchFileName(std::string const& name)
+    explicit MatchFileName(std::string const & name)
         : m_name(name)
     {
     }
@@ -174,7 +174,7 @@ private:
  */
 
 
-/** \fn stream_pointer_t FileCollection::getInputStream(std::string const& entry_name, MatchPath matchpath = MatchPath::MATCH);
+/** \fn stream_pointer_t FileCollection::getInputStream(std::string const & entry_name, MatchPath matchpath = MatchPath::MATCH);
  * \brief Retrieve pointer to an istream.
  *
  * This function returns a shared pointer to an istream defined from the
@@ -266,32 +266,29 @@ private:
  *
  * The collection is empty and marked as invalid.
  */
-FileCollection::FileCollection(std::string const& filename)
+FileCollection::FileCollection(std::string const & filename)
     : m_filename(filename.empty() ? g_default_filename : filename)
-    //, m_entries() -- auto-init
-    //, m_valid(true) -- auto-init
 {
 }
 
 
 /** \brief Copy a FileCollection in a new one.
  *
- * This constructor copies a file collection (\p src) in a new collection.
+ * This constructor copies a file collection (\p rhs) in a new collection.
  *
  * The copy entries that all the entries from the source collection get
  * cloned in the copy. This means entries in the source or new collection
  * can be modified and it has no effect on the entries in the other
  * collection.
  *
- * \param[in] src  The source collection to copy in this collection.
+ * \param[in] rhs  The source collection to copy in this collection.
  */
-FileCollection::FileCollection(FileCollection const& src)
-    : m_filename(src.m_filename)
-    //, m_entries() -- see below
-    , m_valid(src.m_valid)
+FileCollection::FileCollection(FileCollection const & rhs)
+    : m_filename(rhs.m_filename)
+    , m_valid(rhs.m_valid)
 {
-    m_entries.reserve(src.m_entries.size());
-    for(auto it = src.m_entries.begin(); it != src.m_entries.end(); ++it)
+    m_entries.reserve(rhs.m_entries.size());
+    for(auto it = rhs.m_entries.begin(); it != rhs.m_entries.end(); ++it)
     {
         m_entries.push_back((*it)->clone());
     }
@@ -312,7 +309,7 @@ FileCollection::FileCollection(FileCollection const& src)
  *
  * \return A reference to this FileCollection object.
  */
-FileCollection& FileCollection::operator = (FileCollection const& rhs)
+FileCollection & FileCollection::operator = (FileCollection const & rhs)
 {
     if(this != &rhs)
     {
@@ -421,7 +418,7 @@ FileEntry::vector_t FileCollection::entries() const
  *
  * \sa mustBeValid()
  */
-FileEntry::pointer_t FileCollection::getEntry(std::string const& name, MatchPath matchpath) const
+FileEntry::pointer_t FileCollection::getEntry(std::string const & name, MatchPath matchpath) const
 {
     // make sure the entries were loaded if necessary
     entries();
@@ -595,7 +592,7 @@ void FileCollection::setLevel(size_t limit, FileEntry::CompressionLevel small_co
  *
  * \return A reference to the \p os output stream.
  */
-std::ostream& operator << (std::ostream& os, FileCollection const& collection)
+std::ostream & operator << (std::ostream & os, FileCollection const & collection)
 {
     os << "collection '" << collection.getName() << "' {";
     FileEntry::vector_t entries(collection.entries());

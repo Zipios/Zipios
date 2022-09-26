@@ -50,7 +50,7 @@ namespace zipios
 {
 
 
-inline char const *getVersion()
+inline char const * getVersion()
 {
     return ZIPIOS_VERSION_STRING;
 }

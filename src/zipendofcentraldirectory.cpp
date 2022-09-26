@@ -79,10 +79,7 @@ uint32_t const g_signature = 0x06054b50;
  *
  * \param[in] zip_comment  The global comment of a Zip archive.
  */
-ZipEndOfCentralDirectory::ZipEndOfCentralDirectory(std::string const& zip_comment)
-    //: m_central_directory_entries(0) -- auto-init
-    //, m_central_directory_size(0) -- auto-init
-    //, m_central_directory_offset(0) -- auto-init
+ZipEndOfCentralDirectory::ZipEndOfCentralDirectory(std::string const & zip_comment)
     : m_zip_comment(zip_comment)
 {
 }
@@ -225,7 +222,7 @@ void ZipEndOfCentralDirectory::setOffset(offset_t start_offset)
  *
  * \return true if the ZipEndOfCentralDirectory was found, false otherwise.
  */
-bool ZipEndOfCentralDirectory::read(::zipios::buffer_t const& buf, size_t pos)
+bool ZipEndOfCentralDirectory::read(::zipios::buffer_t const & buf, size_t pos)
 {
     // the number of bytes we are going to read in the buffer
     // (including the signature)
@@ -304,7 +301,7 @@ bool ZipEndOfCentralDirectory::read(::zipios::buffer_t const& buf, size_t pos)
  *
  * \param[in] os  The output stream where the data is to be saved.
  */
-void ZipEndOfCentralDirectory::write(std::ostream& os)
+void ZipEndOfCentralDirectory::write(std::ostream & os)
 {
     /** \todo
      * Add support for 64 bit Zip archive. This would allow for pretty

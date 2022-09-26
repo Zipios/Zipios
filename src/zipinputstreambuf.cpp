@@ -52,10 +52,8 @@ namespace zipios
  * \param[in] start_pos  A position to reset the inbuf to before reading.
  *                       Specify -1 to read from the current position.
  */
-ZipInputStreambuf::ZipInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
+ZipInputStreambuf::ZipInputStreambuf(std::streambuf * inbuf, offset_t start_pos)
     : InflateInputStreambuf(inbuf, start_pos)
-    //, m_current_entry() -- auto-init
-    //, m_remain(0) -- auto-init
 {
     // read the zip local header
     std::istream is(m_inbuf); // istream does not destroy the streambuf.

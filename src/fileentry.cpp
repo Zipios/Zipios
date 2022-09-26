@@ -96,17 +96,9 @@ namespace zipios
  * \param[in] filename  The file entry filename.
  * \param[in] comment  The comment attached to the file.
  */
-FileEntry::FileEntry(FilePath const& filename, std::string const& comment)
+FileEntry::FileEntry(FilePath const & filename, std::string const & comment)
     : m_filename(filename)
     , m_comment(comment)
-    //, m_uncompressed_size(0) -- auto-init
-    //, m_unix_time(0) -- auto-init
-    //, m_entry_offset(0) -- auto-init
-    //, m_compress_method(StorageMethod::STORED) -- auto-init
-    //, m_compression_level(COMPRESSION_LEVEL_DEFAULT) -- auto-init
-    //, m_crc_32(0) -- auto-init
-    //, m_has_crc_32(false) -- auto-init
-    //, m_valid(false) -- auto-init
 {
 }
 
@@ -471,7 +463,7 @@ bool FileEntry::isValid() const
  *
  * \param[in] comment  A string with the new comment.
  */
-void FileEntry::setComment(std::string const& comment)
+void FileEntry::setComment(std::string const & comment)
 {
     // WARNING: we do NOT check the maximum size here because it can depend
     //          on the output format which is just zip now but could be a
@@ -537,7 +529,7 @@ void FileEntry::setEntryOffset(std::streampos offset)
  *
  * \param[in] extra  The extra field is set to this value.
  */
-void FileEntry::setExtra(buffer_t const& extra)
+void FileEntry::setExtra(buffer_t const & extra)
 {
     m_extra_field = extra;
 }
@@ -736,7 +728,7 @@ std::string FileEntry::toString() const
  *
  * \param[in,out] is  The input stream.
  */
-void FileEntry::read(std::istream& is)
+void FileEntry::read(std::istream & is)
 {
     static_cast<void>(is);
     throw IOException("FileEntry::read(): read not available with this type of FileEntry.");
@@ -754,7 +746,7 @@ void FileEntry::read(std::istream& is)
  *
  * \param[in,out] os  The output stream.
  */
-void FileEntry::write(std::ostream& os)
+void FileEntry::write(std::ostream & os)
 {
     static_cast<void>(os);
     throw IOException("FileEntry::write(): write not available with this type of FileEntry.");
@@ -763,15 +755,17 @@ void FileEntry::write(std::ostream& os)
 
 /** \brief Output an entry as a string to a stream.
  *
- * This function transforms the FileEntry into a string and prints
- * the result to the specified output stream.
+ * This function transforms the FileEntry basic information into a string
+ * and prints the result to the specified output stream.
  *
  * \param[in,out] os  The output stream.
  * \param[in] entry  The entry to print out.
  *
  * \return A reference to the output stream.
+ *
+ * \sa FileEntry::toString()
  */
-std::ostream& operator << (std::ostream& os, FileEntry const& entry)
+std::ostream & operator << (std::ostream & os, FileEntry const & entry)
 {
     os << entry.toString();
     return os;

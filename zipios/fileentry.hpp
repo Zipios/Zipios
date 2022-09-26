@@ -111,13 +111,13 @@ public:
     virtual std::time_t         getUnixTime() const;
     bool                        hasCrc() const;
     virtual bool                isDirectory() const;
-    virtual bool                isEqual(FileEntry const& file_entry) const;
+    virtual bool                isEqual(FileEntry const & file_entry) const;
     virtual bool                isValid() const;
-    virtual void                setComment(std::string const& comment);
+    virtual void                setComment(std::string const & comment);
     virtual void                setCompressedSize(size_t size);
     virtual void                setCrc(crc32_t crc);
     void                        setEntryOffset(std::streampos offset);
-    virtual void                setExtra(buffer_t const& extra);
+    virtual void                setExtra(buffer_t const & extra);
     virtual void                setLevel(CompressionLevel level);
     virtual void                setMethod(StorageMethod method);
     virtual void                setSize(size_t size);
@@ -125,8 +125,8 @@ public:
     virtual void                setUnixTime(std::time_t time);
     virtual std::string         toString() const;
 
-    virtual void                read(std::istream& is);
-    virtual void                write(std::ostream& os);
+    virtual void                read(std::istream & is);
+    virtual void                write(std::ostream & os);
 
 protected:
     FilePath                    m_filename;
@@ -143,7 +143,7 @@ protected:
 };
 
 
-std::ostream& operator << (std::ostream& os, FileEntry const& entry);
+std::ostream & operator << (std::ostream & os, FileEntry const & entry);
 
 
 } // zipios namespace

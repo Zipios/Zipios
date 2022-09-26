@@ -41,10 +41,11 @@ class CollectionCollection : public FileCollection
 {
 public:
     explicit                        CollectionCollection();
-                                    CollectionCollection(CollectionCollection const & src);
+                                    CollectionCollection(CollectionCollection const & rhs);
     virtual pointer_t               clone() const override;
-    CollectionCollection&           operator = (CollectionCollection const & src);
     virtual                         ~CollectionCollection() override;
+
+    CollectionCollection &          operator = (CollectionCollection const & rhs);
 
     bool                            addCollection(FileCollection const & collection);
     bool                            addCollection(FileCollection::pointer_t collection);

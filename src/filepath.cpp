@@ -31,7 +31,6 @@
 
 #include "zipios_common.hpp"
 
-#include <memory.h>
 
 
 namespace zipios
@@ -100,13 +99,9 @@ std::string pruneTrailingSeparator(std::string path)
  * \sa exists()
  * \sa pruneTrailingSeparator()
  */
-FilePath::FilePath(std::string const& path)
+FilePath::FilePath(std::string const & path)
     : m_path(pruneTrailingSeparator(path))
-    //, m_stat() -- see below
-    //, m_checked(false) -- auto-init
-    //, m_exists(false) -- auto-init
 {
-    memset(&m_stat, 0, sizeof(m_stat));
 }
 
 
@@ -136,7 +131,7 @@ void FilePath::check() const
          *
          * See zipios/zipios-config.hpp.in
          */
-        memset(&m_stat, 0, sizeof(m_stat));
+        m_stat = {};
         m_exists = stat(m_path.c_str(), &m_stat) == 0;
     }
 }
@@ -151,7 +146,7 @@ void FilePath::check() const
  *
  * \return A reference to this object.
  */
-FilePath& FilePath::operator = (std::string const& path)
+FilePath & FilePath::operator = (std::string const & path)
 {
     m_path = pruneTrailingSeparator(path);
     m_checked = false;
@@ -184,8 +179,10 @@ FilePath::operator std::string () const
  * may result in a new path that is not quite sensible.
  *
  * \param[in] rhs  The right hand side.
+ *
+ * \return The lhs and rhs concatenated.
  */
-FilePath FilePath::operator + (FilePath const& rhs) const
+FilePath FilePath::operator + (FilePath const & rhs) const
 {
     if(m_path.empty())
     {
@@ -215,9 +212,9 @@ FilePath FilePath::operator + (FilePath const& rhs) const
  *
  * \param[in] rhs  The right hand side to compare with.
  *
- * \sa operator == (FilePath const& rhs);
+ * \sa operator == (FilePath const & rhs);
  */
-bool FilePath::operator == (char const *rhs) const
+bool FilePath::operator == (char const * rhs) const
 {
     return m_path == rhs;
 }
@@ -233,9 +230,9 @@ bool FilePath::operator == (char const *rhs) const
  * \param[in] lhs  The left hand side to compare with.
  * \param[in] rhs  The right hand side to compare with.
  *
- * \sa operator == (FilePath const& rhs);
+ * \sa operator == (FilePath const & rhs);
  */
-bool operator == (char const *lhs, FilePath const& rhs)
+bool operator == (char const * lhs, FilePath const & rhs)
 {
     return lhs == rhs.m_path;
 }
@@ -249,9 +246,9 @@ bool operator == (char const *lhs, FilePath const& rhs)
  *
  * \param[in] rhs  The right hand side to compare with.
  *
- * \sa operator == (FilePath const& rhs);
+ * \sa operator == (FilePath const & rhs);
  */
-bool FilePath::operator == (std::string const& rhs) const
+bool FilePath::operator == (std::string const & rhs) const
 {
     return m_path == rhs;
 }
@@ -266,9 +263,9 @@ bool FilePath::operator == (std::string const& rhs) const
  * \param[in] lhs  The left hand side to compare with.
  * \param[in] rhs  The right hand side to compare with.
  *
- * \sa operator == (FilePath const& rhs);
+ * \sa operator == (FilePath const & rhs);
  */
-bool operator == (std::string const& lhs, FilePath const& rhs)
+bool operator == (std::string const & lhs, FilePath const & rhs)
 {
     return lhs == rhs.m_path;
 }
@@ -288,10 +285,10 @@ bool operator == (std::string const& lhs, FilePath const& rhs)
  *
  * \param[in] rhs  The right hand side to compare with.
  *
- * \sa operator == (char const *rhs);
- * \sa operator == (std::string const& rhs);
+ * \sa operator == (char const * rhs);
+ * \sa operator == (std::string const & rhs);
  */
-bool FilePath::operator == (FilePath const& rhs) const
+bool FilePath::operator == (FilePath const & rhs) const
 {
     return m_path == rhs.m_path;
 }
@@ -538,7 +535,7 @@ std::time_t FilePath::lastModificationTime() const
  *
  * \return A copy of the \p os stream reference.
  */
-std::ostream& operator << (std::ostream& os, FilePath const& path)
+std::ostream & operator << (std::ostream & os, FilePath const & path)
 {
     os << static_cast<std::string>(path);
     return os;

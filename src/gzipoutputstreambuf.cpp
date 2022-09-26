@@ -51,9 +51,8 @@ namespace zipios
  * \param[in,out] outbuf  The streambuf to use for output.
  * \param[in] compression_level  The compression level to use to compress.
  */
-GZIPOutputStreambuf::GZIPOutputStreambuf(std::streambuf *outbuf, FileEntry::CompressionLevel compression_level)
+GZIPOutputStreambuf::GZIPOutputStreambuf(std::streambuf * outbuf, FileEntry::CompressionLevel compression_level)
     : DeflateOutputStreambuf(outbuf)
-    //, m_open(false) -- auto-init
 {
     if(!init(compression_level))
     {
@@ -74,13 +73,13 @@ GZIPOutputStreambuf::~GZIPOutputStreambuf()
 }
 
 
-void GZIPOutputStreambuf::setFilename(std::string const& filename)
+void GZIPOutputStreambuf::setFilename(std::string const & filename)
 {
     m_filename = filename;
 }
 
 
-void GZIPOutputStreambuf::setComment(std::string const& comment)
+void GZIPOutputStreambuf::setComment(std::string const & comment)
 {
     m_comment = comment;
 }

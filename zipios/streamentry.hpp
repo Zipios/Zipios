@@ -1,6 +1,6 @@
 #pragma once
-#ifndef FILTEROUTPUTSTREAMBUF_HPP
-#define FILTEROUTPUTSTREAMBUF_HPP
+#ifndef ZIPIOS_STREAMENTRY_HPP
+#define ZIPIOS_STREAMENTRY_HPP
 
 /*
   Zipios -- a small C++ library that provides easy access to .zip files.
@@ -24,30 +24,39 @@
 */
 
 /** \file
- * \brief Declarations of the zipios::FilterOutputStreambuf.
+ * \brief Define the zipios::StreamEntry class.
  *
- * This file includes the declaration of the zipios::FileterOutputStreambuf
- * class which is used as a base class to filter output data.
+ * This file declares the zipios::StreamEntry class which is used
+ * to handle zipios::FileEntry that are represented by a stream.
+ * This gives you the ability to create an entry from an in memory
+ * stream.
  */
 
-#include <iostream>
+#include "zipios/fileentry.hpp"
 
 
 namespace zipios
 {
 
 
-class FilterOutputStreambuf : public std::streambuf
+class StreamEntry : public FileEntry
 {
 public:
-                                    FilterOutputStreambuf(std::streambuf * outbuf);
-                                    FilterOutputStreambuf(FilterOutputStreambuf const & rhs) = delete;
-    virtual                         ~FilterOutputStreambuf();
+    typedef std::shared_ptr<StreamEntry>        pointer_t;
 
-    FilterOutputStreambuf &         operator = (FilterOutputStreambuf const & rhs) = delete;
+                                    StreamEntry(
+                                              std::istream & is
+                                            , FilePath const & filename
+                                            , std::string const & comment = std::string());
+    virtual FileEntry::pointer_t    clone() const override;
+    virtual                         ~StreamEntry() override;
 
-protected:
-    std::streambuf *                m_outbuf = nullptr;
+    virtual bool                    isEqual(FileEntry const & file_entry) const override;
+    uint32_t                        computeCRC32() const;
+    std::istream &                  getStream() const;
+
+private:
+    std::istream &                  f_istream;
 };
 
 

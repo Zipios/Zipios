@@ -55,7 +55,12 @@ namespace
  *                              can save the found file collection.
  * \param[in] matchpath  How the name of the entry is compared with \p name.
  */
-void matchEntry(CollectionCollection::vector_t collections, std::string const& name, FileEntry::pointer_t& cep, FileCollection::pointer_t& file_collection, CollectionCollection::MatchPath matchpath)
+void matchEntry(
+      CollectionCollection::vector_t collections
+    , std::string const & name
+    , FileEntry::pointer_t & cep
+    , FileCollection::pointer_t & file_collection
+    , CollectionCollection::MatchPath matchpath)
 {
     for(auto it = collections.begin(); it != collections.end(); ++it)
     {
@@ -106,13 +111,13 @@ CollectionCollection::CollectionCollection()
  * that all the children get cloned so the copy can be edited without
  * modify the source and vice versa.
  *
- * \param[in] src  The source to copy in the new CollectionCollection.
+ * \param[in] rhs  The source to copy in the new CollectionCollection.
  */
-CollectionCollection::CollectionCollection(CollectionCollection const& src)
-    : FileCollection(src)
+CollectionCollection::CollectionCollection(CollectionCollection const & rhs)
+    : FileCollection(rhs)
 {
-    m_collections.reserve(src.m_collections.size());
-    for(auto it = src.m_collections.begin(); it != src.m_collections.end(); ++it)
+    m_collections.reserve(rhs.m_collections.size());
+    for(auto it = rhs.m_collections.begin(); it != rhs.m_collections.end(); ++it)
     {
         m_collections.push_back((*it)->clone());
     }
@@ -129,7 +134,7 @@ CollectionCollection::CollectionCollection(CollectionCollection const& src)
  *
  * \param[in] rhs  The source to copy in this collection.
  */
-CollectionCollection& CollectionCollection::operator = (CollectionCollection const& rhs)
+CollectionCollection & CollectionCollection::operator = (CollectionCollection const & rhs)
 {
     FileCollection::operator = (rhs);
 
@@ -160,7 +165,7 @@ CollectionCollection& CollectionCollection::operator = (CollectionCollection con
  */
 FileCollection::pointer_t CollectionCollection::clone() const
 {
-    return FileCollection::pointer_t(new CollectionCollection(*this));
+    return std::make_shared<CollectionCollection>(*this);
 }
 
 
@@ -190,7 +195,7 @@ CollectionCollection::~CollectionCollection()
  *
  * \sa addCollection(FileCollection::pointer_t collection);
  */
-bool CollectionCollection::addCollection(FileCollection const& collection)
+bool CollectionCollection::addCollection(FileCollection const & collection)
 {
     mustBeValid();
 
@@ -231,7 +236,7 @@ bool CollectionCollection::addCollection(FileCollection const& collection)
  *
  * \return true if the collection was added successfully.
  *
- * \sa addCollection(FileCollection const& collection);
+ * \sa addCollection(FileCollection const & collection);
  */
 bool CollectionCollection::addCollection(FileCollection::pointer_t collection)
 {
@@ -338,7 +343,7 @@ FileEntry::vector_t CollectionCollection::entries() const
  *
  * \sa mustBeValid()
  */
-FileEntry::pointer_t CollectionCollection::getEntry(std::string const& name, MatchPath matchpath) const
+FileEntry::pointer_t CollectionCollection::getEntry(std::string const & name, MatchPath matchpath) const
 {
     mustBeValid();
 
@@ -381,7 +386,7 @@ FileEntry::pointer_t CollectionCollection::getEntry(std::string const& name, Mat
  * \sa DirectoryCollection
  * \sa ZipFile
  */
-CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(std::string const& entry_name, MatchPath matchpath)
+CollectionCollection::stream_pointer_t CollectionCollection::getInputStream(std::string const & entry_name, MatchPath matchpath)
 {
     mustBeValid();
 

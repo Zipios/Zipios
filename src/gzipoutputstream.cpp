@@ -60,10 +60,8 @@ namespace zipios
  * \param[in,out] os  ostream to which the compressed zip archive is written.
  * \param[in] compression_level  The compression level to use to compress.
  */
-GZIPOutputStream::GZIPOutputStream(std::ostream& os, FileEntry::CompressionLevel compression_level)
-    //: std::ostream() -- auto-init
-    //, m_ofs(nullptr) -- auto-init
-    : m_ozf(new GZIPOutputStreambuf(os.rdbuf(), compression_level))
+GZIPOutputStream::GZIPOutputStream(std::ostream & os, FileEntry::CompressionLevel compression_level)
+    : m_ozf(std::make_unique<GZIPOutputStreambuf>(os.rdbuf(), compression_level))
 {
     init(m_ozf.get());
 }
@@ -79,10 +77,10 @@ GZIPOutputStream::GZIPOutputStream(std::ostream& os, FileEntry::CompressionLevel
  *                      be written.
  * \param[in] compression_level  The compression level to use to compress.
  */
-GZIPOutputStream::GZIPOutputStream(std::string const& filename, FileEntry::CompressionLevel compression_level)
+GZIPOutputStream::GZIPOutputStream(std::string const & filename, FileEntry::CompressionLevel compression_level)
     : std::ostream(0)
-    , m_ofs(new std::ofstream(filename.c_str(), std::ios::out | std::ios::binary))
-    , m_ozf(new GZIPOutputStreambuf(m_ofs->rdbuf(), compression_level))
+    , m_ofs(std::make_unique<std::ofstream>(filename.c_str(), std::ios::out | std::ios::binary))
+    , m_ozf(std::make_unique<GZIPOutputStreambuf>(m_ofs->rdbuf(), compression_level))
 {
     init(m_ozf.get());
 }
@@ -106,7 +104,7 @@ GZIPOutputStream::~GZIPOutputStream()
  *
  * \param[in] filename  The filename to attach to this stream.
  */
-void GZIPOutputStream::setFilename(std::string const& filename)
+void GZIPOutputStream::setFilename(std::string const & filename)
 {
     m_ozf->setFilename(filename);
 }
@@ -120,7 +118,7 @@ void GZIPOutputStream::setFilename(std::string const& filename)
  *
  * \param[in] comment  The comment to attach to this stream.
  */
-void GZIPOutputStream::setComment(std::string const& comment)
+void GZIPOutputStream::setComment(std::string const & comment)
 {
     m_ozf->setComment(comment);
 }

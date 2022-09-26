@@ -60,9 +60,8 @@ void init_min_max()
 {
     if(g_minimum_unix == -1)
     {
-        struct tm t;
+        struct tm t = {};
 
-        memset(&t, 0, sizeof(t));
         t.tm_sec = 0;
         t.tm_min = 0;
         t.tm_hour = 0;
@@ -71,16 +70,12 @@ void init_min_max()
         t.tm_year = 1980 - 1900;
         t.tm_isdst = -1;
         g_minimum_unix = mktime(&t);
-
-        struct tm c;
-        localtime_r(&g_minimum_unix, &c);
     }
 
     if(g_maximum_unix == -1)
     {
-        struct tm t;
+        struct tm t = {};
 
-        memset(&t, 0, sizeof(t));
         t.tm_sec = 58;
         t.tm_min = 59;
         t.tm_hour = 23;
@@ -471,7 +466,7 @@ CATCH_TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
 #if INTPTR_MAX != INT32_MAX
 // at this time only check on 64 bit computers because the DOS date can
 // go out of range in a Unix date when we're on a 32 bit computer
-CATCH_TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
+CATCH_TEST_CASE("random_dos_date_n_time", "[dosdatetime]")
 {
     init_min_max();
 
@@ -484,19 +479,14 @@ CATCH_TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
         for(std::time_t t(0); t <= max; t += rand() & 0x7FFF)
         {
             if(t < g_minimum_unix
-            || t > g_maximum_unix)
+            || t >= g_maximum_unix)
             {
                 zipios::DOSDateTime td;
                 CATCH_REQUIRE_THROWS_AS(td.setUnixTimestamp(t), zipios::InvalidException);
             }
             else
             {
-                std::time_t et(t);
-                if(t == g_maximum_unix)
-                {
-                    et += 1;
-                }
-                et &= ~1;
+                std::time_t et((t + 1) & ~1);
 
                 zipios::DOSDateTime td;
                 td.setUnixTimestamp(t);
@@ -507,7 +497,18 @@ CATCH_TEST_CASE("Random DOS Date & Time", "[dosdatetime]")
                 tu.setDOSDateTime(d);
 
                 std::time_t const u(tu.getUnixTimestamp());
-                CATCH_REQUIRE(u == et);
+
+                // account for possible switch between local times (i.e. PST/PDT)
+                // (I do not like it, but the Zip format saves dates using
+                // local time and thus we need to use mktime() to be correct
+                // but that means we can be off by +/- 1 hour when the time changes)
+                //
+                // note that part of the discrepancy is that mktime() can return
+                // a different value depending what value was last returned because
+                // tm_isdst = -1 means just that (i.e. there is an internal state)
+                //
+                bool const valid(u == et || u == et + 3600 || u == et - 3600);
+                CATCH_REQUIRE(valid);
             }
         }
     }

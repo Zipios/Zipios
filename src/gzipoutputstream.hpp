@@ -42,18 +42,18 @@ namespace zipios
 class GZIPOutputStream : public std::ostream
 {
 public:
-                                            GZIPOutputStream(std::ostream& os, FileEntry::CompressionLevel compression_level);
-                                            GZIPOutputStream(std::string const& filename, FileEntry::CompressionLevel compression_level);
+                                            GZIPOutputStream(std::ostream & os, FileEntry::CompressionLevel compression_level);
+                                            GZIPOutputStream(std::string const & filename, FileEntry::CompressionLevel compression_level);
     virtual                                 ~GZIPOutputStream();
 
-    void                                    setFilename(std::string const& filename);
-    void                                    setComment(std::string const& comment);
+    void                                    setFilename(std::string const & filename);
+    void                                    setComment(std::string const & comment);
     void                                    close();
     void                                    finish();
 
 private:
-    std::unique_ptr<std::ofstream>          m_ofs;
-    std::unique_ptr<GZIPOutputStreambuf>    m_ozf;
+    std::unique_ptr<std::ofstream>          m_ofs = std::unique_ptr<std::ofstream>();
+    std::unique_ptr<GZIPOutputStreambuf>    m_ozf = std::unique_ptr<GZIPOutputStreambuf>();
 };
 
 

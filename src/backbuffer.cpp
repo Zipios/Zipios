@@ -138,7 +138,7 @@ BackBuffer::BackBuffer(std::istream & is, VirtualSeeker const & vs, ssize_t cons
  * \return The number of bytes read if any, otherwise zero. Note that if
  *         an error occurs, the function also returns zero.
  */
-ssize_t BackBuffer::readChunk(ssize_t& read_pointer)
+ssize_t BackBuffer::readChunk(ssize_t & read_pointer)
 {
     // Update m_chunk_size and file position
     m_chunk_size = std::min<ssize_t>(static_cast<ssize_t>(m_file_pos), m_chunk_size);

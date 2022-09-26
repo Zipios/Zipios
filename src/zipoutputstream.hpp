@@ -51,8 +51,7 @@ public:
     void            setComment(std::string const & comment);
 
 private:
-    std::unique_ptr<std::ofstream>      m_ofs;
-    std::unique_ptr<ZipOutputStreambuf> m_ozf;
+    std::unique_ptr<ZipOutputStreambuf> m_ozf = std::unique_ptr<ZipOutputStreambuf>();
 };
 
 

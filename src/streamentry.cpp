@@ -20,13 +20,13 @@
 */
 
 /** \file
- * \brief Implementation of zipios::DirectoryEntry.
+ * \brief Implementation of zipios::StreamEntry.
  *
  * The declaration of a simple zipios::FileEntry used when reading
- * a directory from disk.
+ * from a istream.
  */
 
-#include "zipios/directoryentry.hpp"
+#include "zipios/streamentry.hpp"
 
 #include "zipios/zipiosexceptions.hpp"
 
@@ -39,60 +39,73 @@
 namespace zipios
 {
 
-/** \class DirectoryEntry
- * \brief A file entry that does not use compression.
+/** \class StreamEntry
+ * \brief A file entry reading from a stream.
  *
- * DirectoryEntry is a FileEntry that is suitable as a base class for
- * basic entries, that do not support any form of compression and
- * in most cases represent a file in a directory.
+ * StreamEntry is a FileEntry that is used when directly reading from a
+ * stream instead of a file found on disk.
  */
 
 
-/** \brief Initialize a DirectoryEntry object.
+/** \brief Initialize a StreamEntry object.
  *
- * This constructor initializes a DirectoryEntry which represents a
- * file on disk. If the basepath + filename does not exist or is
- * neither a regular file or a directory, then this entry is created
- * but marked as invalid.
+ * This constructor initializes a StreamEntry which represents a
+ * file in an std::istream. If the input stream is considered valid
+ * (i.e. no error flag set), then the StreamEntry is marked as valid.
  *
+ * The \p filename parameter is important since the file is to be saved
+ * in a zip file and that feat requires a filename.
+ *
+ * \warning
+ * The input \p is stream is saved as a reference in this object. The
+ * stream must remain valid for the lifetime of this StreamEntry object.
+ *
+ * \param[in] is  The input stream (std::istream) to read from.
  * \param[in] filename  The filename of the entry.
  * \param[in] comment  A comment for the entry.
  */
-DirectoryEntry::DirectoryEntry(FilePath const & filename, std::string const & comment)
+StreamEntry::StreamEntry(
+          std::istream & is
+        , FilePath const & filename
+        , std::string const & comment)
     : FileEntry(filename, comment)
+    , f_istream(is)
 {
-    m_valid = m_filename.isRegular() || m_filename.isDirectory();
+    m_valid = static_cast<bool>(is);
     if(m_valid)
     {
-        m_uncompressed_size = m_filename.isDirectory() ? 0 : m_filename.fileSize();
-        m_unix_time = m_filename.lastModificationTime();
+        std::istream::pos_type const current(is.tellg());
+        m_uncompressed_size = is.seekg(0, std::ios::end).tellg();
+        is.seekg(current, std::ios::beg);
+
+        m_unix_time = time(nullptr);
     }
 }
 
 
-/** \brief Create a copy of the DirectoryEntry.
+/** \brief Create a copy of the StreamEntry.
  *
- * The clone function creates a copy of this DirectoryEntry object.
+ * The clone function creates a copy of this StreamEntry object.
  *
  * In most cases, when a collection is copied, a clone of each
  * entry is created to avoid potential problems with sharing
  * the same object between various lists.
  *
- * \return A shared pointer of the new DirectoryEntry object.
+ * \return A shared pointer of the new StreamEntry object.
  */
-DirectoryEntry::pointer_t DirectoryEntry::clone() const
+FileEntry::pointer_t StreamEntry::clone() const
 {
-    return std::make_shared<DirectoryEntry>(*this);
+    return std::make_shared<StreamEntry>(*this);
 }
 
 
-/** \brief Clean up a DirectoryEntry object.
+/** \brief Clean up a StreamEntry object.
  *
  * The destructor is defined as it has to be virtual.
  *
- * It will eventually clean up resources used by the DirectoryEntry class.
+ * It will eventually clean up resources used by the StreamEntry class.
  */
-DirectoryEntry::~DirectoryEntry()
+StreamEntry::~StreamEntry()
 {
 }
 
@@ -110,10 +123,10 @@ DirectoryEntry::~DirectoryEntry()
  *
  * \return true if both FileEntry objects are considered equal.
  */
-bool DirectoryEntry::isEqual(FileEntry const & file_entry) const
+bool StreamEntry::isEqual(FileEntry const & file_entry) const
 {
-    DirectoryEntry const * const de(dynamic_cast<DirectoryEntry const * const>(&file_entry));
-    if(de == nullptr)
+    StreamEntry const * const se(dynamic_cast<StreamEntry const * const>(&file_entry));
+    if(se == nullptr)
     {
         return false;
     }
@@ -133,38 +146,39 @@ bool DirectoryEntry::isEqual(FileEntry const & file_entry) const
  *
  * \return The CRC32 of this file.
  */
-uint32_t DirectoryEntry::computeCRC32() const
+uint32_t StreamEntry::computeCRC32() const
 {
     uint32_t result(crc32(0L, Z_NULL, 0));
 
-    if(!m_filename.isDirectory())
+    if(f_istream)
     {
-        // TODO: I tried to use std::basic_ifstream<Bytef> to avoid the
-        //       reinterpret_cast<>(), but somehow that doesn't work at all
-        //
-        std::ifstream in;
-        in.open(m_filename);
-        if(!in.is_open())
-        {
-            throw IOException(
-                  "Can't open file \""
-                + m_filename.filename()
-                + "\".");
-        }
-
+        f_istream.seekg(0, std::ios::beg);
         for(;;)
         {
             Bytef buf[64 * 1024];
-            in.read(reinterpret_cast<char *>(buf), sizeof(buf));
-            if(in.gcount() == 0)
+            f_istream.read(reinterpret_cast<char *>(buf), sizeof(buf));
+            if(f_istream.gcount() == 0)
             {
                 break;
             }
-            result = crc32(result, buf, in.gcount());
+            result = crc32(result, buf, f_istream.gcount());
         }
     }
 
     return result;
+}
+
+
+/** \brief Retrieve a reference to the istream object.
+ *
+ * This function returns a reference to the internal istream object saved
+ * when you constructor this object.
+ *
+ * \return A reference to the istream.
+ */
+std::istream & StreamEntry::getStream() const
+{
+    return f_istream;
 }
 
 

@@ -67,28 +67,21 @@ namespace zipios
  * \param[in] start_pos  A position to reset the inbuf to before reading. Specify
  *                       -1 to not change the position.
  */
-InflateInputStreambuf::InflateInputStreambuf(std::streambuf *inbuf, offset_t start_pos)
+InflateInputStreambuf::InflateInputStreambuf(std::streambuf * inbuf, offset_t start_pos)
     : FilterInputStreambuf(inbuf)
     , m_outvec(getBufferSize())
     , m_invec(getBufferSize())
-    //, m_zs() -- auto-init
-    //, m_zs_initialized(false) -- auto-init
 {
     // NOTICE: It is important that this constructor and the methods it
     // calls doesn't do anything with the input streambuf inbuf, other
-    // than repositioning it to the specified position. The reason is
+    // than repositioning it to the specified \p start_pos. The reason is
     // that this class can be sub-classed, and the sub-class should get a
-    // chance to read from the buffer first)
-
-    // zlib init:
-    m_zs.zalloc = Z_NULL;
-    m_zs.zfree  = Z_NULL;
-    m_zs.opaque = Z_NULL;
+    // chance to read from the buffer first
 
     reset(start_pos);
     // We are not checking the return value of reset() and throwing
-    // an exception in case of an error, because we cannot catch the exception
-    // in the constructors of sub-classes with all compilers.
+    // an exception in case of an error, because we cannot catch the
+    // exception in the constructors of sub-classes with all compilers.
 }
 
 

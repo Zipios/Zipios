@@ -61,6 +61,7 @@ CATCH_TEST_CASE("The library version", "[Version]")
     std::string cmd("cd ");
     cmd += zipios_test::g_source_path;
     cmd += " && dev/version";
+    std::cout << "command to check version: `" << cmd << "`\n";
     CATCH_REQUIRE(system(cmd.c_str()) == 0);
 }
 

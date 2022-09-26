@@ -51,7 +51,7 @@ protected:
     virtual std::streambuf::int_type    underflow() override;
 
 private:
-    ZipLocalEntry           m_current_entry;
+    ZipLocalEntry           m_current_entry = ZipLocalEntry();
     offset_t                m_remain = 0;     // For STORED entry only. the number of bytes that
                                               // has not been put in the m_outvec yet.
 };

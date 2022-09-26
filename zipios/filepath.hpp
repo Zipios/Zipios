@@ -46,16 +46,16 @@ namespace zipios
 class FilePath
 {
 public:
-                        FilePath(std::string const& path = "");
+                        FilePath(std::string const & path = std::string());
 
                         operator std::string () const;
-    FilePath&           operator = (std::string const& path);
-    FilePath            operator + (FilePath const& name) const;
-    bool                operator == (char const *rhs) const;
-    friend bool         operator == (char const *lhs, FilePath const& rhs);
-    bool                operator == (std::string const& rhs) const;
-    friend bool         operator == (std::string const& lhs, FilePath const& rhs);
-    bool                operator == (FilePath const& rhs) const;
+    FilePath &          operator = (std::string const & path);
+    FilePath            operator + (FilePath const & name) const;
+    bool                operator == (char const * rhs) const;
+    friend bool         operator == (char const * lhs, FilePath const & rhs);
+    bool                operator == (std::string const & rhs) const;
+    friend bool         operator == (std::string const & lhs, FilePath const & rhs);
+    bool                operator == (FilePath const & rhs) const;
     // TBD: add all the other comparison operators for completeness
     void                clear();
     std::string         filename() const;
@@ -75,14 +75,14 @@ public:
 private:
     void                check() const;
 
-    std::string         m_path;
-    mutable os_stat_t   m_stat;
+    std::string         m_path = std::string();
+    mutable os_stat_t   m_stat = {};
     mutable bool        m_checked = false;
     mutable bool        m_exists = false;
 };
 
 
-std::ostream& operator << (std::ostream& os, FilePath const& path);
+std::ostream & operator << (std::ostream & os, FilePath const & path);
 
 
 } // zipios namespace

@@ -47,10 +47,11 @@ namespace zipios
 class ZipFile : public FileCollection
 {
 public:
-    static pointer_t            openEmbeddedZipFile(std::string const & name);
+    static pointer_t            openEmbeddedZipFile(std::string const & filename);
 
                                 ZipFile();
                                 ZipFile(std::string const & filename, offset_t s_off = 0, offset_t e_off = 0);
+                                ZipFile(std::istream & is, offset_t s_off = 0, offset_t e_off = 0);
     virtual pointer_t           clone() const override;
     virtual                     ~ZipFile() override;
 
@@ -58,7 +59,9 @@ public:
     static void                 saveCollectionToArchive(std::ostream & os, FileCollection & collection, std::string const & zip_comment = "");
 
 private:
-    VirtualSeeker               m_vs;
+    void                        init(std::istream & is);
+
+    VirtualSeeker               m_vs = VirtualSeeker();
 };
 
 

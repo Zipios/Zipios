@@ -142,7 +142,6 @@ struct ZipCentralDirectoryEntryHeader
  * a Zip archive.
  */
 ZipCentralDirectoryEntry::ZipCentralDirectoryEntry()
-    //: ZipLocalEntry() -- auto-init
 {
 }
 
@@ -156,7 +155,7 @@ ZipCentralDirectoryEntry::ZipCentralDirectoryEntry()
  *
  * \param[in] entry  The entry to transform in a ZipCentralDirectoryEntry.
  */
-ZipCentralDirectoryEntry::ZipCentralDirectoryEntry(FileEntry const& entry)
+ZipCentralDirectoryEntry::ZipCentralDirectoryEntry(FileEntry const & entry)
     : ZipLocalEntry(entry)
 {
 }
@@ -204,7 +203,7 @@ size_t ZipCentralDirectoryEntry::getHeaderSize() const
  */
 FileEntry::pointer_t ZipCentralDirectoryEntry::clone() const
 {
-    return FileEntry::pointer_t(new ZipCentralDirectoryEntry(*this));
+    return std::make_shared<ZipCentralDirectoryEntry>(*this);
 }
 
 
@@ -232,7 +231,7 @@ FileEntry::pointer_t ZipCentralDirectoryEntry::clone() const
  *
  * \sa write()
  */
-void ZipCentralDirectoryEntry::read(std::istream& is)
+void ZipCentralDirectoryEntry::read(std::istream & is)
 {
     m_valid = false; // set back to true upon successful completion below.
 
@@ -325,7 +324,7 @@ void ZipCentralDirectoryEntry::read(std::istream& is)
  * \sa getHeaderSize()
  * \sa read()
  */
-void ZipCentralDirectoryEntry::write(std::ostream& os)
+void ZipCentralDirectoryEntry::write(std::ostream & os)
 {
     /** \todo add support for 64 bit entries
      *        (zip64 is available, just need to add a 64 bit header...)

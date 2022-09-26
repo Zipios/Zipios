@@ -63,9 +63,6 @@ namespace zipios
  * probably not much you will be able to do with such an object.
  */
 DirectoryCollection::DirectoryCollection()
-    //: m_entries_loaded(false) -- auto-init
-    //, m_recursive(true) -- auto-init
-    //, m_filepath("") -- auto-init
 {
 }
 
@@ -93,7 +90,6 @@ DirectoryCollection::DirectoryCollection()
  *                       sub-directories.
  */
 DirectoryCollection::DirectoryCollection(std::string const & path, bool recursive)
-    //: m_entries_loaded(false) -- auto-init
     : m_recursive(recursive)
     , m_filepath(path)
 {
@@ -277,15 +273,12 @@ void DirectoryCollection::loadEntries() const
  *
  * \param[in] subdir  The directory to read.
  */
-void DirectoryCollection::load(FilePath const& subdir)
+void DirectoryCollection::load(FilePath const & subdir)
 {
 #ifdef ZIPIOS_WINDOWS
     struct read_dir_t
     {
-        read_dir_t(FilePath const& path)
-            //: m_handle(0) -- auto-init
-            //, m_fileinfo() -- initialized below
-            //, m_read_first(false) -- auto-init
+        read_dir_t(FilePath const & path)
         {
             /** \todo
              * Make necessary changes to support 64 bit and Unicode
@@ -343,13 +336,13 @@ void DirectoryCollection::load(FilePath const& subdir)
 
     private:
         long                    m_handle = 0;
-        struct _finddata_t      m_fileinfo;
+        struct _finddata_t      m_fileinfo = {};
         bool                    m_read_first = 0;
     };
 #else
     struct read_dir_t
     {
-        read_dir_t(FilePath const& path)
+        read_dir_t(FilePath const & path)
             : m_dir(opendir(static_cast<std::string>(path).c_str()))
         {
             if(m_dir == nullptr)
@@ -386,14 +379,14 @@ void DirectoryCollection::load(FilePath const& subdir)
         }
 
     private:
-        DIR *   m_dir;
+        DIR *   m_dir = nullptr;
     };
 #endif
 
     read_dir_t dir(m_filepath + subdir);
     for(;;)
     {
-        std::string const& name(dir.next());
+        std::string const & name(dir.next());
         if(name.empty())
         {
             break;

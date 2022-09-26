@@ -59,10 +59,21 @@ namespace zipios
  * \param[in] filename  The name of a valid zip file.
  * \param[in] pos position to reposition the istream to before reading.
  */
-ZipInputStream::ZipInputStream(std::string const& filename, std::streampos pos)
+ZipInputStream::ZipInputStream(std::string const & filename, std::streampos pos)
     : std::istream(nullptr)
-    , m_ifs(new std::ifstream(filename, std::ios::in | std::ios::binary))
-    , m_izf(new ZipInputStreambuf(m_ifs->rdbuf(), pos))
+    , m_ifs(std::make_unique<std::ifstream>(filename, std::ios::in | std::ios::binary))
+    , m_ifs_ref(*m_ifs)
+    , m_izf(std::make_unique<ZipInputStreambuf>(m_ifs_ref.rdbuf(), pos))
+{
+    // properly initialize the stream with the newly allocated buffer
+    init(m_izf.get());
+}
+
+
+ZipInputStream::ZipInputStream(std::istream & is)
+    : std::istream(nullptr)
+    , m_ifs_ref(is)
+    , m_izf(std::make_unique<ZipInputStreambuf>(m_ifs_ref.rdbuf(), 0))
 {
     // properly initialize the stream with the newly allocated buffer
     init(m_izf.get());

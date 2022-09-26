@@ -46,10 +46,10 @@ public:
     ssize_t                 readChunk(ssize_t & read_pointer);
 
 private:
-    VirtualSeeker           m_vs;
-    ssize_t                 m_chunk_size;
-    std::istream&           m_is;
-    std::streampos          m_file_pos;
+    VirtualSeeker           m_vs = VirtualSeeker();
+    ssize_t                 m_chunk_size = 0;
+    std::istream &          m_is;
+    std::streampos          m_file_pos = 0;
 };
 
 

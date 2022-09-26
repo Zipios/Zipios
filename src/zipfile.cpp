@@ -28,6 +28,7 @@
 
 #include "zipios/zipfile.hpp"
 
+#include "zipios/streamentry.hpp"
 #include "zipios/zipiosexceptions.hpp"
 
 #include "backbuffer.hpp"
@@ -292,20 +293,27 @@ namespace zipios
  * the appendzip tool can be used to append any number of files,
  * only the last one is accessible.
  *
+ * \exception FileCollectionException
+ * This exception is raised if the initialization fails. The function verifies
+ * that the input stream represents what is considered a valid zip file.
+ *
+ * \param[in] filename  The filename of your executable (generally, argv[0]).
+ *
  * \return A ZipFile that one can use to read compressed data.
  */
-ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const& name)
+ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const & filename)
 {
     // open zipfile, read 4 last bytes close file
-    // create ZipFile object.
     uint32_t start_offset;
     {
-        std::ifstream ifs(name, std::ios::in | std::ios::binary);
+        std::ifstream ifs(filename, std::ios::in | std::ios::binary);
         ifs.seekg(-4, std::ios::end);
         zipRead(ifs, start_offset);
         // todo: add support for 64 bit (files of more than 4Gb)
     }
-    return ZipFile::pointer_t(new ZipFile(name, start_offset, 4));
+
+    // create ZipFile object from embedded data
+    return std::make_shared<ZipFile>(filename, start_offset, 4);
 }
 
 
@@ -318,12 +326,11 @@ ZipFile::pointer_t ZipFile::openEmbeddedZipFile(std::string const& name)
  * if you want to work with maps or vectors of ZipFile objects.
  */
 ZipFile::ZipFile()
-    //: m_vs(...) -- auto-init
 {
 }
 
 
-/** \brief Initialize a ZipFile object from an input file.
+/** \brief Initialize a ZipFile object from an existing file.
  *
  * This constructor opens the named zip file. If the zip "file" is
  * embedded in a file that contains other data, e.g. a binary
@@ -333,15 +340,19 @@ ZipFile::ZipFile()
  * If the file cannot be opened or the Zip directory cannot
  * be read, then the constructor throws an exception.
  *
+ * \exception FileCollectionException
+ * This exception is raised if the initialization fails. The function verifies
+ * that the input stream represents what is considered a valid zip file.
+ *
  * \param[in] filename  The filename of the zip file to open.
  * \param[in] s_off  Offset relative to the start of the file, that
  *                   indicates the beginning of the zip data in the file.
  * \param[in] e_off  Offset relative to the end of the file, that
  *                   indicates the end of the zip data in the file.
  *                   The offset is a positive number, even though the
- *                   offset is towards the beginning of the file.
+ *                   offset goes toward the beginning of the file.
  */
-ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
+ZipFile::ZipFile(std::string const & filename, offset_t s_off, offset_t e_off)
     : FileCollection(filename)
     , m_vs(s_off, e_off)
 {
@@ -351,10 +362,56 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
         throw IOException("Error opening Zip archive file for reading in binary mode.");
     }
 
+    init(zipfile);
+}
+
+
+/** \brief Initialize a ZipFile object from an istream.
+ *
+ * This constructor opens the ZipFile from the specified istream. The
+ * istream can be in memory or even an Internet stream. However, the
+ * ZipFile algorithm requires a stream with proper back and forth seek
+ * capabilities.
+ *
+ * If the Zip directory cannot be read, then the constructor throws an
+ * exception.
+ *
+ * \exception FileCollectionException
+ * This exception is raised if the initialization fails. The function verifies
+ * that the input stream represents what is considered a valid zip file.
+ *
+ * \param[in] is  The input stream with the zip file data.
+ * \param[in] s_off  Offset relative to the start of the file, that
+ *                   indicates the beginning of the zip data in the file.
+ * \param[in] e_off  Offset relative to the end of the file, that
+ *                   indicates the end of the zip data in the file.
+ *                   The offset is a positive number, even though the
+ *                   offset goes toward the beginning of the file.
+ */
+ZipFile::ZipFile(std::istream & is, offset_t s_off, offset_t e_off)
+    : m_vs(s_off, e_off)
+{
+    init(is);
+}
+
+
+/** \brief Initialize the ZipFile from the specified input stream.
+ *
+ * This function finishes the initialization of the ZipFile from the
+ * constructor. It is 100% private.
+ *
+ * \exception FileCollectionException
+ * This exception is raised if the initialization fails. The function verifies
+ * that the input stream represents what is considered a valid zip file.
+ *
+ * \param[in] is  The input stream used to read the ZipFile.
+ */
+void ZipFile::init(std::istream & is)
+{
     // Find and read the End of Central Directory.
     ZipEndOfCentralDirectory eocd;
     {
-        BackBuffer bb(zipfile, m_vs);
+        BackBuffer bb(is, m_vs);
         ssize_t read_p(-1);
         for(;;)
         {
@@ -378,25 +435,25 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
     }
 
     // Position read pointer to start of first entry in central dir.
-    m_vs.vseekg(zipfile, eocd.getOffset(), std::ios::beg);
+    m_vs.vseekg(is, eocd.getOffset(), std::ios::beg);
 
     // TBD -- is that ", 0" still necessary? (With VC2012 and better)
     // Give the second argument in the next line to keep Visual C++ quiet
-    //m_entries.resize(eocd.totalCount(), 0);
+    //m_entries.resize(eocd.getCount(), 0);
     m_entries.resize(eocd.getCount());
 
     size_t const max_entry(eocd.getCount());
     for(size_t entry_num(0); entry_num < max_entry; ++entry_num)
     {
         m_entries[entry_num] = std::make_shared<ZipCentralDirectoryEntry>();
-        m_entries[entry_num].get()->read(zipfile);
+        m_entries[entry_num].get()->read(is);
     }
 
     // Consistency check #1:
     // The virtual seeker position is exactly the start offset of the
     // Central Directory plus the Central Directory size
     //
-    offset_t const pos(m_vs.vtellg(zipfile));
+    offset_t const pos(m_vs.vtellg(is));
     if(static_cast<offset_t>(eocd.getOffset() + eocd.getCentralDirectorySize()) != pos)
     {
         throw FileCollectionException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
@@ -413,10 +470,10 @@ ZipFile::ZipFile(std::string const& filename, offset_t s_off, offset_t e_off)
          *
          * Also the isEqual() is a quite advanced (slow) test here!
          */
-        m_vs.vseekg(zipfile, (*it)->getEntryOffset(), std::ios::beg);
+        m_vs.vseekg(is, (*it)->getEntryOffset(), std::ios::beg);
         ZipLocalEntry zlh;
-        zlh.read(zipfile);
-        if(!zipfile || !zlh.isEqual(**it))
+        zlh.read(is);
+        if(!is || !zlh.isEqual(**it))
         {
             throw FileCollectionException("Zip file consistency problem. Zip file data fields are inconsistent with zip file layout.");
         }
@@ -484,12 +541,21 @@ ZipFile::~ZipFile()
  * \sa DirectoryCollection
  * \sa FileCollection
  */
-ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const& entry_name, MatchPath matchpath)
+ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const & entry_name, MatchPath matchpath)
 {
     mustBeValid();
 
+    // TODO: see whether we could make the handling of the StreamEntry
+    //       non-special
+    //
     FileEntry::pointer_t entry(getEntry(entry_name, matchpath));
-    if(entry)
+    StreamEntry::pointer_t stream(std::dynamic_pointer_cast<StreamEntry>(entry));
+    if(stream != nullptr)
+    {
+        stream_pointer_t zis(std::make_shared<ZipInputStream>(stream->getStream()));
+        return zis;
+    }
+    else if(entry != nullptr)
     {
         stream_pointer_t zis(std::make_shared<ZipInputStream>(m_filename, entry->getEntryOffset() + m_vs.startOffset()));
         return zis;

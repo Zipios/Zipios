@@ -50,11 +50,12 @@ public:
         MATCH
     };
 
-                                    FileCollection(std::string const & filename = "");
-                                    FileCollection(FileCollection const & src);
-    FileCollection &                operator = (FileCollection const & src);
+                                    FileCollection(std::string const & filename = std::string());
+                                    FileCollection(FileCollection const & rhs);
     virtual pointer_t               clone() const = 0;
     virtual                         ~FileCollection();
+
+    FileCollection &                operator = (FileCollection const & rhs);
 
     virtual void                    addEntry(FileEntry const & entry);
     virtual void                    close();
@@ -69,13 +70,13 @@ public:
     void                            setLevel(size_t limit, FileEntry::CompressionLevel small_compression_level, FileEntry::CompressionLevel large_compression_level);
 
 protected:
-    std::string                     m_filename;
-    FileEntry::vector_t             m_entries;
+    std::string                     m_filename = std::string();
+    FileEntry::vector_t             m_entries = FileEntry::vector_t();
     bool                            m_valid = true;
 };
 
 
-std::ostream & operator << (std::ostream& os, FileCollection const& collection);
+std::ostream & operator << (std::ostream & os, FileCollection const & collection);
 
 
 } // zipios namespace

@@ -33,9 +33,13 @@ case $1 in
 		if make -j${PROCESSORS} -C ${BUILD}
 		then
 			shift
-			${BUILD}/tests/zipios_tests $*
+			${BUILD}/tests/zipios_tests --source-path `pwd` $*
 		fi
 	) 2>&1 | less -SR
+	;;
+
+"-v")
+	VERBOSE=1 make -j${PROCESSORS} -C ${BUILD}
 	;;
 
 "")

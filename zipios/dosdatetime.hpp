@@ -39,8 +39,6 @@ namespace zipios
 {
 
 
-
-
 class DOSDateTime
 {
 public:
@@ -71,8 +69,6 @@ public:
 protected:
     dosdatetime_t               m_dosdatetime = 0;
 };
-
-
 
 
 } // zipios namespace

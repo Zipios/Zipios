@@ -44,14 +44,14 @@ class ZipCentralDirectoryEntry : public ZipLocalEntry
 {
 public:
                                 ZipCentralDirectoryEntry();
-                                ZipCentralDirectoryEntry(FileEntry const& entry);
+                                ZipCentralDirectoryEntry(FileEntry const & entry);
     virtual pointer_t           clone() const override;
     virtual                     ~ZipCentralDirectoryEntry() override;
 
     virtual size_t              getHeaderSize() const override;
 
-    virtual void                read(std::istream& is) override;
-    virtual void                write(std::ostream& os) override;
+    virtual void                read(std::istream & is) override;
+    virtual void                write(std::ostream & os) override;
 };
 
 

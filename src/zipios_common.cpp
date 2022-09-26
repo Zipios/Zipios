@@ -71,7 +71,7 @@ char const g_separator = '/';
  */
 
 
-void zipRead(std::istream& is, uint32_t& value)
+void zipRead(std::istream & is, uint32_t & value)
 {
     unsigned char buf[sizeof(value)];
 
@@ -92,7 +92,7 @@ void zipRead(std::istream& is, uint32_t& value)
 }
 
 
-void zipRead(std::istream& is, uint16_t& value)
+void zipRead(std::istream & is, uint16_t & value)
 {
     unsigned char buf[sizeof(value)];
 
@@ -111,7 +111,7 @@ void zipRead(std::istream& is, uint16_t& value)
 }
 
 
-void zipRead(std::istream& is, uint8_t&  value)
+void zipRead(std::istream & is, uint8_t & value)
 {
     unsigned char buf[sizeof(value)];
 
@@ -129,7 +129,7 @@ void zipRead(std::istream& is, uint8_t&  value)
 }
 
 
-void zipRead(std::istream& is, buffer_t& buffer, ssize_t const count)
+void zipRead(std::istream & is, buffer_t & buffer, ssize_t const count)
 {
     buffer.resize(count);
     if(count > 0)
@@ -146,7 +146,7 @@ void zipRead(std::istream& is, buffer_t& buffer, ssize_t const count)
 }
 
 
-void zipRead(std::istream& is, std::string& str, ssize_t const count)
+void zipRead(std::istream & is, std::string & str, ssize_t const count)
 {
     str.resize(count);
     if(count > 0)
@@ -163,7 +163,7 @@ void zipRead(std::istream& is, std::string& str, ssize_t const count)
 }
 
 
-void zipRead(buffer_t const& is, size_t& pos, uint32_t& value)
+void zipRead(buffer_t const & is, size_t & pos, uint32_t & value)
 {
     if(pos + sizeof(value) > is.size())
     {
@@ -179,7 +179,7 @@ void zipRead(buffer_t const& is, size_t& pos, uint32_t& value)
 }
 
 
-void zipRead(buffer_t const& is, size_t& pos, uint16_t& value)
+void zipRead(buffer_t const & is, size_t & pos, uint16_t & value)
 {
     if(pos + sizeof(value) > is.size())
     {
@@ -193,7 +193,7 @@ void zipRead(buffer_t const& is, size_t& pos, uint16_t& value)
 }
 
 
-void zipRead(buffer_t const& is, size_t& pos, uint8_t& value)
+void zipRead(buffer_t const & is, size_t & pos, uint8_t & value)
 {
     if(pos + sizeof(value) > is.size())
     {
@@ -206,7 +206,7 @@ void zipRead(buffer_t const& is, size_t& pos, uint8_t& value)
 }
 
 
-void zipRead(buffer_t const& is, size_t& pos, buffer_t& buffer, ssize_t const count)
+void zipRead(buffer_t const & is, size_t & pos, buffer_t & buffer, ssize_t const count)
 {
     if(pos + count > is.size())
     {
@@ -220,7 +220,7 @@ void zipRead(buffer_t const& is, size_t& pos, buffer_t& buffer, ssize_t const co
 }
 
 
-void zipRead(buffer_t const& is, size_t& pos, std::string& str, ssize_t const count)
+void zipRead(buffer_t const & is, size_t & pos, std::string & str, ssize_t const count)
 {
     if(pos + count > is.size())
     {
@@ -234,7 +234,7 @@ void zipRead(buffer_t const& is, size_t& pos, std::string& str, ssize_t const co
 }
 
 
-void zipWrite(std::ostream& os, uint32_t const& value)
+void zipWrite(std::ostream & os, uint32_t const & value)
 {
     char buf[sizeof(value)];
 
@@ -250,7 +250,7 @@ void zipWrite(std::ostream& os, uint32_t const& value)
 }
 
 
-void zipWrite(std::ostream& os, uint16_t const& value)
+void zipWrite(std::ostream & os, uint16_t const & value)
 {
     char buf[sizeof(value)];
 
@@ -264,7 +264,7 @@ void zipWrite(std::ostream& os, uint16_t const& value)
 }
 
 
-void zipWrite(std::ostream& os, uint8_t const& value)
+void zipWrite(std::ostream & os, uint8_t const & value)
 {
     char buf[sizeof(value)];
 
@@ -277,7 +277,7 @@ void zipWrite(std::ostream& os, uint8_t const& value)
 }
 
 
-void zipWrite(std::ostream& os, buffer_t const& buffer)
+void zipWrite(std::ostream & os, buffer_t const & buffer)
 {
     if(!os.write(reinterpret_cast<char const *>(&buffer[0]), buffer.size()))
     {
@@ -286,7 +286,7 @@ void zipWrite(std::ostream& os, buffer_t const& buffer)
 }
 
 
-void zipWrite(std::ostream& os, std::string const& str)
+void zipWrite(std::ostream & os, std::string const & str)
 {
     if(!os.write(&str[0], str.length()))
     {

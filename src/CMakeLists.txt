@@ -16,11 +16,11 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-project( zipios )
+project(zipios)
 
-include_directories( ${ZLIB_INCLUDE_DIR} )
+include_directories(${ZLIB_INCLUDE_DIR})
 
-add_library( ${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
+add_library(${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
     backbuffer.cpp
     collectioncollection.cpp
     deflateoutputstreambuf.cpp
@@ -35,6 +35,7 @@ add_library( ${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
     gzipoutputstream.cpp
     gzipoutputstreambuf.cpp
     inflateinputstreambuf.cpp
+    streamentry.cpp
     virtualseeker.cpp
     zipcentraldirectoryentry.cpp
     zipendofcentraldirectory.cpp
@@ -47,16 +48,16 @@ add_library( ${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
     zipoutputstreambuf.cpp
 )
 
-target_link_libraries( ${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME}
     ${ZLIB_LIBRARY}
 )
 
-set_target_properties( ${PROJECT_NAME} PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${ZIPIOS_VERSION_MAJOR}.${ZIPIOS_VERSION_MINOR}
     SOVERSION ${ZIPIOS_VERSION_MAJOR}
 )
 
-install( TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME}
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${BIN_INSTALL_DIR}

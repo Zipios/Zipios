@@ -133,7 +133,7 @@ void VirtualSeeker::setOffsets(offset_t start_offset, offset_t end_offset)
  * \param[out] start_offset  Returns the start offset.
  * \param[out] end_offset  Returns the end offset.
  */
-void VirtualSeeker::getOffsets(offset_t& start_offset, offset_t& end_offset) const
+void VirtualSeeker::getOffsets(offset_t & start_offset, offset_t & end_offset) const
 {
     start_offset = m_start_offset;
     end_offset = m_end_offset;
@@ -215,7 +215,7 @@ void VirtualSeeker::vseekg(std::istream &is, offset_t offset, std::ios::seekdir 
  *
  * \return The stream offset within the embedded file.
  */
-std::streampos VirtualSeeker::vtellg(std::istream& is) const
+std::streampos VirtualSeeker::vtellg(std::istream & is) const
 {
     /** \TODO
      * We may want to get the size of the file and verify that the

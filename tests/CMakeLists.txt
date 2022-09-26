@@ -72,7 +72,7 @@ if(BUILD_ZIPIOS_TESTS)
 
         # For compatibility, just in case
         add_custom_target(run_zipios_tests
-            COMMAND echo "No tests were built because it looks like you are missing Catch."
+            COMMAND echo "No tests were built because it looks like you are missing Catch2."
         )
 
     endif(SNAPCATCH2_FOUND)

@@ -51,22 +51,27 @@ DOSDateTime::dosdatetime_t const  DOSDateTime::g_max_dosdatetime;     // Dec 31,
  *
  * This union is used by the functions below to convert the basic
  * uint32_t dosdatetime_t values in a list of 6 fields.
- *
- * \todo
- * The fields are endian specific, we need to find the correct #ifdef
- * and swap the fields so it works on bigendian machines
  */
 union dosdatetime_convert_t
 {
     DOSDateTime::dosdatetime_t      m_dosdatetime;
     struct fields
     {
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+        DOSDateTime::dosdatetime_t      m_year   : 7;  // add 1980
+        DOSDateTime::dosdatetime_t      m_month  : 4;  // 1 to 12
+        DOSDateTime::dosdatetime_t      m_mday   : 5;  // 1 to 31
+        DOSDateTime::dosdatetime_t      m_hour   : 5;
+        DOSDateTime::dosdatetime_t      m_minute : 6;
+        DOSDateTime::dosdatetime_t      m_second : 5;   // WARNING: the precision is every 2 seconds (0, 2, 4, etc.)
+#else
         DOSDateTime::dosdatetime_t      m_second : 5;   // WARNING: the precision is every 2 seconds (0, 2, 4, etc.)
         DOSDateTime::dosdatetime_t      m_minute : 6;
         DOSDateTime::dosdatetime_t      m_hour   : 5;
         DOSDateTime::dosdatetime_t      m_mday   : 5;  // 1 to 31
         DOSDateTime::dosdatetime_t      m_month  : 4;  // 1 to 12
         DOSDateTime::dosdatetime_t      m_year   : 7;  // add 1980
+#endif
     } m_fields;
 };
 
@@ -544,7 +549,7 @@ void DOSDateTime::setUnixTimestamp(std::time_t unix_timestamp)
     // round up to the next second
     //
     unix_timestamp += 1;
-    unix_timestamp &= -2;
+    unix_timestamp &= ~1;
 
     struct tm t;
     localtime_r(&unix_timestamp, &t);
@@ -622,6 +627,9 @@ std::time_t DOSDateTime::getUnixTimestamp() const
             throw InvalidException("Year out of range for a 32 bit Unix Timestamp object. Range is (1901, 2038).");
         }
 
+        // the zip file format expects dates in local time, not UTC
+        // so I use mktime() directly
+        //
         return mktime(&t);
 
 //        // mktime() makes use of the timezone, here is some code that

@@ -72,7 +72,7 @@ typedef int32_t ssize_t;
  * \param[in]  v2  The vector to concatenate at the end of v1.
  */
 template<class Type>
-void operator += (std::vector<Type>& v1, std::vector<Type> const& v2)
+void operator += (std::vector<Type> & v1, std::vector<Type> const & v2)
 {
     // make sure these are not the same vector or the insert()
     // is not unlikely to fail badly; it is expected that the
@@ -98,23 +98,23 @@ typedef std::ostringstream OutputStringStream;
 typedef std::vector<unsigned char>      buffer_t;
 
 
-void     zipRead(std::istream& is, uint32_t& value);
-void     zipRead(std::istream& is, uint16_t& value);
-void     zipRead(std::istream& is, uint8_t&  value);
-void     zipRead(std::istream& is, buffer_t& buffer, ssize_t const count);
-void     zipRead(std::istream& is, std::string& str, ssize_t const count);
+void     zipRead(std::istream & is, uint32_t & value);
+void     zipRead(std::istream & is, uint16_t & value);
+void     zipRead(std::istream & is, uint8_t &  value);
+void     zipRead(std::istream & is, buffer_t & buffer, ssize_t const count);
+void     zipRead(std::istream & is, std::string & str, ssize_t const count);
 
-void     zipRead(buffer_t const& is, size_t& pos, uint32_t& value);
-void     zipRead(buffer_t const& is, size_t& pos, uint16_t& value);
-void     zipRead(buffer_t const& is, size_t& pos, uint8_t&  value);
-void     zipRead(buffer_t const& is, size_t& pos, buffer_t& buffer, ssize_t const count);
-void     zipRead(buffer_t const& is, size_t& pos, std::string& str, ssize_t const count);
+void     zipRead(buffer_t const & is, size_t & pos, uint32_t & value);
+void     zipRead(buffer_t const & is, size_t & pos, uint16_t & value);
+void     zipRead(buffer_t const & is, size_t & pos, uint8_t &  value);
+void     zipRead(buffer_t const & is, size_t & pos, buffer_t & buffer, ssize_t const count);
+void     zipRead(buffer_t const & is, size_t & pos, std::string & str, ssize_t const count);
 
-void     zipWrite(std::ostream& os, uint32_t const& value);
-void     zipWrite(std::ostream& os, uint16_t const& value);
-void     zipWrite(std::ostream& os, uint8_t const&  value);
-void     zipWrite(std::ostream& os, buffer_t const& buffer);
-void     zipWrite(std::ostream& os, std::string const& str);
+void     zipWrite(std::ostream & os, uint32_t const & value);
+void     zipWrite(std::ostream & os, uint16_t const & value);
+void     zipWrite(std::ostream & os, uint8_t const &  value);
+void     zipWrite(std::ostream & os, buffer_t const & buffer);
+void     zipWrite(std::ostream & os, std::string const & str);
 
 
 } // zipios namespace

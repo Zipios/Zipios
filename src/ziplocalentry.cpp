@@ -122,10 +122,6 @@ struct ZipLocalEntryHeader
  */
 ZipLocalEntry::ZipLocalEntry()
     : FileEntry(FilePath(""))
-    //, m_extract_version(g_zip_format_version) -- auto-init
-    //, m_general_purpose_bitfield(0) -- auto-init
-    //, m_is_directory(false)
-    //, m_compressed_size(0) -- auto-init
 {
 }
 
@@ -140,10 +136,7 @@ ZipLocalEntry::ZipLocalEntry()
  */
 ZipLocalEntry::ZipLocalEntry(FileEntry const & src)
     : FileEntry(src)
-    //, m_extract_version(g_zip_format_version) -- auto-init
-    //, m_general_purpose_bitfield(0) -- auto-init
     , m_is_directory(src.isDirectory())
-    //, m_compressed_size(0) -- auto-init
 {
 }
 
@@ -159,9 +152,9 @@ FileEntry::pointer_t ZipLocalEntry::clone() const // LCOV_EXCL_LINE
 {
     // It makes sense to keep the clone() function for this class
     // but since it is internal and never allocated as is (we use
-    // the ZipCentralDirectoryEntry instead) it is marked as none
-    // reachable by the coverage tests
-    return FileEntry::pointer_t(new ZipLocalEntry(*this)); // LCOV_EXCL_LINE
+    // the ZipCentralDirectoryEntry instead) it is marked as
+    // non-reachable by the coverage tests
+    return std::make_shared<ZipLocalEntry>(*this); // LCOV_EXCL_LINE
 }
 
 
@@ -332,7 +325,7 @@ bool ZipLocalEntry::hasTrailingDataDescriptor() const
  *
  * \param[in] is  The input stream to read from.
  */
-void ZipLocalEntry::read(std::istream& is)
+void ZipLocalEntry::read(std::istream & is)
 {
     m_valid = false; // set to true upon successful completion.
 
@@ -341,7 +334,7 @@ void ZipLocalEntry::read(std::istream& is)
     //    // in the local entry. After all, we know where we are, anyway.
     //    zlh.rel_offset_loc_head  = is.tellg() ;
 
-    uint32_t signature;
+    uint32_t signature(0);
     zipRead(is, signature);                             // 32
     if(g_signature != signature)
     {
@@ -402,7 +395,7 @@ void ZipLocalEntry::read(std::istream& is)
  *
  * \param[in] os  The output stream where the ZipLocalEntry is written.
  */
-void ZipLocalEntry::write(std::ostream& os)
+void ZipLocalEntry::write(std::ostream & os)
 {
     if(m_filename.length()  > 0x10000
     || m_extra_field.size() > 0x10000)

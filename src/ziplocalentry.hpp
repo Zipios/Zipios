@@ -59,8 +59,8 @@ public:
 
     bool                        hasTrailingDataDescriptor() const;
 
-    virtual void                read(std::istream& is) override;
-    virtual void                write(std::ostream& os) override;
+    virtual void                read(std::istream & is) override;
+    virtual void                write(std::ostream & os) override;
 
 protected:
     uint16_t                    m_extract_version = g_zip_format_version;

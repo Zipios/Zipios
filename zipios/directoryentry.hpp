@@ -39,6 +39,7 @@
 namespace zipios
 {
 
+
 class DirectoryEntry : public FileEntry
 {
 public:

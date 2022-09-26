@@ -54,24 +54,15 @@ namespace zipios
  *
  * \param[in,out] outbuf  The streambuf to use for output.
  */
-DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf *outbuf)
+DeflateOutputStreambuf::DeflateOutputStreambuf(std::streambuf * outbuf)
     : FilterOutputStreambuf(outbuf)
-    //, m_overflown_bytes(0) -- auto-init
     , m_invec(getBufferSize())
-    //, m_zs() -- auto-init
-    //, m_zs_initialized(false) -- auto-init
     , m_outvec(getBufferSize())
-    //, m_crc32(0) -- auto-init
 {
     // NOTICE: It is important that this constructor and the methods it
-    //         calls does not do anything with the output streambuf m_outbuf.
+    //         calls do not do anything with the output streambuf m_outbuf.
     //         The reason is that this class can be sub-classed, and the
     //         sub-class should get a chance to write to the buffer first.
-
-    // zlib init: (this is done in the class declaration)
-    //m_zs.zalloc = Z_NULL;
-    //m_zs.zfree  = Z_NULL;
-    //m_zs.opaque = Z_NULL;
 }
 
 

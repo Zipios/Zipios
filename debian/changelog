@@ -1,3 +1,18 @@
+zipios (2.3.2.0~bionic) bionic; urgency=high
+
+  * Added support for an std::istream when creating a ZipFile object.
+  * Added support for a StreamEntry when creating a zip file.
+  * Added support -v (verbose) to the ./mk script.
+  * Fixed two `operator = ()` which improperly returned a `const &`.
+  * Replaced additional `new` with `std::make_shared/unique<>()`.
+  * Really auto-init `m_zs`.
+  * Fixed test verifying DOS timestamps with +/- 1 hour (ugly but it works).
+  * Bumped version in CMakeLists.txt.
+  * Added the --source-path to the zipios_tests call.
+  * Removed the -std=c++17 option. I don't need it and it's better without.
+  * Implemented the big endian version of the dosdatetime_convert_t union.
+  * Many clean ups.
+
 zipios (2.3.1.1~bionic) bionic; urgency=high
 
   * Updated the compat to v10.

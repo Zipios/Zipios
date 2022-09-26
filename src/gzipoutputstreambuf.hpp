@@ -58,8 +58,8 @@ private:
     void          writeTrailer();
     void          writeInt(uint32_t i);
 
-    std::string   m_filename;
-    std::string   m_comment;
+    std::string   m_filename = std::string();
+    std::string   m_comment = std::string();
     bool          m_open = false;
 };
 
