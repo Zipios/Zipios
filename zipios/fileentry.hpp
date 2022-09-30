@@ -96,16 +96,16 @@ public:
     virtual                     ~FileEntry();
 
     virtual std::string         getComment() const;
-    virtual size_t              getCompressedSize() const;
+    virtual std::size_t         getCompressedSize() const;
     virtual crc32_t             getCrc() const;
     std::streampos              getEntryOffset() const;
     virtual buffer_t            getExtra() const;
-    virtual size_t              getHeaderSize() const;
+    virtual std::size_t         getHeaderSize() const;
     virtual CompressionLevel    getLevel() const;
     virtual StorageMethod       getMethod() const;
     virtual std::string         getName() const;
     virtual std::string         getFileName() const;
-    virtual size_t              getSize() const;
+    virtual std::size_t         getSize() const;
     virtual DOSDateTime::dosdatetime_t
                                 getTime() const;
     virtual std::time_t         getUnixTime() const;
@@ -131,7 +131,7 @@ public:
 protected:
     FilePath                    m_filename;
     std::string                 m_comment;
-    size_t                      m_uncompressed_size = 0;
+    std::size_t                 m_uncompressed_size = 0;
     time_t                      m_unix_time = 0;
     std::streampos              m_entry_offset = 0;
     StorageMethod               m_compress_method = StorageMethod::STORED;

@@ -70,31 +70,31 @@ option(BUILD_DOCUMENTATION "Build the ${PROJECT_NAME} documentation." ON)
 
 # To generate coverage, use -D<project name>_COVERAGE=ON
 #                       and -DCMAKE_BUILD_TYPE=Debug
-option( ${PROJECT_NAME}_COVERAGE "Turn on coverage for ${PROJECT_NAME}." OFF )
+option(${PROJECT_NAME}_COVERAGE "Turn on coverage for ${PROJECT_NAME}." OFF)
 
-if( ${${PROJECT_NAME}_COVERAGE} )
-    if( MSVC )
-        message( FATAL_ERROR "Coverage is not available on this platform (yet)." )
+if(${${PROJECT_NAME}_COVERAGE})
+    if(MSVC)
+        message(FATAL_ERROR "Coverage is not available on this platform (yet).")
     endif()
 
     message("*** COVERAGE TURNED ON ***")
-    find_program( COV gcov )
-    if( ${COV} STREQUAL "COV-NOTFOUND" )
-        message( FATAL_ERROR "Coverage requested, but gcov not installed!" )
+    find_program(COV gcov)
+    if(${COV} STREQUAL "COV-NOTFOUND")
+        message(FATAL_ERROR "Coverage requested, but gcov not installed!")
     endif()
-    if( NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-        message( FATAL_ERROR "Coverage requested, but Debug is not turned on! (i.e. -DCMAKE_BUILD_TYPE=Debug)" )
+    if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        message(FATAL_ERROR "Coverage requested, but Debug is not turned on! (i.e. -DCMAKE_BUILD_TYPE=Debug)")
     endif()
     #
-    set( COV_C_FLAGS             "-fprofile-arcs -ftest-coverage" )
-    set( COV_CXX_FLAGS           "-fprofile-arcs -ftest-coverage" )
-    set( COV_SHARED_LINKER_FLAGS "-fprofile-arcs -ftest-coverage" )
-    set( COV_EXE_LINKER_FLAGS    "-fprofile-arcs -ftest-coverage" )
+    set(COV_C_FLAGS             "-fprofile-arcs -ftest-coverage")
+    set(COV_CXX_FLAGS           "-fprofile-arcs -ftest-coverage")
+    set(COV_SHARED_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+    set(COV_EXE_LINKER_FLAGS    "-fprofile-arcs -ftest-coverage")
     #
-    set( CMAKE_C_FLAGS             "${CMAKE_C_FLAGS} ${COV_C_FLAGS}"                         )
-    set( CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} ${COV_CXX_FLAGS}"                     )
-    set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${COV_SHARED_LINKER_FLAGS}" )
-    set( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} ${COV_EXE_LINKER_FLAGS}"       )
+    set(CMAKE_C_FLAGS             "${CMAKE_C_FLAGS} ${COV_C_FLAGS}"                        )
+    set(CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} ${COV_CXX_FLAGS}"                    )
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${COV_SHARED_LINKER_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} ${COV_EXE_LINKER_FLAGS}"      )
 endif()
 
 #
@@ -108,7 +108,7 @@ set(DATA_INSTALL_DIR            ${CMAKE_INSTALL_DATADIR}            CACHE PATH "
 #set(CMAKE_MODULES_INSTALL_DIR   ${CMAKE_INSTALL_CMAKEMODULESDIR}    CACHE PATH "Location to install data files relative to the install prefix." )
 
 
-find_package( ZLIB REQUIRED )
+find_package(ZLIB REQUIRED)
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zipios/zipios-config.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/zipios/zipios-config.hpp )
 
@@ -117,29 +117,40 @@ set(PACKAGE "libzipios")
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.spec )
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.metainfo.xml.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.metainfo.xml )
 
-include_directories( ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
-add_subdirectory( cmake )
-add_subdirectory( src   )
-add_subdirectory( tools )
-add_subdirectory( tests )
-add_subdirectory( doc   )
+add_subdirectory(cmake)
+add_subdirectory(src  )
+add_subdirectory(tools)
+add_subdirectory(tests)
+add_subdirectory(doc  )
 
 install(
-    DIRECTORY zipios
-    DESTINATION ${INCLUDE_INSTALL_DIR}
-    PATTERN "*.in" EXCLUDE
+    DIRECTORY
+        zipios
+
+    DESTINATION
+        ${INCLUDE_INSTALL_DIR}
+
+    PATTERN
+        "*.in" EXCLUDE
 )
 
 install(
-    FILES ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
-    DESTINATION ${INCLUDE_INSTALL_DIR}/zipios
+    FILES
+        ${CMAKE_BINARY_DIR}/zipios/zipios-config.hpp
+
+    DESTINATION
+        ${INCLUDE_INSTALL_DIR}/zipios
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     install(
-        FILES ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.metainfo.xml
-        DESTINATION ${DATA_INSTALL_DIR}/metainfo
+        FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.metainfo.xml
+
+        DESTINATION
+            ${DATA_INSTALL_DIR}/metainfo
     )
 endif()
 

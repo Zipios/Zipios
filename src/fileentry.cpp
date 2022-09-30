@@ -320,7 +320,7 @@ std::string FileEntry::getFileName() const
  *
  * \return Returns the uncompressed size of the entry.
  */
-size_t FileEntry::getSize() const
+std::size_t FileEntry::getSize() const
 {
     return m_uncompressed_size;
 }

@@ -1703,6 +1703,16 @@ CATCH_TEST_CASE("Check saveCollectionToArchive with DirectoryCollection", "[ZipF
 }
 
 
+CATCH_TEST_CASE("test_memory_input_stream", "[ZipFile] [MemoryStream]")
+{
+    std::stringstream ss;
+    ss << "content of the file\n";
+    CATCH_REQUIRE(ss.tellp() == 21);
+}
+
+
+
+
 // Local Variables:
 // mode: cpp
 // indent-tabs-mode: nil
