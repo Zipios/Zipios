@@ -18,8 +18,6 @@
 
 project(zipios)
 
-include_directories(${ZLIB_INCLUDE_DIR})
-
 add_library(${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
     backbuffer.cpp
     collectioncollection.cpp
@@ -46,6 +44,11 @@ add_library(${PROJECT_NAME} ${ZIPIOS_LIBRARY_TYPE}
     ziplocalentry.cpp
     zipoutputstream.cpp
     zipoutputstreambuf.cpp
+)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${ZLIB_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}

@@ -53,13 +53,16 @@ namespace
  * \param[in] entries  The array of entries to save in this central directory.
  * \param[in] comment  The zip archive global comment.
  */
-void writeZipCentralDirectory(std::ostream & os, FileEntry::vector_t & entries, std::string const & comment)
+void writeZipCentralDirectory(
+      std::ostream & os
+    , FileEntry::vector_t & entries
+    , std::string const & comment)
 {
     ZipEndOfCentralDirectory eocd(comment);
     eocd.setOffset(os.tellp());  // start position
     eocd.setCount(entries.size());
 
-    size_t central_directory_size(0);
+    std::size_t central_directory_size(0);
     for(auto it = entries.begin(); it != entries.end(); ++it)
     {
         (*it)->write(os);
@@ -274,7 +277,7 @@ void ZipOutputStreambuf::setComment(std::string const & comment)
  */
 int ZipOutputStreambuf::overflow(int c)
 {
-    size_t const size(pptr() - pbase());
+    std::size_t const size(pptr() - pbase());
     m_overflown_bytes += size;
     switch(m_compression_level)
     {
@@ -334,6 +337,7 @@ int ZipOutputStreambuf::sync() // LCOV_EXCL_LINE
 void ZipOutputStreambuf::setEntryClosedState()
 {
     m_open_entry = false;
+    m_crc32 = crc32(0, nullptr, 0);
 
     /** \FIXME
      * Update put pointers to trigger overflow on write. Overflow

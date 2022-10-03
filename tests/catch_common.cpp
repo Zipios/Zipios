@@ -35,7 +35,7 @@
 #include <unistd.h>
 
 
-CATCH_SCENARIO("Vector append", "[zipios_common]")
+CATCH_SCENARIO("vector_append", "[zipios_common]")
 {
     CATCH_GIVEN("an empty vector")
     {
@@ -112,7 +112,7 @@ CATCH_SCENARIO("Vector append", "[zipios_common]")
 }
 
 
-CATCH_TEST_CASE("Verify the g_separator", "[zipios_common]")
+CATCH_TEST_CASE("verify_g_separator", "[zipios_common]")
 {
     // Not too sure why we have that as a variable since it is always
     // a slash (/) and never a backslash (\) but it is there...
@@ -120,10 +120,14 @@ CATCH_TEST_CASE("Verify the g_separator", "[zipios_common]")
 }
 
 
-CATCH_SCENARIO("Read from file", "[zipios_common] [io]")
+CATCH_SCENARIO("read_from_file", "[zipios_common] [io]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("a simple file")
     {
+        zipios_test::auto_unlink_t auto_unlink("io.bin", true);
+
         // create a file
         {
             std::ofstream os("io.bin", std::ios::out | std::ios::binary);
@@ -356,13 +360,11 @@ CATCH_SCENARIO("Read from file", "[zipios_common] [io]")
                 CATCH_REQUIRE_THROWS_AS(zipios::zipRead(is, e, 12), zipios::IOException);
             }
         }
-
-        unlink("io.bin");
     }
 }
 
 
-CATCH_SCENARIO("Read from buffer", "[zipios_common] [io]")
+CATCH_SCENARIO("read_from_buffer", "[zipios_common] [io]")
 {
     CATCH_GIVEN("a simple buffer")
     {
@@ -644,10 +646,13 @@ CATCH_SCENARIO("Read from buffer", "[zipios_common] [io]")
 }
 
 
-CATCH_SCENARIO("Write to file", "[zipios_common] [io]")
+CATCH_SCENARIO("write_to_file", "[zipios_common] [io]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("create an empty file")
     {
+        zipios_test::auto_unlink_t auto_unlink("io.bin", true);
 
         CATCH_WHEN("writing two 32 bit values")
         {
@@ -969,8 +974,6 @@ CATCH_SCENARIO("Write to file", "[zipios_common] [io]")
                 CATCH_REQUIRE_THROWS_AS(zipios::zipWrite(os, c), zipios::IOException);
             }
         }
-
-        unlink("io.bin");
     }
 }
 

@@ -61,7 +61,7 @@ zipios::FileEntry::CompressionLevel const g_directory_level(zipios::FileEntry::C
 } // no name namespace
 
 
-CATCH_SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry]")
+CATCH_SCENARIO("DirectoryEntry_with_invalid_paths", "[DirectoryEntry][FileEntry]")
 {
     CATCH_GIVEN("test a fantom file (path that \"cannot\" exists) and no comment")
     {
@@ -749,10 +749,14 @@ CATCH_SCENARIO("DirectoryEntry with invalid paths", "[DirectoryEntry] [FileEntry
 }
 
 
-CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEntry]")
+CATCH_TEST_CASE("DirectoryEntry_with_one_valid_file", "[DirectoryEntry][FileEntry]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     for(int i(0); i < 10; ++i)
     {
+        zipios_test::auto_unlink_t auto_unlink("filepath-test.txt", true);
+
         // create a random file
         int const file_size(rand() % 100 + 20);
         {
@@ -1252,14 +1256,14 @@ CATCH_TEST_CASE("DirectoryEntry with one valid file", "[DirectoryEntry] [FileEnt
             }
 #endif
         }
-
-        unlink("filepath-test.txt");
     }
 }
 
 
 CATCH_SCENARIO("DirectoryEntry for a valid directory", "[DirectoryEntry] [FileEntry]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("test an existing directory and no comment")
     {
         // make sure the directory is gone before re-creating it

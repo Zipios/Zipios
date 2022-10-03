@@ -61,8 +61,6 @@ namespace zipios_test
 {
 
 
-extern std::string     g_source_path;
-
 
 /** \brief Create a random number representing a size_t object.
  *
@@ -92,8 +90,25 @@ public:
                             auto_unlink_t(std::string const & filename, bool delete_on_creation);
                             ~auto_unlink_t();
 
+    void                    unlink();
+
 private:
     std::string const       m_filename;
+};
+
+
+// original found in snapdev
+class safe_chdir
+{
+public:
+                                safe_chdir(std::string const & path);
+                                safe_chdir(safe_chdir const & rhs) = delete;
+                                ~safe_chdir();
+
+    safe_chdir &                operator = (safe_chdir const & rhs) = delete;
+
+private:
+    std::unique_ptr<char>       m_original_path = std::unique_ptr<char>();
 };
 
 

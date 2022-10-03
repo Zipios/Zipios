@@ -42,7 +42,9 @@ class DirectoryCollection : public FileCollection
 {
 public:
                                     DirectoryCollection();
-                                    DirectoryCollection(std::string const & path, bool recursive = true);
+                                    DirectoryCollection(
+                                              std::string const & path
+                                            , bool recursive = true);
     virtual pointer_t               clone() const override;
     virtual                         ~DirectoryCollection() override;
 

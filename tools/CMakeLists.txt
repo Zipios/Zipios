@@ -45,6 +45,28 @@ install(
 
 
 ###
+### ZipDir Tool
+###
+project(zipdir)
+
+add_executable(${PROJECT_NAME}
+    zipdir.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+    zipios
+)
+
+install(
+    TARGETS
+        ${PROJECT_NAME}
+
+    DESTINATION
+        ${BIN_INSTALL_DIR}
+)
+
+
+###
 ### Append Zip Tool
 ###
 project(appendzip)
@@ -74,6 +96,28 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     zipios
+)
+
+install(
+    TARGETS
+        ${PROJECT_NAME}
+
+    DESTINATION
+        ${BIN_INSTALL_DIR}
+)
+
+
+###
+### CRC32 Tool
+###
+project(zcrc32)
+
+add_executable(${PROJECT_NAME}
+    zcrc32.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+    ${ZLIB_LIBRARY}
 )
 
 install(

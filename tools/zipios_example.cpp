@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
             {
                 std::cout << "Contents of entry, " << ent->getName() << ":" << std::endl;
 
-                std::cout << is->rdbuf();
+                std::cout << is->rdbuf() << "\n";
             }
             else
             {

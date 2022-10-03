@@ -260,7 +260,7 @@ size_t file_t::size()
  *
  * \return true if the file is found, false otherwise.
  */
-file_t::type_t file_t::find(std::string const& name)
+file_t::type_t file_t::find(std::string const & name)
 {
     std::string::size_type const pos(name.find('/'));
 

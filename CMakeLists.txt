@@ -117,7 +117,10 @@ set(PACKAGE "libzipios")
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.spec.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.spec )
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/contrib/zipios.metainfo.xml.in ${CMAKE_CURRENT_BINARY_DIR}/contrib/zipios.metainfo.xml )
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+include_directories(
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR}
+)
 
 add_subdirectory(cmake)
 add_subdirectory(src  )

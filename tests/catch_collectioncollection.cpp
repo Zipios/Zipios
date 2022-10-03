@@ -39,6 +39,8 @@
 
 CATCH_SCENARIO("CollectionCollection with various tests", "[DirectoryCollection] [FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("an empty collection collection")
     {
         zipios::CollectionCollection cc;

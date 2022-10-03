@@ -89,7 +89,9 @@ DirectoryCollection::DirectoryCollection()
  * \param[in] recursive  Whether to load all the files found in
  *                       sub-directories.
  */
-DirectoryCollection::DirectoryCollection(std::string const & path, bool recursive)
+DirectoryCollection::DirectoryCollection(
+          std::string const & path
+        , bool recursive)
     : m_recursive(recursive)
     , m_filepath(path)
 {

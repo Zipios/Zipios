@@ -92,6 +92,10 @@ DeflateOutputStreambuf::~DeflateOutputStreambuf()
  * is expected to come from the FileEntry which is about to be
  * saved in the file.
  *
+ * \param[in] compression_level  The level of compression. A number from 1 to
+ * 100 or a special number representing the best, minimum, maximum compression
+ * available.
+ *
  * \return true if the initialization succeeded, false otherwise.
  */
 bool DeflateOutputStreambuf::init(FileEntry::CompressionLevel compression_level)
@@ -346,10 +350,10 @@ void DeflateOutputStreambuf::flushOutvec()
      * flow through without the need to have this crap of bytes to
      * skip...
      */
-    size_t deflated_bytes(getBufferSize() - m_zs.avail_out);
+    std::size_t const deflated_bytes(getBufferSize() - m_zs.avail_out);
     if(deflated_bytes > 0)
     {
-        size_t const bc(m_outbuf->sputn(&m_outvec[0], deflated_bytes));
+        std::size_t const bc(m_outbuf->sputn(&m_outvec[0], deflated_bytes));
         if(deflated_bytes != bc)
         {
             // Without implementing our own stream in our test, this

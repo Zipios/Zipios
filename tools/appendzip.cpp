@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
     std::ofstream exef(argv[1], std::ios::app | std::ios::binary);
     if(!exef)
     {
-        std::cerr << g_progname << ":error: Unable to open " << argv[1] << " for writing" << std::endl;
+        std::cerr << g_progname << ":error: Unable to open " << argv[1] << " for writing." << std::endl;
         usage();
     }
 
@@ -88,8 +88,8 @@ int main(int argc, char *argv[])
     }
 
     // get eof pos (to become zip file starting position).
-    uint32_t const zip_start = exef.tellp();
-    std::cout << "zip start will be at " << zip_start << std::endl;
+    std::uint32_t const zip_start(exef.tellp());
+    std::cout << "zip starts at " << zip_start << std::endl;
 
     // Append zip file to exe file
     exef << zipf.rdbuf();
@@ -99,7 +99,6 @@ int main(int argc, char *argv[])
     exef << static_cast<unsigned char>(zip_start >> 8);
     exef << static_cast<unsigned char>(zip_start >> 16);
     exef << static_cast<unsigned char>(zip_start >> 24);
-    //zipios::writeUint32(zip_start, exef); -- TODO: delete once verified
 
     return 0;
 }

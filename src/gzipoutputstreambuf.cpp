@@ -146,7 +146,7 @@ void GZIPOutputStreambuf::writeHeader()
      * I am thinking that the OS should be 3 under Unices.
      */
 
-    std::ostream os(m_outbuf) ;
+    std::ostream os(m_outbuf);
     os << static_cast<unsigned char>(0x1f);  // Magic #
     os << static_cast<unsigned char>(0x8b);  // Magic #
     os << static_cast<unsigned char>(0x08);  // Deflater.DEFLATED

@@ -525,8 +525,13 @@ void FileCollection::mustBeValid() const
  * \param[in] limit  The threshold to use to define the compression level.
  * \param[in] small_storage_method  The storage method for smaller files.
  * \param[in] large_storage_method  The storage method for larger files.
+ *
+ * \sa setLevel()
  */
-void FileCollection::setMethod(size_t limit, StorageMethod small_storage_method, StorageMethod large_storage_method)
+void FileCollection::setMethod(
+      std::size_t limit
+    , StorageMethod small_storage_method
+    , StorageMethod large_storage_method)
 {
     // make sure the entries were loaded if necessary
     entries();
@@ -560,8 +565,13 @@ void FileCollection::setMethod(size_t limit, StorageMethod small_storage_method,
  * \param[in] limit  The threshold to use to define the compression level.
  * \param[in] small_compression_level  The compression level for smaller files.
  * \param[in] large_compression_level  The compression level for larger files.
+ *
+ * \sa setMethod()
  */
-void FileCollection::setLevel(size_t limit, FileEntry::CompressionLevel small_compression_level, FileEntry::CompressionLevel large_compression_level)
+void FileCollection::setLevel(
+      std::size_t limit
+    , FileEntry::CompressionLevel small_compression_level
+    , FileEntry::CompressionLevel large_compression_level)
 {
     // make sure the entries were loaded if necessary
     entries();

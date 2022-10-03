@@ -44,7 +44,7 @@ if(BUILD_ZIPIOS_TESTS)
             catch_zipfile.cpp
 
             catch_directory_helper.cpp
-            catch_raii_helper.cpp
+            catch_raii_helpers.cpp
         )
 
         target_include_directories(${PROJECT_NAME}

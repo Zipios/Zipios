@@ -578,11 +578,15 @@ CATCH_SCENARIO("FilePath that does not represent a file on disk", "[FilePath]")
 
 CATCH_SCENARIO("FilePath against existing files on disk", "[FilePath]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("an existing file")
     {
+        zipios_test::auto_unlink_t auto_unlink("filepath-test.txt", true);
+
         {
             // create a file
-            std::fstream f("filepath-test.txt", std::ios::out | std::ios::binary);
+            std::ofstream f("filepath-test.txt", std::ios::out | std::ios::binary);
             f << "This is a simple test file." << std::endl;
         }
 
@@ -621,14 +625,12 @@ CATCH_SCENARIO("FilePath against existing files on disk", "[FilePath]")
                 CATCH_REQUIRE(ss.str() == "filepath-test.txt");
             }
         }
-
-        unlink("filepath-test.txt");
     }
 
     CATCH_GIVEN("an existing directory")
     {
-        // make sure the directory is gone before re-creating it
-        CATCH_REQUIRE(system("rm -rf filepath-test") == 0);
+        zipios_test::auto_unlink_t auto_unlink("filepath-test", true);
+
         // create a directory
         CATCH_REQUIRE(mkdir("filepath-test", 0777) == 0);
 
@@ -662,8 +664,6 @@ CATCH_SCENARIO("FilePath against existing files on disk", "[FilePath]")
                 CATCH_REQUIRE(ss.str() == "filepath-test");
             }
         }
-
-        rmdir("filepath-test");
     }
 
     // todo: add tests for other file types (not extremely useful
@@ -673,13 +673,17 @@ CATCH_SCENARIO("FilePath against existing files on disk", "[FilePath]")
 
 CATCH_TEST_CASE("Test with regular files of various sizes", "[FilePath]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     for(int i(0); i < 10; ++i)
     {
+        zipios_test::auto_unlink_t auto_unlink("filepath-test.txt", true);
+
         // create a random file
         int const file_size(rand() % 100 + 20);
         {
             // create a file
-            std::fstream f("filepath-test.txt", std::ios::out | std::ios::binary);
+            std::ofstream f("filepath-test.txt", std::ios::out | std::ios::binary);
             for(int j(0); j < file_size; ++j)
             {
                 char const c(rand());
@@ -718,8 +722,6 @@ CATCH_TEST_CASE("Test with regular files of various sizes", "[FilePath]")
             ss << fp;
             CATCH_REQUIRE(ss.str() == "filepath-test.txt");
         }
-
-        unlink("filepath-test.txt");
     }
 }
 

@@ -56,13 +56,27 @@ zipios::StorageMethod const g_supported_storage_methods[]
 
 
 
-CATCH_TEST_CASE("The library version", "[Version]")
+CATCH_TEST_CASE("CMakeLists_and_changelog_versions", "[Version]")
 {
-    std::string cmd("cd ");
-    cmd += zipios_test::g_source_path;
-    cmd += " && dev/version";
-    std::cout << "command to check version: `" << cmd << "`\n";
-    CATCH_REQUIRE(system(cmd.c_str()) == 0);
+    CATCH_START_SECTION("compare the CMakeLists and the debian/changelog versions")
+    {
+        std::string cmd("cd ");
+        cmd += SNAP_CATCH2_NAMESPACE::g_source_dir();
+        cmd += " && dev/version";
+        std::cout << "command to check version: `" << cmd << "`\n";
+        CATCH_REQUIRE(system(cmd.c_str()) == 0);
+    }
+    CATCH_END_SECTION()
+}
+
+
+CATCH_TEST_CASE("library_version", "[Version]")
+{
+    CATCH_START_SECTION("compare the compile time version against the current library version")
+    {
+        CATCH_REQUIRE(strcmp(zipios::getVersion(), ZIPIOS_VERSION_STRING) == 0);
+    }
+    CATCH_END_SECTION()
 }
 
 

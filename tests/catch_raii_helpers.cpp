@@ -38,14 +38,62 @@ auto_unlink_t::auto_unlink_t(std::string const & filename, bool delete_on_creati
 {
     if(delete_on_creation)
     {
-        unlink(m_filename.c_str());
+        unlink();
     }
 }
 
 auto_unlink_t::~auto_unlink_t()
 {
-    unlink(m_filename.c_str());
+    unlink();
 }
+
+
+void auto_unlink_t::unlink()
+{
+    system(("rm -rf " + m_filename).c_str());
+}
+
+
+
+safe_chdir::safe_chdir(std::string const & path)
+    : m_original_path(get_current_dir_name())
+{
+    if(m_original_path == nullptr)
+    {
+        int const e(errno);
+        throw std::logic_error(
+              "the current working directory could not be queried (err: "
+            + std::to_string(e)
+            + ", "
+            + strerror(e)
+            + ").");
+    }
+
+    if(chdir(path.c_str()) != 0)
+    {
+        if(errno == EFAULT)
+        {
+            throw std::logic_error("the path variable is invalid.");
+        }
+        if(errno == ENOMEM)
+        {
+            throw std::bad_alloc();
+        }
+        int const e(errno);
+        throw std::runtime_error(
+                  "chdir() generated error: "
+                + std::to_string(e)
+                + ", "
+                + strerror(e));
+    }
+}
+
+
+safe_chdir::~safe_chdir()
+{
+    chdir(m_original_path.get());
+}
+
 
 
 } // zipios_tests namespace

@@ -34,6 +34,8 @@
 
 CATCH_SCENARIO("BackBuffer read a file", "[BackBuffer]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("a binary file of 256 bytes")
     {
         // create a file of 256 bytes

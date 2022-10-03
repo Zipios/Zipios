@@ -6,11 +6,22 @@ zipios (2.3.2.0~bionic) bionic; urgency=high
   * Fixed two `operator = ()` which improperly returned a `const &`.
   * Replaced additional `new` with `std::make_shared/unique<>()`.
   * Really auto-init `m_zs`.
+  * Use RAII for all files and directories in the tests.
   * Fixed test verifying DOS timestamps with +/- 1 hour (ugly but it works).
   * Bumped version in CMakeLists.txt.
-  * Added the --source-path to the zipios_tests call.
+  * Added the --source-path to the zipios_tests call in mk.
+  * Added the zipdir tool to test creating zip files on the command line.
   * Removed the -std=c++17 option. I don't need it and it's better without.
   * Implemented the big endian version of the dosdatetime_convert_t union.
+  * Enhanced a zipfile test which was not testing the output except the CRC32.
+  * Fixed a bug when copying empty files, it would prevent further copying.
+  * Fixed the CRC32 computation. It was not reset between file entries.
+  * Added the snapcatch2 dependency to the control file.
+  * Updated the test main() function to use the snapcatch2 helps.
+  * Added a safe_dir implementation and make sure to cd to the tmp folder.
+  * Enhanced the test of the version (CMakeLists.txt & debian/changelog equal).
+  * Added a test of the library versus test versions.
+  * Fixed loop in the tests where the maximum value changed on each iteration.
   * Many clean ups.
 
  -- Alexis Wilke <alexis@m2osw.com>  Wed, 28 Sep 2022 15:35:45 -0700

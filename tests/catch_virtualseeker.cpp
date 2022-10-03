@@ -46,6 +46,8 @@ size_t const FOUR(4);
 
 CATCH_TEST_CASE("VirtualSeeker tests", "[zipios_common]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     // create a file of 256 bytes
     zipios_test::auto_unlink_t auto_unlink("file256.bin", true);
     {
@@ -57,7 +59,7 @@ CATCH_TEST_CASE("VirtualSeeker tests", "[zipios_common]")
     }
 
     // reopen as read-only
-    std::ifstream is("file256.bin", std::ios::out | std::ios::binary);
+    std::ifstream is("file256.bin", std::ios::in | std::ios::binary);
     char buf[256];
 
     for(int count(0); count < 256; ++count)

@@ -43,6 +43,8 @@
 
 CATCH_TEST_CASE("An input filter", "[Buffer]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_START_SECTION("Valid input stream buffer")
     {
         zipios_test::auto_unlink_t auto_unlink("input.buf", true);
@@ -66,6 +68,8 @@ CATCH_TEST_CASE("An input filter", "[Buffer]")
 
 CATCH_TEST_CASE("An output filter", "[Buffer]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_START_SECTION("Valid output stream buffer")
     {
         zipios_test::auto_unlink_t auto_unlink("output.buf", true);

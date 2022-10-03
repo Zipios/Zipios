@@ -153,8 +153,11 @@ CATCH_SCENARIO("DirectoryCollection with invalid paths", "[DirectoryCollection] 
 }
 
 
-CATCH_TEST_CASE("DirectoryCollection with a valid file, but not a directory", "[DirectoryCollection] [FileCollection]")
+CATCH_TEST_CASE("DirectoryCollection_with_a_valid_file_but_no_directory", "[DirectoryCollection][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+    zipios_test::auto_unlink_t auto_unlink("directory-collection-test.txt", true);
+
     // create a small random file
     int const file_size(rand() % 100 + 20);
     {
@@ -228,13 +231,13 @@ CATCH_TEST_CASE("DirectoryCollection with a valid file, but not a directory", "[
         CATCH_REQUIRE_THROWS_AS(dc.mustBeValid(), zipios::InvalidStateException);
     }
     CATCH_END_SECTION()
-
-    unlink("directory-collection-test.txt");
 }
 
 
-CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryCollection] [FileCollection]")
+CATCH_TEST_CASE("DirectoryCollection_with_valid_trees_of_files", "[DirectoryCollection][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     for(int i(0); i < 6; ++i)
     {
         // create a directory tree starting in "tree"
@@ -903,6 +906,8 @@ CATCH_TEST_CASE("DirectoryCollection with valid trees of files", "[DirectoryColl
 
 CATCH_TEST_CASE("DirectoryCollection with an existing directory that gets deleted", "[DirectoryCollection] [FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     // create a directory
     CATCH_REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
     CATCH_REQUIRE(mkdir("tree", 0777) == 0);
@@ -922,6 +927,8 @@ CATCH_TEST_CASE("DirectoryCollection with an existing directory that gets delete
 
 CATCH_TEST_CASE("DirectoryCollection with an empty directory", "[DirectoryCollection] [FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     // create a directory
     CATCH_REQUIRE(system("rm -rf tree") == 0); // clean up, just in case
     CATCH_REQUIRE(mkdir("tree", 0777) == 0);

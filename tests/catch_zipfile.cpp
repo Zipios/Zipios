@@ -56,7 +56,7 @@ zipios::StorageMethod const g_supported_storage_methods[]
 
 
 
-CATCH_TEST_CASE("An Empty ZipFile", "[ZipFile] [FileCollection]")
+CATCH_TEST_CASE("An Empty ZipFile", "[ZipFile][FileCollection]")
 {
     zipios::ZipFile zf;
 
@@ -72,7 +72,7 @@ CATCH_TEST_CASE("An Empty ZipFile", "[ZipFile] [FileCollection]")
 }
 
 
-CATCH_TEST_CASE("A ZipFile with an invalid name", "[ZipFile] [FileCollection]")
+CATCH_TEST_CASE("A ZipFile with an invalid name", "[ZipFile][FileCollection]")
 {
     CATCH_REQUIRE_THROWS_AS([&](){
                     zipios::ZipFile zf("this/file/does/not/exists/so/the/constructor/throws");
@@ -80,8 +80,10 @@ CATCH_TEST_CASE("A ZipFile with an invalid name", "[ZipFile] [FileCollection]")
 }
 
 
-CATCH_TEST_CASE("A ZipFile with an invalid file", "[ZipFile] [FileCollection]")
+CATCH_TEST_CASE("A ZipFile with an invalid file", "[ZipFile][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     // create a totally random file which means there is still a very slight
     // chance that it represents a valid ZipFile, but frankly... no.
     zipios_test::auto_unlink_t auto_unlink("invalid.zip", true);
@@ -99,8 +101,10 @@ CATCH_TEST_CASE("A ZipFile with an invalid file", "[ZipFile] [FileCollection]")
 }
 
 
-CATCH_TEST_CASE("An empty ZipFile", "[ZipFile] [FileCollection]")
+CATCH_TEST_CASE("An empty ZipFile", "[ZipFile][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     // this is a special case where the file is composed of one
     // End of Central Directory with 0 entries
     zipios_test::auto_unlink_t auto_unlink("empty.zip", true);
@@ -143,8 +147,10 @@ CATCH_TEST_CASE("An empty ZipFile", "[ZipFile] [FileCollection]")
 }
 
 
-CATCH_SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
+CATCH_SCENARIO("ZipFile with a valid zip archive", "[ZipFile][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("a tree directory")
     {
         CATCH_REQUIRE(system("rm -rf tree tree.zip") == 0); // clean up, just in case
@@ -391,8 +397,10 @@ CATCH_SCENARIO("ZipFile with a valid zip archive", "[ZipFile] [FileCollection]")
 }
 
 
-CATCH_SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]")
+CATCH_SCENARIO("use Zipios to create a zip archive", "[ZipFile][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("a tree directory")
     {
         CATCH_REQUIRE(system("rm -rf tree tree.zip") == 0); // clean up, just in case
@@ -628,8 +636,10 @@ CATCH_SCENARIO("use Zipios to create a zip archive", "[ZipFile] [FileCollection]
 }
 
 
-CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile] [FileCollection]")
+CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[ZipFile][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_GIVEN("a one file zip file")
     {
         zipios_test::auto_unlink_t remove_bin("file.bin", true); // clean up, just in case
@@ -839,7 +849,8 @@ CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[Zip
             zipios::DirectoryCollection dc("file.bin");
 
             // add another 64Kb file entries! (all the same name, ouch!)
-            for(int i(0); i < 64 * 1024 + rand() % 100; ++i)
+            int const max(64 * 1024 + rand() % 100);
+            for(int i(0); i < max; ++i)
             {
                 zipios::DirectoryEntry other_entry(zipios::FilePath("file.bin"));
                 dc.addEntry(other_entry);
@@ -859,8 +870,10 @@ CATCH_SCENARIO("use Zipios to create zip archives with 1 or 3 files each", "[Zip
 }
 
 
-CATCH_TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
+CATCH_TEST_CASE("Simple Valid and Invalid ZipFile Archives", "[ZipFile][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_START_SECTION("try one uncompressed file of many sizes")
     {
         for(int sz(0); sz <= 128 * 1024; sz += sz < 10 ? 1 : rand() % (1024 * 4))
@@ -1233,8 +1246,10 @@ struct end_of_central_directory_t
 };
 
 
-CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection]")
+CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile][FileCollection]")
 {
+    zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
+
     CATCH_START_SECTION("create files with End of Central Directory that are tool small")
     {
         for(ssize_t i(22 - 1); i >= 0; --i)
@@ -1659,18 +1674,26 @@ CATCH_TEST_CASE("Valid and Invalid ZipFile Archives", "[ZipFile] [FileCollection
 }
 
 
-CATCH_TEST_CASE("Check saveCollectionToArchive with DirectoryCollection", "[ZipFile] [DirectoryCollection]")
+CATCH_TEST_CASE("saveCollectionToArchive_with_DirectoryCollection", "[ZipFile][DirectoryCollection]")
 {
-    //zipios_test::auto_unlink_t auto_unlink("test.zip", true);
+    std::string const top_dir(SNAP_CATCH2_NAMESPACE::g_tmp_dir() + "/save-collection");
+    std::string const test_dir(top_dir + "/test_dir");
 
-    CATCH_REQUIRE(system("mkdir -p test_dir") == 0);
+    zipios_test::auto_unlink_t auto_unlink(top_dir, true);
 
+    CATCH_REQUIRE(system(("mkdir -p " + test_dir).c_str()) == 0);
+    zipios_test::safe_chdir cwd(top_dir);
+
+    std::string cache_bin;
+    std::string cache_text;
     {
         std::ofstream file_bin("test_dir/file1.bin", std::ios::out | std::ios::binary);
         size_t const size(512 + rand() % 512);
         for(size_t pos(0); pos < size; ++pos)
         {
-            file_bin << static_cast<char>(rand());
+            char const c(static_cast<char>(rand()));
+            file_bin << c;
+            cache_bin += c;
         }
 
         std::ofstream file_empty("test_dir/file2.empty", std::ios::out | std::ios::binary);
@@ -1681,35 +1704,142 @@ CATCH_TEST_CASE("Check saveCollectionToArchive with DirectoryCollection", "[ZipF
         {
             char c(rand() % 26 + 'a');
             file_text << c;
+            cache_text += c;
             if(pos % 40 == 39)
             {
                 file_text << '\n';
+                cache_text += '\n';
             }
         }
-
     }
 
+    {
+        zipios::DirectoryCollection directoryCollection("test_dir");
+        std::ofstream tempZipStream("test.zip", std::ios_base::binary | std::ios::out);
+        zipios::ZipFile::saveCollectionToArchive(tempZipStream, directoryCollection);
+        tempZipStream.close();
+    }
+
+    CATCH_REQUIRE(system("unzip -o test.zip >/dev/null") == 0);
+
+    {
+        std::ifstream extracted_bin("test_dir/file1.bin", std::ios::in | std::ios::binary);
+        CATCH_REQUIRE(static_cast<bool>(extracted_bin));
+        CATCH_REQUIRE(extracted_bin.is_open());
+        char buf_bin[1024];
+        extracted_bin.read(buf_bin, sizeof(buf_bin));
+        CATCH_REQUIRE(extracted_bin.gcount() == static_cast<ssize_t>(cache_bin.length()));
+        CATCH_REQUIRE(memcmp(buf_bin, cache_bin.c_str(), cache_bin.length()) == 0);
+    }
+
+    {
+        std::ifstream extracted_text("test_dir/file3.text", std::ios::in | std::ios::binary);
+        char buf_text[2048]; // 512 + 511 + '\n' x (512 + 511) / 40 < 2048
+        extracted_text.read(buf_text, sizeof(buf_text));
+        CATCH_REQUIRE(extracted_text.gcount() == static_cast<ssize_t>(cache_text.length()));
+        CATCH_REQUIRE(memcmp(buf_text, cache_text.c_str(), cache_text.length()) == 0);
+    }
+}
+
+
+CATCH_TEST_CASE("test_memory_input_stream", "[ZipFile][MemoryStream]")
+{
+    std::string const top_dir(SNAP_CATCH2_NAMESPACE::g_tmp_dir() + "/memory-test");
+    CATCH_REQUIRE(system(("mkdir -p " + top_dir).c_str()) == 0);
+    zipios_test::safe_chdir cwd(top_dir);
+
+    zipios_test::auto_unlink_t auto_unlink(top_dir, true);
+
+    std::stringstream ss;
+    ss << "content of the file\n";
+    CATCH_REQUIRE(ss.tellp() == 20);
+
+    // first create files for .zip file
+    //
+    CATCH_REQUIRE(system("pwd") == 0);
+    CATCH_REQUIRE(system("mkdir -p test_dir/hide test_dir/text") == 0);
+
+    std::string cache_bin;
+    std::vector<std::string> cache_text;
+    {
+        std::ofstream file_bin("test_dir/file1.bin", std::ios::out | std::ios::binary);
+        size_t const size(512 + rand() % 512);
+        for(size_t pos(0); pos < size; ++pos)
+        {
+            char c(static_cast<char>(rand()));
+            file_bin << c;
+            cache_bin += c;
+        }
+        CATCH_REQUIRE(static_cast<bool>(file_bin));
+
+        std::ofstream file1_empty("test_dir/hide/file1.empty", std::ios::out | std::ios::binary);
+        CATCH_REQUIRE(static_cast<bool>(file1_empty));
+        std::ofstream file2_empty("test_dir/hide/file2.empty", std::ios::out | std::ios::binary);
+        CATCH_REQUIRE(static_cast<bool>(file2_empty));
+        std::ofstream file3_empty("test_dir/hide/file3.empty", std::ios::out | std::ios::binary);
+        CATCH_REQUIRE(static_cast<bool>(file3_empty));
+
+        int const count(rand() % 5 + 3);
+        for(int i(1); i <= count; ++i)
+        {
+            cache_text.push_back(std::string());
+            std::ofstream file_text("test_dir/text/file" + std::to_string(i) + ".text", std::ios::out | std::ios::binary);
+            size_t const length(512 + rand() % 512);
+            for(size_t pos(0); pos < length; ++pos)
+            {
+                char c(rand() % 26 + 'a');
+                file_text << c;
+                cache_text.back() += c;
+                if(pos % 40 == 39)
+                {
+                    file_text << '\n';
+                    cache_text.back() += '\n';
+                }
+            }
+            CATCH_REQUIRE(static_cast<bool>(file_text));
+        }
+    }
+
+    // create the .zip file
+    //
     zipios::DirectoryCollection directoryCollection("test_dir");
     std::ofstream tempZipStream("test.zip", std::ios_base::binary | std::ios::out);
     zipios::ZipFile::saveCollectionToArchive(tempZipStream, directoryCollection);
     tempZipStream.close();
 
+    // test with unzip
+    //
     CATCH_REQUIRE(system("unzip -o test.zip >/dev/null") == 0);
 
-    if(system("rm -rf test_dir") != 0)
+    // verify the content is the same as what we kept in memory
     {
-        std::cerr << "error: problem cleaning up test_dir\n";
+        std::ifstream extracted_bin("test_dir/file1.bin", std::ios::in | std::ios::binary);
+        CATCH_REQUIRE(static_cast<bool>(extracted_bin));
+        CATCH_REQUIRE(extracted_bin.is_open());
+        char buf_bin[1024];
+        extracted_bin.read(buf_bin, sizeof(buf_bin));
+        CATCH_REQUIRE(extracted_bin.gcount() == static_cast<ssize_t>(cache_bin.length()));
+        CATCH_REQUIRE(memcmp(buf_bin, cache_bin.c_str(), cache_bin.length()) == 0);
     }
+
+    for(int i(1); i <= 3; ++i)
+    {
+        struct stat s;
+        CATCH_REQUIRE(stat(("test_dir/hide/file" + std::to_string(i) + ".empty").c_str(), &s) == 0);
+        CATCH_REQUIRE(s.st_size == 0);
+    }
+
+    for(std::size_t i(1); i <= cache_text.size(); ++i)
+    {
+        std::ifstream extracted_text("test_dir/text/file" + std::to_string(i) + ".text", std::ios::in | std::ios::binary);
+        char buf_text[2048]; // 512 + 511 + '\n' x (512 + 511) / 40 < 2048
+        extracted_text.read(buf_text, sizeof(buf_text));
+        CATCH_REQUIRE(extracted_text.gcount() == static_cast<ssize_t>(cache_text[i - 1].length()));
+        CATCH_REQUIRE(memcmp(buf_text, cache_text[i - 1].c_str(), cache_text[i - 1].length()) == 0);
+    }
+
+    // 
 }
-
-
-CATCH_TEST_CASE("test_memory_input_stream", "[ZipFile] [MemoryStream]")
-{
-    std::stringstream ss;
-    ss << "content of the file\n";
-    CATCH_REQUIRE(ss.tellp() == 21);
-}
-
 
 
 

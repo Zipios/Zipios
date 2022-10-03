@@ -36,7 +36,7 @@ namespace zipios
 {
 
 /** \class ZipOutputStream
- * \brief A ZipOutputStream to allow for data to be compressed zlib.
+ * \brief A ZipOutputStream to allow for data to be compressed with zlib.
  *
  * ZipOutputStream is an internal ostream implementation used to save a
  * collection of files to a Zip archive file.

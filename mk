@@ -4,14 +4,19 @@
 # Sample script used to build zipios after you ran cmake
 
 PROCESSORS=`nproc`
+TYPE=Debug
+SOURCE=`pwd`
+PROJECT=`basename ${SOURCE}`
 
 # Determine the location of the BUILD folder
-if test -d ../../BUILD/Debug/contrib/zipios
+if test -d ../../BUILD/${TYPE}/contrib/${PROJECT}
 then
-	BUILD=../../BUILD/Debug/contrib/zipios
+	BUILD=../../BUILD/${TYPE}/contrib/${PROJECT}
 else
-	BUILD=../BUILD/zipios
+	BUILD=../BUILD/${PROJECT}
 fi
+
+PROJECT_TMPDIR="${BUILD}/tmp"
 
 case $1 in
 "-l")
@@ -33,7 +38,11 @@ case $1 in
 		if make -j${PROCESSORS} -C ${BUILD}
 		then
 			shift
-			${BUILD}/tests/zipios_tests --source-path `pwd` $*
+			${BUILD}/tests/zipios_tests \
+				--tmp-dir "${PROJECT_TMPDIR}" \
+				--source-dir "${SOURCE}" \
+				--progress \
+					$*
 		fi
 	) 2>&1 | less -SR
 	;;

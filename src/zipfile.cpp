@@ -575,7 +575,10 @@ ZipFile::stream_pointer_t ZipFile::getInputStream(std::string const & entry_name
  * \param[in] collection  The collection to save in this output stream.
  * \param[in] zip_comment  The global comment of the Zip archive.
  */
-void ZipFile::saveCollectionToArchive(std::ostream & os, FileCollection & collection, std::string const & zip_comment)
+void ZipFile::saveCollectionToArchive(
+      std::ostream & os
+    , FileCollection & collection
+    , std::string const & zip_comment)
 {
     try
     {
@@ -587,12 +590,22 @@ void ZipFile::saveCollectionToArchive(std::ostream & os, FileCollection & collec
         for(auto it(entries.begin()); it != entries.end(); ++it)
         {
             output_stream.putNextEntry(*it);
-            // get an InputStream if available (i.e. directories do not have an input stream)
-            if(!(*it)->isDirectory())
+
+            // next we need to include the data of that file in the
+            // output buffer if it is not a directory and the file is
+            // not an empty file
+            //
+            if(!(*it)->isDirectory()
+            && (*it)->getSize() > 0)
             {
+                // get an InputStream
+                //
                 FileCollection::stream_pointer_t is(collection.getInputStream((*it)->getName()));
-                if(is)
+                if(is != nullptr
+                && is->good())
                 {
+                    // copy the file content to the output
+                    //
                     output_stream << is->rdbuf();
                 }
             }

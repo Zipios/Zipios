@@ -67,8 +67,8 @@ void usage()
     std::cout << "  --count-directories     count the number of files in a .zip archive" << std::endl;
     std::cout << "  --count-files           count the number of files in a .zip archive" << std::endl;
     std::cout << "  --help                  show this help screen" << std::endl;
-    std::cout << "  --version               print the library version and exit" << std::endl;
-    std::cout << "  --version-tool          print the tool version and exit" << std::endl;
+    std::cout << "  --libzipios-version     print the library version and exit" << std::endl;
+    std::cout << "  --version               print this tool's version and exit" << std::endl;
     exit(1);
 }
 
@@ -143,13 +143,13 @@ int main(int argc, char *argv[])
                 {
                     usage();
                 }
-                if(strcmp(argv[i], "--version") == 0)
+                if(strcmp(argv[i], "--libzipios-version") == 0)
                 {
                     // version of the .so library
                     std::cout << zipios::getVersion() << std::endl;
                     exit(0);
                 }
-                if(strcmp(argv[i], "--version-tool") == 0)
+                if(strcmp(argv[i], "--version") == 0)
                 {
                     // version of this tool (compiled with this version)
                     // it should be the same as the --version
@@ -180,12 +180,12 @@ int main(int argc, char *argv[])
         case func_t::COUNT:
             for(auto it(files.begin()); it != files.end(); ++it)
             {
-                zipios::ZipFile zf(*it);
                 if(files.size() > 1)
                 {
                     // write filename in case there is more than one file
                     std::cout << *it << ": ";
                 }
+                zipios::ZipFile zf(*it);
                 std::cout << zf.entries().size() << std::endl;
             }
             break;
@@ -193,12 +193,12 @@ int main(int argc, char *argv[])
         case func_t::COUNT_DIRECTORIES:
             for(auto it(files.begin()); it != files.end(); ++it)
             {
-                zipios::ZipFile zf(*it);
                 if(files.size() > 1)
                 {
                     // write filename in case there is more than one file
                     std::cout << *it << ": ";
                 }
+                zipios::ZipFile zf(*it);
                 int count(0);
                 zipios::FileEntry::vector_t entries(zf.entries());
                 for(auto entry(entries.begin()); entry != entries.end(); ++entry)
@@ -215,12 +215,12 @@ int main(int argc, char *argv[])
         case func_t::COUNT_FILES:
             for(auto it(files.begin()); it != files.end(); ++it)
             {
-                zipios::ZipFile zf(*it);
                 if(files.size() > 1)
                 {
                     // write filename in case there is more than one file
                     std::cout << *it << ": ";
                 }
+                zipios::ZipFile zf(*it);
                 int count(0);
                 zipios::FileEntry::vector_t entries(zf.entries());
                 for(auto entry(entries.begin()); entry != entries.end(); ++entry)

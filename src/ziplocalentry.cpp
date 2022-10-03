@@ -424,7 +424,7 @@ void ZipLocalEntry::write(std::ostream & os)
         filename += g_separator;
     }
 
-    uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
+    std::uint16_t compress_method(static_cast<uint8_t>(m_compress_method));
     if(m_compression_level == COMPRESSION_LEVEL_NONE)
     {
         compress_method = static_cast<uint8_t>(StorageMethod::STORED);
@@ -432,11 +432,11 @@ void ZipLocalEntry::write(std::ostream & os)
 
     DOSDateTime t;
     t.setUnixTimestamp(m_unix_time);
-    uint32_t dosdatetime(t.getDOSDateTime());       // type could use DOSDateTime::dosdatetime_t
-    uint32_t compressed_size(m_compressed_size);
-    uint32_t uncompressed_size(m_uncompressed_size);
-    uint16_t filename_len(filename.length());
-    uint16_t extra_field_len(m_extra_field.size());
+    std::uint32_t dosdatetime(t.getDOSDateTime());       // type could use DOSDateTime::dosdatetime_t
+    std::uint32_t compressed_size(m_compressed_size);
+    std::uint32_t uncompressed_size(m_uncompressed_size);
+    std::uint16_t filename_len(filename.length());
+    std::uint16_t extra_field_len(m_extra_field.size());
 
     // See the ZipLocalEntryHeader for more details
     zipWrite(os, g_signature);                  // 32
