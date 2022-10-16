@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            std::cerr << "error: could not read " << ent->getName() << " from test.zip" << std::endl;
+            std::cerr << "error: could not read " << argv[2] << " from test.zip" << std::endl;
         }
 
         std::cout << "end of main()" << std::endl;
