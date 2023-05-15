@@ -2,8 +2,7 @@ Source: zipios
 Section: libs
 Priority: optional
 Maintainer: Masayuki Hatta (mhatta) <mhatta@debian.org>
-Build-Depends: catch,
-    cmake,
+Build-Depends: cmake,
     debhelper (>> 9),
     dh-exec (>=0.3),
     doxygen,
