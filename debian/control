@@ -10,7 +10,7 @@ Build-Depends: cmake,
     graphviz,
     libcppunit-dev,
     libz-dev,
-    snapcatch2 (>= 2.9.1.0~bionic),
+    snapcatch2 (>= 2.9.1.0~jammy),
     zip
 Standards-Version: 3.9.4
 
