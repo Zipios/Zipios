@@ -70,7 +70,7 @@ This happens if `doxygen` and `graphviz` are not both installed.
 # Installation
 
 This version of the software uses `cmake` to generate the necessary make
-files or solutions and projects under MS-Windows.
+files or solutions and projects under your operating system.
 
 The following options are supported:
 
@@ -144,6 +144,10 @@ under `dev/check` for an example.)
 
 
 ## Windows
+
+_**Note:** at the moment we do not support the MS-Windows version.
+If you have a working version, we can try to incorporate your changes
+as long as they follow our coding style closely enough._
 
 CMake comes with a graphical tool one can use under MS-Windows to
 configure and generate a project supporting cmake. You will find more
