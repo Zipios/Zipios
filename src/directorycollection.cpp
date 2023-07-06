@@ -287,7 +287,7 @@ void DirectoryCollection::load(FilePath const & subdir)
              * (require utf8 -> wchar_t, then use _wfindfirsti64().)
              * We'll have to update the next() function too, of course.
              */
-            m_handle = _findfirsti64(static_cast<std::string>(path).c_str(), &m_findinfo);
+            m_handle = _findfirsti64(static_cast<std::string>(path).c_str(), &m_fileinfo);
             if(m_handle == 0)
             {
                 if(errno == ENOENT)
@@ -338,7 +338,7 @@ void DirectoryCollection::load(FilePath const & subdir)
 
     private:
         long                    m_handle = 0;
-        struct _finddata_t      m_fileinfo = {};
+        struct _finddatai64_t   m_fileinfo = {};
         bool                    m_read_first = 0;
     };
 #else

@@ -552,7 +552,11 @@ void DOSDateTime::setUnixTimestamp(std::time_t unix_timestamp)
     unix_timestamp &= ~1;
 
     struct tm t;
+#ifdef ZIPIOS_WINDOWS
+    localtime_s(&t, &unix_timestamp);
+#else
     localtime_r(&unix_timestamp, &t);
+#endif
 
 //std::cerr << "test with: " << unix_timestamp << " -- " << t.tm_year
 //          << " (" << (t.tm_year < 1980 - 1900 ? 1 : 0)
