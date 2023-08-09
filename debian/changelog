@@ -1,3 +1,9 @@
+zipios (2.3.3.0~jammy) jammy; urgency=high
+
+  * Bump version since 2.3.2 is an official release.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 08 Aug 2023 21:11:58 -0700
+
 zipios (2.3.2.0~jammy) jammy; urgency=high
 
   * Added support for an std::istream when creating a ZipFile object.
