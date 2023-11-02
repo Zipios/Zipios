@@ -31,11 +31,9 @@
 #include <zipios/directorycollection.hpp>
 #include <zipios/zipfile.hpp>
 
-//#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <fstream>
-//#include <stdint.h>
 
 
 // static variables

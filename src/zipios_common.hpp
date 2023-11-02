@@ -34,7 +34,7 @@
 
 #include <vector>
 #include <sstream>
-#include <stdint.h>
+#include <cstdint>
 
 #if defined( ZIPIOS_WINDOWS )
 typedef int32_t ssize_t;
