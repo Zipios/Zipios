@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     }
 
     // get eof pos (to become zip file starting position).
-    std::uint32_t const zip_start(exef.tellp());
+    uint32_t const zip_start(exef.tellp());
     std::cout << "zip starts at " << zip_start << std::endl;
 
     // Append zip file to exe file
