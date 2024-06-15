@@ -70,6 +70,7 @@ void init_min_max()
         t.tm_year = 1980 - 1900;
         t.tm_isdst = -1;
         g_minimum_unix = mktime(&t);
+        CATCH_REQUIRE((g_minimum_unix & 1) == 0);
     }
 
     if(g_maximum_unix == -1)
@@ -84,6 +85,7 @@ void init_min_max()
         t.tm_year = 2107 - 1900;
         t.tm_isdst = -1;
         g_maximum_unix = mktime(&t);
+        CATCH_REQUIRE((g_maximum_unix & 1) == 0);
     }
 }
 
@@ -313,9 +315,9 @@ CATCH_TEST_CASE("Invalid DOS Date & Time", "[dosdatetime]")
 
 #if 0
 // this test is too long, which is why it is commented out by default
-// still, it is great if you want to verify that all possible DOS Time & Date
+// still, it is great if you want to verify all possible DOS Time & Date
 //
-CATCH_TEST_CASE("All Valid DOS Date & Time", "[dosdatetime]")
+CATCH_TEST_CASE("all_valid_dos_date_n_time", "[dosdatetime]")
 {
     if(sizeof(std::time_t) < sizeof(uint64_t))
     {
@@ -325,7 +327,7 @@ CATCH_TEST_CASE("All Valid DOS Date & Time", "[dosdatetime]")
 
     init_min_max();
 
-    CATCH_START_SECTION("all valid DOS Date Time values")
+    CATCH_START_SECTION("all_valid_dos_date_n_time: all valid DOS Date Time values")
     {
         // make sure the maximum limit is checked properly
         //
@@ -353,7 +355,7 @@ CATCH_TEST_CASE("All Valid DOS Date & Time", "[dosdatetime]")
 #endif
 
 
-CATCH_TEST_CASE("Small DOS Date & Time", "[dosdatetime]")
+CATCH_TEST_CASE("small_dos_date_n_time", "[dosdatetime]")
 {
     if(sizeof(std::time_t) < sizeof(uint64_t))
     {
@@ -363,11 +365,14 @@ CATCH_TEST_CASE("Small DOS Date & Time", "[dosdatetime]")
 
     init_min_max();
 
-    CATCH_START_SECTION("just under the minimum")
+    CATCH_START_SECTION("small_dos_date_n_time: just under the minimum")
     {
         // make sure the minimum limit is checked properly
         //
-        for(std::time_t t(g_minimum_unix - 20); t < 0; ++t)
+        // the `g_minimum_unix - 1` is because the function uses the next
+        // event date (i.e. odd seconds get a +1)
+        //
+        for(std::time_t t(g_minimum_unix - 20); t < g_minimum_unix - 1; ++t)
         {
             zipios::DOSDateTime td;
             CATCH_REQUIRE_FALSE(td.isValid());
@@ -377,7 +382,7 @@ CATCH_TEST_CASE("Small DOS Date & Time", "[dosdatetime]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("just around minimum, but valid")
+    CATCH_START_SECTION("small_dos_date_n_time: just around minimum, but valid")
     {
         // the "g_minimum_unix - 1" case is peculiar, the Unix date is not
         // usable as is because it is odd and we're going to use the next
@@ -408,7 +413,7 @@ CATCH_TEST_CASE("Small DOS Date & Time", "[dosdatetime]")
 }
 
 
-CATCH_TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
+CATCH_TEST_CASE("large_dos_date_n_time", "[dosdatetime]")
 {
     if(sizeof(std::time_t) < sizeof(uint64_t))
     {
@@ -418,7 +423,7 @@ CATCH_TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
 
     init_min_max();
 
-    CATCH_START_SECTION("just around maximum, but valid")
+    CATCH_START_SECTION("large_dos_date_n_time: just around maximum, but valid")
     {
         // make sure the maximum limit is checked properly
         //
@@ -444,7 +449,7 @@ CATCH_TEST_CASE("Large DOS Date & Time", "[dosdatetime]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("just a bit too large")
+    CATCH_START_SECTION("large_dos_date_n_time: just a bit too large")
     {
         // make sure the maximum limit is checked properly
         //
@@ -470,7 +475,7 @@ CATCH_TEST_CASE("random_dos_date_n_time", "[dosdatetime]")
 {
     init_min_max();
 
-    CATCH_START_SECTION("more random tests")
+    CATCH_START_SECTION("random_dos_date_n_time: more random tests")
     {
         std::time_t const max(sizeof(std::time_t) < sizeof(uint64_t)
                                 ? 0x7FFFFFFF        // max. in 32 bits is less in Unix time_t than what the DOS Date Time supports

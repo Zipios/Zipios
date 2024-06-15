@@ -76,7 +76,7 @@ The following options are supported:
 
     - `BUILD_SHARED_LIBS` (ON by default)
     - `BUILD_DOCUMENTATION` (ON by default)
-    - `zipios_project_COVERAGE` (OFF by default)
+    - `COVERAGE` (OFF by default)
     - `BUILD_ZIPIOS_TESTS` (ON by default)
 
 In order to build Zipios as a static library, specify:
@@ -90,7 +90,17 @@ In order to explicitly disable building Doxygen documentation, specify:
 In order to build the library with coverage support, use the coverage
 option and make sure to compile in Debug mode too:
 
-    -Dzipios_project_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+    -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+
+Note that we now use the cmake coverage script for the purpose (instead of
+maintaining the separate dev/coverage script). We run the script in this
+way:
+
+    ../../cmake/scripts/mk -c
+
+And get the result in the same location as the other Snap! C++ projects:
+
+    https://lcov.snapwebsites.org/
 
 By default tests get built if catch.hpp is available. However, you may
 have catch.hpp installed on your system but want to skip on building

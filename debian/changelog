@@ -1,3 +1,9 @@
+zipios (2.3.3.1~jammy) jammy; urgency=high
+
+  * Corrected some of the Catch2 tests.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat, 15 Jun 2024 08:38:30 -0700
+
 zipios (2.3.3.0~jammy) jammy; urgency=high
 
   * Bump version since 2.3.2 is an official release.

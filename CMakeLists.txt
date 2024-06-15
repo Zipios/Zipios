@@ -68,11 +68,11 @@ endif(BUILD_SHARED_LIBS)
 
 option(BUILD_DOCUMENTATION "Build the ${PROJECT_NAME} documentation." ON)
 
-# To generate coverage, use -D<project name>_COVERAGE=ON
+# To generate coverage, use -DCOVERAGE=ON
 #                       and -DCMAKE_BUILD_TYPE=Debug
-option(${PROJECT_NAME}_COVERAGE "Turn on coverage for ${PROJECT_NAME}." OFF)
+option(COVERAGE "Turn on coverage for ${PROJECT_NAME}." OFF)
 
-if(${${PROJECT_NAME}_COVERAGE})
+if(${COVERAGE})
     if(MSVC)
         message(FATAL_ERROR "Coverage is not available on this platform (yet).")
     endif()

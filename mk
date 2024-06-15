@@ -38,7 +38,7 @@ case $1 in
 		if make -j${PROCESSORS} -C ${BUILD}
 		then
 			shift
-			${BUILD}/tests/zipios_tests \
+			${BUILD}/tests/unittest \
 				--tmp-dir "${PROJECT_TMPDIR}" \
 				--source-dir "${SOURCE}" \
 				--progress \

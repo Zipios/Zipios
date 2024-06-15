@@ -41,11 +41,11 @@
 
 
 
-CATCH_TEST_CASE("An input filter", "[Buffer]")
+CATCH_TEST_CASE("input_filter", "[Buffer]")
 {
     zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
 
-    CATCH_START_SECTION("Valid input stream buffer")
+    CATCH_START_SECTION("input_filter: Valid input stream buffer")
     {
         zipios_test::auto_unlink_t auto_unlink("input.buf", true);
         {
@@ -55,10 +55,11 @@ CATCH_TEST_CASE("An input filter", "[Buffer]")
 
         std::unique_ptr<std::ifstream> in_ptr(new std::ifstream("input.buf", std::ios::in | std::ios::binary));
         std::unique_ptr<zipios::FilterInputStreambuf> buf_ptr(new zipios::FilterInputStreambuf(in_ptr->rdbuf()));
+        CATCH_REQUIRE(buf_ptr != nullptr);
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Invalid input stream buffer")
+    CATCH_START_SECTION("input_filter: Invalid input stream buffer")
     {
         CATCH_REQUIRE_THROWS_AS(new zipios::FilterInputStreambuf(nullptr), zipios::InvalidStateException);
     }
@@ -66,20 +67,21 @@ CATCH_TEST_CASE("An input filter", "[Buffer]")
 }
 
 
-CATCH_TEST_CASE("An output filter", "[Buffer]")
+CATCH_TEST_CASE("output_filter", "[Buffer]")
 {
     zipios_test::safe_chdir cwd(SNAP_CATCH2_NAMESPACE::g_tmp_dir());
 
-    CATCH_START_SECTION("Valid output stream buffer")
+    CATCH_START_SECTION("output_filter: Valid output stream buffer")
     {
         zipios_test::auto_unlink_t auto_unlink("output.buf", true);
 
         std::ofstream out("output.buf", std::ios::out | std::ios::binary);
         std::unique_ptr<zipios::FilterOutputStreambuf> buf_ptr(new zipios::FilterOutputStreambuf(out.rdbuf()));
+        CATCH_REQUIRE(buf_ptr != nullptr);
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Invalid output stream buffer")
+    CATCH_START_SECTION("output_filter: Invalid output stream buffer")
     {
         CATCH_REQUIRE_THROWS_AS(new zipios::FilterOutputStreambuf(nullptr), zipios::InvalidStateException);
     }

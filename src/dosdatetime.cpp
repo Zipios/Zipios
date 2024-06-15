@@ -558,7 +558,7 @@ void DOSDateTime::setUnixTimestamp(std::time_t unix_timestamp)
     localtime_r(&unix_timestamp, &t);
 #endif
 
-//std::cerr << "test with: " << unix_timestamp << " -- " << t.tm_year
+//std::cout << "test with: " << unix_timestamp << " -- " << t.tm_year
 //          << " (" << (t.tm_year < 1980 - 1900 ? 1 : 0)
 //          << ", " << (t.tm_year > 2107 - 1900 ? 1 : 0)
 //          << ")\n";

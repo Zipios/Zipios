@@ -9,4 +9,5 @@ A few things that contributors can definitively help with:
  * Implement a VirtualEntry to allow in-memory files.
  * Add a test for the cmake/FindZipIos.cmake code.
  * Implement the necessary to support 64 bit zipfiles.
+ * Make sure the coverage script runs the sanitizer.
 

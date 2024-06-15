@@ -62,7 +62,7 @@ cd zipios_coverage
 # request coverage in this build
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$BUILD_PATH/dist \
       -DCMAKE_BUILD_TYPE=Debug \
-      -Dzipios_project_COVERAGE:BOOL=ON \
+      -DCOVERAGE:BOOL=ON \
       -DCMAKE_MODULE_PATH:PATH=$SOURCE_PATH/cmake \
           ../../zipios
 echo

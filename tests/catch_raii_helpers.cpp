@@ -91,7 +91,19 @@ safe_chdir::safe_chdir(std::string const & path)
 
 safe_chdir::~safe_chdir()
 {
-    chdir(m_original_path.get());
+    if(chdir(m_original_path.get()) != 0)
+    {
+        int const e(errno);
+        std::cerr
+            << "error: chdir("
+            << m_original_path.get()
+            << ") generated error: "
+            << std::to_string(e)
+            << ", "
+            << strerror(e)
+            << "\n";
+        std::terminate();
+    }
 }
 
 
