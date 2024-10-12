@@ -91,7 +91,7 @@ InflateInputStreambuf::InflateInputStreambuf(std::streambuf * inbuf, offset_t st
  */
 InflateInputStreambuf::~InflateInputStreambuf()
 {
-    // Dealloc z_stream stuff
+    // Dealloc z_stream
     int const err(inflateEnd(&m_zs));
     if(err != Z_OK)
     {
@@ -166,8 +166,7 @@ std::streambuf::int_type InflateInputStreambuf::underflow()
     /** \FIXME
      * Look at the error returned from inflate here, if there is
      * some way to report it to the InflateInputStreambuf user.
-     * Until I find out I'll just print a warning to stdout.
-     * This at least throws, we probably want to create a log
+     * For now we throw. We probably want to create a log
      * mechanism that the end user can connect to with a callback.
      */
     if(err != Z_OK && err != Z_STREAM_END)
@@ -233,7 +232,7 @@ bool InflateInputStreambuf::reset(offset_t stream_position)
            after the compressed stream in order to complete decompression
            and return Z_STREAM_END.  We always have an extra "dummy" byte,
            because there is always some trailing data after the compressed
-           data (either the next entry or the central directory.  */
+           data (either the next entry or the central directory).  */
         m_zs_initialized = true;
     }
 

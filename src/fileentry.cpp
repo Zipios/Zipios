@@ -47,7 +47,7 @@ namespace zipios
  * i.e. STORED is indicated by a 0 in the method field in a zip file and
  * so on.
  *
- * The zipios library only support STORED and DEFLATED at this time.
+ * The zipios library only supports STORED and DEFLATED at this time.
  */
 
 
