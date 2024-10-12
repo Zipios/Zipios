@@ -65,6 +65,7 @@ FilterInputStreambuf::FilterInputStreambuf(std::streambuf * inbuf)
  *
  * At this time the destructor does nothing.
  *
+ * \note
  * The former version would eventually delete the m_inbuf pointer. However,
  * here we have decided that this class did not own that pointer and thus
  * should not have such permissions.

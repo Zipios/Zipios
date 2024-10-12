@@ -29,7 +29,7 @@
  * This file is used to declare the zipios::DeflateOutputStreambuf class which
  * is used to compress data using zlib.
  *
- * The counter part is the class zipios::InflateInputStreambuf.
+ * The counterpart is the class zipios::InflateInputStreambuf.
  */
 
 #include "filteroutputstreambuf.hpp"
