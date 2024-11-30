@@ -57,25 +57,21 @@ if(BUILD_ZIPIOS_TESTS)
             ${SNAPCATCH2_LIBRARIES}
         )
 
-        add_custom_target(run_unittest
-            # You can use the --success command line option to see all the tests
-            # as they run; it is a LOT of output though, thus by default we don't
-            # use it
-            COMMAND ./unittest
-        )
-
-        add_test(unittest ${PROJECT_NAME})
-
     else(SNAPCATCH2_FOUND)
 
         message("No test will be created because you do not seem to have catch.hpp installed...")
 
-        # For compatibility, just in case
-        add_custom_target(run_unittest
-            COMMAND echo "No tests were built because it looks like you are missing Catch2."
+    endif(SNAPCATCH2_FOUND)
+
+    if(SnapCatch2_FOUND)
+
+        find_package(SnapTestRunner)
+        AddUnitTestsTarget(
+            PROJECT_NAME
+                rununittests
         )
 
-    endif(SNAPCATCH2_FOUND)
+    endif(SnapCatch2_FOUND)
 
 else(BUILD_ZIPIOS_TESTS)
 
