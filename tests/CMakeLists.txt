@@ -66,10 +66,12 @@ if(BUILD_ZIPIOS_TESTS)
     if(SnapCatch2_FOUND)
 
         find_package(SnapTestRunner)
-        AddUnitTestsTarget(
-            PROJECT_NAME
-                rununittests
-        )
+        if(SnapTestRunner_FOUND)
+            AddUnitTestsTarget(
+                PROJECT_NAME
+                    rununittests
+            )
+        endif(SnapTestRunner_FOUND)
 
     endif(SnapCatch2_FOUND)
 
