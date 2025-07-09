@@ -1,5 +1,8 @@
-zipios (2.3.3.1~jammy) jammy; urgency=high
+zipios (2.3.4.0~jammy) jammy; urgency=high
 
+  * Protect the AddUnitTestsTarget() call.
+  * Renamed rununitests target (removed the underscore).
+  * Fixed tests so the coverage test works again.
   * Corrected some of the Catch2 tests.
 
  -- Alexis Wilke <alexis@m2osw.com>  Sat, 15 Jun 2024 08:38:30 -0700
