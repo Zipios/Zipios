@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Masayuki Hatta (mhatta) <mhatta@debian.org>
 Build-Depends: cmake,
-    debhelper (>> 9),
+    debhelper-compat (= 13),
     dh-exec (>=0.3),
     doxygen,
     graphicsmagick-imagemagick-compat,
