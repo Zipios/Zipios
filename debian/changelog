@@ -1,3 +1,9 @@
+zipios (2.3.4.1~jammy) jammy; urgency=high
+
+  * Bumped build version to rebuild on Launchpad.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 20 Jul 2025 12:53:13 -0700
+
 zipios (2.3.4.0~jammy) jammy; urgency=high
 
   * Protect the AddUnitTestsTarget() call.
