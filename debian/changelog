@@ -1,4 +1,4 @@
-zipios (2.3.4.1~jammy) jammy; urgency=high
+zipios (2.3.4.1~noble) noble; urgency=high
 
   * Bumped build version to rebuild on Launchpad.
 
