@@ -46,7 +46,7 @@ namespace zipios
  * between filename segments of the file system. We
  * certainly want to support both "/" and "\\" to
  * make sure MS-Windows is fully supported. The FilePath
- * should take care of that work though.
+ * should take care of that work.
  */
 char const g_separator = '/';
 

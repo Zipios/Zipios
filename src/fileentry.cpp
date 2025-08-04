@@ -79,7 +79,7 @@ namespace zipios
  *
  * \todo
  * These values are one to one mapped to zlib compression values. This
- * is likely to change once we start offering other compression scheme
+ * is likely to change once we start offering other compression schemes
  * for a number defined between 0 and 100 instead.
  */
 

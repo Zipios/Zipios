@@ -20,7 +20,6 @@
 
 /** \file
  * \brief Tool used to create a Zip archive from a file or a directory.
- * \anchor appendzip_anchor
  *
  * This tool is mainly an example of how one can create a zip file using
  * the zipios library. It is not in any way meant to replace the standard

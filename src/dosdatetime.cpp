@@ -458,8 +458,6 @@ void DOSDateTime::setMonth(int month)
  * \exception InvalidException
  * The year is limited between 1980 and 2107. This exception is raised if the
  * year to out of this range.
- *
- * \return The year this DOS Date & Time represents.
  */
 void DOSDateTime::setYear(int year)
 {
