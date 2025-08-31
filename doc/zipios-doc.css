@@ -1,0 +1,7 @@
+/* additional stylesheet for doxygen documentation */
+
+#projectlogo img
+{
+  max-width: 200px;
+  max-height: 55px;
+}

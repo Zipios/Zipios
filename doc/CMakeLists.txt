@@ -18,7 +18,7 @@
 
 if(BUILD_DOCUMENTATION)
 
-    project( zipios_documentation )
+    project(zipios-documentation)
 
     ################################################################################
     # Copy of the AddDoxygenTarget from the Snap! C++ project
@@ -92,7 +92,7 @@ if(BUILD_DOCUMENTATION)
             )
         else()
             if(NOT ADD_DOXY_QUIET)
-                message( WARNING "You do not seem to have doxygen installed on this system, no documentation will be generated." )
+                message(WARNING "You do not seem to have doxygen installed on this system, no documentation will be generated.")
             endif()
         endif()
     endfunction()
