@@ -1062,7 +1062,10 @@ struct local_header_t
         os << static_cast<unsigned char>(extra_field_length >> 0);
         os << static_cast<unsigned char>(extra_field_length >> 8);
         os << m_filename;
-        os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+        if(!m_extra_field.empty())
+        {
+            os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+        }
     }
 };
 
@@ -1179,7 +1182,10 @@ struct central_directory_header_t
         os << static_cast<unsigned char>(m_relative_offset_to_local_header >> 16);
         os << static_cast<unsigned char>(m_relative_offset_to_local_header >> 24);
         os << m_filename;
-        os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+        if(!m_extra_field.empty())
+        {
+            os.write(reinterpret_cast<char const *>(&m_extra_field[0]), m_extra_field.size());
+        }
         os << m_file_comment;
     }
 };

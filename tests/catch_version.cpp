@@ -88,4 +88,3 @@ CATCH_TEST_CASE("library_version", "[Version]")
 // End:
 
 // vim: ts=4 sw=4 et
-
