@@ -1,3 +1,9 @@
+zipios (2.3.5.3~noble) noble; urgency=high
+
+  * Bumped build version to rebuild on Launchpad.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 09 Aug 2026 12:59:10 -0700
+
 zipios (2.3.5.2~noble) noble; urgency=high
 
   * Removing the graphicsmagick-imagemagick-compat dependency.
