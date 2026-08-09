@@ -1,3 +1,11 @@
+zipios (2.3.5.2~noble) noble; urgency=high
+
+  * Removing the graphicsmagick-imagemagick-compat dependency.
+    - It does not exist in newer versions (26.04+).
+    - I have no clue why it was necessary before (it it were).
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 09 Aug 2026 08:57:48 -0700
+
 zipios (2.3.5.1~noble) noble; urgency=high
 
   * Removing the cppunit-dev dependency since we now use catch2 instead.
