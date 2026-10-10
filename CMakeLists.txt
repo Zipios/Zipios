@@ -147,6 +147,23 @@ install(
         ${INCLUDE_INSTALL_DIR}/zipios
 )
 
+install(
+    FILES
+        src/deflateoutputstreambuf.hpp
+        src/filterinputstreambuf.hpp
+        src/filteroutputstreambuf.hpp
+        src/inflateinputstreambuf.hpp
+        src/zipcentraldirectoryentry.hpp
+        src/zipinputstream.hpp
+        src/zipinputstreambuf.hpp
+        src/ziplocalentry.hpp
+        src/zipoutputstream.hpp
+        src/zipoutputstreambuf.hpp
+
+    DESTINATION
+        ${INCLUDE_INSTALL_DIR}/zipios
+)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     install(
         FILES
