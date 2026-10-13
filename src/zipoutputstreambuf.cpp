@@ -315,15 +315,20 @@ int ZipOutputStreambuf::overflow(int c)
 
 /** \brief Implement the sync() functionality.
  *
- * This virtual function is reimplemented to make sure that the system
- * does not run a default sync() function.
+ * This function writes the data waiting in the buffer of the current
+ * entry, so that flushing the stream (e.g. with std::endl) works. The
+ * data is deflated with Z_NO_FLUSH, so a flush does not change the
+ * compressed output.
  *
- * This function calls the DeflateOutputStreambuf::sync() function which
- * returns -1 because it will not "synchronize" the input buffer.
+ * \return Always zero (0).
  */
-int ZipOutputStreambuf::sync() // LCOV_EXCL_LINE
+int ZipOutputStreambuf::sync()
 {
-    return DeflateOutputStreambuf::sync(); // LCOV_EXCL_LINE
+    if(m_open_entry)
+    {
+        overflow();
+    }
+    return 0;
 }
 
 

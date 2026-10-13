@@ -42,6 +42,7 @@ if(BUILD_ZIPIOS_TESTS)
             catch_version.cpp
             catch_virtualseeker.cpp
             catch_zipfile.cpp
+            catch_zipoutputstream.cpp
 
             catch_directory_helper.cpp
             catch_raii_helpers.cpp
