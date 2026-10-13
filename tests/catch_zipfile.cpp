@@ -1752,6 +1752,52 @@ CATCH_TEST_CASE("saveCollectionToArchive_with_DirectoryCollection", "[ZipFile][D
 }
 
 
+CATCH_TEST_CASE("saveCollectionToArchive_with_empty_deflated_file", "[ZipFile][DirectoryCollection]")
+{
+    CATCH_START_SECTION("saveCollectionToArchive_with_empty_deflated_file: an empty file is stored even when asked to deflate it")
+    {
+        std::string const top_dir(SNAP_CATCH2_NAMESPACE::g_tmp_dir() + "/save-empty");
+        std::string const test_dir(top_dir + "/test_dir");
+
+        zipios_test::auto_unlink_t auto_unlink(top_dir, true);
+
+        CATCH_REQUIRE(system(("mkdir -p " + test_dir).c_str()) == 0);
+        zipios_test::safe_chdir cwd(top_dir);
+
+        {
+            std::ofstream file_empty("test_dir/empty.txt", std::ios::out | std::ios::binary);
+            std::ofstream file_text("test_dir/text.txt", std::ios::out | std::ios::binary);
+            file_text << "some text\n";
+        }
+
+        {
+            zipios::DirectoryCollection directoryCollection("test_dir");
+            directoryCollection.setMethod(1024, zipios::StorageMethod::DEFLATED, zipios::StorageMethod::DEFLATED);
+            directoryCollection.setLevel(1024, zipios::FileEntry::COMPRESSION_LEVEL_DEFAULT, zipios::FileEntry::COMPRESSION_LEVEL_DEFAULT);
+            std::ofstream tempZipStream("test.zip", std::ios_base::binary | std::ios::out);
+            zipios::ZipFile::saveCollectionToArchive(tempZipStream, directoryCollection);
+        }
+
+        // a deflated entry without any data is rejected by unzip
+        CATCH_REQUIRE(system("unzip -tq test.zip >/dev/null") == 0);
+
+        zipios::ZipFile zf("test.zip");
+        zipios::FileEntry::pointer_t empty(zf.getEntry("test_dir/empty.txt"));
+        CATCH_REQUIRE(empty != nullptr);
+        CATCH_REQUIRE(empty->getMethod() == zipios::StorageMethod::STORED);
+        CATCH_REQUIRE(empty->getSize() == 0);
+        zipios::ZipFile::stream_pointer_t is(zf.getInputStream("test_dir/empty.txt"));
+        CATCH_REQUIRE(is != nullptr);
+        CATCH_REQUIRE(is->get() == EOF);
+
+        zipios::FileEntry::pointer_t text(zf.getEntry("test_dir/text.txt"));
+        CATCH_REQUIRE(text != nullptr);
+        CATCH_REQUIRE(text->getMethod() == zipios::StorageMethod::DEFLATED);
+    }
+    CATCH_END_SECTION()
+}
+
+
 CATCH_TEST_CASE("test_memory_input_stream", "[ZipFile][MemoryStream]")
 {
     CATCH_START_SECTION("test_memory_input_stream: create files with a compressed file, save only 50% of the data")

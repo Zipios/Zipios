@@ -371,6 +371,14 @@ void ZipOutputStreambuf::updateEntryHeaderInfo()
     FileEntry::pointer_t entry(m_entries.back());
     entry->setSize(getSize());
     entry->setCrc(getCrc32());
+    if(getSize() == 0)
+    {
+        // an empty entry gets no deflated data (see endDeflation()) and
+        // zip tools only accept that when the entry is marked as stored
+        //
+        entry->setMethod(StorageMethod::STORED);
+        entry->setLevel(FileEntry::COMPRESSION_LEVEL_NONE);
+    }
     /** \TODO
      * Rethink the design as we have to force a call to the correct
      * getHeaderSize() function?
